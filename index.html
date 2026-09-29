@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="tl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Pwede Ba Kitang Ligawan — Kinetic Lyrics</title>
+<style>
+:root{--bg:#0d0b0a;--ink:#f8f0e6;--muted:#b6a99c;--accent:#ffb38a;--x:50%;--y:50%}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;background:var(--bg);color:var(--ink);overflow:hidden;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+button{font:inherit;color:inherit;-webkit-tap-highlight-color:transparent}
+#app{position:relative;width:100vw;height:100dvh;overflow:hidden;background:radial-gradient(circle at var(--x) var(--y),#33241d 0,#171210 30%,#0d0b0a 70%);isolation:isolate}
+#grain{position:absolute;inset:-50%;opacity:.065;pointer-events:none;z-index:20;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.8'/%3E%3C/svg%3E");animation:grain .18s steps(2) infinite}
+@keyframes grain{0%{transform:translate(0,0)}25%{transform:translate(2%,-1%)}50%{transform:translate(-1%,2%)}75%{transform:translate(1%,1%)}100%{transform:translate(-2%,-1%)}}
+.ambient{position:absolute;inset:0;pointer-events:none;overflow:hidden}.orb{position:absolute;border-radius:50%;filter:blur(70px);opacity:.18;transition:transform .15s ease}.o1{width:38vw;height:38vw;background:#a75d3d;left:-12vw;top:10vh}.o2{width:28vw;height:28vw;background:#70583c;right:-8vw;bottom:-6vh}
+#top{position:absolute;left:4vw;right:4vw;top:3.5vh;display:flex;justify-content:space-between;align-items:center;z-index:10;font:500 10px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.16em;text-transform:uppercase;color:#cfc1b4}.title{display:flex;gap:10px;align-items:center}.dot{width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 18px #ffb38a99}.counter{opacity:.75}
+#stage{position:absolute;inset:0;display:grid;place-items:center;padding:10vh 7vw 17vh;z-index:4}.lyric{position:relative;width:min(1100px,88vw);text-align:center;min-height:220px;display:flex;align-items:center;justify-content:center}.line{position:absolute;max-width:100%;opacity:0;transform:translateY(25px) scale(.96);filter:blur(7px);transition:opacity .35s ease,transform .7s cubic-bezier(.2,.8,.2,1),filter .45s ease;will-change:transform,opacity,filter}.line.active{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}.line.out{opacity:0;transform:translateY(-45px) scale(1.05);filter:blur(5px)}
+.line.verse{font-size:clamp(28px,4.4vw,68px);font-weight:600;letter-spacing:-.045em;line-height:1.05}.line.soft{font-size:clamp(25px,3.7vw,58px);font-weight:400;letter-spacing:-.04em;line-height:1.08}.line.chorus{font-size:clamp(45px,8.7vw,132px);font-weight:800;letter-spacing:-.075em;line-height:.88}.line.big{font-size:clamp(56px,11vw,170px);font-weight:800;letter-spacing:-.085em;line-height:.8}.line.small{font:500 clamp(17px,2vw,29px) ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.04em;line-height:1.25}
+.word{display:inline-block;margin:.03em .105em;opacity:.18;transform:translateY(.35em) scale(.96);filter:blur(4px);transition:opacity .18s ease,transform .22s cubic-bezier(.2,.8,.2,1),filter .2s ease;color:#d9cec4}.word.visible{opacity:1;transform:translateY(0) scale(1);filter:blur(0);color:var(--ink)}.word.current{color:var(--accent);transform:translateY(-.055em) scale(1.055);text-shadow:0 0 28px #ffb38a55}.word.accent{color:var(--accent)}.word.visible.accent{color:var(--accent)}
+#echoes{position:absolute;inset:0;z-index:-1;overflow:hidden;pointer-events:none}.echo{position:absolute;font-weight:800;white-space:nowrap;color:#fff;opacity:0;mix-blend-mode:screen;letter-spacing:-.08em}.echo.show{animation:echo 1.25s cubic-bezier(.2,.7,.2,1) forwards}@keyframes echo{0%{opacity:0;transform:translate(0,0) scale(.65) rotate(var(--r))}20%{opacity:.08}100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(1.2) rotate(var(--r))}}
+#hint{position:absolute;left:50%;bottom:12vh;transform:translateX(-50%);z-index:11;text-align:center;color:#c8bdb3;font:500 10px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.14em;text-transform:uppercase;transition:opacity .5s}.playing #hint{opacity:0;pointer-events:none}.play{border:1px solid #ffffff35;background:#ffffff08;backdrop-filter:blur(10px);border-radius:999px;padding:12px 20px;cursor:pointer;transition:.2s}.play:hover{background:#ffffff14;transform:translateY(-1px)}
+#controls{position:absolute;left:4vw;right:4vw;bottom:4.5vh;z-index:12;display:flex;align-items:center;gap:15px}.ctrl{width:42px;height:42px;border:1px solid #ffffff2d;background:#ffffff09;border-radius:50%;cursor:pointer}.track{height:4px;background:#ffffff20;flex:1;position:relative;cursor:pointer;border-radius:99px}.progress{position:absolute;left:0;top:0;height:100%;width:0;background:var(--accent);box-shadow:0 0 14px #ffb38a77;border-radius:99px}.time{font:500 10px ui-monospace,SFMono-Regular,Menlo,monospace;color:#bcaea1;min-width:88px;text-align:right}
+#section{position:absolute;right:4vw;top:50%;transform:translateY(-50%) rotate(90deg);transform-origin:right center;color:#8f8379;font:500 9px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.2em;text-transform:uppercase;z-index:10}.flash{position:absolute;inset:0;background:#fff;opacity:0;z-index:9;pointer-events:none}.flash.hit{animation:flash .16s ease-out}@keyframes flash{0%{opacity:.12}100%{opacity:0}}
+@media(max-width:600px){#top{top:3vh}.line.verse{font-size:clamp(27px,8.5vw,42px)}.line.soft{font-size:clamp(24px,7.4vw,38px)}.line.chorus{font-size:clamp(46px,15vw,82px)}.line.big{font-size:clamp(55px,18vw,100px)}#stage{padding:12vh 8vw 20vh}.lyric{min-height:250px}.time{min-width:72px}.track{margin-left:4px}.o1{width:70vw;height:70vw}}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="ambient"><div class="orb o1"></div><div class="orb o2"></div></div>
+  <div id="grain"></div><div id="echoes"></div>
+  <div id="top"><div class="title"><span class="dot"></span><span>PWede ba kitang ligawan</span></div><div class="counter" id="counter">00:00 / 02:36</div></div>
+  <div id="section">intro</div>
+  <div id="stage"><div class="lyric" id="lyric"></div></div>
+  <div id="hint"><button class="play" id="start" type="button">Tap to begin</button></div>
+  <div class="flash" id="flash"></div>
+  <div id="controls"><button class="ctrl" id="toggle" type="button" aria-label="Play/Pause">▶</button><div class="track" id="track"><div class="progress" id="progress"></div></div><div class="time" id="time">00:00</div></div>
+  <audio id="audio" preload="metadata" playsinline webkit-playsinline src="song.mp3"></audio>
+</div>
+<script>
+const A=document.querySelector('#audio'),L=document.querySelector('#lyric'),P=document.querySelector('#progress'),T=document.querySelector('#time'),C=document.querySelector('#counter'),APP=document.querySelector('#app'),TOGGLE=document.querySelector('#toggle'),FLASH=document.querySelector('#flash'),SEC=document.querySelector('#section'),E=document.querySelector('#echoes'),TRACK=document.querySelector('#track');
+
+// Timings are the first-pass vocal map. Each line is then divided into individual words below.
+const lines=[
+[0.8,6.8,'Pwede ba akong tumambay dyan sa puso mo','verse','verse'],
+[7.0,13.9,"Parang masyado na yatang gasgas ang banat na 'to",'soft','verse'],
+[14.1,21.9,'Kailan kaya ako makakaisip ng linyang para sa yo','verse','verse'],
+[22.1,30.0,"Gusto ko lang naman ay makamit ang matamis mong oo",'soft','verse'],
+[31.0,37.0,'Pwede ba kitang ligawan','chorus','chorus'],
+[37.1,44.2,"Kahit di maganda ang mga linyahan",'soft','chorus'],
+[44.3,51.4,'Bibigay ko nang buo ang oras ko','soft','chorus'],
+[51.5,58.5,"Kasi do'n alam kong magaling ako",'verse','chorus'],
+[59.0,65.0,'Pwede ba kitang ligawan','chorus','chorus'],
+[65.1,68.4,'Oo o hindi','big','chorus'],
+[70.0,76.5,'Ikaw ay lagi kong pupuntahan','verse','verse2'],
+[76.6,82.4,'Kahit malayo pa yan','soft','verse2'],
+[82.5,90.0,"Pati ang nanay mo'y aking dadalhan",'verse','verse2'],
+[90.1,98.2,'Ng paborito niyang ulam (paborito niyang ulam)','soft','verse2'],
+[98.4,104.8,'At kahit pahirapan pa','verse','verse2'],
+[104.9,111.2,'Ako ng tatay mo hindi aatras','soft','verse2'],
+[111.4,117.4,'Kasi gusto kita','chorus','verse2'],
+[117.5,126.0,'Gustong-gusto, gustong-gusto kita','big','verse2'],
+[127.0,133.0,'Pwede ba kitang ligawan','chorus','final'],
+[133.1,140.2,"Kahit di maganda ang mga linyahan",'soft','final'],
+[140.3,147.0,'Bibigay ko nang buo ang oras ko','soft','final'],
+[147.1,152.8,"Kasi do'n alam kong magaling ako",'verse','final'],
+[153.0,155.2,'Pwede ba kitang ligawan','chorus','final'],
+[155.2,156.3,'Oo o hindi','big','final']
+];
+
+const ACCENT_WORDS=new Set(['puso','mo','yo','oo','ligawan','oras','hindi','yan','aatras','kita']);
+const BPM=123.046875, BEAT=60/BPM;
+let current=-1,lastBeat=-1,playing=false,raf=0;
+
+function fmt(s){s=Math.max(0,s||0);return String(Math.floor(s/60)).padStart(2,'0')+':'+String(Math.floor(s%60)).padStart(2,'0')}
+function cleanWord(w){return w.toLowerCase().replace(/[^a-záéíóúñ'-]/gi,'')}
+function buildWords(text){
+  return text.split(/(\s+)/).map(part=>part.trim()?part:' ').map(part=>{
+    if(part===' ')return ' ';
+    const clean=cleanWord(part); const accent=ACCENT_WORDS.has(clean);
+    return `<span class="word${accent?' accent':''}">${part}</span>`;
+  }).join('');
+}
+function activate(i){
+  if(i===current)return;
+  if(current>=0){const old=L.querySelector('.line.active');if(old){old.classList.remove('active');old.classList.add('out')}}
+  current=i;
+  if(i<0){L.innerHTML='';return}
+  const [start,end,text,style,section]=lines[i];
+  L.innerHTML=`<div class="line ${style}">${buildWords(text)}</div>`;
+  const el=L.firstElementChild; el.dataset.start=start; el.dataset.end=end;
+  requestAnimationFrame(()=>el.classList.add('active'));
+  SEC.textContent=section;
+}
+
+function updateWords(t){
+  const el=L.querySelector('.line.active'); if(!el)return;
+  const start=+el.dataset.start,end=+el.dataset.end;
+  const words=[...el.querySelectorAll('.word')]; if(!words.length)return;
+  const p=Math.max(0,Math.min(1,(t-start)/(end-start)));
+  // Slightly faster at the beginning, with the final word held longer for emphasis.
+  const weights=words.map(w=>Math.max(1,w.textContent.replace(/[^\p{L}\p{N}]/gu,'').length));
+  const total=weights.reduce((a,b)=>a+b,0);
+  let acc=0,currentWord=-1;
+  words.forEach((w,i)=>{
+    acc+=weights[i]/total;
+    if(p>=acc) w.classList.add('visible'); else w.classList.remove('visible');
+    if(currentWord<0 && p < acc) currentWord=i;
+  });
+  if(p>=0 && currentWord<0)currentWord=words.length-1;
+  words.forEach((w,i)=>w.classList.toggle('current',i===currentWord));
+}
+
+function pulse(t){
+  const idx=Math.floor((t-0.197)/BEAT);
+  if(idx>lastBeat && idx>=0){
+    lastBeat=idx;
+    APP.classList.add('beat'); FLASH.classList.add('hit');
+    setTimeout(()=>APP.classList.remove('beat'),100); setTimeout(()=>FLASH.classList.remove('hit'),160);
+    if(idx%4===0)echo();
+  }
+}
+function echo(){
+  const e=document.createElement('div'); e.className='echo show';
+  e.textContent=['LIGAWAN','OO O HINDI','GUSTO KITA','PUSO MO'][Math.floor(Math.random()*4)];
+  e.style.left=(10+Math.random()*70)+'%';e.style.top=(20+Math.random()*60)+'%';e.style.fontSize=(20+Math.random()*80)+'px';
+  e.style.setProperty('--dx',(Math.random()*180-90)+'px');e.style.setProperty('--dy',(Math.random()*180-90)+'px');e.style.setProperty('--r',(Math.random()*18-9)+'deg');E.appendChild(e);setTimeout(()=>e.remove(),1300);
+}
+
+function render(){
+  const t=A.currentTime||0;
+  const i=lines.findIndex(x=>t>=x[0]&&t<x[1]); activate(i); updateWords(t); pulse(t);
+  const d=A.duration||156.4328; P.style.width=Math.min(100,(t/d)*100)+'%'; T.textContent=fmt(t); C.textContent=fmt(t)+' / '+fmt(d);
+  const beatPhase=((t-0.197)/BEAT)%1; const breathe=1+Math.max(0,1-Math.abs(beatPhase-.5)*2)*.025;
+  document.querySelector('.orb.o1').style.transform=`scale(${breathe})`;
+  document.querySelector('.orb.o2').style.transform=`scale(${1+(1-breathe+.025)*2})`;
+  document.documentElement.style.setProperty('--x',(50+Math.sin(t*.7)*12)+'%');document.documentElement.style.setProperty('--y',(50+Math.cos(t*.53)*10)+'%');
+  raf=requestAnimationFrame(render);
+}
+
+async function play(){
+  try{
+    // IMPORTANT: do not create an AudioContext or WebAudio graph here. Direct HTMLAudio playback is much more reliable on iOS Safari/GitHub Pages.
+    await A.play();
+    playing=true;APP.classList.add('playing');TOGGLE.textContent='❚❚';
+  }catch(err){
+    console.error('Audio playback failed:',err);
+    TOGGLE.textContent='▶';
+    document.querySelector('#hint .play').textContent='Tap again to play';
+  }
+}
+function pause(){A.pause();playing=false;TOGGLE.textContent='▶'}
+
+A.addEventListener('play',()=>{playing=true;APP.classList.add('playing');TOGGLE.textContent='❚❚'});
+A.addEventListener('pause',()=>{playing=false;TOGGLE.textContent='▶'});
+A.addEventListener('ended',()=>{playing=false;TOGGLE.textContent='▶';lastBeat=-1;activate(-1)});
+A.addEventListener('loadedmetadata',()=>C.textContent='00:00 / '+fmt(A.duration));
+
+document.querySelector('#start').addEventListener('click',play);
+TOGGLE.addEventListener('click',()=>playing?pause():play());
+TRACK.addEventListener('click',e=>{const r=TRACK.getBoundingClientRect();if(!A.duration)return;A.currentTime=Math.max(0,Math.min(A.duration,(e.clientX-r.left)/r.width*A.duration));});
+document.addEventListener('keydown',e=>{if(e.code==='Space'){e.preventDefault();playing?pause():play()}if(e.code==='ArrowRight')A.currentTime=Math.min(A.duration||156,A.currentTime+5);if(e.code==='ArrowLeft')A.currentTime=Math.max(0,A.currentTime-5)});
+
+render();
+</script>
+</body>
+</html>
