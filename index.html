@@ -1058,15 +1058,15 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .line.scene-kailan-flight .word{position:absolute;left:50%;top:50%;margin:0;white-space:nowrap;transform:translate3d(-50%,-50%,0);will-change:transform,opacity;animation:none!important}
 .line.scene-kailan-flight .word.accent{color:var(--accent)}
 
-/* TRAVELLING THREAD — a long off-screen string with only a moving portion visible */
+/* FIRST-CHORUS HEART THREAD — background decoration only */
 #redStringFate{
   position:absolute;
   inset:0;
-  z-index:7;
+  z-index:3;
   pointer-events:none;
   overflow:hidden;
   opacity:0;
-  transition:opacity .18s ease;
+  transition:opacity .16s ease;
 }
 #redStringFate.active{opacity:1}
 #redStringFate svg{
@@ -1079,23 +1079,23 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 #redStringFate .string-glow,
 #redStringFate .string-path{
   fill:none;
-  stroke:#fff500;
+  stroke:var(--accent);
   stroke-linecap:round;
   stroke-linejoin:round;
   vector-effect:non-scaling-stroke;
 }
 #redStringFate .string-glow{
-  stroke-width:11;
+  stroke-width:13;
   opacity:.12;
-  filter:blur(5px);
+  filter:blur(7px);
 }
 #redStringFate .string-path{
-  stroke-width:4.6;
-  opacity:.98;
-  filter:drop-shadow(0 0 3px #fff500) drop-shadow(0 0 8px #fff50066);
+  stroke-width:4.2;
+  opacity:.62;
+  filter:drop-shadow(0 0 4px rgba(255,179,138,.28));
 }
 @media(max-width:600px){
-  #redStringFate .string-path{stroke-width:4.4}
+  #redStringFate .string-path{stroke-width:3.7}
   #redStringFate .string-glow{stroke-width:9}
 }
 </style>
@@ -1932,13 +1932,10 @@ render();
 
 <script>
 /*
-  TRAVELLING THREAD
-  ------------------------------------------------------------
-  The string is one very long continuous path. Only a moving
-  window of that path is visible, so it can leave the screen
-  and later re-enter without looking like separate drawings.
-
-  This script is isolated from the existing player.
+  FIRST CHORUS — HEART THREAD
+  The string exists only for "Pwede ba kitang ligawan?"
+  (39.65–46.75). It enters from off-screen, forms one large
+  heart behind the lyric, then continues off-screen.
 */
 (function(){
   try{
@@ -1946,84 +1943,23 @@ render();
     var audio=document.getElementById('audio');
     var path=root && root.querySelector('.string-path');
     var glow=root && root.querySelector('.string-glow');
-
     if(!root || !audio || !path || !glow) return;
 
     /*
-      The path intentionally goes beyond the viewport.
-      It makes loose, hand-drawn loops and heart-like turns,
-      similar to a thread being pulled across the screen.
+      One continuous open heart. The endpoints are deliberately
+      outside the viewport so the thread feels like it continues
+      beyond the screen.
     */
     var d=[
-      "M -520 565",
-      "C -410 535 -355 455 -270 420",
-      "C -185 385 -92 405 -68 475",
-      "C -45 545 -116 600 -190 570",
-      "C -265 540 -278 450 -216 385",
-      "C -154 320 -50 325 28 382",
-      "C 105 439 164 490 248 465",
-      "C 340 438 397 348 356 280",
-      "C 315 213 208 222 181 300",
-      "C 153 380 221 437 301 421",
-      "C 384 404 443 318 418 238",
-      "C 392 158 298 124 226 169",
-      "C 155 214 164 314 242 352",
-      "C 320 390 408 352 442 279",
-      "C 474 209 450 132 385 105",
-      "C 316 76 236 105 213 169",
-      "C 188 239 240 294 309 285",
-      "C 379 276 430 212 476 176",
-      "C 530 134 600 141 627 193",
-      "C 655 247 625 310 566 326",
-      "C 505 342 455 297 470 242",
-      "C 486 183 556 167 605 201",
-      "C 655 236 668 299 632 350",
-      "C 592 408 501 411 455 365",
-      "C 409 319 427 253 486 218",
-      "C 546 183 628 205 662 262",
-      "C 699 325 680 397 619 431",
-      "C 554 467 478 439 449 382",
-      "C 420 325 448 270 508 252",
-      "C 572 233 635 268 650 327",
-      "C 665 390 628 445 565 463",
-      "C 496 483 435 447 425 390",
-      "C 414 330 452 282 510 278",
-      "C 575 274 620 320 607 375",
-      "C 594 430 535 455 486 426",
-      "C 438 397 440 340 485 315",
-      "C 531 290 583 315 598 359",
-      "C 616 412 664 455 735 449",
-      "C 808 443 859 385 844 322",
-      "C 829 258 755 229 698 263",
-      "C 642 297 648 363 704 390",
-      "C 762 418 824 385 827 329",
-      "C 830 275 780 239 728 255",
-      "C 676 271 664 322 694 355",
-      "C 726 391 784 385 813 349",
-      "C 851 302 903 292 958 323",
-      "C 1018 357 1050 425 1097 470",
-      "C 1149 520 1234 506 1270 445",
-      "C 1304 388 1278 324 1216 309",
-      "C 1154 294 1108 339 1123 394",
-      "C 1140 455 1210 474 1260 438",
-      "C 1314 398 1375 410 1428 461",
-      "C 1482 512 1554 538 1619 506",
-      "C 1684 474 1711 405 1673 347",
-      "C 1634 287 1552 281 1500 327",
-      "C 1447 373 1461 445 1521 469",
-      "C 1581 493 1642 459 1652 402",
-      "C 1663 340 1614 299 1556 308",
-      "C 1499 317 1475 373 1505 416",
-      "C 1537 462 1604 461 1641 420",
-      "C 1691 365 1764 360 1822 407",
-      "C 1883 456 1919 518 1990 505",
-      "C 2060 492 2097 425 2064 368",
-      "C 2028 306 1948 297 1895 341",
-      "C 1842 385 1855 454 1914 478",
-      "C 1973 502 2033 467 2044 411",
-      "C 2057 349 2007 309 1950 319",
-      "C 1891 330 1869 386 1900 428",
-      "C 1934 474 2000 471 2036 430"
+      "M -90 470",
+      "C 10 458 78 424 128 366",
+      "C 170 317 158 249 184 194",
+      "C 214 132 292 108 355 139",
+      "C 411 166 445 225 500 292",
+      "C 555 225 589 166 645 139",
+      "C 708 108 786 132 816 194",
+      "C 842 249 830 317 872 366",
+      "C 922 424 990 458 1090 470"
     ].join(" ");
 
     path.setAttribute("d",d);
@@ -2033,86 +1969,64 @@ render();
     if(!isFinite(length) || length<=0) return;
 
     /*
-      Only this much of the long thread is painted at once.
-      Because the path itself extends beyond the screen, the
-      visible portion can disappear completely and come back.
+      The visible dash is the thread itself. It grows as it
+      enters, remains around the heart briefly, then travels
+      away to the right.
     */
-    var WINDOW=930;
-    path.style.strokeDasharray=WINDOW+" "+length;
-    glow.style.strokeDasharray=WINDOW+" "+length;
-
-    /*
-      Each lyric line gets its own stretch of the SAME path.
-      The end of one stretch is the start of the next, so there
-      is no teleporting/jumping between lines.
-    */
-    var first=[
-      [39.65,46.75,0.04,0.17],
-      [46.80,53.65,0.17,0.34],
-      [53.80,58.65,0.34,0.48],
-      [58.70,63.05,0.48,0.61],
-      [63.10,68.45,0.61,0.79],
-      [68.48,71.00,0.79,0.94]
-    ];
-
-    var finalChorus=[
-      [102.72,109.70,0.06,0.21],
-      [109.75,116.55,0.21,0.38],
-      [116.70,121.30,0.38,0.52],
-      [121.35,126.25,0.52,0.66],
-      [126.35,132.15,0.66,0.84],
-      [132.18,135.10,0.84,0.99]
-    ];
-
     function ease(t){
       t=Math.max(0,Math.min(1,t));
       return t*t*(3-2*t);
     }
 
-    function distanceFor(t, ranges){
-      for(var i=0;i<ranges.length;i++){
-        var r=ranges[i];
-        if(t>=r[0] && t<=r[1]){
-          var q=ease((t-r[0])/(r[1]-r[0]));
-          return length*(r[2]+(r[3]-r[2])*q);
-        }
-      }
-      return null;
-    }
-
     function frame(){
       var t=Number(audio.currentTime)||0;
-      var dist=null;
 
-      if(t>=39.65 && t<=71.00){
-        dist=distanceFor(t,first);
-      }else if(t>=102.72 && t<=135.10){
-        dist=distanceFor(t,finalChorus);
-      }
-
-      if(dist===null){
+      if(t < 39.65 || t > 46.75){
         root.classList.remove("active");
-        path.style.strokeDashoffset=length;
-        glow.style.strokeDashoffset=length;
-      }else{
-        root.classList.add("active");
-
-        /*
-          Sliding the dash along the full path creates the feeling
-          that the thread is travelling somewhere beyond the frame.
-        */
-        var offset=-(dist-WINDOW*0.38);
-        path.style.strokeDashoffset=offset;
-        glow.style.strokeDashoffset=offset;
+        path.style.strokeDasharray="0 "+length;
+        glow.style.strokeDasharray="0 "+length;
+        path.style.strokeDashoffset="0";
+        glow.style.strokeDashoffset="0";
+        window.requestAnimationFrame(frame);
+        return;
       }
+
+      root.classList.add("active");
+
+      var q=ease((t-39.65)/(46.75-39.65));
+
+      /*
+        Enter quickly, reveal the full heart, then let the tail
+        leave. This keeps the heart readable instead of drawing
+        a line across the whole chorus.
+      */
+      var visible;
+      var offset;
+
+      if(q < .20){
+        var a=q/.20;
+        visible=length*(.08 + .92*ease(a));
+        offset=0;
+      }else if(q < .68){
+        visible=length;
+        offset=0;
+      }else{
+        var b=(q-.68)/.32;
+        visible=length*(1-.88*ease(b));
+        offset=-length*.88*ease(b);
+      }
+
+      path.style.strokeDasharray=visible+" "+length;
+      glow.style.strokeDasharray=visible+" "+length;
+      path.style.strokeDashoffset=offset;
+      glow.style.strokeDashoffset=offset;
 
       window.requestAnimationFrame(frame);
     }
 
     frame();
   }catch(error){
-    /* Decorative only: never interfere with audio playback. */
-    console.warn("Travelling string effect disabled:",error);
+    console.warn("Heart thread effect disabled:",error);
   }
 })();
 </script>
