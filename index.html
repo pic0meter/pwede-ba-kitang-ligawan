@@ -291,6 +291,55 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 @keyframes clockLyricIn{0%{opacity:0;transform:translateY(20px) scale(.65) rotate(-4deg)}65%{opacity:1;transform:translateY(-5px) scale(1.06) rotate(1deg)}100%{opacity:1;transform:none}}
 .clock-face .clock-number:nth-child(12n+1){color:var(--accent)}
 
+
+/* --- SONG-SPECIFIC CHOREOGRAPHY --- */
+.line.scene-puso-wipe{position:relative;overflow:visible;gap:.03em .12em}
+.line.scene-puso-wipe .word.visible{animation:pwPop .42s cubic-bezier(.12,1.3,.25,1) both}
+.line.scene-puso-wipe .puso-mo{color:var(--accent);font-weight:800;z-index:4}
+@keyframes pwPop{0%{opacity:0;transform:translateY(25px) scale(.72)}70%{opacity:1;transform:translateY(-5px) scale(1.06)}100%{opacity:1;transform:none}}
+
+.line.scene-scratch{gap:.025em .11em}
+.line.scene-scratch .gasgas{font-size:1.32em;font-weight:950;letter-spacing:-.045em;text-shadow:2px 0 #ffb38a33,-2px 0 #ffffff18}
+.line.scene-scratch .gasgas::before,.line.scene-scratch .gasgas::after{content:"";position:absolute;inset:-.12em -.08em;pointer-events:none}
+.line.scene-scratch .gasgas::before{background:repeating-linear-gradient(166deg,transparent 0 5px,#f8f0e644 6px 7px,transparent 8px 12px);mix-blend-mode:screen;opacity:.7;transform:skewX(-14deg) rotate(-2deg);animation:scratchLines .18s steps(2) infinite}
+.line.scene-scratch .gasgas::after{border-top:3px solid #ffb38a88;border-bottom:2px solid #ffffff22;transform:rotate(-5deg) scaleX(.2);transform-origin:left center;animation:scratchSlash .6s cubic-bezier(.15,1,.2,1) .18s forwards}
+.line.scene-scratch .echo-word::after{content:attr(data-text);position:absolute;left:0;top:0;color:#ffb38a;opacity:0;transform:translateX(-.18em);pointer-events:none;filter:blur(1px)}
+.line.scene-scratch .echo-word.echo-on::after{opacity:.5;animation:echoTrail .7s ease-in-out infinite alternate}
+@keyframes scratchLines{0%{transform:translateX(-3px) skewX(-14deg)}100%{transform:translateX(4px) skewX(-11deg)}}
+@keyframes scratchSlash{to{transform:rotate(-5deg) scaleX(1)}}
+@keyframes echoTrail{0%{transform:translate(-.12em,-.01em);opacity:.2}100%{transform:translate(.28em,.025em);opacity:.65}}
+
+.line.scene-type-heart{gap:.015em .09em;max-width:96vw}
+.line.scene-type-heart .word{opacity:0;transform-origin:center}
+.line.scene-type-heart .word.visible{opacity:1;animation:typeIn .32s steps(1,end) both;animation-delay:calc(var(--i)*70ms)}
+.line.scene-type-heart .word.current{color:var(--accent);text-shadow:0 0 24px #ffb38a55}
+@keyframes typeIn{0%{opacity:0;transform:translateY(.12em) scaleX(.35)}100%{opacity:1;transform:none}}
+
+.line.scene-linyahan{gap:.02em .12em}
+.line.scene-linyahan .linyahan-word{font-size:1.48em;font-weight:950;letter-spacing:-.055em;transform-origin:center}
+.line.scene-linyahan .linyahan-word::after{content:"✦";position:absolute;font-size:.22em;right:-.35em;top:-.55em;color:var(--accent);animation:whimsyStar 1.1s ease-in-out infinite alternate}
+@keyframes whimsyStar{from{transform:rotate(-20deg) scale(.65);opacity:.35}to{transform:rotate(22deg) scale(1.2);opacity:1}}
+
+.line.scene-idle-move{gap:.03em .11em}
+.line.scene-idle-move .word.visible{animation:idleIn .45s cubic-bezier(.15,1.25,.3,1) both}
+@keyframes idleIn{0%{opacity:0;transform:translateY(20px) scale(.85)}100%{opacity:1;transform:none}}
+
+.line.scene-erratic{gap:.015em .10em}
+.line.scene-erratic .word.visible{animation:erraticIn .48s cubic-bezier(.15,1.3,.3,1) both}
+@keyframes erraticIn{0%{opacity:0;transform:translate3d(var(--fx),var(--fy),-120px) rotate(var(--fr)) scale(.5)}70%{opacity:1;transform:translate3d(0,-6px,30px) rotate(calc(var(--fr)*-.2)) scale(1.1)}100%{opacity:1;transform:none}}
+
+.line.scene-oo-grid{position:fixed!important;inset:0!important;width:100vw!important;height:100dvh!important;min-height:100dvh!important;z-index:8;display:block!important;pointer-events:none;background:#0d0b0a;overflow:hidden}
+.oo-grid{position:absolute;inset:4vh 3vw 15vh;display:grid;grid-template-columns:repeat(5,1fr);grid-auto-rows:1fr;align-items:center;justify-items:center;gap:0}
+.oo-cell{font-weight:950;font-size:clamp(32px,10vw,82px);letter-spacing:-.07em;line-height:.8;opacity:0;will-change:transform;animation:ooFlood .55s cubic-bezier(.12,1.25,.2,1) both;animation-delay:calc(var(--oo-i)*35ms);text-shadow:0 0 25px currentColor}
+.oo-red{color:#ff453a}.oo-amber{color:#ffd60a}.oo-green{color:#30d158}
+@keyframes ooFlood{0%{opacity:0;transform:translateY(80px) scale(.3) rotate(-12deg)}65%{opacity:1;transform:translateY(-5px) scale(1.08) rotate(3deg)}100%{opacity:.9;transform:none}}
+.line.scene-oo-grid.active{animation:none}
+
+.line.scene-clock .clock-lyric .oras-word{font-size:1.48em;font-weight:950;letter-spacing:-.045em;color:var(--accent);text-shadow:0 0 25px #ffb38a55}
+.line.scene-clock .clock-lyric .word{will-change:transform}
+.line.scene-clock .clock-face{animation:clockPulse 2.2s ease-in-out infinite alternate}
+@keyframes clockPulse{from{transform:scale(.985);opacity:.7}to{transform:scale(1.015);opacity:1}}
+
 @media(max-width:600px){
   #top{top:3vh;left:5vw;right:5vw}
   .counter{font-size:9px}
@@ -473,6 +522,7 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 @keyframes clockLyricIn{0%{opacity:0;transform:translateY(20px) scale(.65) rotate(-4deg)}65%{opacity:1;transform:translateY(-5px) scale(1.06) rotate(1deg)}100%{opacity:1;transform:none}}
 .clock-face .clock-number:nth-child(12n+1){color:var(--accent)}
 
+
 @media(max-width:600px){
   .line.motion{width:88vw;min-height:44vh;gap:.04em .10em}
   .line.scene-orbit{width:88vw;height:44vh}
@@ -581,7 +631,7 @@ function buildWords(text){
       if(m){
         const aCount=m[2].length;
         const trail=Array.from({length:aCount},(_,j)=>`<span class="trail-a ${j>0?'follow':''}" style="--a-i:${j}">a</span>`).join('');
-        const html=`<span class="word long-word stretch" data-word-index="${wordIndex}" style="--i:${wordIndex};--tilt:0deg"><span class="kita">kita</span>${trail}</span>`;
+        const html=`<span class="word long-word stretch" data-word-index="${wordIndex}" data-word="kita" style="--i:${wordIndex};--tilt:0deg"><span class="kita">kita</span>${trail}</span>`;
         wordIndex++;
         return html;
       }
@@ -590,14 +640,24 @@ function buildWords(text){
     const base=isQuestionHindi?'hindi':raw;
     const clean=cleanWord(base);
     const accent=accentWords.has(clean);
+    const echoTarget=(clean==='banat'||clean==='na'||clean==="'to");
+    const isPusoMo=(clean==='puso'||clean==='mo');
+    const isGasgas=(clean==='gasgas');
+    const isLinyahan=(clean==='linyahan');
+    const isOras=(clean==='oras');
     const tilt=[-2,1,-1,2,0][wordIndex%5];
     const classes=['word'];
     if(accent)classes.push('accent');
     if(isQuestionHindi)classes.push('deny');
+    if(echoTarget)classes.push('echo-word');
+    if(isPusoMo)classes.push('puso-mo');
+    if(isGasgas)classes.push('gasgas');
+    if(isLinyahan)classes.push('linyahan-word');
+    if(isOras)classes.push('oras-word');
     const flyX=((wordIndex%2?-1:1)*(80+((wordIndex*47)%180)))+'px';
     const flyY=((wordIndex%3-1)*(70+((wordIndex*31)%150)))+'px';
     const flyR=((wordIndex%2?-1:1)*(8+(wordIndex%5)*7))+'deg';
-    const html=`<span class="${classes.join(' ')}" data-word-index="${wordIndex}" style="--i:${wordIndex};--tilt:${tilt}deg;--fx:${flyX};--fy:${flyY};--fr:${flyR}">${base}</span>`;
+    const html=`<span class="${classes.join(' ')}" data-word-index="${wordIndex}" data-word="${clean}" data-text="${base.replace(/&/g,'&amp;').replace(/"/g,'&quot;')}" style="--i:${wordIndex};--tilt:${tilt}deg;--fx:${flyX};--fy:${flyY};--fr:${flyR}">${base}</span>`;
     wordIndex++;
     if(isQuestionHindi) return html+'<span class="question-mark" data-question-index="'+(wordIndex-1)+'">?</span>';
     return html;
@@ -607,9 +667,9 @@ function buildWords(text){
 function sceneFor(i){
   // Each lyric becomes a small motion-graphics scene.
   const scenes=[
-    'fly','slit','crawl','wind','zoom','squiggle','clock','flip',
-    'fly','question','crawl','slit','orbit','wind','rubber','chase',
-    'longa','fly','clock','crawl','flip','zoom','question'
+    'puso-wipe','scratch','type-heart','stretch','zoom','linyahan','clock','idle-move',
+    'erratic','oo-grid','crawl','slit','orbit','wind','rubber','chase',
+    'longa','fly','erratic','linyahan','clock','idle-move','question'
   ];
   return scenes[i]||'chase';
 }
@@ -654,6 +714,20 @@ function updateClock(t){
   if(hourH)hourH.style.transform=`translate(-50%,-100%) rotate(${hourDeg}deg)`;
 }
 
+function buildOoGrid(){
+  const rows=8, cols=5;
+  const colors=['red','amber','green'];
+  let html='<div class="oo-grid" aria-hidden="true">';
+  for(let r=0;r<rows;r++){
+    const c=colors[r%3];
+    for(let col=0;col<cols;col++){
+      const idx=r*cols+col;
+      html+=`<span class="oo-cell oo-${c}" style="--oo-i:${idx};--oo-r:${r}">Oo</span>`;
+    }
+  }
+  return html+'</div>';
+}
+
 function activate(i){
   if(i===current)return;
   const old=L.querySelector('.line.active');
@@ -670,7 +744,10 @@ function activate(i){
   const item=lines[i];
   const scene=sceneFor(i);
   const qClass=item.text==='Oo o hindi?'?' scene-question':'';
-  const body=scene==='clock'?buildClock(item.text):buildWords(item.text);
+  let body;
+  if(scene==='clock') body=buildClock(item.text);
+  else if(scene==='oo-grid') body=buildOoGrid();
+  else body=buildWords(item.text);
   L.innerHTML=`<div class="line motion scene-${scene} ${item.style}${qClass}" data-index="${i}">${body}</div>`;
   const el=L.firstElementChild;
   SEC.textContent=item.section;
@@ -724,6 +801,7 @@ function updateWords(t){
   if(!el||current<0)return;
   const item=lines[current];
   const words=[...el.querySelectorAll('.word')];
+  if(sceneFor(current)==='oo-grid') return;
   const cues=item.cues;
   let currentWord=-1;
 
@@ -752,6 +830,7 @@ function updateMotion(t){
   const item=lines[current];
   const scene=sceneFor(current);
   const words=[...el.querySelectorAll('.word')];
+  if(scene==='scratch') el.querySelectorAll('.echo-word').forEach(w=>w.classList.toggle('echo-on',t>=21&&t<23));
 
   if(scene==='orbit'){
     const n=words.length;
@@ -806,6 +885,79 @@ function updateMotion(t){
       const sy=s*(1-.08*Math.sin(t*2.3+i));
       w.style.transform=`scaleX(${sx}) scaleY(${sy}) rotate(${Math.sin(t*2+i)*1.5}deg)`;
     });
+  }
+  if(scene==='puso-wipe'){
+    words.forEach((w,i)=>{
+      if(!w.classList.contains('visible'))return;
+      if(w.classList.contains('puso-mo')){
+        const p=Math.max(0,Math.min(1,(t-(item.cues[i]||item.start))/.72));
+        const travel=Math.min(innerWidth*.62,430);
+        const x=(1-Math.pow(1-p,3))*travel-travel*.72;
+        const y=Math.sin(p*Math.PI)*-7;
+        w.style.transform=`translate3d(${x}px,${y}px,80px) rotate(${(1-p)*-10}deg) scale(${.9+.1*p})`;
+        w.style.zIndex='5';
+      }else{
+        const bob=Math.sin(t*1.6+i)*2;
+        w.style.transform=`translateY(${bob}px)`;
+      }
+    });
+  }
+  if(scene==='scratch'){
+    const gas=el.querySelector('.gasgas');
+    if(gas&&gas.classList.contains('visible')){
+      const q=Math.sin(t*18)+.5*Math.sin(t*31);
+      gas.style.transform=`translate(${q*.9}px,${Math.sin(t*23)*1.2}px) rotate(${q*.45}deg) scale(${1+.018*Math.sin(t*12)})`;
+    }
+  }
+  if(scene==='type-heart'){
+    words.forEach((w,i)=>{
+      if(!w.classList.contains('visible'))return;
+      const pulse=1+.035*Math.max(0,Math.sin((t-(item.cues[i]||item.start))*5.2));
+      w.style.transform=`scale(${pulse}) translateY(${Math.sin(t*2.5+i)*1.5}px)`;
+    });
+  }
+  if(scene==='linyahan'){
+    words.forEach((w,i)=>{
+      if(!w.classList.contains('visible'))return;
+      const amp=w.classList.contains('linyahan-word')?7:2.5;
+      const x=Math.sin(t*2.2+i*.7)*amp;
+      const y=Math.cos(t*2.7+i*.55)*amp*.55;
+      const r=Math.sin(t*1.8+i)*2.5;
+      w.style.transform=`translate(${x}px,${y}px) rotate(${r}deg) scale(${w.classList.contains('linyahan-word')?1.04:1})`;
+    });
+  }
+  if(scene==='idle-move'){
+    words.forEach((w,i)=>{
+      if(!w.classList.contains('visible'))return;
+      const x=Math.sin(t*1.7+i*.9)*3.5;
+      const y=Math.cos(t*2.1+i*.6)*3;
+      const r=Math.sin(t*1.35+i)*1.8;
+      w.style.transform=`translate(${x}px,${y}px) rotate(${r}deg)`;
+    });
+  }
+  if(scene==='erratic'){
+    words.forEach((w,i)=>{
+      if(!w.classList.contains('visible'))return;
+      const x=Math.sin(t*5.1+i*1.7)*5.5+Math.sin(t*11+i)*2;
+      const y=Math.cos(t*4.3+i*1.1)*4.5;
+      const r=Math.sin(t*6.2+i*2)*3.5;
+      w.style.transform=`translate(${x}px,${y}px) rotate(${r}deg) scale(${1+.025*Math.sin(t*7+i)})`;
+    });
+  }
+  if(scene==='oo-grid'){
+    const cells=[...el.querySelectorAll('.oo-cell')];
+    cells.forEach((cell,i)=>{
+      const wave=Math.sin(t*3.2+i*.55)*.045;
+      const y=Math.sin(t*2.1+i*.28)*3;
+      cell.style.transform=`translateY(${y}px) scale(${1+wave}) rotate(${Math.sin(t*1.7+i)*1.5}deg)`;
+    });
+  }
+  if(scene==='clock'){
+    const oras=el.querySelector('.oras-word');
+    if(oras){
+      const p=1+.055*Math.max(0,Math.sin(t*4.6));
+      oras.style.transform=`scale(${p})`;
+    }
   }
   if(scene==='question'){
     const oo=words[0];
