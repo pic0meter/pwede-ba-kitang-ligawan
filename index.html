@@ -114,6 +114,15 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .word.accent,.word.visible.accent{color:var(--accent)}
 
 
+#ooExplosion{position:absolute;inset:0;z-index:8;overflow:hidden;pointer-events:none}
+.oo-field{position:absolute;left:50%;top:50%;white-space:nowrap;font-weight:900;letter-spacing:-.08em;color:#f8f0e6;opacity:0;transform:translate(-50%,-50%) scale(.15) rotate(var(--r));animation:ooTakeover var(--life) cubic-bezier(.12,.8,.18,1) forwards;text-shadow:0 0 24px #ffb38a33}
+@keyframes ooTakeover{0%{opacity:0;transform:translate(-50%,-50%) scale(.15) rotate(var(--r))}12%{opacity:.92}48%{opacity:.82}78%{opacity:.88}100%{opacity:0;transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(var(--scale)) rotate(var(--r2))}}
+.oo-field.wipe{animation:ooWipe 1.15s cubic-bezier(.12,.75,.18,1) forwards}
+@keyframes ooWipe{0%{opacity:0;transform:translate(-50%,-50%) scale(.12)}18%{opacity:.95;transform:translate(-50%,-50%) scale(.8)}50%{opacity:.9;transform:translate(-50%,-50%) scale(2.2)}100%{opacity:0;transform:translate(-50%,-50%) scale(5)}}
+.oo-heart{position:absolute;width:var(--size);height:var(--size);left:50%;top:50%;background:currentColor;opacity:0;rotate:-45deg;border-radius:2px;animation:ooHeartBurst var(--life) cubic-bezier(.12,.75,.18,1) forwards}
+.oo-heart::before,.oo-heart::after{content:"";position:absolute;width:50%;height:50%;border-radius:50%;background:currentColor}.oo-heart::before{left:0;top:0}.oo-heart::after{right:0;top:0}
+@keyframes ooHeartBurst{0%{opacity:0;transform:translate(-50%,-50%) scale(.2)}10%{opacity:.95}100%{opacity:0;transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(1) rotate(var(--rot))}}
+
 /* PUSO heart burst — exists only while the PUSO cue is active */
 #heartField{
   position:absolute;
@@ -503,8 +512,16 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 @keyframes bumpIn{0%{opacity:0;transform:translate3d(var(--sx),var(--sy),-120px) rotate(var(--sr)) scale(.55)}70%{opacity:1;transform:translate3d(0,-7px,30px) rotate(calc(var(--sr)*-.25)) scale(1.1)}100%{opacity:1;transform:none}}
 @keyframes bumpLoop{0%,100%{transform:translate(0,0) rotate(0)}45%{transform:translate(var(--bx),var(--by)) rotate(var(--br))}60%{transform:translate(calc(var(--bx)*-.5),calc(var(--by)*-.5)) rotate(calc(var(--br)*-.5))}}
 
+/* stronger shivering for Gusto */
+.line.gusto-shiver .word.visible{animation:gustoShiverIn .45s cubic-bezier(.16,1.3,.28,1) both,gustoShiver .105s steps(2,end) .45s infinite}
+.line.gusto-shiver .word.current{animation:gustoShiverCurrent .45s cubic-bezier(.16,1.3,.28,1) both,gustoShiverStrong .085s steps(2,end) .45s infinite}
+@keyframes gustoShiverIn{0%{opacity:0;transform:translateY(22px) scale(.88)}70%{opacity:1;transform:translateY(-3px) scale(1.04)}100%{opacity:1;transform:none}}
+@keyframes gustoShiver{0%{transform:translate(-1px,0) rotate(-.7deg)}25%{transform:translate(1.5px,-.5px) rotate(.8deg)}50%{transform:translate(-1.5px,.6px) rotate(-.9deg)}75%{transform:translate(1px,-.4px) rotate(.7deg)}100%{transform:translate(-.5px,.2px) rotate(-.4deg)}}
+@keyframes gustoShiverCurrent{0%,100%{transform:translateY(-.055em) scale(1.06)}}
+@keyframes gustoShiverStrong{0%{transform:translate(-2px,-1px) rotate(-1.2deg) scale(1.06)}25%{transform:translate(2px,1px) rotate(1.3deg) scale(1.075)}50%{transform:translate(-2.5px,0) rotate(-1.5deg) scale(1.055)}75%{transform:translate(2px,-1px) rotate(1.1deg) scale(1.07)}100%{transform:translate(-1px,1px) rotate(-.8deg) scale(1.06)}}
+
 /* 3 — thinking words circle each other, but on a readable orbit */
-.line.scene-orbit{position:relative;width:min(760px,88vw);height:min(48vh,390px);display:block}
+.line.scene-orbit{position:relative;width:min(980px,94vw);height:min(52vh,440px);display:block}
 .line.scene-orbit .word{position:absolute;left:50%;top:50%;margin:0;transform-origin:center;white-space:nowrap}
 .line.scene-orbit .word.visible{animation:orbitIn .55s cubic-bezier(.15,1.3,.3,1) both}
 @keyframes orbitIn{0%{opacity:0;transform:translate(-50%,-50%) scale(.35)}100%{opacity:1;transform:translate(-50%,-50%) scale(1)}}
@@ -647,7 +664,7 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   .line.scene-heart-split .lyric-part{gap:.02em .09em}
   .heart-field{width:82vw;height:130px}
 
-  .line.scene-orbit{width:88vw;height:44vh}
+  .line.scene-orbit{width:94vw;height:48vh}
   .line.scene-orbit .word{font-size:clamp(23px,7.2vw,42px)}
   .line.scene-longa{font-size:clamp(34px,10vw,58px)}
 }
@@ -860,7 +877,7 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   <div class="ambient"><div class="orb o1"></div><div class="orb o2"></div></div>
   <div id="grain"></div>
   <div id="backgroundBanat" aria-hidden="true"></div>
-  <div id="heartField" aria-hidden="true"></div>
+  <div id="heartField" aria-hidden="true"></div><div id="ooExplosion" aria-hidden="true"></div>
   <div id="echoes"></div>
 
   <div id="top">
@@ -913,7 +930,7 @@ const accentWords=new Set(['puso','mo','yo',"'oo'",'ligawan','oras','hindi','yan
 const lines=[
   {start:8.056,end:15.85,text:'Pwede ba akong tumambay dyan sa puso mo',style:'verse',section:'verse',cues:[8.056,9.261,9.589,10.186,10.555,11.305,11.680,12.430]},
   {start:15.90,end:23.55,text:"Parang masyado na yatang gasgas ang banat na 'to",style:'soft',section:'verse',cues:[15.90,16.28,16.55,16.72,18.28,18.78,19.10,19.35,19.42]},
-  {start:23.70,end:31.55,text:"Kailan kaya ako makakaisip ng linyang para sa 'yo",style:'verse',section:'verse',cues:[23.70,24.15,24.48,24.92,25.38,27.30,27.78,28.12,28.42]},
+  {start:23.70,end:31.55,text:"Kailan kaya ako makakaisip ng linyang para sa'yo?",style:'verse',section:'verse',cues:[23.70,24.15,24.48,24.92,25.38,27.30,27.78,28.12,28.42]},
   {start:31.70,end:39.25,text:"Gusto ko lang naman ay makamit ang matamis mong 'oo'",style:'soft',section:'verse',cues:[31.70,32.18,32.48,32.72,32.88,33.15,34.85,35.48,35.92,36.42]},
   {start:39.65,end:46.75,text:'Pwede ba kitang ligawan?',style:'chorus',section:'chorus',cues:[39.65,40.25,40.75,42.65]},
   {start:46.80,end:53.65,text:"Kahit 'di maganda ang mga linyahan",style:'soft',section:'chorus',cues:[46.82,47.12,48.32,48.82,49.25,49.50]},
@@ -1214,8 +1231,8 @@ function updateMotion(t){
 
   if(scene==='orbit'){
     const n=words.length;
-    const rx=Math.min(220,125+n*9);
-    const ry=Math.min(145,78+n*5);
+    const rx=Math.min(310,185+n*13);
+    const ry=Math.min(205,112+n*7);
     words.forEach((w,i)=>{
       const base=(-Math.PI/2)+(i/n)*Math.PI*2;
       const a=base+t*.72;
@@ -1328,7 +1345,7 @@ function updateSpecialVisuals(t){
   if(!firstWasActive) window._pusoHeartBurst=false;
 
   // The requested echo occurs during 00:21–00:23 (21.0–23.0s).
-  const inBanatEcho=(t>=21 && t<23);
+  const inBanatEcho=(t>=21 && t<23.5);
   if(inBanatEcho && !window._banatEchoStarted){
     window._banatEchoStarted=true;
     spawnBanatEcho();
@@ -1338,6 +1355,12 @@ function updateSpecialVisuals(t){
   if(!inBanatEcho) window._banatEchoStarted=false;
 }
 
+
+let ooTakeoverActive=false;
+let ooHeartBurstActive=false;
+function clearOoTakeover(){const field=document.querySelector('#ooExplosion');if(field)field.replaceChildren();ooTakeoverActive=false;ooHeartBurstActive=false}
+function spawnOoTakeover(){const field=document.querySelector('#ooExplosion');if(!field||ooTakeoverActive)return;ooTakeoverActive=true;const fonts=['Arial Black, Impact, sans-serif','Georgia, serif','Times New Roman, serif','Courier New, monospace','Trebuchet MS, sans-serif','Verdana, sans-serif','Palatino Linotype, serif','Impact, sans-serif'];for(let i=0;i<30;i++){const e=document.createElement('div');e.className='oo-field';e.textContent='Oo';e.style.fontFamily=fonts[Math.floor(Math.random()*fonts.length)];e.style.fontSize=(26+Math.random()*150)+'px';e.style.setProperty('--r',(-16+Math.random()*32)+'deg');e.style.setProperty('--r2',(-30+Math.random()*60)+'deg');e.style.setProperty('--dx',(-55+Math.random()*110)+'vw');e.style.setProperty('--dy',(-55+Math.random()*110)+'vh');e.style.setProperty('--scale',(0.8+Math.random()*2.4).toFixed(2));e.style.setProperty('--life',(1.05+Math.random()*.55)+'s');const a=(i/30)*Math.PI*2;const radius=20+Math.random()*42;e.style.left=(50+Math.cos(a)*radius)+'%';e.style.top=(50+Math.sin(a)*radius)+'%';field.appendChild(e)}const wipe=document.createElement('div');wipe.className='oo-field wipe';wipe.textContent='Oo';wipe.style.fontFamily=fonts[Math.floor(Math.random()*fonts.length)];wipe.style.fontSize='clamp(90px,28vw,420px)';wipe.style.setProperty('--r','0deg');wipe.style.setProperty('--life','1.15s');field.appendChild(wipe)}
+function explodeOoIntoHearts(){const field=document.querySelector('#ooExplosion');if(!field||ooHeartBurstActive)return;ooHeartBurstActive=true;for(let i=0;i<34;i++){const h=document.createElement('span');h.className='oo-heart';const a=(Math.PI*2/34)*i+(Math.random()-.5)*.4;const distance=100+Math.random()*330;h.style.setProperty('--size',(7+Math.random()*25)+'px');h.style.setProperty('--dx',(Math.cos(a)*distance)+'px');h.style.setProperty('--dy',(Math.sin(a)*distance)+'px');h.style.setProperty('--rot',(-35+Math.random()*70)+'deg');h.style.setProperty('--life',(0.65+Math.random()*.65)+'s');h.style.color=`hsl(${5+Math.random()*40},${65+Math.random()*25}%,${65+Math.random()*20}%)`;field.appendChild(h)}setTimeout(clearOoTakeover,1450)}
 
 let pusoBurstActive=false;
 let banatEchoActive=false;
@@ -1439,9 +1462,12 @@ function render(){
     clearPusoHearts();
   }
 
-  // "banat na 'to" exists ONLY from 00:21.000 through 00:22.999.
+
+  if(t>=36.42 && t<39.35){if(!ooTakeoverActive)spawnOoTakeover();if(t>=38.65&&!ooHeartBurstActive)explodeOoIntoHearts()}else if(ooTakeoverActive||ooHeartBurstActive){clearOoTakeover()}
+
+  // "banat na 'to" exists ONLY from 00:21.000 through 00:23.499.
   // Clear first so seeking backward/forward can never leave stale echoes.
-  if(t>=21 && t<23){
+  if(t>=21 && t<23.5){
     if(!banatEchoActive) spawnBanatEchoes();
   }else{
     clearBanatEchoes();
