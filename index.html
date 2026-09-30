@@ -121,7 +121,7 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   inset:0;
   z-index:6;
   pointer-events:none;
-  overflow:hidden;
+  overflow:visible;
   opacity:0;
 }
 #questionChaos.ready{opacity:1}
@@ -1503,31 +1503,31 @@ function activate(i){
     field.setAttribute('aria-hidden','true');
 
     const qStyles=[
-      /* Left edge — deliberately clipped */
-      ['-11%','16%','clamp(78px,20vw,190px)','900','#f8f0e6','.72','-18deg','1.00','.02s'],
-      ['-7%','38%','clamp(54px,14vw,135px)','300','#ffb38a','.70','14deg','.92','-.11s'],
-      ['-14%','61%','clamp(92px,23vw,220px)','800','#f8f0e6','.62','-9deg','1.08','-.22s'],
-      ['-5%','79%','clamp(42px,11vw,105px)','500','#ffb38a','.68','22deg','.88','-.31s'],
-      ['-13%','91%','clamp(68px,17vw,165px)','900','#f8f0e6','.55','-27deg','1.04','-.43s'],
+      /* GIANT edge peeks */
+      ['-8%','17%','clamp(110px,29vw,280px)','900','#f8f0e6','.72','-17deg','1.00','.02s'],
+      ['108%','28%','clamp(125px,32vw,310px)','900','#ffb38a','.70','14deg','1.00','-.10s'],
+      ['-10%','76%','clamp(100px,27vw,260px)','800','#ffb38a','.58','-12deg','1.06','-.22s'],
+      ['109%','79%','clamp(115px,30vw,290px)','900','#f8f0e6','.62','19deg','1.02','-.34s'],
 
-      /* Just inside the left edge */
-      ['4%','23%','clamp(38px,10vw,95px)','600','#ffb38a','.54','31deg','.9','-.53s'],
-      ['8%','52%','clamp(72px,18vw,175px)','800','#f8f0e6','.48','-16deg','1.03','-.64s'],
-      ['10%','86%','clamp(30px,8vw,80px)','400','#ffb38a','.50','12deg','.84','-.75s'],
+      /* Bigger than "ligawan?" */
+      ['4%','31%','clamp(82px,21vw,205px)','800','#f8f0e6','.55','-23deg','.96','-.45s'],
+      ['96%','45%','clamp(92px,24vw,230px)','700','#ffb38a','.56','16deg','1.04','-.56s'],
+      ['6%','88%','clamp(74px,19vw,185px)','500','#ffb38a','.52','27deg','.9','-.67s'],
+      ['94%','89%','clamp(80px,21vw,200px)','800','#f8f0e6','.49','-11deg','1.08','-.78s'],
 
-      /* Right edge — deliberately clipped */
-      ['111%','12%','clamp(64px,17vw,165px)','900','#ffb38a','.70','17deg','1.06','-.08s'],
-      ['106%','30%','clamp(96px,24vw,230px)','900','#f8f0e6','.75','-12deg','1.00','-.18s'],
-      ['114%','49%','clamp(46px,12vw,115px)','400','#ffb38a','.62','28deg','.88','-.29s'],
-      ['108%','68%','clamp(76px,19vw,185px)','700','#f8f0e6','.57','-21deg','1.08','-.40s'],
-      ['116%','87%','clamp(58px,15vw,145px)','900','#ffb38a','.64','9deg','.94','-.51s'],
+      /* Medium marks filling the negative space */
+      ['-2%','8%','clamp(48px,13vw,125px)','500','#ffb38a','.50','-31deg','.9','-.16s'],
+      ['11%','52%','clamp(56px,14vw,140px)','300','#f8f0e6','.47','13deg','1.08','-.28s'],
+      ['15%','68%','clamp(40px,10vw,100px)','700','#ffb38a','.46','-18deg','.86','-.39s'],
+      ['88%','16%','clamp(44px,11vw,110px)','600','#ffb38a','.51','24deg','.94','-.50s'],
+      ['86%','59%','clamp(52px,13vw,128px)','400','#f8f0e6','.44','-27deg','1.10','-.61s'],
+      ['102%','66%','clamp(42px,11vw,105px)','700','#ffb38a','.48','8deg','.9','-.72s'],
 
-      /* More scattered marks, also touching/clipping the edges */
-      ['-2%','9%','clamp(30px,8vw,78px)','500','#f8f0e6','.42','-33deg','.8','-.61s'],
-      ['1%','71%','clamp(55px,14vw,135px)','300','#ffb38a','.45','19deg','1.1','-.72s'],
-      ['101%','5%','clamp(28px,7vw,70px)','600','#ffb38a','.46','-26deg','.84','-.82s'],
-      ['100%','58%','clamp(38px,10vw,96px)','500','#f8f0e6','.43','15deg','.92','-.92s'],
-      ['104%','78%','clamp(25px,7vw,68px)','800','#ffb38a','.48','-8deg','1.12','-1.02s']
+      /* Tiny/medium accents so the giants don't feel repetitive */
+      ['-3%','42%','clamp(28px,7vw,70px)','500','#f8f0e6','.42','18deg','.85','-.83s'],
+      ['103%','8%','clamp(30px,8vw,76px)','600','#ffb38a','.43','-22deg','1.05','-.94s'],
+      ['2%','96%','clamp(35px,9vw,88px)','800','#f8f0e6','.40','29deg','.92','-1.05s'],
+      ['105%','96%','clamp(38px,10vw,95px)','500','#ffb38a','.44','-15deg','1.02','-1.16s']
     ];
 
     qStyles.forEach((v)=>{
