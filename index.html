@@ -1053,6 +1053,54 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   .scene-laser-heart .laser-heart-path{stroke-width:2.6}
 }
 
+
+/* --- RED STRING OF FATE: one continuous thread through the whole chorus --- */
+#redString{
+  position:absolute;
+  inset:0;
+  z-index:5;
+  pointer-events:none;
+  overflow:hidden;
+  opacity:0;
+  transition:opacity .45s ease;
+}
+#redString.show{opacity:1}
+.red-string-svg{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  overflow:visible;
+}
+.red-string-glow,
+.red-string-path{
+  fill:none;
+  stroke:#ff4054;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  vector-effect:non-scaling-stroke;
+}
+.red-string-glow{
+  stroke-width:7;
+  opacity:.20;
+  filter:blur(4px);
+}
+.red-string-path{
+  stroke-width:2.4;
+  opacity:.92;
+  filter:drop-shadow(0 0 3px #ff5264) drop-shadow(0 0 8px #ff405488);
+}
+.red-string-tip{
+  fill:#ff7582;
+  opacity:0;
+  filter:drop-shadow(0 0 4px #fff) drop-shadow(0 0 9px #ff4054);
+}
+@media(max-width:600px){
+  .red-string-path{stroke-width:2.15}
+  .red-string-glow{stroke-width:6}
+  .red-string-tip{r:4}
+}
+
 /* Kailan: isolated center -> fly-out scene. */
 .line.scene-kailan-flight{position:relative;display:block;width:min(92vw,900px);min-height:48vh;overflow:visible}
 .line.scene-kailan-flight .word{position:absolute;left:50%;top:50%;margin:0;white-space:nowrap;transform:translate3d(-50%,-50%,0);will-change:transform,opacity;animation:none!important}
@@ -1065,6 +1113,13 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   <div id="grain"></div>
   <div id="backgroundBanat" aria-hidden="true"></div>
   <div id="heartField" aria-hidden="true"></div><div id="ooExplosion" aria-hidden="true"></div>
+  <div id="redString" aria-hidden="true">
+    <svg class="red-string-svg" viewBox="0 0 1000 620" preserveAspectRatio="none">
+      <path class="red-string-glow"></path>
+      <path class="red-string-path"></path>
+      <circle class="red-string-tip" r="4.5"></circle>
+    </svg>
+  </div>
   <div id="echoes"></div>
 
   <div id="top">
@@ -1105,6 +1160,10 @@ const TRACK=document.querySelector('#track');
 const SCRUB=document.querySelector('#scrubLabel');
 const O1=document.querySelector('.orb.o1');
 const O2=document.querySelector('.orb.o2');
+const RED_STRING=document.querySelector('#redString');
+const RED_STRING_PATH=RED_STRING?.querySelector('.red-string-path');
+const RED_STRING_GLOW=RED_STRING?.querySelector('.red-string-glow');
+const RED_STRING_TIP=RED_STRING?.querySelector('.red-string-tip');
 
 const accentWords=new Set(['puso','mo','yo',"'oo'",'ligawan','oras','hindi','yan','aatras','kita']);
 
@@ -1310,6 +1369,8 @@ function buildLaserHeart(){
   svg.appendChild(path);
   return svg;
 }
+
+initRedString();
 
 function activate(i){
   if(i===current)return;
@@ -1613,7 +1674,124 @@ function echo(){
   setTimeout(()=>e.remove(),1200);
 }
 
+
+/*
+  Red String of Fate
+  ------------------
+  One SVG path spans the entire first chorus:
+    39.65s  ->  71.00s
+  It starts beside the first "Pwede ba kitang ligawan?",
+  then loops, curls and crosses the changing lyric layout without resetting.
+*/
+const RED_STRING_START = 39.65;
+const RED_STRING_END   = 71.00;
+
+function buildRedStringPath(){
+  // Designed in a 1000 x 620 coordinate space so it scales cleanly
+  // on desktop and mobile. The route deliberately uses broad Bézier
+  // loops rather than geometric circles, giving it a hand-drawn/string feel.
+  return [
+    "M 120 350",
+    // enter from the first Pwede and curl around it
+    "C 105 330 112 285 150 265",
+    "C 188 245 245 258 270 292",
+    "C 300 334 267 382 218 388",
+    // big left loop
+    "C 158 396 105 350 126 292",
+    "C 148 230 226 202 302 235",
+    // climb toward the upper middle
+    "C 370 265 342 335 300 370",
+    "C 255 408 275 465 344 474",
+    // playful figure-eight around center
+    "C 425 486 472 420 432 368",
+    "C 392 316 326 305 350 240",
+    "C 378 166 478 155 536 211",
+    "C 596 269 562 344 500 368",
+    // cross and loop right
+    "C 438 392 424 455 488 486",
+    "C 553 518 658 493 700 431",
+    "C 743 368 711 298 650 282",
+    "C 582 264 535 310 559 366",
+    // long sweeping turn
+    "C 586 430 668 456 746 424",
+    "C 827 391 865 316 821 253",
+    "C 780 195 686 184 628 224",
+    // small upper-right loop
+    "C 575 261 597 320 650 330",
+    "C 709 341 755 302 740 256",
+    "C 726 214 674 197 636 218",
+    // descend in a loose S
+    "C 590 243 579 304 621 350",
+    "C 666 399 752 392 806 352",
+    "C 860 312 902 334 893 389",
+    // final flourish toward the last "Oo o hindi?"
+    "C 884 442 822 481 758 475",
+    "C 690 469 650 419 681 383",
+    "C 711 348 776 357 794 399",
+    "C 814 444 776 505 712 528",
+    "C 626 559 535 526 492 482",
+    "C 455 444 438 398 466 365",
+    "C 493 333 548 340 568 375",
+    // final little knot / loop
+    "C 592 417 563 461 518 460",
+    "C 480 459 458 429 470 402",
+    "C 481 377 514 370 535 389",
+    "C 558 410 551 444 526 454"
+  ].join(" ");
+}
+
+const RED_STRING_D = buildRedStringPath();
+let redStringLength = 0;
+
+function initRedString(){
+  if(!RED_STRING_PATH || !RED_STRING_GLOW)return;
+  RED_STRING_PATH.setAttribute("d",RED_STRING_D);
+  RED_STRING_GLOW.setAttribute("d",RED_STRING_D);
+  redStringLength=RED_STRING_PATH.getTotalLength();
+  RED_STRING_PATH.style.strokeDasharray=redStringLength+" "+redStringLength;
+  RED_STRING_GLOW.style.strokeDasharray=redStringLength+" "+redStringLength;
+  RED_STRING_PATH.style.strokeDashoffset=redStringLength;
+  RED_STRING_GLOW.style.strokeDashoffset=redStringLength;
+  RED_STRING_TIP?.setAttribute("cx","120");
+  RED_STRING_TIP?.setAttribute("cy","350");
+}
+
+function updateRedString(t){
+  if(!RED_STRING_PATH || !redStringLength)return;
+
+  const active = t >= RED_STRING_START && t < RED_STRING_END;
+  RED_STRING.classList.toggle("show",active);
+
+  if(!active){
+    RED_STRING_PATH.style.strokeDashoffset=redStringLength;
+    RED_STRING_GLOW.style.strokeDashoffset=redStringLength;
+    if(RED_STRING_TIP)RED_STRING_TIP.style.opacity="0";
+    return;
+  }
+
+  const p=Math.max(0,Math.min(1,(t-RED_STRING_START)/(RED_STRING_END-RED_STRING_START)));
+
+  // Smooth acceleration/deceleration, so the thread feels pulled rather
+  // than mechanically revealed.
+  const eased=p*p*(3-2*p);
+  const drawn=redStringLength*eased;
+  const offset=redStringLength-drawn;
+
+  RED_STRING_PATH.style.strokeDashoffset=offset;
+  RED_STRING_GLOW.style.strokeDashoffset=offset;
+
+  if(RED_STRING_TIP){
+    try{
+      const pt=RED_STRING_PATH.getPointAtLength(Math.min(drawn,redStringLength));
+      RED_STRING_TIP.setAttribute("cx",pt.x);
+      RED_STRING_TIP.setAttribute("cy",pt.y);
+      RED_STRING_TIP.style.opacity=p<.995?"1":"0";
+    }catch(e){}
+  }
+}
+
 function updateSpecialVisuals(t){
+  updateRedString(t);
   updateLaserHeart(t);
 function updateLaserHeart(t){
   const el=L.querySelector('.line.active');
