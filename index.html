@@ -538,104 +538,152 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   100%{transform:translate(0,0) rotate(-1deg) scale(1.03)}
 }
 
-/* SECOND CHORUS LINE — oversized "Linyahan" typography floods the background. */
-.line.scene-squiggle.linyahan-stack{
-  position:fixed;
-  inset:0;
-  width:100vw;
-  height:100vh;
-  max-width:none;
-  overflow:visible;
-  display:block;
-  z-index:1;
-  pointer-events:none;
-}
-.line.scene-squiggle.linyahan-stack > .word{
-  display:none !important;
-}
-
-/* "Kahit 'di maganda ang mga" exits as its own motion beat before the
-   giant Linyahan background takes over. */
-.line.linyahan-stack .pre-linyahan-word{
-  transition:none;
-  will-change:transform,opacity,filter;
-}
-.line.linyahan-stack.linyahan-pre-exit .pre-linyahan-word{
-  animation:linyahanPreExit .62s cubic-bezier(.65,0,.9,.2) both;
-  animation-delay:calc(var(--pre-i) * .045s);
-}
-@keyframes linyahanPreExit{
-  0%{
-    opacity:1;
-    transform:translate3d(0,0,0) rotate(0deg) scale(1);
-    filter:blur(0);
-  }
-  45%{
-    opacity:.82;
-    transform:translate3d(calc(var(--pre-drift) * .45),-10px,0)
-               rotate(calc(var(--pre-rot) * .45)) scale(1.03);
-    filter:blur(0);
-  }
-  100%{
-    opacity:0;
-    transform:translate3d(var(--pre-drift),-54px,0)
-               rotate(var(--pre-rot)) scale(.88);
-    filter:blur(3px);
-  }
-}
-.linyahan-bg{
-
-  position:fixed;
-  inset:-14vh -18vw;
-  z-index:-1;
-  overflow:hidden;
-  pointer-events:none;
+/* FIRST "Kahit 'di maganda ang mga linyahan" treatment.
+   The six words are a deliberate vertical stack. They do not fly.
+   Each word has a restrained physical shake; "linyahan" gets the
+   directional dashed-line hit, then the whole stack folds away into
+   the next lyric. */
+.line.first-linyahan-vertical{
+  width:min(92vw,560px);
+  height:min(58vh,520px);
+  min-height:0;
   display:flex;
   flex-direction:column;
-  justify-content:flex-start;
-  gap:clamp(2px,.7vh,14px);
-  opacity:0;
-  transition:opacity .48s ease;
+  flex-wrap:nowrap;
+  align-items:center;
+  justify-content:center;
+  align-content:center;
+  gap:0;
+  overflow:visible;
+  z-index:5;
 }
-.linyahan-bg.is-revealed{
-  opacity:.36;
-}
-.linyahan-bg-row{
-  flex:0 0 auto;
-  width:max-content;
-  min-width:136vw;
-  margin-left:-18vw;
+.line.first-linyahan-vertical .word{
+  display:block;
+  margin:0;
+  line-height:.92;
   white-space:nowrap;
-  font-family:inherit;
-  font-size:clamp(100px,18vw,250px);
-  line-height:.78;
-  font-weight:900;
-  letter-spacing:-.055em;
-  color:var(--ink);
-  text-align:center;
-  opacity:.12;
   will-change:transform,opacity;
-  transform:translate3d(var(--row-x),0,0);
+  animation:none!important;
 }
-.linyahan-bg-row:nth-child(odd){--row-x:-3vw}
-.linyahan-bg-row:nth-child(even){--row-x:2vw}
-.linyahan-bg-row.is-entering{
-  animation:linyahanBgIn .5s cubic-bezier(.12,1.08,.25,1) both;
-  animation-delay:var(--row-delay,0s);
+.line.first-linyahan-vertical .word.visible{
+  animation:verticalWordIn .34s cubic-bezier(.16,1.1,.25,1) both!important;
 }
-.linyahan-bg-revealed .linyahan-bg-row{
-  animation-play-state:running;
+.line.first-linyahan-vertical .word.visible:not(.current){
+  animation:verticalWordShake .16s steps(2,end) .34s infinite!important;
 }
-@keyframes linyahanBgIn{
+.line.first-linyahan-vertical .word.current{
+  color:var(--accent);
+  text-shadow:0 0 28px #ffb38a66;
+  animation:verticalWordShakeStrong .10s steps(2,end) infinite!important;
+}
+@keyframes verticalWordIn{
+  0%{opacity:0;transform:translateY(16px) scale(.9)}
+  65%{opacity:1;transform:translateY(-2px) scale(1.02)}
+  100%{opacity:1;transform:none}
+}
+@keyframes verticalWordShake{
+  0%{transform:translate(-1.5px,0) rotate(-.35deg)}
+  25%{transform:translate(1.5px,-.5px) rotate(.4deg)}
+  50%{transform:translate(-1px,.5px) rotate(-.45deg)}
+  75%{transform:translate(1px,0) rotate(.35deg)}
+  100%{transform:translate(0,.2px) rotate(0)}
+}
+@keyframes verticalWordShakeStrong{
+  0%{transform:translate(-2px,0) rotate(-.8deg) scale(1.04)}
+  25%{transform:translate(2px,-1px) rotate(.9deg) scale(1.07)}
+  50%{transform:translate(-2px,1px) rotate(-1deg) scale(1.045)}
+  75%{transform:translate(2px,0) rotate(.8deg) scale(1.07)}
+  100%{transform:translate(0,0) rotate(0) scale(1.055)}
+}
+
+/* Dashed "slashes" cross the entire screen from different directions.
+   The trail follows the dash front instead of appearing as a static X. */
+.linyahan-dash-field{
+  position:absolute;
+  inset:-20vh -20vw;
+  z-index:12;
+  pointer-events:none;
+  overflow:visible;
+  opacity:0;
+}
+.first-linyahan-vertical.linyahan-hit .linyahan-dash-field{
+  opacity:1;
+}
+.linyahan-dash{
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:145vw;
+  height:0;
+  border-top:2px dashed #ffb38a;
+  filter:drop-shadow(0 0 5px #ffb38a99);
+  opacity:0;
+  transform-origin:center;
+  will-change:transform,opacity;
+}
+.first-linyahan-vertical.linyahan-hit .linyahan-dash{
+  animation:linyahanDashSweep var(--dash-life) cubic-bezier(.18,.75,.18,1) var(--dash-delay) both;
+}
+.linyahan-dash::after{
+  content:"";
+  position:absolute;
+  left:0;
+  top:-3px;
+  width:34%;
+  height:5px;
+  background:linear-gradient(90deg,transparent,#fff2e8,#ffb38a,transparent);
+  filter:blur(1px);
+  opacity:.8;
+  transform:translateX(-100%);
+}
+.first-linyahan-vertical.linyahan-hit .linyahan-dash::after{
+  animation:dashTrail var(--dash-life) cubic-bezier(.18,.75,.18,1) var(--dash-delay) both;
+}
+@keyframes linyahanDashSweep{
   0%{
     opacity:0;
-    transform:translate3d(var(--row-x),24vh,0) scale(.82);
+    transform:translate3d(var(--dash-x),var(--dash-y),0) rotate(var(--dash-r)) scaleX(.72);
+  }
+  16%{opacity:.95}
+  42%{
+    opacity:.9;
+    transform:translate3d(0,0,0) rotate(var(--dash-r)) scaleX(1);
+  }
+  70%{
+    opacity:.58;
+    transform:translate3d(calc(var(--dash-x)*-.34),calc(var(--dash-y)*-.34),0) rotate(var(--dash-r)) scaleX(1.08);
   }
   100%{
-    opacity:.95;
-    transform:translate3d(var(--row-x),0,0) scale(1);
+    opacity:0;
+    transform:translate3d(calc(var(--dash-x)*-.9),calc(var(--dash-y)*-.9),0) rotate(var(--dash-r)) scaleX(1.22);
   }
 }
+@keyframes dashTrail{
+  0%{opacity:0;transform:translateX(-100%)}
+  18%{opacity:.9}
+  55%{opacity:.62;transform:translateX(95%)}
+  100%{opacity:0;transform:translateX(330%)}
+}
+
+/* After the final dash passes, the stack gets pulled upward into the
+   following line rather than simply blinking away. */
+.line.first-linyahan-vertical.out{
+  animation:linyahanStackExit .58s cubic-bezier(.18,.8,.2,1) forwards!important;
+}
+@keyframes linyahanStackExit{
+  0%{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}
+  45%{opacity:1;transform:translateY(-4px) scale(1.015);filter:blur(0)}
+  100%{opacity:0;transform:translateY(-48px) scale(.91);filter:blur(7px)}
+}
+.first-linyahan-vertical.out .linyahan-dash-field{
+  opacity:1;
+  animation:dashFieldExit .55s ease-out forwards;
+}
+@keyframes dashFieldExit{
+  0%{opacity:.55;transform:scale(1)}
+  100%{opacity:0;transform:scale(1.08)}
+}
+
 /* THIRD CHORUS LINE — unified cursive treatment; no mismatched word sizing. */
 .line.scene-clock.cursive-clock-lyric .clock-lyric{
   font-family:"Snell Roundhand","Segoe Script","Bradley Hand","Brush Script MT",cursive;
@@ -785,6 +833,20 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   .o1{width:70vw;height:70vw}
   .o2{width:55vw;height:55vw}
 }
+@media(max-width:600px){
+  .line.first-linyahan-vertical{
+    width:86vw;
+    height:54vh;
+    gap:0;
+  }
+  .line.first-linyahan-vertical .word{
+    font-size:clamp(27px,8.2vw,42px);
+  }
+  .linyahan-dash{
+    width:185vw;
+  }
+}
+
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
 }
@@ -1627,10 +1689,6 @@ function activate(i){
   if(old){
     old.classList.remove('active');
     old.classList.add('out');
-    const oldBg=old.querySelector('.linyahan-bg');
-    if(oldBg){
-      oldBg.style.opacity='0';
-    }
     setTimeout(()=>old.remove(),700);
   }
   current=i;
@@ -1642,10 +1700,7 @@ function activate(i){
   const item=lines[i];
   const scene=(i===0)?'heart-split':sceneFor(i);
   const qClass=item.text==='Oo o hindi?'?' scene-question':'';
-  const foregroundText=(i===5 || i===19)
-    ? item.text.replace(/\s+linyahan\s*$/i,'')
-    : item.text;
-  const body=scene==='clock'?buildClock(item.text):scene==='heart-split'?buildHeartSplitLine(item.text):buildWords(foregroundText);
+  const body=scene==='clock'?buildClock(item.text):scene==='heart-split'?buildHeartSplitLine(item.text):buildWords(item.text);
   if(scene==='heart-split'){
     const el=document.createElement('div');
     el.className=`line motion scene-heart-split ${item.style}${qClass}`;
@@ -1741,52 +1796,39 @@ function activate(i){
       laserHeart.dataset.pathLength=String(length);
     }
   }
-  if(i===5) el.classList.add('question-next');
+  if(i===5){
+    el.classList.add('first-linyahan-vertical');
+    const dashField=document.createElement('div');
+    dashField.className='linyahan-dash-field';
+    dashField.setAttribute('aria-hidden','true');
+
+    const dashStyles=[
+      ['-86vw','-44vh','-18deg','.00s','1.05s'],
+      ['92vw','-18vh','17deg','.10s','1.12s'],
+      ['-78vw','14vh','-11deg','.20s','.98s'],
+      ['86vw','34vh','13deg','.31s','1.08s'],
+      ['-72vw','-2vh','-4deg','.43s','.92s'],
+      ['78vw','-36vh','7deg','.55s','1.04s'],
+      ['-88vw','42vh','-21deg','.67s','1.00s']
+    ];
+    dashStyles.forEach(([x,y,r,delay,life])=>{
+      const d=document.createElement('span');
+      d.className='linyahan-dash';
+      d.style.setProperty('--dash-x',x);
+      d.style.setProperty('--dash-y',y);
+      d.style.setProperty('--dash-r',r);
+      d.style.setProperty('--dash-delay',delay);
+      d.style.setProperty('--dash-life',life);
+      dashField.appendChild(d);
+    });
+    el.appendChild(dashField);
+  }
   if(i===1){
     el.classList.add('banat-scratch');
     // The complete phrase "banat na 'to" gets the animated scratch treatment.
     el.querySelectorAll('.word[data-word-index="6"], .word[data-word-index="7"], .word[data-word-index="8"]').forEach(w=>w.classList.add('scratch-word'));
   }
   if(i===3) el.classList.add('gusto-shiver');
-  if(i===5 || i===19){
-    el.classList.add('subtle-kinetic','linyahan-stack');
-
-    /*
-      The first five words are their own visual phrase:
-      "Kahit 'di maganda ang mga".
-      They remain on screen until the linyahan cue, then leave together
-      with a staggered upward/floating motion.
-    */
-    const preWords=[...el.querySelectorAll('.word')].slice(0,5);
-    preWords.forEach((w,n)=>{
-      w.classList.add('pre-linyahan-word');
-      w.style.setProperty('--pre-i',n);
-      w.style.setProperty('--pre-drift',((n%2===0?-1:1)*(24+n*9))+'px');
-      w.style.setProperty('--pre-rot',((n%2===0?-1:1)*(4+n*1.5))+'deg');
-    });
-
-    /*
-      Full-screen Linyahan is a separate visual beat. It starts hidden and
-      is revealed by updateWords() exactly at the linyahan cue.
-    */
-    const bg=document.createElement('div');
-    bg.className='linyahan-bg';
-    bg.setAttribute('aria-hidden','true');
-
-    const stackStart=(i===5) ? 49.50 : 113.15;
-    bg.dataset.stackStart=String(stackStart);
-    bg.style.opacity='0';
-
-    const rows=11;
-    for(let n=0;n<rows;n++){
-      const row=document.createElement('div');
-      row.className='linyahan-bg-row is-entering';
-      row.textContent='Linyahan';
-      row.style.setProperty('--row-delay',(n*.025)+'s');
-      bg.appendChild(row);
-    }
-    el.appendChild(bg);
-  }
   if(i===6) el.classList.add('cursive-clock-lyric');
   if(i===6) el.classList.add('clock-shake');
   if(i===7) el.classList.add('standup-exit');
@@ -1840,7 +1882,7 @@ function updateWords(t){
   const el=L.querySelector('.line.active');
   if(!el||current<0)return;
   const item=lines[current];
-  const words=[...el.querySelectorAll('.word:not([data-stack-index])')];
+  const words=[...el.querySelectorAll('.word')];
   const cues=item.cues;
   let currentWord=-1;
 
@@ -1851,37 +1893,17 @@ function updateWords(t){
     if(visible)currentWord=i;
   });
   words.forEach((w,i)=>w.classList.toggle('current',i===currentWord));
+
+  // The first chorus "linyahan" cue is index 5 / 49.50s.
+  // Resetting the class on every non-hit frame lets the dashed sweeps replay
+  // cleanly when the user scrubs back to the word.
+  if(current===5){
+    el.classList.toggle('linyahan-hit',currentWord===5);
+  }
+
   if(current===4){
     const lw=el.querySelector('.word.ligawan-chaos');
     if(lw && currentWord!==Number(lw.dataset.wordIndex)) lw.classList.remove('current');
-  }
-
-  const linyahanBg=el.querySelector('.linyahan-bg');
-  if(linyahanBg){
-    const stackStart=Number(linyahanBg.dataset.stackStart);
-    const stackVisible=t>=stackStart && t<item.end;
-    linyahanBg.classList.toggle('is-revealed',stackVisible);
-  }
-
-  /*
-    At the exact "linyahan" cue, remove the foreground phrase and reveal
-    the giant background stack as a separate visual scene.
-  */
-  if(current===5 || current===19){
-    const stackStart=(current===5) ? 49.50 : 113.15;
-    const bg=el.querySelector('.linyahan-bg');
-    const preWords=[...el.querySelectorAll('.pre-linyahan-word')];
-    const stackVisible=t>=stackStart;
-
-    if(stackVisible){
-      if(!el.classList.contains('linyahan-pre-exit')){
-        el.classList.add('linyahan-pre-exit');
-      }
-      if(bg && !bg.classList.contains('linyahan-bg-revealed')){
-        bg.classList.add('linyahan-bg-revealed');
-        bg.style.opacity='.42';
-      }
-    }
   }
 
   const q=el.querySelector('.question-mark');
