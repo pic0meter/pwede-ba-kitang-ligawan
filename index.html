@@ -1145,7 +1145,11 @@ function activate(i){
   }
   const el=L.firstElementChild;
   if(i===0) el.classList.add('puso-throb');
-  if(i===1) el.classList.add('banat-scratch');
+  if(i===1){
+    el.classList.add('banat-scratch');
+    // The complete phrase "banat na 'to" gets the animated scratch treatment.
+    el.querySelectorAll('.word[data-word-index="6"], .word[data-word-index="7"], .word[data-word-index="8"]').forEach(w=>w.classList.add('scratch-word'));
+  }
   if(i===3) el.classList.add('gusto-shiver');
   if(i===5) el.classList.add('subtle-kinetic');
   if(i===6) el.classList.add('clock-shake');
