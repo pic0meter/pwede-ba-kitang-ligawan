@@ -128,6 +128,7 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 #questionChaos.leaving{animation:qFieldOut .38s cubic-bezier(.18,.8,.2,1) forwards}
 #questionChaos .qmark{
   position:absolute;
+  /* x positions beyond 100% / below 0% are intentionally clipped by the viewport */
   left:var(--x);
   top:var(--y);
   font-family:var(--font, Inter, system-ui, sans-serif);
@@ -139,17 +140,42 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   transform:translate(-50%,-50%) rotate(var(--rot)) scale(var(--scale));
   text-shadow:0 0 18px #ffb38a35;
   will-change:transform,opacity;
-  animation:qMarkShake var(--speed) steps(2,end) infinite;
-  animation-delay:var(--delay);
+  /* The mark first glides in from beyond the edge, then hands off to the
+     existing erratic shake. Both animations use the same transform, so the
+     entrance feels like a peek rather than a pop. */
+  animation:
+    qMarkPeek .72s cubic-bezier(.16,.82,.22,1) var(--delay) both,
+    qMarkShake var(--speed) steps(2,end) calc(var(--delay) + .58s) infinite;
 }
 #questionChaos .qmark:nth-child(2n){
-  animation-name:qMarkShake2;
+  animation-name:qMarkPeek,qMarkShake2;
 }
 #questionChaos .qmark:nth-child(3n){
-  animation-name:qMarkShake3;
+  animation-name:qMarkPeek,qMarkShake3;
 }
 #questionChaos .qmark:nth-child(4n){
-  animation-name:qMarkShake4;
+  animation-name:qMarkPeek,qMarkShake4;
+}
+
+@keyframes qMarkPeek{
+  0%{
+    opacity:0;
+    transform:translate(calc(-50% + var(--enter-x)),calc(-50% + var(--enter-y)))
+      rotate(calc(var(--rot) - 10deg)) scale(.72);
+  }
+  48%{
+    opacity:var(--opacity);
+    transform:translate(calc(-50% + var(--enter-x)*.22),calc(-50% + var(--enter-y)*.22))
+      rotate(calc(var(--rot) + 3deg)) scale(1.035);
+  }
+  72%{
+    opacity:var(--opacity);
+    transform:translate(-50%,-50%) rotate(calc(var(--rot) - 2deg)) scale(.985);
+  }
+  100%{
+    opacity:var(--opacity);
+    transform:translate(-50%,-50%) rotate(var(--rot)) scale(var(--scale));
+  }
 }
 
 @keyframes qMarkShake{
@@ -186,6 +212,10 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .line.question-chaos .word.ligawan-chaos{
   color:var(--accent);
   text-shadow:0 0 24px #ffb38a66;
+}
+
+/* Jitter ONLY while the word is actually highlighted/current. */
+.line.question-chaos .word.ligawan-chaos.current{
   animation:ligawanJitter .105s steps(2,end) infinite;
   will-change:transform;
 }
@@ -1473,16 +1503,31 @@ function activate(i){
     field.setAttribute('aria-hidden','true');
 
     const qStyles=[
-      ['-2%','28%','clamp(58px,15vw,150px)','800','#f8f0e6','.72','-14deg','1.00','.17s'],
-      ['8%','66%','clamp(32px,9vw,88px)','300','#ffb38a','.68','18deg','.86','-.08s'],
-      ['96%','31%','clamp(72px,19vw,190px)','900','#f8f0e6','.76','11deg','1.08','.03s'],
-      ['108%','68%','clamp(38px,10vw,100px)','600','#ffb38a','.62','-21deg','.92','-.19s'],
-      ['-5%','47%','clamp(26px,7vw,72px)','500','#ffb38a','.55','27deg','.86','-.31s'],
-      ['103%','49%','clamp(25px,6vw,64px)','800','#f8f0e6','.58','-7deg','1.14','-.42s'],
-      ['14%','17%','clamp(22px,5vw,55px)','400','#f8f0e6','.42','-32deg','.82','-.52s'],
-      ['88%','82%','clamp(25px,6vw,62px)','300','#ffb38a','.48','16deg','1.03','-.63s'],
-      ['-7%','82%','clamp(48px,12vw,120px)','900','#f8f0e6','.60','-9deg','.95','-.73s'],
-      ['111%','18%','clamp(20px,5vw,52px)','500','#ffb38a','.44','31deg','.88','-.82s']
+      /* Left edge — deliberately clipped */
+      ['-11%','16%','clamp(78px,20vw,190px)','900','#f8f0e6','.72','-18deg','1.00','.02s'],
+      ['-7%','38%','clamp(54px,14vw,135px)','300','#ffb38a','.70','14deg','.92','-.11s'],
+      ['-14%','61%','clamp(92px,23vw,220px)','800','#f8f0e6','.62','-9deg','1.08','-.22s'],
+      ['-5%','79%','clamp(42px,11vw,105px)','500','#ffb38a','.68','22deg','.88','-.31s'],
+      ['-13%','91%','clamp(68px,17vw,165px)','900','#f8f0e6','.55','-27deg','1.04','-.43s'],
+
+      /* Just inside the left edge */
+      ['4%','23%','clamp(38px,10vw,95px)','600','#ffb38a','.54','31deg','.9','-.53s'],
+      ['8%','52%','clamp(72px,18vw,175px)','800','#f8f0e6','.48','-16deg','1.03','-.64s'],
+      ['10%','86%','clamp(30px,8vw,80px)','400','#ffb38a','.50','12deg','.84','-.75s'],
+
+      /* Right edge — deliberately clipped */
+      ['111%','12%','clamp(64px,17vw,165px)','900','#ffb38a','.70','17deg','1.06','-.08s'],
+      ['106%','30%','clamp(96px,24vw,230px)','900','#f8f0e6','.75','-12deg','1.00','-.18s'],
+      ['114%','49%','clamp(46px,12vw,115px)','400','#ffb38a','.62','28deg','.88','-.29s'],
+      ['108%','68%','clamp(76px,19vw,185px)','700','#f8f0e6','.57','-21deg','1.08','-.40s'],
+      ['116%','87%','clamp(58px,15vw,145px)','900','#ffb38a','.64','9deg','.94','-.51s'],
+
+      /* More scattered marks, also touching/clipping the edges */
+      ['-2%','9%','clamp(30px,8vw,78px)','500','#f8f0e6','.42','-33deg','.8','-.61s'],
+      ['1%','71%','clamp(55px,14vw,135px)','300','#ffb38a','.45','19deg','1.1','-.72s'],
+      ['101%','5%','clamp(28px,7vw,70px)','600','#ffb38a','.46','-26deg','.84','-.82s'],
+      ['100%','58%','clamp(38px,10vw,96px)','500','#f8f0e6','.43','15deg','.92','-.92s'],
+      ['104%','78%','clamp(25px,7vw,68px)','800','#ffb38a','.48','-8deg','1.12','-1.02s']
     ];
 
     qStyles.forEach((v)=>{
@@ -1499,6 +1544,18 @@ function activate(i){
       q.style.setProperty('--scale',v[7]);
       q.style.setProperty('--delay',v[8]);
       q.style.setProperty('--speed',(0.33+(Math.random()*0.32)).toFixed(2)+'s');
+
+      /*
+        Give each mark a physical "peek" direction. Marks beyond the
+        left/right viewport start farther outside, then glide into place.
+        The larger the mark, the slightly longer the visual travel feels.
+      */
+      const edgeX=parseFloat(v[0]);
+      const enterX=edgeX<0 ? '-110px' : edgeX>100 ? '110px' : '0px';
+      const enterY=edgeX<0 || edgeX>100 ? ((Math.random()*18)-9).toFixed(1)+'px' : '0px';
+      q.style.setProperty('--enter-x',enterX);
+      q.style.setProperty('--enter-y',enterY);
+
       field.appendChild(q);
     });
 
@@ -1591,6 +1648,10 @@ function updateWords(t){
     if(visible)currentWord=i;
   });
   words.forEach((w,i)=>w.classList.toggle('current',i===currentWord));
+  if(current===4){
+    const lw=el.querySelector('.word.ligawan-chaos');
+    if(lw && currentWord!==Number(lw.dataset.wordIndex)) lw.classList.remove('current');
+  }
 
   const q=el.querySelector('.question-mark');
   if(q){
