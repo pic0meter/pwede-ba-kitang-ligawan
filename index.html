@@ -296,6 +296,12 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .line.scene-puso-wipe{position:relative;overflow:visible;gap:.03em .12em}
 .line.scene-puso-wipe .word.visible{animation:pwPop .42s cubic-bezier(.12,1.3,.25,1) both}
 .line.scene-puso-wipe .puso-mo{color:var(--accent);font-weight:800;z-index:4}
+.puso-fly-pair{display:inline-flex;align-items:baseline;gap:.14em;position:relative;z-index:6;white-space:nowrap;will-change:transform;animation:pusoFlyIn .9s cubic-bezier(.12,1.15,.18,1) both}
+.puso-fly-pair .word{opacity:1!important;filter:none!important;margin:0}
+.puso-fly-pair .word:first-child{font-weight:950}
+@keyframes pusoFlyIn{0%{opacity:0;transform:translate3d(-105vw,0,0) rotate(-12deg) scale(.72)}55%{opacity:1;transform:translate3d(10px,-4px,0) rotate(2deg) scale(1.05)}100%{opacity:1;transform:translate3d(0,0,0) rotate(0) scale(1)}}
+.puso-fly-pair::after{content:"";position:absolute;left:-18vw;right:110%;height:.08em;top:55%;background:linear-gradient(90deg,transparent,#ffb38a55,transparent);filter:blur(4px);opacity:.8;animation:flightStreak .9s ease-out both}
+@keyframes flightStreak{from{transform:translateX(0);opacity:0}30%{opacity:1}to{transform:translateX(120%);opacity:0}}
 @keyframes pwPop{0%{opacity:0;transform:translateY(25px) scale(.72)}70%{opacity:1;transform:translateY(-5px) scale(1.06)}100%{opacity:1;transform:none}}
 
 .line.scene-scratch{gap:.025em .11em}
@@ -305,15 +311,19 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .line.scene-scratch .gasgas::after{border-top:3px solid #ffb38a88;border-bottom:2px solid #ffffff22;transform:rotate(-5deg) scaleX(.2);transform-origin:left center;animation:scratchSlash .6s cubic-bezier(.15,1,.2,1) .18s forwards}
 .line.scene-scratch .echo-word::after{content:attr(data-text);position:absolute;left:0;top:0;color:#ffb38a;opacity:0;transform:translateX(-.18em);pointer-events:none;filter:blur(1px)}
 .line.scene-scratch .echo-word.echo-on::after{opacity:.5;animation:echoTrail .7s ease-in-out infinite alternate}
+.banat-ghost{position:absolute;left:0;top:0;white-space:nowrap;color:#f8f0e6;font-weight:800;letter-spacing:-.05em;opacity:0;pointer-events:none;mix-blend-mode:screen;filter:blur(1.5px);will-change:transform,opacity}
+.banat-ghost.show{animation:banatGhost 1.15s cubic-bezier(.15,.65,.2,1) forwards}
+@keyframes banatGhost{0%{opacity:0;transform:translate3d(var(--gx),var(--gy),0) rotate(var(--gr)) scale(.72)}18%{opacity:.12}100%{opacity:0;transform:translate3d(calc(var(--gx) + var(--gdx)),calc(var(--gy) + var(--gdy)),0) rotate(var(--gr)) scale(1.12)}}
 @keyframes scratchLines{0%{transform:translateX(-3px) skewX(-14deg)}100%{transform:translateX(4px) skewX(-11deg)}}
 @keyframes scratchSlash{to{transform:rotate(-5deg) scaleX(1)}}
 @keyframes echoTrail{0%{transform:translate(-.12em,-.01em);opacity:.2}100%{transform:translate(.28em,.025em);opacity:.65}}
 
 .line.scene-type-heart{gap:.015em .09em;max-width:96vw}
 .line.scene-type-heart .word{opacity:0;transform-origin:center}
-.line.scene-type-heart .word.visible{opacity:1;animation:typeIn .32s steps(1,end) both;animation-delay:calc(var(--i)*70ms)}
+.line.scene-type-heart .word.visible{opacity:1;animation:typeIn .42s steps(1,end) both;animation-delay:calc(var(--i)*70ms);clip-path:inset(0 100% 0 0);animation-name:typeIn,wordCaret;animation-duration:.42s,.7s;animation-timing-function:steps(8,end),steps(1,end);animation-fill-mode:both,both}
 .line.scene-type-heart .word.current{color:var(--accent);text-shadow:0 0 24px #ffb38a55}
-@keyframes typeIn{0%{opacity:0;transform:translateY(.12em) scaleX(.35)}100%{opacity:1;transform:none}}
+@keyframes typeIn{0%{opacity:0;transform:translateY(.12em) scaleX(.35);clip-path:inset(0 100% 0 0)}100%{opacity:1;transform:none;clip-path:inset(0 0 0 0)}}
+@keyframes wordCaret{0%,100%{text-shadow:none}50%{text-shadow:.04em 0 0 #ffb38a}}
 
 .line.scene-linyahan{gap:.02em .12em}
 .line.scene-linyahan .linyahan-word{font-size:1.48em;font-weight:950;letter-spacing:-.055em;transform-origin:center}
@@ -331,7 +341,8 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .line.scene-oo-grid{position:fixed!important;inset:0!important;width:100vw!important;height:100dvh!important;min-height:100dvh!important;z-index:8;display:block!important;pointer-events:none;background:#0d0b0a;overflow:hidden}
 .oo-grid{position:absolute;inset:4vh 3vw 15vh;display:grid;grid-template-columns:repeat(5,1fr);grid-auto-rows:1fr;align-items:center;justify-items:center;gap:0}
 .oo-cell{font-weight:950;font-size:clamp(32px,10vw,82px);letter-spacing:-.07em;line-height:.8;opacity:0;will-change:transform;animation:ooFlood .55s cubic-bezier(.12,1.25,.2,1) both;animation-delay:calc(var(--oo-i)*35ms);text-shadow:0 0 25px currentColor}
-.oo-red{color:#ff453a}.oo-amber{color:#ffd60a}.oo-green{color:#30d158}
+.oo-cell{color:#f8f0e6;animation-name:ooFlood,ooColor;animation-duration:.55s,3.6s;animation-timing-function:cubic-bezier(.12,1.25,.2,1),ease-in-out;animation-iteration-count:1,infinite;animation-direction:normal,alternate;animation-delay:calc(var(--oo-i)*35ms),calc(var(--oo-i)*55ms)}
+@keyframes ooColor{0%{color:#ff5f57}25%{color:#ff9f0a}50%{color:#ffd60a}70%{color:#30d158}100%{color:#64d2ff}}
 @keyframes ooFlood{0%{opacity:0;transform:translateY(80px) scale(.3) rotate(-12deg)}65%{opacity:1;transform:translateY(-5px) scale(1.08) rotate(3deg)}100%{opacity:.9;transform:none}}
 .line.scene-oo-grid.active{animation:none}
 
@@ -667,8 +678,8 @@ function buildWords(text){
 function sceneFor(i){
   // Each lyric becomes a small motion-graphics scene.
   const scenes=[
-    'puso-wipe','scratch','type-heart','stretch','zoom','linyahan','clock','idle-move',
-    'erratic','oo-grid','crawl','slit','orbit','wind','rubber','chase',
+    'puso-wipe','scratch','type-heart','oo-grid','zoom','linyahan','clock','idle-move',
+    'erratic','question','crawl','slit','orbit','wind','rubber','chase',
     'longa','fly','erratic','linyahan','clock','idle-move','question'
   ];
   return scenes[i]||'chase';
@@ -750,6 +761,18 @@ function activate(i){
   else body=buildWords(item.text);
   L.innerHTML=`<div class="line motion scene-${scene} ${item.style}${qClass}" data-index="${i}">${body}</div>`;
   const el=L.firstElementChild;
+  if(scene==='puso-wipe'){
+    const ws=[...el.querySelectorAll('.word')];
+    const p=ws.find(w=>w.dataset.word==='puso');
+    const m=ws.find(w=>w.dataset.word==='mo');
+    if(p&&m){
+      const wrap=document.createElement('span');
+      wrap.className='puso-fly-pair';
+      p.parentNode.insertBefore(wrap,p);
+      wrap.appendChild(p);
+      wrap.appendChild(m);
+    }
+  }
   SEC.textContent=item.section;
   requestAnimationFrame(()=>{el.classList.add('active'); if(scene==='clock') layoutClock();});
 
@@ -830,7 +853,11 @@ function updateMotion(t){
   const item=lines[current];
   const scene=sceneFor(current);
   const words=[...el.querySelectorAll('.word')];
-  if(scene==='scratch') el.querySelectorAll('.echo-word').forEach(w=>w.classList.toggle('echo-on',t>=21&&t<23));
+  if(scene==='scratch') {
+    el.querySelectorAll('.echo-word').forEach(w=>w.classList.toggle('echo-on',t>=21&&t<23));
+    if(t>=21&&t<23) spawnBanatGhosts(t);
+    else clearBanatGhosts();
+  }
 
   if(scene==='orbit'){
     const n=words.length;
@@ -887,20 +914,13 @@ function updateMotion(t){
     });
   }
   if(scene==='puso-wipe'){
-    words.forEach((w,i)=>{
-      if(!w.classList.contains('visible'))return;
-      if(w.classList.contains('puso-mo')){
-        const p=Math.max(0,Math.min(1,(t-(item.cues[i]||item.start))/.72));
-        const travel=Math.min(innerWidth*.62,430);
-        const x=(1-Math.pow(1-p,3))*travel-travel*.72;
-        const y=Math.sin(p*Math.PI)*-7;
-        w.style.transform=`translate3d(${x}px,${y}px,80px) rotate(${(1-p)*-10}deg) scale(${.9+.1*p})`;
-        w.style.zIndex='5';
-      }else{
-        const bob=Math.sin(t*1.6+i)*2;
-        w.style.transform=`translateY(${bob}px)`;
-      }
-    });
+    const pair=el.querySelector('.puso-fly-pair');
+    if(pair){
+      const p=Math.max(0,Math.min(1,(t-item.start)/.9));
+      const drift=Math.sin(t*1.7)*2;
+      pair.style.transform=`translate3d(0,${drift}px,0) rotate(${Math.sin(t*1.25)*.8}deg)`;
+      pair.style.zIndex='6';
+    }
   }
   if(scene==='scratch'){
     const gas=el.querySelector('.gasgas');
@@ -963,6 +983,32 @@ function updateMotion(t){
     const oo=words[0];
     if(oo) oo.style.transform=`translateY(${Math.sin(t*7)*3}px) scale(${1.02+.035*Math.max(0,Math.sin(t*4))})`;
   }
+}
+
+let lastGhost=-1;
+function spawnBanatGhosts(t){
+  const bucket=Math.floor((t-21)*3);
+  if(bucket===lastGhost)return;
+  lastGhost=bucket;
+  for(let k=0;k<2;k++){
+    const g=document.createElement('div');
+    g.className='banat-ghost show';
+    g.textContent="banat na 'to";
+    g.style.left=(8+Math.random()*78)+'vw';
+    g.style.top=(14+Math.random()*68)+'vh';
+    g.style.fontSize=(18+Math.random()*42)+'px';
+    g.style.setProperty('--gx',(Math.random()*20-10)+'px');
+    g.style.setProperty('--gy',(Math.random()*20-10)+'px');
+    g.style.setProperty('--gdx',(Math.random()*100-50)+'px');
+    g.style.setProperty('--gdy',(Math.random()*70-35)+'px');
+    g.style.setProperty('--gr',(Math.random()*12-6)+'deg');
+    E.appendChild(g);
+    setTimeout(()=>g.remove(),1200);
+  }
+}
+function clearBanatGhosts(){
+  lastGhost=-1;
+  E.querySelectorAll('.banat-ghost').forEach(g=>g.remove());
 }
 
 function pulse(t){
