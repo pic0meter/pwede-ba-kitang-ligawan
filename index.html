@@ -1042,11 +1042,11 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 }
 .scene-laser-heart .laser-heart-path{
   fill:none;
-  stroke:#fff200;
+  stroke:#ffc2a3;
   stroke-width:2.8;
   stroke-linecap:round;
   stroke-linejoin:round;
-  filter:drop-shadow(0 0 3px #fffbd0) drop-shadow(0 0 8px #fff200) drop-shadow(0 0 20px #fff20099);
+  filter:drop-shadow(0 0 3px #fffbd0) drop-shadow(0 0 10px #ffc2a3) drop-shadow(0 0 24px #ffb38a99);
 }
 @media(max-width:600px){
   .scene-laser-heart{width:94vw;height:29vh;bottom:9%}
@@ -1777,6 +1777,7 @@ function render(){
   updateWords(t);
   updateMotion(t);
   updateClock(t);
+  updateSpecialVisuals(t);
   pulse(t);
 const d=Math.min(A.duration||135,135);
   P.style.width=Math.min(100,(t/d)*100)+'%';
