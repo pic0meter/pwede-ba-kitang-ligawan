@@ -143,29 +143,16 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   position:absolute;
   left:0;
   top:0;
-  width:var(--size);
-  height:var(--size);
+  width:auto;
+  height:auto;
+  color:#ffb38a;
+  font-size:var(--size);
+  line-height:1;
   opacity:0;
+  text-shadow:0 0 14px #ffb38a66;
   transform:translate(-50%,-50%) scale(.25);
   animation:pusoHeartBurst var(--life) cubic-bezier(.18,.72,.25,1) forwards;
   will-change:transform,opacity;
-}
-.puso-heart::before,
-.puso-heart::after{
-  content:"";
-  position:absolute;
-  width:50%;
-  height:50%;
-  border-radius:50%;
-  background:currentColor;
-}
-.puso-heart::before{left:0;top:0}
-.puso-heart::after{right:0;top:0}
-.puso-heart{
-  background:currentColor;
-  transform-origin:center;
-  rotate:-45deg;
-  border-radius:2px;
 }
 @keyframes pusoHeartBurst{
   0%{
@@ -1070,26 +1057,7 @@ function buildHeartSplitLine(text){
   return wrap;
 }
 
-function spawnHearts(){
-  const field=L.querySelector('.line.active.scene-heart-split .heart-field');
-  if(!field)return;
-  const count=12;
-  for(let i=0;i<count;i++){
-    const h=document.createElement('span');
-    h.className='heart';
-    h.textContent=i%3===0?'♥':'♡';
-    h.style.setProperty('--hd',(2.15+(i%5)*.24)+'s');
-    h.style.setProperty('--hr',((i%5)-2)*8+'deg');
-    h.style.setProperty('--hx0',((i%7)-3)*11+'px');
-    h.style.setProperty('--hx1',((i%9)-4)*18+'px');
-    h.style.setProperty('--hx2',((i%11)-5)*23+'px');
-    h.style.setProperty('--hx3',((i%13)-6)*30+'px');
-    h.style.fontSize=(14+(i%5)*4)+'px';
-    h.style.animationDelay=(i*55)+'ms';
-    field.appendChild(h);
-    setTimeout(()=>h.remove(),3300+i*55);
-  }
-}
+
 
 function sceneFor(i){
   // Each lyric becomes a small motion-graphics scene.
@@ -1248,15 +1216,6 @@ function updateWords(t){
     if(hindi)hindi.classList.toggle('crossed',qVisible);
   }
 
-  // "puso" keeps its original cue at 11.680s; hearts fire exactly when it appears.
-  if(current===0){
-    const pusoCue=11.680;
-    if(t < pusoCue-0.12) heartCueShown=false;
-    if(t >= pusoCue && !heartCueShown){
-      heartCueShown=true;
-      spawnHearts();
-    }
-  }
 }
 
 function updateMotion(t){
@@ -1423,6 +1382,7 @@ function spawnPusoHearts(){
   for(let i=0;i<count;i++){
     const h=document.createElement('span');
     h.className='puso-heart';
+    h.textContent='♥';
 
     const angle=(Math.PI*2/count)*i + (Math.random()-.5)*.55;
     const distance=70 + Math.random()*210;
