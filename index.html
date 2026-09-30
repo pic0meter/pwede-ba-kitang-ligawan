@@ -1026,6 +1026,32 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   }
 }
 
+
+/* Laser-heart for the first "Pwede ba kitang ligawan?" */
+.scene-laser-heart{
+  position:absolute;
+  left:50%;
+  bottom:7%;
+  width:min(78vw,720px);
+  height:min(34vh,300px);
+  transform:translateX(-50%);
+  overflow:visible;
+  pointer-events:none;
+  z-index:1;
+  opacity:0;
+}
+.scene-laser-heart .laser-heart-path{
+  fill:none;
+  stroke:var(--accent);
+  stroke-width:2.4;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  filter:drop-shadow(0 0 5px #ffb38a) drop-shadow(0 0 15px #ffb38a88);
+}
+@media(max-width:600px){
+  .scene-laser-heart{width:92vw;height:27vh;bottom:5%}
+  .scene-laser-heart .laser-heart-path{stroke-width:2}
+}
 </style>
 </head>
 <body>
@@ -1086,7 +1112,7 @@ const accentWords=new Set(['puso','mo','yo',"'oo'",'ligawan','oras','hindi','yan
 const lines=[
   {start:8.056,end:15.85,text:'Pwede ba akong tumambay dyan sa puso mo',style:'verse',section:'verse',cues:[8.056,9.261,9.589,10.186,10.555,11.305,11.680,12.430]},
   {start:15.90,end:23.55,text:"Parang masyado na yatang gasgas ang banat na 'to",style:'soft',section:'verse',cues:[15.90,16.28,16.55,16.72,18.28,18.78,19.10,19.35,19.42]},
-  {start:23.70,end:31.55,text:"Kailan kaya ako makakaisip ng linyang para sa'yo?",style:'verse',section:'verse',cues:[23.70,24.15,24.48,24.92,27.00,27.30,27.78,28.12,28.42]},
+  {start:23.70,end:31.55,text:"Kailan kaya ako makakaisip ng linyang para sa'yo?",style:'verse',section:'verse',cues:[23.70,24.15,24.48,24.92,25.38,27.30,27.78,28.12,28.42]},
   {start:31.70,end:39.25,text:"Gusto ko lang naman ay makamit ang matamis mong 'oo'",style:'soft',section:'verse',cues:[31.70,32.18,32.48,32.72,32.88,33.15,34.85,35.48,35.92,36.42]},
   {start:39.65,end:46.75,text:'Pwede ba kitang ligawan?',style:'chorus',section:'chorus',cues:[39.65,40.25,40.75,42.65]},
   {start:46.80,end:53.65,text:"Kahit 'di maganda ang mga linyahan",style:'soft',section:'chorus',cues:[46.82,47.12,48.32,48.82,49.25,49.50]},
@@ -1248,6 +1274,33 @@ function updateClock(t){
   if(hourH)hourH.style.transform=`translate(-50%,-100%) rotate(${hourDeg}deg)`;
 }
 
+
+function buildLaserHeart(){
+  const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
+  svg.classList.add('scene-laser-heart');
+  svg.setAttribute('viewBox','0 0 720 300');
+  svg.setAttribute('aria-hidden','true');
+
+  // A laser line enters from the left, then continues seamlessly into one
+  // large heart outline. The path ends where it began so the heart closes.
+  const path=document.createElementNS('http://www.w3.org/2000/svg','path');
+  path.classList.add('laser-heart-path');
+  path.setAttribute('d',
+    'M 8 245 ' +
+    'L 180 245 ' +
+    'C 150 215 120 175 120 125 ' +
+    'C 120 70 185 45 235 80 ' +
+    'C 290 118 335 170 360 200 ' +
+    'C 385 170 430 118 485 80 ' +
+    'C 535 45 600 70 600 125 ' +
+    'C 600 175 570 215 540 245 ' +
+    'C 485 290 410 300 360 300 ' +
+    'C 310 300 235 290 180 245'
+  );
+  svg.appendChild(path);
+  return svg;
+}
+
 function activate(i){
   if(i===current)return;
   const old=L.querySelector('.line.active');
@@ -1279,6 +1332,17 @@ function activate(i){
   }
   const el=L.firstElementChild;
   if(i===0) el.classList.add('puso-throb');
+  if(i===4){
+    const laserHeart=buildLaserHeart();
+    el.appendChild(laserHeart);
+    const path=laserHeart.querySelector('.laser-heart-path');
+    if(path){
+      const length=path.getTotalLength();
+      path.style.strokeDasharray=length+' '+length;
+      path.style.strokeDashoffset=length;
+      laserHeart.dataset.pathLength=String(length);
+    }
+  }
   if(i===1){
     el.classList.add('banat-scratch');
     // The complete phrase "banat na 'to" gets the animated scratch treatment.
@@ -1403,39 +1467,6 @@ function updateMotion(t){
         // Each new word enters at the exact center.
         const enterP=clamp((t-cue)/0.34,0,1);
         const enter=enterP*enterP*(3-2*enterP);
-
-        // Final "sa'yo": five progressively larger pulses, then a burst
-        // into the next lyric line. Only the final word gets this treatment.
-        const isSayo = i === words.length - 2 || /sa[’']yo\??$/i.test((w.textContent||'').trim());
-        if(isSayo && enter >= 0.999){
-          const elapsed=t-cue;
-          const pulseDuration=.58;
-          const pulseIndex=Math.min(4,Math.floor(elapsed/pulseDuration));
-          const pulseT=(elapsed%pulseDuration)/pulseDuration;
-          const pulseShape=Math.sin(Math.PI*pulseT);
-          const growth=.10 + pulseIndex*.075;
-          const burstStart=pulseDuration*5;
-
-          if(elapsed < burstStart){
-            const pulseScale=1 + growth*pulseShape;
-            w.style.opacity='1';
-            w.style.zIndex='8';
-            w.style.filter='blur(0px)';
-            w.style.textShadow=`0 0 ${28 + pulseIndex*10 + pulseShape*18}px #ffb38a${pulseIndex>=3?'aa':'77'}`;
-            w.style.transform=`translate3d(-50%,-50%,0) scale(${pulseScale})`;
-          }else{
-            const burstP=clamp((elapsed-burstStart)/.48,0,1);
-            const burstEase=burstP*burstP*(3-2*burstP);
-            const burstScale=1.375 + burstEase*4.2;
-            w.style.opacity=String(1-burstEase);
-            w.style.zIndex='8';
-            w.style.filter=`blur(${burstEase*10}px)`;
-            w.style.textShadow=`0 0 ${55+burstEase*90}px #ffb38aff`;
-            w.style.transform=`translate3d(-50%,-50%,0) scale(${burstScale})`;
-          }
-          return;
-        }
-
         const scale=.86+.14*enter;
         w.style.opacity=String(enter);
         w.style.zIndex='5';
@@ -1561,6 +1592,36 @@ function echo(){
 }
 
 function updateSpecialVisuals(t){
+  updateLaserHeart(t);
+function updateLaserHeart(t){
+  const el=L.querySelector('.line.active');
+  if(!el || current!==4){
+    return;
+  }
+  const svg=el.querySelector('.scene-laser-heart');
+  const path=svg?.querySelector('.laser-heart-path');
+  if(!svg || !path)return;
+
+  const start=43.02;      // just after "ligawan" begins
+  const drawEnd=45.42;    // slow laser trace
+  const fadeEnd=45.92;    // then the laser disappears
+  const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+
+  if(t<start || t>=fadeEnd){
+    svg.style.opacity='0';
+    path.style.strokeDashoffset=svg.dataset.pathLength||path.getTotalLength();
+    return;
+  }
+
+  const length=Number(svg.dataset.pathLength)||path.getTotalLength();
+  const drawP=clamp((t-start)/(drawEnd-start),0,1);
+  const eased=drawP*drawP*(3-2*drawP);
+  path.style.strokeDashoffset=String(length*(1-eased));
+
+  const fadeP=clamp((t-drawEnd)/(fadeEnd-drawEnd),0,1);
+  svg.style.opacity=String(1-fadeP);
+}
+
   const firstWasActive = current===0;
   if(firstWasActive && t>=11.680 && t<12.430 && !window._pusoHeartBurst){
     window._pusoHeartBurst=true;
