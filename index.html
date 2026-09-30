@@ -170,13 +170,7 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 }
 
 /* "banat na 'to" echo field — only visible during 00:21–00:23 */
-#backgroundBanat{
-  position:absolute;
-  inset:0;
-  z-index:3;
-  overflow:hidden;
-  pointer-events:none;
-}
+#backgroundBanat{position:absolute;inset:0;z-index:3;overflow:hidden;pointer-events:none;opacity:1}
 .banat-echo{
   position:absolute;
   white-space:nowrap;
@@ -1325,39 +1319,6 @@ function echo(){
   setTimeout(()=>e.remove(),1200);
 }
 
-function createBanatBackground(){
-  const field=document.querySelector('#backgroundBanat');
-  if(!field || field.dataset.ready)return;
-  field.dataset.ready='1';
-
-  const fonts=[
-    'Georgia,serif',
-    'Arial Black,Impact,sans-serif',
-    'Courier New,monospace',
-    'Times New Roman,serif',
-    'Trebuchet MS,sans-serif',
-    'Palatino Linotype,serif'
-  ];
-  const count=17;
-  for(let i=0;i<count;i++){
-    const e=document.createElement('span');
-    e.className='bg-banat';
-    e.textContent="banat na 'to";
-    e.style.fontFamily=fonts[i%fonts.length];
-    e.style.fontSize=(18+Math.random()*76)+'px';
-    e.style.setProperty('--op',(0.025+Math.random()*0.055).toFixed(3));
-    e.style.setProperty('--blur',(Math.random()<.35?'1px':'0px'));
-    e.style.setProperty('--rot',(-12+Math.random()*24)+'deg');
-    e.style.setProperty('--x1',(-8+Math.random()*88)+'vw');
-    e.style.setProperty('--y1',(-8+Math.random()*110)+'vh');
-    e.style.setProperty('--x2',(-4+Math.random()*90)+'vw');
-    e.style.setProperty('--y2',(-5+Math.random()*108)+'vh');
-    e.style.setProperty('--dur',(9+Math.random()*11)+'s');
-    e.style.setProperty('--delay',(-Math.random()*12)+'s');
-    field.appendChild(e);
-  }
-}
-
 function updateSpecialVisuals(t){
   const firstWasActive = current===0;
   if(firstWasActive && t>=11.680 && t<12.430 && !window._pusoHeartBurst){
@@ -1478,10 +1439,11 @@ function render(){
     clearPusoHearts();
   }
 
-  // "banat na 'to" echoes only from 00:21–00:23.
+  // "banat na 'to" exists ONLY from 00:21.000 through 00:22.999.
+  // Clear first so seeking backward/forward can never leave stale echoes.
   if(t>=21 && t<23){
     if(!banatEchoActive) spawnBanatEchoes();
-  }else if(banatEchoActive){
+  }else{
     clearBanatEchoes();
   }
 
@@ -1489,9 +1451,7 @@ function render(){
   updateMotion(t);
   updateClock(t);
   pulse(t);
-  updateSpecialVisuals(t);
-
-  const d=Math.min(A.duration||135,135);
+const d=Math.min(A.duration||135,135);
   P.style.width=Math.min(100,(t/d)*100)+'%';
   T.textContent=fmt(t);
   C.textContent=fmt(t)+' / '+fmt(d);
@@ -1573,7 +1533,6 @@ APP.addEventListener('pointerleave',()=>{
   document.documentElement.style.setProperty('--mx','0px');
   document.documentElement.style.setProperty('--my','0px');
 });
-createBanatBackground();
 render();
 </script>
 </body>
