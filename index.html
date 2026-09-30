@@ -1042,11 +1042,11 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 }
 .scene-laser-heart .laser-heart-path{
   fill:none;
-  stroke:#fff200;
+  stroke:#ffc2a3;
   stroke-width:2.8;
   stroke-linecap:round;
   stroke-linejoin:round;
-  filter:drop-shadow(0 0 3px #fffbd0) drop-shadow(0 0 8px #fff200) drop-shadow(0 0 20px #fff20099);
+  filter:drop-shadow(0 0 3px #fffbd0) drop-shadow(0 0 8px #ffc2a3) drop-shadow(0 0 20px #ffb38a99);
 }
 @media(max-width:600px){
   .scene-laser-heart{width:94vw;height:29vh;bottom:9%}
@@ -1291,21 +1291,23 @@ function buildLaserHeart(){
   const path=document.createElementNS('http://www.w3.org/2000/svg','path');
   path.classList.add('laser-heart-path');
   path.setAttribute('d',
-    'M -20 255 ' +
-    'C 55 255 105 246 150 215 ' +
-    'C 122 183 116 145 130 112 ' +
-    'C 147 70 193 57 233 76 ' +
-    'C 276 96 313 144 360 198 ' +
-    'C 407 144 444 96 487 76 ' +
-    'C 527 57 573 70 590 112 ' +
-    'C 604 145 598 183 570 215 ' +
-    'C 525 246 475 264 425 270 ' +
-    'C 401 273 379 274 360 270 ' +
-    'C 341 274 319 273 295 270 ' +
-    'C 245 264 195 246 150 215 ' +
-    'C 190 249 250 274 325 282 ' +
-    'C 420 292 505 273 575 248 ' +
-    'C 635 226 684 220 740 228'
+    'M -24 252 ' +
+    'C 62 252 108 244 150 216 ' +
+    'C 124 184 119 147 132 114 ' +
+    'C 149 72 194 57 235 77 ' +
+    'C 278 98 315 148 360 205 ' +
+    'C 405 148 442 98 485 77 ' +
+    'C 526 57 571 72 588 114 ' +
+    'C 601 147 596 184 570 216 ' +
+    'C 528 244 484 256 442 263 ' +
+    'C 412 268 384 279 360 294 ' +
+    'C 336 279 308 268 278 263 ' +
+    'C 236 256 192 244 150 216 ' +
+    'C 192 244 240 256 286 261 ' +
+    'C 314 264 338 272 360 286 ' +
+    'C 382 272 406 264 434 261 ' +
+    'C 480 256 528 244 570 216 ' +
+    'C 620 232 675 229 744 229'
   );
   svg.appendChild(path);
   return svg;
@@ -1624,9 +1626,9 @@ function updateLaserHeart(t){
   const path=svg?.querySelector('.laser-heart-path');
   if(!svg || !path)return;
 
-  const start=43.02;      // just after "ligawan" begins
-  const drawEnd=45.42;    // slow laser trace
-  const fadeEnd=45.92;    // then the laser disappears
+  const start=42.78;      // begins just after "ligawan" is spoken
+  const drawEnd=45.62;    // slow laser trace
+  const fadeEnd=46.05;    // then the laser disappears
   const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 
   if(t<start || t>=fadeEnd){
