@@ -563,7 +563,8 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   flex-direction:column;
   justify-content:flex-start;
   gap:clamp(2px,.7vh,14px);
-  opacity:1;
+  opacity:0;
+  transition:opacity .65s ease;
 }
 .linyahan-bg-row{
   flex:0 0 auto;
@@ -578,7 +579,7 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   letter-spacing:-.055em;
   color:var(--ink);
   text-align:center;
-  opacity:.95;
+  opacity:.12;
   will-change:transform,opacity;
   transform:translate3d(var(--row-x),0,0);
 }
@@ -1589,6 +1590,10 @@ function activate(i){
   if(old){
     old.classList.remove('active');
     old.classList.add('out');
+    const oldBg=old.querySelector('.linyahan-bg');
+    if(oldBg){
+      oldBg.style.opacity='0';
+    }
     setTimeout(()=>old.remove(),700);
   }
   current=i;
@@ -1706,8 +1711,7 @@ function activate(i){
   if(i===5){
     el.classList.add('subtle-kinetic','linyahan-stack');
 
-    // Turn the whole screen into a giant typographic field of "Linyahan".
-    // The supplied image is only a visual reference for scale/density.
+    // The full-screen stack appears only for this lyric's turn.
     const bg=document.createElement('div');
     bg.className='linyahan-bg';
     bg.setAttribute('aria-hidden','true');
@@ -1721,6 +1725,13 @@ function activate(i){
       bg.appendChild(row);
     }
     el.appendChild(bg);
+
+    // Fade the typographic wall in softly so the foreground lyric remains readable.
+    requestAnimationFrame(()=>{
+      requestAnimationFrame(()=>{
+        bg.style.opacity='.42';
+      });
+    });
   }
   if(i===6) el.classList.add('cursive-clock-lyric');
   if(i===6) el.classList.add('clock-shake');
