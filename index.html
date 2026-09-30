@@ -1052,6 +1052,39 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   .scene-laser-heart{width:94vw;height:29vh;bottom:9%}
   .scene-laser-heart .laser-heart-path{stroke-width:2.6}
 }
+
+/* Continuous laser scribble for “Kahit ’di maganda ang mga linyahan” */
+.scene-linyahan-scribble{
+  position:absolute;left:50%;top:50%;width:min(94vw,920px);height:min(42vh,380px);
+  transform:translate(-50%,-50%);overflow:visible;pointer-events:none;z-index:-1;opacity:0;
+}
+.scene-linyahan-scribble .linyahan-scribble-path{
+  fill:none;stroke:#ffc2a3;stroke-width:2.35;stroke-linecap:round;stroke-linejoin:round;
+  filter:drop-shadow(0 0 3px #fff4ee) drop-shadow(0 0 8px #ffc2a3) drop-shadow(0 0 18px #ffb38a99);
+}
+.scene-linyahan-scribble .linyahan-scribble-secondary{
+  fill:none;stroke:#ffb38a;stroke-width:1.15;stroke-linecap:round;opacity:.34;
+}
+.linyahan-chaos .word.linyahan-word{
+  position:relative;z-index:5;font-weight:950;letter-spacing:-.075em;color:var(--accent);
+  text-shadow:0 0 18px #ffb38a66,2px 0 0 #f8f0e6;
+  transform-origin:center;
+  animation:linyahanChaos .115s steps(2,end) infinite !important;
+}
+@keyframes linyahanChaos{
+  0%{transform:translate(-2px,1px) rotate(-1.8deg) skewX(-1deg) scale(1.02,1.05)}
+  20%{transform:translate(3px,-1px) rotate(1.6deg) skewX(1.8deg) scale(1.08,.97)}
+  40%{transform:translate(-3px,2px) rotate(-2.2deg) skewX(-1.5deg) scale(1.03,1.08)}
+  60%{transform:translate(2px,-2px) rotate(2.4deg) skewX(2deg) scale(1.1,.96)}
+  80%{transform:translate(-1px,1px) rotate(-1deg) skewX(-2deg) scale(1.06,1.04)}
+  100%{transform:translate(2px,0) rotate(1.7deg) skewX(1deg) scale(1.04,1)}
+}
+@media(max-width:600px){
+  .scene-linyahan-scribble{width:106vw;height:38vh}
+  .scene-linyahan-scribble .linyahan-scribble-path{stroke-width:2}
+  .linyahan-chaos .word.linyahan-word{letter-spacing:-.095em}
+}
+
 </style>
 </head>
 <body>
@@ -1177,6 +1210,7 @@ function buildWords(text){
     const flyR=((wordIndex%2?-1:1)*(8+(wordIndex%5)*7))+'deg';
     if(clean==='puso')classes.push('puso-word');
     if(clean==='gasgas')classes.push('gasgas-word');
+    if(clean==='linyahan')classes.push('linyahan-word');
     const html=`<span class="${classes.join(' ')}" data-word-index="${wordIndex}" style="--i:${wordIndex};--tilt:${tilt}deg;--fx:${flyX};--fy:${flyY};--fr:${flyR}">${base}</span>`;
     wordIndex++;
     if(isQuestionHindi) return html+'<span class="question-mark" data-question-index="'+(wordIndex-1)+'">?</span>';
@@ -1287,24 +1321,56 @@ function buildLaserHeart(){
   path.classList.add('laser-heart-path');
   path.setAttribute('d',
     'M -25 238 ' +
-    'C 48 238 92 229 128 205 ' +
-    'C 108 178 103 145 113 113 ' +
-    'C 127 69 169 45 211 57 ' +
-    'C 254 69 294 108 323 143 ' +
-    'C 340 164 352 181 360 194 ' +
-    'C 368 181 380 164 397 143 ' +
-    'C 426 108 466 69 509 57 ' +
-    'C 551 45 593 69 607 113 ' +
-    'C 617 145 612 178 592 205 ' +
-    'C 570 236 527 263 481 278 ' +
-    'C 433 294 388 300 360 314 ' +
-    'C 332 300 287 294 239 278 ' +
-    'C 193 263 150 236 128 205 ' +
-    'C 171 239 223 257 278 263 ' +
-    'C 346 271 414 268 480 257 ' +
-    'C 554 245 625 225 745 232'
+    'C 45 238 92 232 128 210 ' +
+    'C 108 182 102 148 112 116 ' +
+    'C 126 70 168 47 211 57 ' +
+    'C 254 67 292 105 323 143 ' +
+    'C 338 161 350 174 360 188 ' +
+    'C 370 174 382 161 397 143 ' +
+    'C 428 105 466 67 509 57 ' +
+    'C 552 47 594 70 608 116 ' +
+    'C 618 148 612 182 592 210 ' +
+    'C 560 254 495 282 430 291 ' +
+    'C 400 295 377 286 360 267 ' +
+    'C 343 286 320 295 290 291 ' +
+    'C 225 282 160 254 128 210 ' +
+    'C 165 236 218 250 274 256 ' +
+    'C 345 264 416 262 483 251 ' +
+    'C 555 239 623 225 745 232'
   );
   svg.appendChild(path);
+  return svg;
+}
+
+function buildLinyahanScribble(){
+  const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
+  svg.classList.add('scene-linyahan-scribble');
+  svg.setAttribute('viewBox','0 0 920 380');
+  svg.setAttribute('aria-hidden','true');
+
+  // One continuous loose stroke: it enters from the left, loops behind the lyric,
+  // scribbles around the phrase, then sweeps out toward the right.
+  const path=document.createElementNS('http://www.w3.org/2000/svg','path');
+  path.classList.add('linyahan-scribble-path');
+  path.setAttribute('d',
+    'M -45 248 ' +
+    'C 45 232 78 170 150 178 ' +
+    'C 225 186 170 286 260 302 ' +
+    'C 350 318 330 92 430 86 ' +
+    'C 520 80 462 300 555 286 ' +
+    'C 640 273 596 126 675 112 ' +
+    'C 746 100 704 238 772 250 ' +
+    'C 824 259 850 220 965 178'
+  );
+
+  const secondary=document.createElementNS('http://www.w3.org/2000/svg','path');
+  secondary.classList.add('linyahan-scribble-secondary');
+  secondary.setAttribute('d',
+    'M -35 265 C 85 248 95 205 182 216 C 258 225 224 314 314 318 C 405 322 382 116 452 108 C 535 99 506 315 596 300 C 688 285 638 145 711 135 C 781 125 756 259 830 265 C 875 268 900 235 955 207'
+  );
+
+  svg.appendChild(path);
+  svg.appendChild(secondary);
   return svg;
 }
 
@@ -1356,7 +1422,25 @@ function activate(i){
     el.querySelectorAll('.word[data-word-index="6"], .word[data-word-index="7"], .word[data-word-index="8"]').forEach(w=>w.classList.add('scratch-word'));
   }
   if(i===3) el.classList.add('gusto-shiver');
-  if(i===5) el.classList.add('subtle-kinetic');
+  if(i===5){
+    el.classList.add('subtle-kinetic','linyahan-chaos');
+    const scribble=buildLinyahanScribble();
+    el.appendChild(scribble);
+    const main=scribble.querySelector('.linyahan-scribble-path');
+    const secondary=scribble.querySelector('.linyahan-scribble-secondary');
+    if(main){
+      const len=main.getTotalLength();
+      main.style.strokeDasharray=len+' '+len;
+      main.style.strokeDashoffset=len;
+      scribble.dataset.pathLength=String(len);
+    }
+    if(secondary){
+      const len2=secondary.getTotalLength();
+      secondary.style.strokeDasharray=len2+' '+len2;
+      secondary.style.strokeDashoffset=len2;
+      scribble.dataset.secondaryLength=String(len2);
+    }
+  }
   if(i===6) el.classList.add('clock-shake');
   if(i===7) el.classList.add('standup-exit');
   SEC.textContent=item.section;
@@ -1598,8 +1682,40 @@ function echo(){
   setTimeout(()=>e.remove(),1200);
 }
 
+function updateLinyahanScribble(t){
+  const el=L.querySelector('.line.active');
+  if(!el || current!==5)return;
+  const svg=el.querySelector('.scene-linyahan-scribble');
+  const path=svg?.querySelector('.linyahan-scribble-path');
+  const secondary=svg?.querySelector('.linyahan-scribble-secondary');
+  if(!svg || !path)return;
+
+  const start=46.80;
+  const drawEnd=51.35;
+  const fadeEnd=53.55;
+  const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+  if(t<start || t>=fadeEnd){
+    svg.style.opacity='0';
+    path.style.strokeDashoffset=svg.dataset.pathLength||path.getTotalLength();
+    if(secondary)secondary.style.strokeDashoffset=svg.dataset.secondaryLength||secondary.getTotalLength();
+    return;
+  }
+
+  const p=clamp((t-start)/(drawEnd-start),0,1);
+  const eased=p*p*(3-2*p);
+  const len=Number(svg.dataset.pathLength)||path.getTotalLength();
+  path.style.strokeDashoffset=String(len*(1-eased));
+  if(secondary){
+    const len2=Number(svg.dataset.secondaryLength)||secondary.getTotalLength();
+    secondary.style.strokeDashoffset=String(len2*(1-clamp((t-(start+.35))/(drawEnd+.4-start-.35),0,1)));
+  }
+  const fade=clamp((t-drawEnd)/(fadeEnd-drawEnd),0,1);
+  svg.style.opacity=String(1-fade*.72);
+}
+
 function updateSpecialVisuals(t){
   updateLaserHeart(t);
+  updateLinyahanScribble(t);
 function updateLaserHeart(t){
   const el=L.querySelector('.line.active');
   if(!el || current!==4){
