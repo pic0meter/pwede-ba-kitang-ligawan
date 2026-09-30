@@ -1982,19 +1982,31 @@ render();
       → bottom point → exit.
     */
     d=[
-      "M -120 485",
-      "C -25 470 55 420 105 335",
-      "C 145 266 155 178 220 145",
-      "C 286 112 360 142 402 205",
-      "C 441 263 463 327 500 382",
-      "C 537 327 559 263 598 205",
-      "C 640 142 714 112 780 145",
-      "C 845 178 855 266 895 335",
-      "C 945 420 1025 470 1120 485",
-      "C 1018 503 918 531 830 578",
-      "C 736 628 638 696 500 790",
-      "C 362 696 264 628 170 578",
-      "C 82 531 -18 503 -120 485"
+      /* off-screen entry */
+      "M -120 690",
+
+      /* climb into the left lobe */
+      "C -20 640 55 545 95 425",
+      "C 120 350 112 260 150 205",
+      "C 190 145 270 125 325 170",
+      "C 370 206 390 270 405 335",
+
+      /* deep center notch */
+      "C 420 370 458 400 500 425",
+
+      /* climb back up through the right lobe */
+      "C 542 400 580 370 595 335",
+      "C 610 270 630 206 675 170",
+      "C 730 125 810 145 850 205",
+      "C 888 260 880 350 905 425",
+
+      /* taper into the unmistakable bottom point */
+      "C 890 500 850 575 790 635",
+      "C 720 705 625 775 500 845",
+
+      /* same continuous thread leaves the frame */
+      "C 610 820 735 820 850 855",
+      "C 955 887 1050 900 1140 875"
     ].join(" ");
 
     /*
@@ -2036,22 +2048,27 @@ render();
         30–68%: complete heart is visible.
         68–100%: thread continues downward and leaves.
       */
-      if(q<0.30){
-        var a=ease(q/0.30);
+      /*
+        The thread is pulled through the scene rather than simply
+        fading in a finished heart.
+
+        0–52%  : enter, climb the left lobe, cross the notch,
+                 and complete the right lobe.
+        52–76% : the complete heart is visible.
+        76–100%: the thread continues from the bottom point and
+                 travels out of the frame.
+      */
+      if(q<0.52){
+        var a=ease(q/0.52);
         visible=length*a;
         offset=0;
-      }else if(q<0.68){
+      }else if(q<0.76){
         visible=length;
         offset=0;
       }else{
-        var b=ease((q-0.68)/0.32);
-        /*
-          Keep the head of the thread moving toward the exit.
-          The path itself extends off-screen, so the disappearing
-          tail feels continuous.
-        */
-        visible=length*(1-0.72*b);
-        offset=-length*0.72*b;
+        var b=ease((q-0.76)/0.24);
+        visible=length*(1-0.82*b);
+        offset=-length*0.82*b;
       }
 
       path.style.strokeDasharray=visible+" "+length;
