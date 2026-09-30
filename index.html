@@ -578,6 +578,18 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   100%{opacity:1;transform:translate3d(-50%,-50%,0) scale(1)}
 }
 
+/* Wind-like exit: the whole word catches a gentle sideways/upward gust. */
+.line.scene-orbit .word.kailan-drifting{
+  animation:kailanWindOut 1.25s cubic-bezier(.22,.65,.2,1) forwards!important;
+  z-index:2;
+}
+@keyframes kailanWindOut{
+  0%{opacity:1;transform:translate3d(-50%,-50%,0) rotate(0deg) skewX(0deg) scale(1)}
+  18%{opacity:.96;transform:translate3d(calc(-50% + var(--wind-x)*.10),calc(-50% + var(--wind-y)*.10),0) rotate(calc(var(--wind-r)*.15)) skewX(calc(var(--wind-skew)*.18)) scale(1.01)}
+  55%{opacity:.62;transform:translate3d(calc(-50% + var(--wind-x)*.52),calc(-50% + var(--wind-y)*.52),0) rotate(calc(var(--wind-r)*.55)) skewX(calc(var(--wind-skew)*.6)) scale(1.035)}
+  100%{opacity:0;transform:translate3d(calc(-50% + var(--wind-x)),calc(-50% + var(--wind-y)),0) rotate(var(--wind-r)) skewX(var(--wind-skew)) scale(1.08)}
+}
+
 /* 4 — build toward the "oo" like a rubber band */
 .line.scene-stretch{gap:.06em .12em}
 .line.scene-stretch .word.visible{animation:stretchIn .5s cubic-bezier(.12,1.35,.3,1) both}
