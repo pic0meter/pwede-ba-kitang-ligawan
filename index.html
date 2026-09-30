@@ -291,6 +291,87 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 @keyframes clockLyricIn{0%{opacity:0;transform:translateY(20px) scale(.65) rotate(-4deg)}65%{opacity:1;transform:translateY(-5px) scale(1.06) rotate(1deg)}100%{opacity:1;transform:none}}
 .clock-face .clock-number:nth-child(12n+1){color:var(--accent)}
 
+
+/* --- PUSO / HEARTBEAT ENHANCEMENT --- */
+.line.scene-heart-split{
+  width:min(1120px,92vw);
+  min-height:48vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  align-content:center;
+  gap:.08em;
+  position:relative;
+  overflow:visible;
+}
+.line.scene-heart-split .lyric-part{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  justify-content:center;
+  gap:.02em .13em;
+  position:relative;
+  width:100%;
+  z-index:2;
+}
+.line.scene-heart-split .lyric-part.top{
+  transform:translateY(.08em);
+}
+.line.scene-heart-split .lyric-part.heart-line{
+  margin-top:-.02em;
+}
+.line.scene-heart-split .word{z-index:2}
+.line.scene-heart-split .heart-anchor{
+  position:relative;
+  display:inline-block;
+}
+.line.scene-heart-split .heart-anchor .word{position:relative;z-index:3}
+.heart-field{
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:min(70vw,560px);
+  height:150px;
+  transform:translate(-50%,-50%);
+  pointer-events:none;
+  z-index:1;
+  overflow:visible;
+}
+.heart{
+  position:absolute;
+  left:50%;
+  top:55%;
+  color:#ffb38a;
+  font-size:clamp(16px,2.4vw,32px);
+  line-height:1;
+  opacity:0;
+  filter:drop-shadow(0 0 10px #ffb38a55);
+  text-shadow:0 0 18px #ffb38a66;
+  transform:translate(-50%,-50%) scale(.2) rotate(var(--hr));
+  animation:heartFloat var(--hd,2.8s) cubic-bezier(.2,.7,.2,1) forwards;
+}
+@keyframes heartFloat{
+  0%{opacity:0;transform:translate(-50%,-35%) scale(.2) rotate(var(--hr))}
+  12%{opacity:.95;transform:translate(calc(-50% + var(--hx0)),calc(-50% + 4px)) scale(1.05) rotate(var(--hr))}
+  45%{opacity:.78;transform:translate(calc(-50% + var(--hx1)),calc(-50% - 45px)) scale(.92) rotate(calc(var(--hr) + 5deg))}
+  78%{opacity:.45;transform:translate(calc(-50% + var(--hx2)),calc(-50% - 95px)) scale(.76) rotate(calc(var(--hr) - 4deg))}
+  100%{opacity:0;transform:translate(calc(-50% + var(--hx3)),calc(-50% - 145px)) scale(.45) rotate(calc(var(--hr) + 8deg))}
+}
+/* Stronger idle movement: the words subtly tremble between lyric cues. */
+/* Idle heartbeat is applied in updateMotion() with independent CSS transform properties, so it never cancels a scene's entrance animation. */
+.line.active .word.visible:not(.current){will-change:transform,translate,rotate,scale}
+
+/* The synchronized music beat gives all idle words a second, sharper pulse. */
+#app.beat .line.active .word.visible:not(.current){
+  text-shadow:0 0 24px #ffb38a55;
+  scale:1.045;
+}
+#app.beat .line.scene-heart-split .word.current{
+  scale:1.075;
+  text-shadow:0 0 34px #ffb38a77;
+}
+
 @media(max-width:600px){
   #top{top:3vh;left:5vw;right:5vw}
   .counter{font-size:9px}
@@ -475,6 +556,10 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 
 @media(max-width:600px){
   .line.motion{width:88vw;min-height:44vh;gap:.04em .10em}
+  .line.scene-heart-split{width:88vw;min-height:44vh;gap:.1em}
+  .line.scene-heart-split .lyric-part{gap:.02em .09em}
+  .heart-field{width:82vw;height:130px}
+
   .line.scene-orbit{width:88vw;height:44vh}
   .line.scene-orbit .word{font-size:clamp(23px,7.2vw,42px)}
   .line.scene-longa{font-size:clamp(34px,10vw,58px)}
@@ -560,7 +645,7 @@ const lines=[
   {start:132.18,end:135.10,text:'Oo o hindi?',style:'big',section:'final',cues:[132.18,132.60,133.00]}
 ];
 
-let current=-1,playing=false,lastBeat=-1,raf=0,scrubbing=false;
+let current=-1,playing=false,lastBeat=-1,raf=0,scrubbing=false,heartCueShown=false;
 
 function fmt(s){
   s=Math.max(0,s||0);
@@ -602,6 +687,65 @@ function buildWords(text){
     if(isQuestionHindi) return html+'<span class="question-mark" data-question-index="'+(wordIndex-1)+'">?</span>';
     return html;
   }).join('');
+}
+
+
+function buildHeartSplitLine(text){
+  const temp=document.createElement('div');
+  temp.innerHTML=buildWords(text);
+  const top=document.createElement('div');
+  top.className='lyric-part top';
+  const bottom=document.createElement('div');
+  bottom.className='lyric-part heart-line';
+  const field=document.createElement('div');
+  field.className='heart-field';
+  field.setAttribute('aria-hidden','true');
+  bottom.appendChild(field);
+
+  [...temp.childNodes].forEach(node=>{
+    const word=node.nodeType===1 && node.classList.contains('word');
+    const idx=word ? Number(node.dataset.wordIndex) : null;
+    if(word && idx>=5){
+      // Keep "sa puso mo" together while preserving their original cue indices.
+      bottom.appendChild(node);
+    }else{
+      top.appendChild(node);
+    }
+  });
+
+  // Put the heart emitter around the exact visual anchor for "puso".
+  const puso=bottom.querySelector('.word[data-word-index="6"]');
+  if(puso){
+    const anchor=document.createElement('span');
+    anchor.className='heart-anchor';
+    puso.replaceWith(anchor);
+    anchor.appendChild(puso);
+  }
+  const wrap=document.createDocumentFragment();
+  wrap.appendChild(top);
+  wrap.appendChild(bottom);
+  return wrap;
+}
+
+function spawnHearts(){
+  const field=L.querySelector('.line.active.scene-heart-split .heart-field');
+  if(!field)return;
+  const count=12;
+  for(let i=0;i<count;i++){
+    const h=document.createElement('span');
+    h.className='heart';
+    h.textContent=i%3===0?'♥':'♡';
+    h.style.setProperty('--hd',(2.15+(i%5)*.24)+'s');
+    h.style.setProperty('--hr',((i%5)-2)*8+'deg');
+    h.style.setProperty('--hx0',((i%7)-3)*11+'px');
+    h.style.setProperty('--hx1',((i%9)-4)*18+'px');
+    h.style.setProperty('--hx2',((i%11)-5)*23+'px');
+    h.style.setProperty('--hx3',((i%13)-6)*30+'px');
+    h.style.fontSize=(14+(i%5)*4)+'px';
+    h.style.animationDelay=(i*55)+'ms';
+    field.appendChild(h);
+    setTimeout(()=>h.remove(),3300+i*55);
+  }
 }
 
 function sceneFor(i){
@@ -663,15 +807,25 @@ function activate(i){
     setTimeout(()=>old.remove(),700);
   }
   current=i;
+  heartCueShown=false;
   if(i<0){
     SEC.textContent='outro';
     return;
   }
   const item=lines[i];
-  const scene=sceneFor(i);
+  const scene=(i===0)?'heart-split':sceneFor(i);
   const qClass=item.text==='Oo o hindi?'?' scene-question':'';
-  const body=scene==='clock'?buildClock(item.text):buildWords(item.text);
-  L.innerHTML=`<div class="line motion scene-${scene} ${item.style}${qClass}" data-index="${i}">${body}</div>`;
+  const body=scene==='clock'?buildClock(item.text):scene==='heart-split'?buildHeartSplitLine(item.text):buildWords(item.text);
+  if(scene==='heart-split'){
+    const el=document.createElement('div');
+    el.className=`line motion scene-heart-split ${item.style}${qClass}`;
+    el.dataset.index=i;
+    const fragment=body;
+    el.appendChild(fragment);
+    L.replaceChildren(el);
+  }else{
+    L.innerHTML=`<div class="line motion scene-${scene} ${item.style}${qClass}" data-index="${i}">${body}</div>`;
+  }
   const el=L.firstElementChild;
   SEC.textContent=item.section;
   requestAnimationFrame(()=>{el.classList.add('active'); if(scene==='clock') layoutClock();});
@@ -744,6 +898,16 @@ function updateWords(t){
     q.classList.toggle('visible',qVisible);
     if(hindi)hindi.classList.toggle('crossed',qVisible);
   }
+
+  // "puso" keeps its original cue at 11.680s; hearts fire exactly when it appears.
+  if(current===0){
+    const pusoCue=11.680;
+    if(t < pusoCue-0.12) heartCueShown=false;
+    if(t >= pusoCue && !heartCueShown){
+      heartCueShown=true;
+      spawnHearts();
+    }
+  }
 }
 
 function updateMotion(t){
@@ -785,8 +949,12 @@ function updateMotion(t){
       if(!w.classList.contains('visible'))return;
       const drift=Math.sin(t*1.7+i*.8)*4;
       const sway=Math.cos(t*1.15+i*.55)*2.5;
-      w.style.translate=`${sway}px ${drift}px`;
-      w.style.rotate=`${Math.sin(t*1.25+i)*2.2}deg`;
+      const idleX=Math.sin(t*5.4+i*.9)*1.8;
+      const idleY=Math.cos(t*5.4+i*1.1)*1.4;
+      const idleR=Math.sin(t*5.4+i)*.75;
+      w.style.translate=`${sway+idleX}px ${drift+idleY}px`;
+      w.style.rotate=`${Math.sin(t*1.25+i)*2.2+idleR}deg`;
+      w.style.scale=`${1+0.012*Math.sin(t*5.4+i)}`;
     });
   }
   if(scene==='flip'){
@@ -794,8 +962,12 @@ function updateMotion(t){
       if(!w.classList.contains('visible'))return;
       const bob=Math.sin(t*3.2+i*.7)*2.5;
       const tilt=Math.sin(t*2.1+i)*1.5;
-      w.style.translate=`0 ${bob}px`;
-      w.style.rotate=`${tilt}deg`;
+      const idleX=Math.sin(t*5.4+i*.9)*1.8;
+      const idleY=Math.cos(t*5.4+i*1.1)*1.4;
+      const idleR=Math.sin(t*5.4+i)*.75;
+      w.style.translate=`${idleX}px ${bob+idleY}px`;
+      w.style.rotate=`${tilt+idleR}deg`;
+      w.style.scale=`${1+0.012*Math.sin(t*5.4+i)}`;
     });
   }
   if(scene==='rubber'){
@@ -811,6 +983,18 @@ function updateMotion(t){
     const oo=words[0];
     if(oo) oo.style.transform=`translateY(${Math.sin(t*7)*3}px) scale(${1.02+.035*Math.max(0,Math.sin(t*4))})`;
   }
+
+  // Extra idle heartbeat for every scene, layered through independent transform properties.
+  words.forEach((w,i)=>{
+    if(!w.classList.contains('visible'))return;
+    if(scene==='fly' || scene==='flip')return; // already composed above
+    const idleX=Math.sin(t*5.4+i*.9)*1.8;
+    const idleY=Math.cos(t*5.4+i*1.1)*1.4;
+    const idleR=Math.sin(t*5.4+i)*.75;
+    w.style.translate=`${idleX}px ${idleY}px`;
+    w.style.rotate=`${idleR}deg`;
+    w.style.scale=`${1+0.012*Math.sin(t*5.4+i)}`;
+  });
 }
 
 function pulse(t){
