@@ -113,6 +113,99 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 }
 .word.accent,.word.visible.accent{color:var(--accent)}
 
+
+/* PUSO heart burst — exists only while the PUSO cue is active */
+#heartField{
+  position:absolute;
+  inset:0;
+  z-index:6;
+  overflow:hidden;
+  pointer-events:none;
+}
+.puso-heart{
+  position:absolute;
+  left:0;
+  top:0;
+  width:var(--size);
+  height:var(--size);
+  opacity:0;
+  transform:translate(-50%,-50%) scale(.25);
+  animation:pusoHeartBurst var(--life) cubic-bezier(.18,.72,.25,1) forwards;
+  will-change:transform,opacity;
+}
+.puso-heart::before,
+.puso-heart::after{
+  content:"";
+  position:absolute;
+  width:50%;
+  height:50%;
+  border-radius:50%;
+  background:currentColor;
+}
+.puso-heart::before{left:0;top:0}
+.puso-heart::after{right:0;top:0}
+.puso-heart{
+  background:currentColor;
+  transform-origin:center;
+  rotate:-45deg;
+  border-radius:2px;
+}
+@keyframes pusoHeartBurst{
+  0%{
+    opacity:0;
+    transform:translate(-50%,-50%) scale(.25) rotate(0deg);
+  }
+  12%{opacity:.95}
+  72%{opacity:.72}
+  100%{
+    opacity:0;
+    transform:
+      translate(
+        calc(-50% + var(--dx)),
+        calc(-50% + var(--dy))
+      )
+      scale(1)
+      rotate(var(--rot));
+  }
+}
+
+/* "banat na 'to" echo field — only visible during 00:21–00:23 */
+#backgroundBanat{
+  position:absolute;
+  inset:0;
+  z-index:3;
+  overflow:hidden;
+  pointer-events:none;
+}
+.banat-echo{
+  position:absolute;
+  white-space:nowrap;
+  color:#fff;
+  opacity:0;
+  font-weight:800;
+  letter-spacing:-.06em;
+  mix-blend-mode:screen;
+  animation:banatEchoInOut var(--life,1.9s) ease-out forwards;
+}
+@keyframes banatEchoInOut{
+  0%{
+    opacity:0;
+    transform:translate(-50%,-50%) scale(.78) rotate(var(--rot));
+  }
+  15%{opacity:var(--alpha)}
+  68%{opacity:calc(var(--alpha) * .72)}
+  100%{
+    opacity:0;
+    transform:
+      translate(
+        calc(-50% + var(--dx)),
+        calc(-50% + var(--dy))
+      )
+      scale(1.08)
+      rotate(var(--rot));
+  }
+}
+
 #echoes{position:absolute;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
 .echo{
   position:absolute;font-weight:800;white-space:nowrap;color:#fff;opacity:0;
@@ -1232,31 +1325,6 @@ function echo(){
   setTimeout(()=>e.remove(),1200);
 }
 
-function createHeartField(){
-  const field=document.querySelector('#heartField');
-  if(!field || field.dataset.ready)return;
-  field.dataset.ready='1';
-
-  const sizes=[10,14,18,23,29,36,46,58,72,92];
-  const colors=['#ffb38a','#f8f0e6','#e8a7b7','#d99a78','#ffd6c2'];
-  for(let i=0;i<34;i++){
-    const h=document.createElement('span');
-    h.className='heart';
-    h.style.setProperty('--hx',(Math.random()*100)+'%');
-    h.style.setProperty('--hy',(Math.random()*100)+'%');
-    h.style.setProperty('--hs',sizes[Math.floor(Math.random()*sizes.length)]+'px');
-    h.style.setProperty('--ho',(0.025+Math.random()*0.10).toFixed(3));
-    h.style.setProperty('--hc',colors[Math.floor(Math.random()*colors.length)]);
-    h.style.setProperty('--hb',(Math.random()<.65?'0px':(1+Math.random()*2)+'px'));
-    h.style.setProperty('--hd',(5+Math.random()*8)+'s');
-    h.style.setProperty('--hp',(1.7+Math.random()*2.4)+'s');
-    h.style.setProperty('--hdelay',(-Math.random()*8)+'s');
-    h.style.setProperty('--drift-x',(-35+Math.random()*70)+'px');
-    h.style.setProperty('--drift-y',(-12-Math.random()*35)+'px');
-    field.appendChild(h);
-  }
-}
-
 function createBanatBackground(){
   const field=document.querySelector('#backgroundBanat');
   if(!field || field.dataset.ready)return;
@@ -1290,55 +1358,6 @@ function createBanatBackground(){
   }
 }
 
-function spawnBanatEcho(){
-  const host=document.querySelector('#echoes');
-  if(!host)return;
-  const e=document.createElement('div');
-  e.className='banat-echo';
-  e.textContent="banat na 'to";
-  e.style.left=(18+Math.random()*62)+'%';
-  e.style.top=(25+Math.random()*48)+'%';
-  e.style.fontSize=(28+Math.random()*78)+'px';
-  e.style.fontFamily=[
-    'Georgia,serif',
-    'Arial Black,Impact,sans-serif',
-    'Courier New,monospace'
-  ][Math.floor(Math.random()*3)];
-  e.style.setProperty('--edx',(Math.random()*180-90)+'px');
-  e.style.setProperty('--edy',(Math.random()*130-65)+'px');
-  e.style.setProperty('--er',(Math.random()*16-8)+'deg');
-  host.appendChild(e);
-  setTimeout(()=>e.remove(),2300);
-}
-
-function spawnPusoHearts(){
-  const host=document.querySelector('#heartField');
-  const target=L.querySelector('.line.active .puso-word');
-  if(!host || !target)return;
-
-  const r=target.getBoundingClientRect();
-  const cx=r.left+r.width/2;
-  const cy=r.top+r.height*.45;
-
-  for(let i=0;i<18;i++){
-    const h=document.createElement('span');
-    h.className='heart puso-heart';
-    h.style.setProperty('--hx',(cx+(Math.random()-.5)*r.width*.95)+'px');
-    h.style.setProperty('--hy',(cy+(Math.random()-.5)*r.height*.5)+'px');
-    h.style.setProperty('--hs',(10+Math.random()*34)+'px');
-    h.style.setProperty('--ho',(0.45+Math.random()*.35).toFixed(2));
-    h.style.setProperty('--hc',['#ffb38a','#f8f0e6','#e8a7b7'][Math.floor(Math.random()*3)]);
-    h.style.setProperty('--hd',(2.2+Math.random()*1.8)+'s');
-    h.style.setProperty('--hp',(1.4+Math.random()*1.4)+'s');
-    h.style.setProperty('--hdelay',(Math.random()*.25)+'s');
-    h.style.setProperty('--drift-x',(-70+Math.random()*140)+'px');
-    h.style.setProperty('--drift-y',(-80-Math.random()*120)+'px');
-    h.style.animationName='pusoHeartFloat,pusoHeartPulse';
-    host.appendChild(h);
-    setTimeout(()=>h.remove(),4200);
-  }
-}
-
 function updateSpecialVisuals(t){
   const firstWasActive = current===0;
   if(firstWasActive && t>=11.680 && t<12.430 && !window._pusoHeartBurst){
@@ -1358,11 +1377,114 @@ function updateSpecialVisuals(t){
   if(!inBanatEcho) window._banatEchoStarted=false;
 }
 
+
+let pusoBurstActive=false;
+let banatEchoActive=false;
+
+function clearPusoHearts(){
+  const field=document.querySelector('#heartField');
+  if(field) field.replaceChildren();
+  pusoBurstActive=false;
+}
+
+function spawnPusoHearts(){
+  const field=document.querySelector('#heartField');
+  if(!field || pusoBurstActive) return;
+  pusoBurstActive=true;
+
+  // Burst around the center of the lyric, then disappear like bubbles.
+  const count=22;
+  for(let i=0;i<count;i++){
+    const h=document.createElement('span');
+    h.className='puso-heart';
+
+    const angle=(Math.PI*2/count)*i + (Math.random()-.5)*.55;
+    const distance=70 + Math.random()*210;
+    const size=8 + Math.random()*22;
+
+    h.style.setProperty('--size',size+'px');
+    h.style.setProperty('--dx',(Math.cos(angle)*distance)+'px');
+    h.style.setProperty('--dy',(Math.sin(angle)*distance - 35 - Math.random()*80)+'px');
+    h.style.setProperty('--rot',(-35+Math.random()*70)+'deg');
+    h.style.setProperty('--life',(0.75+Math.random()*0.65)+'s');
+    h.style.color=`hsl(${5+Math.random()*35}, ${65+Math.random()*25}%, ${65+Math.random()*20}%)`;
+
+    // Start from the center of the lyric stage.
+    h.style.left='50%';
+    h.style.top='50%';
+
+    field.appendChild(h);
+  }
+
+  // The field is completely cleared after the burst.
+  setTimeout(clearPusoHearts,1550);
+}
+
+function clearBanatEchoes(){
+  const field=document.querySelector('#backgroundBanat');
+  if(field) field.replaceChildren();
+  banatEchoActive=false;
+}
+
+function spawnBanatEchoes(){
+  const field=document.querySelector('#backgroundBanat');
+  if(!field || banatEchoActive) return;
+  banatEchoActive=true;
+
+  const fonts=[
+    'Arial Black, sans-serif',
+    'Georgia, serif',
+    'Impact, sans-serif',
+    'Trebuchet MS, sans-serif',
+    'Courier New, monospace',
+    'Times New Roman, serif',
+    'Verdana, sans-serif'
+  ];
+
+  const count=18;
+  for(let i=0;i<count;i++){
+    const e=document.createElement('div');
+    e.className='banat-echo';
+    e.textContent="banat na 'to";
+
+    e.style.left=(5+Math.random()*90)+'%';
+    e.style.top=(8+Math.random()*84)+'%';
+    e.style.fontFamily=fonts[Math.floor(Math.random()*fonts.length)];
+    e.style.fontSize=(18+Math.random()*76)+'px';
+    e.style.setProperty('--rot',(-18+Math.random()*36)+'deg');
+    e.style.setProperty('--dx',(-35+Math.random()*70)+'px');
+    e.style.setProperty('--dy',(-25+Math.random()*50)+'px');
+    e.style.setProperty('--alpha',(0.055+Math.random()*0.105).toFixed(3));
+    e.style.setProperty('--life',(1.35+Math.random()*0.75)+'s');
+
+    field.appendChild(e);
+  }
+
+  // Nothing remains after the 21–23 second echo window.
+  setTimeout(clearBanatEchoes,2150);
+}
+
 function render(){
   if((A.currentTime||0)>=135){A.currentTime=135;A.pause();}
   const t=Math.min(A.currentTime||0,135);
   const i=lines.findIndex(x=>t>=x.start&&t<x.end);
   activate(i);
+
+  // Time-locked visual effects:
+  // PUSO burst only during the PUSO cue (11.680s–12.430s).
+  if(t>=11.680 && t<12.430){
+    if(!pusoBurstActive) spawnPusoHearts();
+  }else if(pusoBurstActive){
+    clearPusoHearts();
+  }
+
+  // "banat na 'to" echoes only from 00:21–00:23.
+  if(t>=21 && t<23){
+    if(!banatEchoActive) spawnBanatEchoes();
+  }else if(banatEchoActive){
+    clearBanatEchoes();
+  }
+
   updateWords(t);
   updateMotion(t);
   updateClock(t);
@@ -1451,8 +1573,6 @@ APP.addEventListener('pointerleave',()=>{
   document.documentElement.style.setProperty('--mx','0px');
   document.documentElement.style.setProperty('--my','0px');
 });
-
-createHeartField();
 createBanatBackground();
 render();
 </script>
