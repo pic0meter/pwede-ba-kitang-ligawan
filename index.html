@@ -123,6 +123,14 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .oo-heart::before,.oo-heart::after{content:"";position:absolute;width:50%;height:50%;border-radius:50%;background:currentColor}.oo-heart::before{left:0;top:0}.oo-heart::after{right:0;top:0}
 @keyframes ooHeartBurst{0%{opacity:0;transform:translate(-50%,-50%) scale(.2)}10%{opacity:.95}100%{opacity:0;transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(1) rotate(var(--rot))}}
 
+
+.puso-throb .word{animation:lyricThrob .72s ease-in-out infinite}.puso-throb .word.current{animation:lyricThrobCurrent .48s ease-in-out infinite}
+@keyframes lyricThrob{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-2px) scale(1.025)}}
+@keyframes lyricThrobCurrent{0%,100%{transform:translateY(-.055em) scale(1.06)}50%{transform:translateY(-.09em) scale(1.13)}}
+.puso-bg-heart{position:absolute;width:var(--size);height:var(--size);left:var(--x);top:var(--y);background:currentColor;opacity:0;rotate:-45deg;border-radius:2px;animation:pusoBgPulse var(--life) ease-in-out infinite}
+.puso-bg-heart::before,.puso-bg-heart::after{content:"";position:absolute;width:50%;height:50%;border-radius:50%;background:currentColor}.puso-bg-heart::before{left:0;top:0}.puso-bg-heart::after{right:0;top:0}
+@keyframes pusoBgPulse{0%,100%{opacity:.035;transform:scale(.88)}50%{opacity:.16;transform:scale(1.12)}}
+
 /* PUSO heart burst — exists only while the PUSO cue is active */
 #heartField{
   position:absolute;
@@ -519,6 +527,28 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 @keyframes gustoShiver{0%{transform:translate(-1px,0) rotate(-.7deg)}25%{transform:translate(1.5px,-.5px) rotate(.8deg)}50%{transform:translate(-1.5px,.6px) rotate(-.9deg)}75%{transform:translate(1px,-.4px) rotate(.7deg)}100%{transform:translate(-.5px,.2px) rotate(-.4deg)}}
 @keyframes gustoShiverCurrent{0%,100%{transform:translateY(-.055em) scale(1.06)}}
 @keyframes gustoShiverStrong{0%{transform:translate(-2px,-1px) rotate(-1.2deg) scale(1.06)}25%{transform:translate(2px,1px) rotate(1.3deg) scale(1.075)}50%{transform:translate(-2.5px,0) rotate(-1.5deg) scale(1.055)}75%{transform:translate(2px,-1px) rotate(1.1deg) scale(1.07)}100%{transform:translate(-1px,1px) rotate(-.8deg) scale(1.06)}}
+
+
+.scratch-word{position:relative;display:inline-block;text-shadow:2px 1px 0 #fff2,-1px -1px 0 #0004}
+.scratch-word::before,.scratch-word::after{content:"";position:absolute;left:-8%;width:116%;pointer-events:none;background:repeating-linear-gradient(164deg,transparent 0 5px,#f5e9df99 5px 7px,transparent 7px 11px);mix-blend-mode:screen}
+.scratch-word::before{top:17%;height:28%;transform:rotate(-3deg) skewX(-12deg);opacity:.78}
+.scratch-word::after{top:56%;height:23%;transform:rotate(2deg) skewX(9deg);opacity:.6}
+
+
+.gusto-shiver .word.visible{animation:gustoShiver .105s steps(2,end) infinite}.gusto-shiver .word.current{animation:gustoShiverStrong .075s steps(2,end) infinite}.gusto-shiver .word:last-child{position:relative;z-index:4;font-size:1.45em;color:var(--accent);text-shadow:0 0 34px #ffb38a66;animation:ooForeground .52s ease-in-out infinite}
+@keyframes gustoShiver{0%{transform:translate(-1px,0) rotate(-.7deg)}25%{transform:translate(1.5px,-.5px) rotate(.8deg)}50%{transform:translate(-1.5px,.6px) rotate(-.9deg)}75%{transform:translate(1px,-.4px) rotate(.7deg)}100%{transform:translate(-.5px,.2px) rotate(-.4deg)}}
+@keyframes gustoShiverStrong{0%{transform:translate(-2px,-1px) rotate(-1.2deg) scale(1.05)}50%{transform:translate(2px,1px) rotate(1.3deg) scale(1.08)}100%{transform:translate(-2px,0) rotate(-1deg) scale(1.05)}}
+@keyframes ooForeground{0%,100%{transform:scale(1.45) rotate(-1deg)}50%{transform:scale(1.62) rotate(1deg)}}
+.gusto-shiver .confetti,.gusto-shiver .particle,.gusto-shiver .spark,.gusto-shiver .trail{display:none!important}
+.subtle-kinetic .word.visible{animation:subtleKinetic 1.35s ease-in-out infinite}.subtle-kinetic .word.visible:last-child{animation:linyahanShake .18s steps(2,end) infinite;color:var(--accent)}
+@keyframes subtleKinetic{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-3px) rotate(.6deg)}}
+@keyframes linyahanShake{0%{transform:translate(-2px,0) rotate(-1.2deg)}25%{transform:translate(2px,-1px) rotate(1.4deg) scale(1.03)}50%{transform:translate(-2px,1px) rotate(-1.5deg) scale(1.01)}75%{transform:translate(2px,0) rotate(1.2deg) scale(1.03)}100%{transform:none}}
+.clock-shake .word.visible{animation:clockLyricShake .14s steps(2,end) infinite}.clock-shake .clock-face{animation:clockFastSpin 2.4s linear infinite}.clock-shake .confetti,.clock-shake .particle,.clock-shake .spark{display:none!important}
+@keyframes clockLyricShake{0%{transform:translate(-1px,0) rotate(-.5deg)}50%{transform:translate(1px,.5px) rotate(.6deg)}100%{transform:none}}@keyframes clockFastSpin{to{transform:rotate(360deg)}}
+.standup-exit .word.current{animation:standUpHighlighted .32s cubic-bezier(.15,1.4,.3,1) both;transform-origin:50% 100%;z-index:5}
+@keyframes standUpHighlighted{0%{transform:translateY(12px) rotate(-18deg) scale(.92)}70%{transform:translateY(-5px) rotate(4deg) scale(1.08)}100%{transform:translateY(0) rotate(0) scale(1.06)}}
+.standup-exit{animation:kasiExit .72s cubic-bezier(.7,0,.9,.2) forwards;transform-origin:50% 50%}
+@keyframes kasiExit{0%{clip-path:inset(0);filter:blur(0);opacity:1}58%{clip-path:inset(0);filter:blur(0);opacity:1;transform:scale(1)}100%{clip-path:inset(0 50% 0 50%);filter:blur(12px);opacity:0;transform:scale(1.12) rotateX(18deg)}}
 
 /* 3 — thinking words circle each other, but on a readable orbit */
 .line.scene-orbit{position:relative;width:min(980px,94vw);height:min(52vh,440px);display:block}
@@ -984,9 +1014,11 @@ function buildWords(text){
     const base=isQuestionHindi?'hindi':raw;
     const clean=cleanWord(base);
     const accent=accentWords.has(clean);
+    const scratch=(clean==='gasgas' || clean==='banat');
     const tilt=[-2,1,-1,2,0][wordIndex%5];
     const classes=['word'];
     if(accent)classes.push('accent');
+    if(scratch)classes.push('scratch-word');
     if(isQuestionHindi)classes.push('deny');
     const flyX=((wordIndex%2?-1:1)*(80+((wordIndex*47)%180)))+'px';
     const flyY=((wordIndex%3-1)*(70+((wordIndex*31)%150)))+'px';
@@ -1139,6 +1171,11 @@ function activate(i){
   L.innerHTML=`<div class="line motion scene-${scene} ${item.style}${qClass}${specialClass}" data-index="${i}">${body}</div>`;
   }
   const el=L.firstElementChild;
+  if(i===0) el.classList.add('puso-throb');
+  if(i===3) el.classList.add('gusto-shiver');
+  if(i===5) el.classList.add('subtle-kinetic');
+  if(i===6) el.classList.add('clock-shake');
+  if(i===7) el.classList.add('standup-exit');
   SEC.textContent=item.section;
   requestAnimationFrame(()=>{el.classList.add('active'); if(scene==='clock') layoutClock();});
 
@@ -1362,6 +1399,11 @@ function clearOoTakeover(){const field=document.querySelector('#ooExplosion');if
 function spawnOoTakeover(){const field=document.querySelector('#ooExplosion');if(!field||ooTakeoverActive)return;ooTakeoverActive=true;const fonts=['Arial Black, Impact, sans-serif','Georgia, serif','Times New Roman, serif','Courier New, monospace','Trebuchet MS, sans-serif','Verdana, sans-serif','Palatino Linotype, serif','Impact, sans-serif'];for(let i=0;i<30;i++){const e=document.createElement('div');e.className='oo-field';e.textContent='Oo';e.style.fontFamily=fonts[Math.floor(Math.random()*fonts.length)];e.style.fontSize=(26+Math.random()*150)+'px';e.style.setProperty('--r',(-16+Math.random()*32)+'deg');e.style.setProperty('--r2',(-30+Math.random()*60)+'deg');e.style.setProperty('--dx',(-55+Math.random()*110)+'vw');e.style.setProperty('--dy',(-55+Math.random()*110)+'vh');e.style.setProperty('--scale',(0.8+Math.random()*2.4).toFixed(2));e.style.setProperty('--life',(1.05+Math.random()*.55)+'s');const a=(i/30)*Math.PI*2;const radius=20+Math.random()*42;e.style.left=(50+Math.cos(a)*radius)+'%';e.style.top=(50+Math.sin(a)*radius)+'%';field.appendChild(e)}const wipe=document.createElement('div');wipe.className='oo-field wipe';wipe.textContent='Oo';wipe.style.fontFamily=fonts[Math.floor(Math.random()*fonts.length)];wipe.style.fontSize='clamp(90px,28vw,420px)';wipe.style.setProperty('--r','0deg');wipe.style.setProperty('--life','1.15s');field.appendChild(wipe)}
 function explodeOoIntoHearts(){const field=document.querySelector('#ooExplosion');if(!field||ooHeartBurstActive)return;ooHeartBurstActive=true;for(let i=0;i<34;i++){const h=document.createElement('span');h.className='oo-heart';const a=(Math.PI*2/34)*i+(Math.random()-.5)*.4;const distance=100+Math.random()*330;h.style.setProperty('--size',(7+Math.random()*25)+'px');h.style.setProperty('--dx',(Math.cos(a)*distance)+'px');h.style.setProperty('--dy',(Math.sin(a)*distance)+'px');h.style.setProperty('--rot',(-35+Math.random()*70)+'deg');h.style.setProperty('--life',(0.65+Math.random()*.65)+'s');h.style.color=`hsl(${5+Math.random()*40},${65+Math.random()*25}%,${65+Math.random()*20}%)`;field.appendChild(h)}setTimeout(clearOoTakeover,1450)}
 
+
+let pusoBgActive=false;
+function clearPusoBackground(){const f=document.querySelector('#heartField');if(f)f.querySelectorAll('.puso-bg-heart').forEach(h=>h.remove());pusoBgActive=false}
+function spawnPusoBackground(){const f=document.querySelector('#heartField');if(!f||pusoBgActive)return;pusoBgActive=true;for(let i=0;i<24;i++){const h=document.createElement('span');h.className='puso-bg-heart';h.style.setProperty('--size',(14+Math.random()*58)+'px');h.style.setProperty('--x',(2+Math.random()*96)+'%');h.style.setProperty('--y',(4+Math.random()*90)+'%');h.style.setProperty('--life',(1.1+Math.random()*1.8)+'s');h.style.color=`hsl(${5+Math.random()*35},60%,70%)`;f.appendChild(h)}}
+
 let pusoBurstActive=false;
 let banatEchoActive=false;
 
@@ -1457,9 +1499,11 @@ function render(){
   // Time-locked visual effects:
   // PUSO burst only during the PUSO cue (11.680s–12.430s).
   if(t>=11.680 && t<12.430){
+    spawnPusoBackground();
     if(!pusoBurstActive) spawnPusoHearts();
-  }else if(pusoBurstActive){
-    clearPusoHearts();
+  }else{
+    if(pusoBurstActive) clearPusoHearts();
+    if(pusoBgActive) clearPusoBackground();
   }
 
 
