@@ -1058,7 +1058,7 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .line.scene-kailan-flight .word{position:absolute;left:50%;top:50%;margin:0;white-space:nowrap;transform:translate3d(-50%,-50%,0);will-change:transform,opacity;animation:none!important}
 .line.scene-kailan-flight .word.accent{color:var(--accent)}
 
-/* RED STRING OF FATE — decorative layer, independent of the player */
+/* TRAVELLING THREAD — a long off-screen string with only a moving portion visible */
 #redStringFate{
   position:absolute;
   inset:0;
@@ -1066,7 +1066,7 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   pointer-events:none;
   overflow:hidden;
   opacity:0;
-  transition:opacity .28s ease;
+  transition:opacity .18s ease;
 }
 #redStringFate.active{opacity:1}
 #redStringFate svg{
@@ -1079,31 +1079,25 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 #redStringFate .string-glow,
 #redStringFate .string-path{
   fill:none;
-  stroke:#ff3f58;
+  stroke:#fff500;
   stroke-linecap:round;
   stroke-linejoin:round;
   vector-effect:non-scaling-stroke;
 }
 #redStringFate .string-glow{
-  stroke-width:8;
-  opacity:.18;
-  filter:blur(4px);
+  stroke-width:11;
+  opacity:.12;
+  filter:blur(5px);
 }
 #redStringFate .string-path{
-  stroke-width:2.35;
-  opacity:.96;
-  filter:drop-shadow(0 0 3px #ff4054) drop-shadow(0 0 7px #ff405455);
-}
-#redStringFate .string-tip{
-  fill:#ff7080;
-  opacity:0;
-  filter:drop-shadow(0 0 4px white) drop-shadow(0 0 9px #ff4054);
+  stroke-width:4.6;
+  opacity:.98;
+  filter:drop-shadow(0 0 3px #fff500) drop-shadow(0 0 8px #fff50066);
 }
 @media(max-width:600px){
-  #redStringFate .string-path{stroke-width:2.1}
-  #redStringFate .string-glow{stroke-width:6}
+  #redStringFate .string-path{stroke-width:4.4}
+  #redStringFate .string-glow{stroke-width:9}
 }
-
 </style>
 </head>
 <body>
@@ -1938,11 +1932,13 @@ render();
 
 <script>
 /*
-  RED STRING OF FATE
+  TRAVELLING THREAD
   ------------------------------------------------------------
-  This is deliberately isolated from the existing lyric player.
-  It does not replace or call play(), pause(), render(),
-  updateSpecialVisuals(), activate(), or any existing listener.
+  The string is one very long continuous path. Only a moving
+  window of that path is visible, so it can leave the screen
+  and later re-enter without looking like separate drawings.
+
+  This script is isolated from the existing player.
 */
 (function(){
   try{
@@ -1950,59 +1946,84 @@ render();
     var audio=document.getElementById('audio');
     var path=root && root.querySelector('.string-path');
     var glow=root && root.querySelector('.string-glow');
-    var tip=root && root.querySelector('.string-tip');
 
     if(!root || !audio || !path || !glow) return;
 
-    var START=39.65;
-    var END=71.00;
-
-    /* One continuous whimsical thread: curls, loops, reverses,
-       makes small figure-eights, and finally winds around the chorus. */
+    /*
+      The path intentionally goes beyond the viewport.
+      It makes loose, hand-drawn loops and heart-like turns,
+      similar to a thread being pulled across the screen.
+    */
     var d=[
-      "M 78 350",
-      "C 105 320 120 270 174 262",
-      "C 225 254 270 286 257 329",
-      "C 244 372 183 383 151 347",
-      "C 119 311 139 251 198 229",
-      "C 259 206 326 238 330 289",
-      "C 334 342 276 370 250 415",
-      "C 221 466 274 510 342 492",
-      "C 414 473 455 412 417 365",
-      "C 379 318 317 321 303 270",
-      "C 286 209 348 161 421 177",
-      "C 494 193 530 254 492 303",
-      "C 456 350 399 347 376 306",
-      "C 349 259 383 216 433 218",
-      "C 487 220 514 274 488 315",
-      "C 462 355 406 361 388 405",
-      "C 368 452 410 500 472 498",
-      "C 541 496 579 441 550 393",
-      "C 521 345 459 350 444 394",
-      "C 428 440 472 473 520 457",
-      "C 568 441 588 390 567 349",
-      "C 543 301 484 285 451 318",
-      "C 417 351 433 399 477 412",
-      "C 523 425 564 397 560 355",
-      "C 555 311 510 278 472 293",
-      "C 430 310 420 355 452 382",
-      "C 489 414 544 394 565 355",
-      "C 588 312 621 293 662 311",
-      "C 707 330 717 381 689 412",
-      "C 659 445 603 438 587 397",
-      "C 571 356 603 322 641 330",
-      "C 681 339 693 382 671 410",
-      "C 647 442 600 443 574 474",
-      "C 544 510 578 548 640 544",
-      "C 710 539 772 494 770 438",
-      "C 768 385 719 358 681 382",
-      "C 644 406 654 452 692 464",
-      "C 731 476 764 447 756 413",
-      "C 748 380 710 364 686 386",
-      "C 662 408 670 441 698 448",
-      "C 727 455 750 432 745 410",
-      "C 740 389 716 379 700 392",
-      "C 680 408 688 432 710 436"
+      "M -520 565",
+      "C -410 535 -355 455 -270 420",
+      "C -185 385 -92 405 -68 475",
+      "C -45 545 -116 600 -190 570",
+      "C -265 540 -278 450 -216 385",
+      "C -154 320 -50 325 28 382",
+      "C 105 439 164 490 248 465",
+      "C 340 438 397 348 356 280",
+      "C 315 213 208 222 181 300",
+      "C 153 380 221 437 301 421",
+      "C 384 404 443 318 418 238",
+      "C 392 158 298 124 226 169",
+      "C 155 214 164 314 242 352",
+      "C 320 390 408 352 442 279",
+      "C 474 209 450 132 385 105",
+      "C 316 76 236 105 213 169",
+      "C 188 239 240 294 309 285",
+      "C 379 276 430 212 476 176",
+      "C 530 134 600 141 627 193",
+      "C 655 247 625 310 566 326",
+      "C 505 342 455 297 470 242",
+      "C 486 183 556 167 605 201",
+      "C 655 236 668 299 632 350",
+      "C 592 408 501 411 455 365",
+      "C 409 319 427 253 486 218",
+      "C 546 183 628 205 662 262",
+      "C 699 325 680 397 619 431",
+      "C 554 467 478 439 449 382",
+      "C 420 325 448 270 508 252",
+      "C 572 233 635 268 650 327",
+      "C 665 390 628 445 565 463",
+      "C 496 483 435 447 425 390",
+      "C 414 330 452 282 510 278",
+      "C 575 274 620 320 607 375",
+      "C 594 430 535 455 486 426",
+      "C 438 397 440 340 485 315",
+      "C 531 290 583 315 598 359",
+      "C 616 412 664 455 735 449",
+      "C 808 443 859 385 844 322",
+      "C 829 258 755 229 698 263",
+      "C 642 297 648 363 704 390",
+      "C 762 418 824 385 827 329",
+      "C 830 275 780 239 728 255",
+      "C 676 271 664 322 694 355",
+      "C 726 391 784 385 813 349",
+      "C 851 302 903 292 958 323",
+      "C 1018 357 1050 425 1097 470",
+      "C 1149 520 1234 506 1270 445",
+      "C 1304 388 1278 324 1216 309",
+      "C 1154 294 1108 339 1123 394",
+      "C 1140 455 1210 474 1260 438",
+      "C 1314 398 1375 410 1428 461",
+      "C 1482 512 1554 538 1619 506",
+      "C 1684 474 1711 405 1673 347",
+      "C 1634 287 1552 281 1500 327",
+      "C 1447 373 1461 445 1521 469",
+      "C 1581 493 1642 459 1652 402",
+      "C 1663 340 1614 299 1556 308",
+      "C 1499 317 1475 373 1505 416",
+      "C 1537 462 1604 461 1641 420",
+      "C 1691 365 1764 360 1822 407",
+      "C 1883 456 1919 518 1990 505",
+      "C 2060 492 2097 425 2064 368",
+      "C 2028 306 1948 297 1895 341",
+      "C 1842 385 1855 454 1914 478",
+      "C 1973 502 2033 467 2044 411",
+      "C 2057 349 2007 309 1950 319",
+      "C 1891 330 1869 386 1900 428",
+      "C 1934 474 2000 471 2036 430"
     ].join(" ");
 
     path.setAttribute("d",d);
@@ -2011,44 +2032,78 @@ render();
     var length=path.getTotalLength();
     if(!isFinite(length) || length<=0) return;
 
-    path.style.strokeDasharray=length+" "+length;
-    glow.style.strokeDasharray=length+" "+length;
-    path.style.strokeDashoffset=length;
-    glow.style.strokeDashoffset=length;
+    /*
+      Only this much of the long thread is painted at once.
+      Because the path itself extends beyond the screen, the
+      visible portion can disappear completely and come back.
+    */
+    var WINDOW=930;
+    path.style.strokeDasharray=WINDOW+" "+length;
+    glow.style.strokeDasharray=WINDOW+" "+length;
+
+    /*
+      Each lyric line gets its own stretch of the SAME path.
+      The end of one stretch is the start of the next, so there
+      is no teleporting/jumping between lines.
+    */
+    var first=[
+      [39.65,46.75,0.04,0.17],
+      [46.80,53.65,0.17,0.34],
+      [53.80,58.65,0.34,0.48],
+      [58.70,63.05,0.48,0.61],
+      [63.10,68.45,0.61,0.79],
+      [68.48,71.00,0.79,0.94]
+    ];
+
+    var finalChorus=[
+      [102.72,109.70,0.06,0.21],
+      [109.75,116.55,0.21,0.38],
+      [116.70,121.30,0.38,0.52],
+      [121.35,126.25,0.52,0.66],
+      [126.35,132.15,0.66,0.84],
+      [132.18,135.10,0.84,0.99]
+    ];
+
+    function ease(t){
+      t=Math.max(0,Math.min(1,t));
+      return t*t*(3-2*t);
+    }
+
+    function distanceFor(t, ranges){
+      for(var i=0;i<ranges.length;i++){
+        var r=ranges[i];
+        if(t>=r[0] && t<=r[1]){
+          var q=ease((t-r[0])/(r[1]-r[0]));
+          return length*(r[2]+(r[3]-r[2])*q);
+        }
+      }
+      return null;
+    }
 
     function frame(){
       var t=Number(audio.currentTime)||0;
-      var on=(t>=START && t<END);
+      var dist=null;
 
-      if(!on){
+      if(t>=39.65 && t<=71.00){
+        dist=distanceFor(t,first);
+      }else if(t>=102.72 && t<=135.10){
+        dist=distanceFor(t,finalChorus);
+      }
+
+      if(dist===null){
         root.classList.remove("active");
         path.style.strokeDashoffset=length;
         glow.style.strokeDashoffset=length;
-        if(t<START) tip.style.opacity="0";
       }else{
         root.classList.add("active");
 
-        var p=(t-START)/(END-START);
-        p=Math.max(0,Math.min(1,p));
-
-        /* Visible birth curl immediately at 39.65s. */
-        var eased=p*p*(3-2*p);
-        var drawn=length*(0.035+0.965*eased);
-        var offset=length-drawn;
-
+        /*
+          Sliding the dash along the full path creates the feeling
+          that the thread is travelling somewhere beyond the frame.
+        */
+        var offset=-(dist-WINDOW*0.38);
         path.style.strokeDashoffset=offset;
         glow.style.strokeDashoffset=offset;
-
-        if(tip){
-          try{
-            var point=path.getPointAtLength(Math.min(drawn,length));
-            tip.setAttribute("cx",point.x);
-            tip.setAttribute("cy",point.y);
-            tip.style.opacity=p<.995?"1":"0";
-          }catch(e){
-            tip.style.opacity="0";
-          }
-        }
       }
 
       window.requestAnimationFrame(frame);
@@ -2056,8 +2111,8 @@ render();
 
     frame();
   }catch(error){
-    /* The decorative effect is never allowed to interrupt the player. */
-    console.warn("Red string effect disabled:",error);
+    /* Decorative only: never interfere with audio playback. */
+    console.warn("Travelling string effect disabled:",error);
   }
 })();
 </script>
