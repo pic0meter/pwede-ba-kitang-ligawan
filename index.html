@@ -590,6 +590,29 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   100%{opacity:0;transform:translate3d(calc(-50% + var(--wind-x)),calc(-50% + var(--wind-y)),0) rotate(var(--wind-r)) skewX(var(--wind-skew)) scale(1.08)}
 }
 
+/* 3 — KAILAN: one word at center; previous word flies fully off-screen. */
+.line.scene-kailan-fly{
+  position:relative;width:min(1000px,96vw);height:min(52vh,440px);
+  display:block;overflow:visible;
+}
+.line.scene-kailan-fly .word{
+  position:absolute;left:50%;top:50%;margin:0;white-space:nowrap;
+  opacity:0;transform:translate3d(-50%,-50%,0) scale(.86);
+  transform-origin:center;will-change:transform,opacity,filter;
+  transition:none;z-index:1;
+}
+.line.scene-kailan-fly .word.current{
+  color:var(--accent);text-shadow:0 0 24px #ffb38a55;z-index:5;
+}
+.line.scene-kailan-fly .kailan-burst{
+  position:absolute;left:50%;top:50%;width:0;height:0;pointer-events:none;z-index:20;
+}
+.line.scene-kailan-fly .kailan-burst i{
+  position:absolute;left:0;top:0;width:7px;height:7px;border-radius:50%;
+  background:#ffc2a3;box-shadow:0 0 8px #fffbd0,0 0 18px #ffb38a;
+  opacity:0;transform:translate(-50%,-50%);
+}
+
 /* 4 — build toward the "oo" like a rubber band */
 .line.scene-stretch{gap:.06em .12em}
 .line.scene-stretch .word.visible{animation:stretchIn .5s cubic-bezier(.12,1.35,.3,1) both}
@@ -1261,7 +1284,7 @@ function buildHeartSplitLine(text){
 function sceneFor(i){
   // Each lyric becomes a small motion-graphics scene.
   const scenes=[
-    'fly','slit','kailan-wind','wind','zoom','squiggle','clock','flip',
+    'fly','slit','kailan-fly','wind','zoom','squiggle','clock','flip',
     'fly','question','crawl','slit','orbit','wind','rubber','chase',
     'longa','fly','clock','crawl','flip','zoom','question'
   ];
@@ -1315,29 +1338,28 @@ function buildLaserHeart(){
   svg.setAttribute('viewBox','0 0 720 300');
   svg.setAttribute('aria-hidden','true');
 
-  // One continuous heart: deep notch, rounded lobes, and a single sharp bottom point.
+  // A single continuous stroke: it enters from the left, traces a clean
+  // heart with a pronounced center notch and pointed bottom, then exits right.
   const path=document.createElementNS('http://www.w3.org/2000/svg','path');
   path.classList.add('laser-heart-path');
   path.setAttribute('d',
-    'M -30 238 ' +
-    'C 35 238 78 228 112 204 ' +
-    'C 92 176 91 139 105 106 ' +
-    'C 122 66 164 48 205 58 ' +
-    'C 250 69 287 108 319 145 ' +
-    'C 337 166 351 184 360 198 ' +
-    'C 369 184 383 166 401 145 ' +
-    'C 433 108 470 69 515 58 ' +
-    'C 556 48 598 66 615 106 ' +
-    'C 629 139 628 176 608 204 ' +
-    'C 580 243 531 269 478 284 ' +
-    'C 430 298 388 307 360 286 ' +
-    'C 332 307 290 298 242 284 ' +
-    'C 189 269 140 243 112 204 ' +
-    'C 158 238 219 258 279 266 ' +
-    'C 309 270 337 276 360 286 ' +
-    'C 383 276 411 270 441 266 ' +
-    'C 501 258 562 238 608 204 ' +
-    'C 650 226 690 230 750 224'
+    'M -25 238 ' +
+    'C 45 238 92 232 128 210 ' +
+    'C 108 182 102 148 112 116 ' +
+    'C 126 70 168 47 211 57 ' +
+    'C 254 67 292 105 323 143 ' +
+    'C 338 161 350 174 360 188 ' +
+    'C 370 174 382 161 397 143 ' +
+    'C 428 105 466 67 509 57 ' +
+    'C 552 47 594 70 608 116 ' +
+    'C 618 148 612 182 592 210 ' +
+    'C 560 254 495 282 430 291 ' +
+    'C 400 295 377 286 360 267 ' +
+    'C 343 286 320 295 290 291 ' +
+    'C 225 282 160 254 128 210 ' +
+    'C 165 236 218 250 274 256 ' +
+    'C 345 264 416 262 483 251 ' +
+    'C 555 239 623 225 745 232'
   );
   svg.appendChild(path);
   return svg;
@@ -1406,6 +1428,12 @@ function activate(i){
   }
   const el=L.firstElementChild;
   if(i===0) el.classList.add('puso-throb');
+  if(scene==='kailan-fly'){
+    const burst=document.createElement('span');
+    burst.className='kailan-burst';
+    for(let j=0;j<18;j++) burst.appendChild(document.createElement('i'));
+    el.appendChild(burst);
+  }
   if(i===4){
     const laserHeart=buildLaserHeart();
     el.appendChild(laserHeart);
@@ -1525,30 +1553,83 @@ function updateMotion(t){
   const scene=sceneFor(current);
   const words=[...el.querySelectorAll('.word')];
 
-  if(scene==='kailan-wind'){
+  if(scene==='kailan-fly'){
     const cues=item.cues||[];
     const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+    const vw=window.innerWidth||390;
+    const vh=window.innerHeight||700;
+    const distance=Math.hypot(vw,vh)*1.35;
+    const directions=[
+      [-1.00,-0.25],[0.72,-0.95],[1.00,0.28],[-0.78,0.82],
+      [0.35,-1.00],[-0.98,-0.55],[0.86,0.68],[-0.28,1.00],
+      [1.00,-0.58],[-0.88,0.38]
+    ];
+    const last=words.length-1;
     words.forEach((w,i)=>{
-      if(!w.classList.contains('visible')) return;
+      const cue=cues[i] ?? item.start;
       const nextCue=cues[i+1] ?? item.end;
-      const isLast=i===words.length-1;
-      // The current word stays readable. Once the next word arrives,
-      // the previous word slowly drifts away instead of disappearing abruptly.
-      if(isLast && w.classList.contains('kailan-sayo')) return;
-      if(t < nextCue){
-        w.style.opacity='1';
-        w.style.transform='translate3d(0,0,0) rotate(0deg) skewX(0deg)';
+      const [dx,dy]=directions[i%directions.length];
+      if(t<cue){
+        w.style.opacity='0';
+        w.style.transform='translate3d(-50%,-50%,0) scale(.86)';
+        w.style.filter='blur(4px)';
         return;
       }
-      const p=clamp((t-nextCue)/1.45,0,1);
+      if(i===last){
+        const elapsed=t-cue;
+        const pulse=.48;
+        if(elapsed<2.40){
+          const n=Math.floor(elapsed/pulse);
+          const p=(elapsed%pulse)/pulse;
+          const wave=Math.sin(p*Math.PI);
+          const base=[1,1.18,1.38,1.62,1.88][Math.min(n,4)];
+          const scale=base+wave*(.10+n*.018);
+          w.style.opacity='1';
+          w.style.transform=`translate3d(-50%,-50%,0) scale(${scale})`;
+          w.style.filter=`drop-shadow(0 0 ${20+n*12+wave*22}px #ffb38a)`;
+          w.style.zIndex='12';
+        }else{
+          const p=clamp((elapsed-2.40)/.58,0,1);
+          const e=p*p*(3-2*p);
+          w.style.opacity=String(1-e);
+          w.style.transform=`translate3d(-50%,-50%,0) scale(${1.88+e*5.8})`;
+          w.style.filter=`blur(${e*10}px) drop-shadow(0 0 ${55+e*120}px #ffb38a)`;
+          w.style.zIndex='12';
+          const burst=el.querySelector('.kailan-burst');
+          if(burst){
+            [...burst.children].forEach((dot,j)=>{
+              const a=(Math.PI*2*j/burst.children.length);
+              const d=(30+e*180)*(1+(j%3)*.12);
+              dot.style.opacity=String(e*(1-(j%4)*.12));
+              dot.style.transform=`translate(calc(-50% + ${Math.cos(a)*d}px),calc(-50% + ${Math.sin(a)*d}px)) scale(${1+e*1.8})`;
+            });
+          }
+        }
+        return;
+      }
+      if(t<nextCue){
+        const p=clamp((t-cue)/.18,0,1);
+        const e=p*p*(3-2*p);
+        w.style.opacity=String(e);
+        w.style.transform=`translate3d(-50%,-50%,0) scale(${.86+.14*e})`;
+        w.style.filter=`blur(${(1-e)*3}px)`;
+        w.style.zIndex='5';
+        return;
+      }
+      const p=clamp((t-nextCue)/.58,0,1);
       const e=p*p*(3-2*p);
-      const dir=i%2===0?1:-1;
-      const x=dir*(55+i*13)*e;
-      const y=-34*e;
-      const r=dir*(2+i%3)*e;
-      w.style.opacity=String(1-.88*e);
-      w.style.transform=`translate3d(${x}px,${y}px,0) rotate(${r}deg) skewX(${dir*2.5*e}deg)`;
+      const x=dx*distance*e;
+      const y=dy*distance*e;
+      const rotation=(i%2===0?1:-1)*(10+i*3)*e;
+      w.style.opacity=String(1-e);
+      w.style.transform=`translate3d(calc(-50% + ${x}px),calc(-50% + ${y}px),0) rotate(${rotation}deg) scale(${1+.10*e})`;
+      w.style.filter=`blur(${e*8}px)`;
+      w.style.zIndex='2';
     });
+    const burst=el.querySelector('.kailan-burst');
+    if(burst && t < (cues[last]??item.end)+2.40){
+      [...burst.children].forEach(dot=>{ if(t<(cues[last]??item.end)+2.40) dot.style.opacity='0'; });
+    }
   }
 
   if(scene==='orbit'){
@@ -1743,6 +1824,34 @@ function updateLinyahanScribble(t){
 function updateSpecialVisuals(t){
   updateLaserHeart(t);
   updateLinyahanScribble(t);
+function updateLaserHeart(t){
+  const el=L.querySelector('.line.active');
+  if(!el || current!==4){
+    return;
+  }
+  const svg=el.querySelector('.scene-laser-heart');
+  const path=svg?.querySelector('.laser-heart-path');
+  if(!svg || !path)return;
+
+  const start=43.02;      // just after "ligawan" begins
+  const drawEnd=45.42;    // slow laser trace
+  const fadeEnd=45.92;    // then the laser disappears
+  const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+
+  if(t<start || t>=fadeEnd){
+    svg.style.opacity='0';
+    path.style.strokeDashoffset=svg.dataset.pathLength||path.getTotalLength();
+    return;
+  }
+
+  const length=Number(svg.dataset.pathLength)||path.getTotalLength();
+  const drawP=clamp((t-start)/(drawEnd-start),0,1);
+  const eased=drawP*drawP*(3-2*drawP);
+  path.style.strokeDashoffset=String(length*(1-eased));
+
+  const fadeP=clamp((t-drawEnd)/(fadeEnd-drawEnd),0,1);
+  svg.style.opacity=String(1-fadeP);
+}
 
   const firstWasActive = current===0;
   if(firstWasActive && t>=11.680 && t<12.430 && !window._pusoHeartBurst){
@@ -1761,34 +1870,6 @@ function updateSpecialVisuals(t){
   }
   if(!inBanatEcho) window._banatEchoStarted=false;
 }
-
-function updateLaserHeart(t){
-  const el=L.querySelector('.line.active');
-  if(!el || current!==4)return;
-  const svg=el.querySelector('.scene-laser-heart');
-  const path=svg?.querySelector('.laser-heart-path');
-  if(!svg || !path)return;
-
-  const start=43.02;
-  const drawEnd=45.42;
-  const fadeEnd=45.92;
-  const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
-
-  if(t<start || t>=fadeEnd){
-    svg.style.opacity='0';
-    path.style.strokeDashoffset=svg.dataset.pathLength||path.getTotalLength();
-    return;
-  }
-
-  const length=Number(svg.dataset.pathLength)||path.getTotalLength();
-  const drawP=clamp((t-start)/(drawEnd-start),0,1);
-  const eased=drawP*drawP*(3-2*drawP);
-  path.style.strokeDashoffset=String(length*(1-eased));
-
-  const fadeP=clamp((t-drawEnd)/(fadeEnd-drawEnd),0,1);
-  svg.style.opacity=String(1-fadeP);
-}
-
 
 
 let ooTakeoverActive=false;
@@ -1919,14 +2000,11 @@ function render(){
     clearBanatEchoes();
   }
 
-  // Keep the animation loop alive even if one visual effect encounters a
-  // browser-specific rendering edge case. A single effect must never freeze
-  // the lyric progression.
-  try{ updateWords(t); }catch(err){ console.error('updateWords:',err); }
-  try{ updateMotion(t); }catch(err){ console.error('updateMotion:',err); }
-  try{ updateClock(t); }catch(err){ console.error('updateClock:',err); }
-  try{ updateSpecialVisuals(t); }catch(err){ console.error('updateSpecialVisuals:',err); }
-  try{ pulse(t); }catch(err){ console.error('pulse:',err); }
+  updateWords(t);
+  updateMotion(t);
+  updateClock(t);
+  updateSpecialVisuals(t);
+  pulse(t);
 const d=Math.min(A.duration||135,135);
   P.style.width=Math.min(100,(t/d)*100)+'%';
   T.textContent=fmt(t);
@@ -2012,95 +2090,7 @@ APP.addEventListener('pointerleave',()=>{
 render();
 </script>
 
-<script>
-(() => {
-  function seedKailanWind() {
-    document.querySelectorAll('.kailan-wind .word.wind-away').forEach((el, i) => {
-      const dir = i % 2 === 0 ? 1 : -1;
-      el.style.setProperty('--wind-x', `${dir * (75 + (i % 4) * 18)}px`);
-      el.style.setProperty('--wind-r', `${dir * (1.5 + (i % 3) * 1.1)}`);
-      el.style.setProperty('--wind-s', `${dir * (2 + (i % 3) * 1.2)}`);
-    });
-  }
-  seedKailanWind();
-  new MutationObserver(seedKailanWind).observe(document.body, {subtree:true, childList:true});
-})();
-</script>
 
-
-<script>
-(() => {
-  function setupSayo() {
-    document.querySelectorAll('.kailan-wind').forEach(line => {
-      const words = [...line.querySelectorAll('.word')];
-      if (!words.length) return;
-
-      const last = words[words.length - 1];
-      if (!last) return;
-
-      const label = (last.textContent || '').trim().toLowerCase()
-        .replace(/[’‘]/g, "'");
-
-      if (label !== "sa'yo" && label !== "sayo") return;
-
-      last.classList.add('kailan-sayo');
-
-      if (!line.dataset.sayoReady) {
-        line.dataset.sayoReady = '1';
-
-        const burst = document.createElement('span');
-        burst.className = 'kailan-sayo-burst';
-        for (let i = 0; i < 18; i++) {
-          const p = document.createElement('i');
-          const angle = (Math.PI * 2 * i / 18) + (Math.random() - .5) * .22;
-          const distance = 55 + Math.random() * 95;
-          p.style.setProperty('--px', `${Math.cos(angle) * distance}px`);
-          p.style.setProperty('--py', `${Math.sin(angle) * distance}px`);
-          p.style.animationDelay = `${.78 + Math.random() * .12}s`;
-          burst.appendChild(p);
-        }
-        line.appendChild(burst);
-      }
-    });
-  }
-
-  function triggerSayoPulse() {
-    document.querySelectorAll('.kailan-wind .kailan-sayo').forEach(word => {
-      word.classList.remove('sayo-pulse');
-      void word.offsetWidth;
-      word.classList.add('sayo-pulse');
-    });
-  }
-
-  setupSayo();
-
-  new MutationObserver(() => {
-    setupSayo();
-  }).observe(document.body, {subtree:true, childList:true});
-
-  /*
-   * Trigger when the final word becomes visible. This works with the
-   * existing lyric engine by observing its visibility class.
-   */
-  const observer = new MutationObserver(() => {
-    document.querySelectorAll('.kailan-wind .kailan-sayo').forEach(word => {
-      if (word.classList.contains('visible') && !word.dataset.pulsed) {
-        word.dataset.pulsed = '1';
-        triggerSayoPulse();
-      }
-      if (!word.classList.contains('visible')) {
-        delete word.dataset.pulsed;
-      }
-    });
-  });
-
-  observer.observe(document.body, {
-    subtree:true,
-    attributes:true,
-    attributeFilter:['class']
-  });
-})();
-</script>
 
 </body>
 </html>
