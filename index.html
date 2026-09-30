@@ -1315,28 +1315,29 @@ function buildLaserHeart(){
   svg.setAttribute('viewBox','0 0 720 300');
   svg.setAttribute('aria-hidden','true');
 
-  // A single continuous stroke: it enters from the left, traces a clean
-  // heart with a pronounced center notch and pointed bottom, then exits right.
+  // One continuous heart: deep notch, rounded lobes, and a single sharp bottom point.
   const path=document.createElementNS('http://www.w3.org/2000/svg','path');
   path.classList.add('laser-heart-path');
   path.setAttribute('d',
-    'M -25 238 ' +
-    'C 45 238 92 232 128 210 ' +
-    'C 108 182 102 148 112 116 ' +
-    'C 126 70 168 47 211 57 ' +
-    'C 254 67 292 105 323 143 ' +
-    'C 338 161 350 174 360 188 ' +
-    'C 370 174 382 161 397 143 ' +
-    'C 428 105 466 67 509 57 ' +
-    'C 552 47 594 70 608 116 ' +
-    'C 618 148 612 182 592 210 ' +
-    'C 560 254 495 282 430 291 ' +
-    'C 400 295 377 286 360 267 ' +
-    'C 343 286 320 295 290 291 ' +
-    'C 225 282 160 254 128 210 ' +
-    'C 165 236 218 250 274 256 ' +
-    'C 345 264 416 262 483 251 ' +
-    'C 555 239 623 225 745 232'
+    'M -30 238 ' +
+    'C 35 238 78 228 112 204 ' +
+    'C 92 176 91 139 105 106 ' +
+    'C 122 66 164 48 205 58 ' +
+    'C 250 69 287 108 319 145 ' +
+    'C 337 166 351 184 360 198 ' +
+    'C 369 184 383 166 401 145 ' +
+    'C 433 108 470 69 515 58 ' +
+    'C 556 48 598 66 615 106 ' +
+    'C 629 139 628 176 608 204 ' +
+    'C 580 243 531 269 478 284 ' +
+    'C 430 298 388 307 360 286 ' +
+    'C 332 307 290 298 242 284 ' +
+    'C 189 269 140 243 112 204 ' +
+    'C 158 238 219 258 279 266 ' +
+    'C 309 270 337 276 360 286 ' +
+    'C 383 276 411 270 441 266 ' +
+    'C 501 258 562 238 608 204 ' +
+    'C 650 226 690 230 750 224'
   );
   svg.appendChild(path);
   return svg;
@@ -1716,34 +1717,6 @@ function updateLinyahanScribble(t){
 function updateSpecialVisuals(t){
   updateLaserHeart(t);
   updateLinyahanScribble(t);
-function updateLaserHeart(t){
-  const el=L.querySelector('.line.active');
-  if(!el || current!==4){
-    return;
-  }
-  const svg=el.querySelector('.scene-laser-heart');
-  const path=svg?.querySelector('.laser-heart-path');
-  if(!svg || !path)return;
-
-  const start=43.02;      // just after "ligawan" begins
-  const drawEnd=45.42;    // slow laser trace
-  const fadeEnd=45.92;    // then the laser disappears
-  const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
-
-  if(t<start || t>=fadeEnd){
-    svg.style.opacity='0';
-    path.style.strokeDashoffset=svg.dataset.pathLength||path.getTotalLength();
-    return;
-  }
-
-  const length=Number(svg.dataset.pathLength)||path.getTotalLength();
-  const drawP=clamp((t-start)/(drawEnd-start),0,1);
-  const eased=drawP*drawP*(3-2*drawP);
-  path.style.strokeDashoffset=String(length*(1-eased));
-
-  const fadeP=clamp((t-drawEnd)/(fadeEnd-drawEnd),0,1);
-  svg.style.opacity=String(1-fadeP);
-}
 
   const firstWasActive = current===0;
   if(firstWasActive && t>=11.680 && t<12.430 && !window._pusoHeartBurst){
@@ -1762,6 +1735,34 @@ function updateLaserHeart(t){
   }
   if(!inBanatEcho) window._banatEchoStarted=false;
 }
+
+function updateLaserHeart(t){
+  const el=L.querySelector('.line.active');
+  if(!el || current!==4)return;
+  const svg=el.querySelector('.scene-laser-heart');
+  const path=svg?.querySelector('.laser-heart-path');
+  if(!svg || !path)return;
+
+  const start=43.02;
+  const drawEnd=45.42;
+  const fadeEnd=45.92;
+  const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+
+  if(t<start || t>=fadeEnd){
+    svg.style.opacity='0';
+    path.style.strokeDashoffset=svg.dataset.pathLength||path.getTotalLength();
+    return;
+  }
+
+  const length=Number(svg.dataset.pathLength)||path.getTotalLength();
+  const drawP=clamp((t-start)/(drawEnd-start),0,1);
+  const eased=drawP*drawP*(3-2*drawP);
+  path.style.strokeDashoffset=String(length*(1-eased));
+
+  const fadeP=clamp((t-drawEnd)/(fadeEnd-drawEnd),0,1);
+  svg.style.opacity=String(1-fadeP);
+}
+
 
 
 let ooTakeoverActive=false;
