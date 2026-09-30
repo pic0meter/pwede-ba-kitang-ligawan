@@ -538,37 +538,65 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   100%{transform:translate(0,0) rotate(-1deg) scale(1.03)}
 }
 
-/* SECOND CHORUS LINE — "linyahan" repeats downward like a typographic echo. */
+/* SECOND CHORUS LINE — oversized "Linyahan" typography floods the background. */
 .line.scene-squiggle.linyahan-stack{
-  position:relative;
+  position:fixed;
+  inset:0;
+  width:100vw;
+  height:100vh;
+  max-width:none;
   overflow:visible;
+  display:block;
+  z-index:1;
+  pointer-events:none;
+}
+.line.scene-squiggle.linyahan-stack > .word{
+  display:none !important;
+}
+.linyahan-bg{
+  position:fixed;
+  inset:-14vh -18vw;
+  z-index:-1;
+  overflow:hidden;
+  pointer-events:none;
   display:flex;
   flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  gap:0;
+  justify-content:flex-start;
+  gap:clamp(2px,.7vh,14px);
+  opacity:1;
+}
+.linyahan-bg-row{
+  flex:0 0 auto;
+  width:max-content;
+  min-width:136vw;
+  margin-left:-18vw;
   white-space:nowrap;
-}
-.line.scene-squiggle.linyahan-stack .word{
-  will-change:transform,opacity;
-}
-.line.scene-squiggle.linyahan-stack .word.linyahan-stack-word{
-  position:absolute;
-  left:50%;
-  top:50%;
-  font-size:clamp(30px,7vw,72px);
-  font-weight:inherit;
-  letter-spacing:.01em;
+  font-family:inherit;
+  font-size:clamp(100px,18vw,250px);
+  line-height:.78;
+  font-weight:900;
+  letter-spacing:-.055em;
   color:var(--ink);
-  transform:translate(-50%,-50%);
-  animation:none;
+  text-align:center;
+  opacity:.95;
+  will-change:transform,opacity;
+  transform:translate3d(var(--row-x),0,0);
 }
-.line.scene-squiggle.linyahan-stack .word.linyahan-stack-word.visible{
-  animation:linyahanStackIn .38s cubic-bezier(.15,1.15,.25,1) both;
+.linyahan-bg-row:nth-child(odd){--row-x:-3vw}
+.linyahan-bg-row:nth-child(even){--row-x:2vw}
+.linyahan-bg-row.is-entering{
+  animation:linyahanBgIn .5s cubic-bezier(.12,1.08,.25,1) both;
+  animation-delay:var(--row-delay,0s);
 }
-@keyframes linyahanStackIn{
-  0%{opacity:0;transform:translate(-50%,calc(-50% + 18px)) scale(.9)}
-  100%{opacity:1;transform:translate(-50%,calc(-50% + var(--stack-y))) scale(1)}
+@keyframes linyahanBgIn{
+  0%{
+    opacity:0;
+    transform:translate3d(var(--row-x),24vh,0) scale(.82);
+  }
+  100%{
+    opacity:.95;
+    transform:translate3d(var(--row-x),0,0) scale(1);
+  }
 }
 /* THIRD CHORUS LINE — unified cursive treatment; no mismatched word sizing. */
 .line.scene-clock.cursive-clock-lyric .clock-lyric{
@@ -1678,34 +1706,21 @@ function activate(i){
   if(i===5){
     el.classList.add('subtle-kinetic','linyahan-stack');
 
-    /*
-      Keep the original lyric line, but turn each occurrence of
-      "linyahan" into a vertical echo. The echoes are deliberately
-      allowed to run beyond the viewport.
-    */
-    const words=[...el.querySelectorAll('.word')];
-    const target=words.find(w=>w.textContent.trim().toLowerCase()==='linyahan');
+    // Turn the whole screen into a giant typographic field of "Linyahan".
+    // The supplied image is only a visual reference for scale/density.
+    const bg=document.createElement('div');
+    bg.className='linyahan-bg';
+    bg.setAttribute('aria-hidden','true');
 
-    if(target){
-      const baseIndex=Number(target.dataset.wordIndex||0);
-      const copies=5;
-      const spacing=1.02; // em-ish visual spacing
-
-      target.classList.add('linyahan-stack-word');
-      target.style.setProperty('--stack-y','0em');
-
-      for(let n=1;n<copies;n++){
-        const copy=target.cloneNode(true);
-        copy.dataset.stackIndex=String(n);
-        copy.classList.add('linyahan-stack-word');
-        copy.classList.remove('current','visible');
-        copy.dataset.wordIndex=String(baseIndex);
-        copy.style.setProperty('--stack-y',(n*spacing)+'em');
-        copy.style.setProperty('--stack-delay',(n*.08)+'s');
-        copy.style.animationDelay=(n*.08)+'s';
-        el.appendChild(copy);
-      }
+    const rows=11;
+    for(let n=0;n<rows;n++){
+      const row=document.createElement('div');
+      row.className='linyahan-bg-row is-entering';
+      row.textContent='Linyahan';
+      row.style.setProperty('--row-delay',(n*.025)+'s');
+      bg.appendChild(row);
     }
+    el.appendChild(bg);
   }
   if(i===6) el.classList.add('cursive-clock-lyric');
   if(i===6) el.classList.add('clock-shake');
