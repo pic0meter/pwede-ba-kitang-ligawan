@@ -957,19 +957,6 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 }
 
 
-/* Gentle ~ wind exit for "Kailan kaya..." */
-.kailan-wind .word.wind-away{
-  animation:kailanWind 2.25s cubic-bezier(.22,.72,.28,1) forwards !important;
-  will-change:transform,opacity;
-}
-@keyframes kailanWind{
-  0%{opacity:1;transform:translate3d(0,0,0) rotate(0deg) skewX(0deg)}
-  28%{opacity:.96;transform:translate3d(calc(var(--wind-x)*.18),-5px,0) rotate(calc(var(--wind-r)*.2deg)) skewX(calc(var(--wind-s)*.2deg))}
-  52%{opacity:.82;transform:translate3d(calc(var(--wind-x)*.42),-13px,0) rotate(calc(var(--wind-r)*-.15deg)) skewX(calc(var(--wind-s)*-.25deg))}
-  74%{opacity:.48;transform:translate3d(calc(var(--wind-x)*.7),-24px,0) rotate(calc(var(--wind-r)*.35deg)) skewX(calc(var(--wind-s)*.3deg))}
-  100%{opacity:0;transform:translate3d(var(--wind-x),-38px,0) rotate(calc(var(--wind-r)*.55deg)) skewX(calc(var(--wind-s)*.45deg))}
-}
-
 
 /* Final "sa'yo" focal beat — successive pulses grow until the word bursts into the next line. */
 .kailan-wind .word.kailan-sayo{
@@ -1429,207 +1416,52 @@ function activate(i){
   const el=L.firstElementChild;
   if(i===0) el.classList.add('puso-throb');
   if(scene==='kailan-fly'){
-    const burst=document.createElement('span');
-    burst.className='kailan-burst';
-    for(let j=0;j<18;j++) burst.appendChild(document.createElement('i'));
-    el.appendChild(burst);
-  }
-  if(i===4){
-    const laserHeart=buildLaserHeart();
-    el.appendChild(laserHeart);
-    const path=laserHeart.querySelector('.laser-heart-path');
-    if(path){
-      const length=path.getTotalLength();
-      path.style.strokeDasharray=length+' '+length;
-      path.style.strokeDashoffset=length;
-      laserHeart.dataset.pathLength=String(length);
-    }
-  }
-  if(i===1){
-    el.classList.add('banat-scratch');
-    // The complete phrase "banat na 'to" gets the animated scratch treatment.
-    el.querySelectorAll('.word[data-word-index="6"], .word[data-word-index="7"], .word[data-word-index="8"]').forEach(w=>w.classList.add('scratch-word'));
-  }
-  if(i===3) el.classList.add('gusto-shiver');
-  if(i===5){
-    el.classList.add('subtle-kinetic','linyahan-chaos');
-    const scribble=buildLinyahanScribble();
-    el.appendChild(scribble);
-    const main=scribble.querySelector('.linyahan-scribble-path');
-    const secondary=scribble.querySelector('.linyahan-scribble-secondary');
-    if(main){
-      const len=main.getTotalLength();
-      main.style.strokeDasharray=len+' '+len;
-      main.style.strokeDashoffset=len;
-      scribble.dataset.pathLength=String(len);
-    }
-    if(secondary){
-      const len2=secondary.getTotalLength();
-      secondary.style.strokeDasharray=len2+' '+len2;
-      secondary.style.strokeDashoffset=len2;
-      scribble.dataset.secondaryLength=String(len2);
-    }
-  }
-  if(i===6) el.classList.add('clock-shake');
-  if(i===7) el.classList.add('standup-exit');
-  SEC.textContent=item.section;
-  requestAnimationFrame(()=>{el.classList.add('active'); if(scene==='clock') layoutClock();});
-
-  if(scene==='zoom'){
-    el.classList.add('motion-zoom');
-    setTimeout(()=>el.classList.remove('motion-zoom'),750);
-  }
-  if(scene==='bump') layoutBump(el);
-  if(scene==='crawl') layoutCrawl(el);
-  if(scene==='flip') layoutFlip(el);
-}
-
-function layoutBump(el){
-  const words=[...el.querySelectorAll('.word')];
-  words.forEach((w,i)=>{
-    const sx=(i%2===0?-1:1)*(55+((i*29)%75));
-    const sy=(i%3-1)*(28+((i*17)%45));
-    const bx=(i%2===0?1:-1)*(2+(i%3)*2);
-    const by=(i%2===0?-1:1)*(2+(i%3));
-    w.style.setProperty('--sx',sx+'px');
-    w.style.setProperty('--sy',sy+'px');
-    w.style.setProperty('--sr',((i%2?-1:1)*(4+i))+'deg');
-    w.style.setProperty('--bx',bx+'px');
-    w.style.setProperty('--by',by+'px');
-    w.style.setProperty('--br',((i%2?-1:1)*(1.5+i%3))+'deg');
-  });
-}
-
-
-function layoutCrawl(el){
-  const words=[...el.querySelectorAll('.word')];
-  const n=Math.max(words.length,1);
-  words.forEach((w,i)=>{
-    const phase=(i/Math.max(n-1,1))*Math.PI*2;
-    w.style.setProperty('--crawl-phase',phase);
-    w.style.setProperty('--crawl-i',i);
-  });
-}
-
-function layoutFlip(el){
-  [...el.querySelectorAll('.word')].forEach((w,i)=>{
-    w.style.setProperty('--flip-y',((i%2)*1.1)+'em');
-    w.style.setProperty('--flip-z',((i%2?-1:1)*(4+i%4))+'deg');
-  });
-}
-
-function updateWords(t){
-  const el=L.querySelector('.line.active');
-  if(!el||current<0)return;
-  const item=lines[current];
-  const words=[...el.querySelectorAll('.word')];
-  const cues=item.cues;
-  let currentWord=-1;
-
-  words.forEach((w,i)=>{
-    const start=cues[i] ?? (item.start+(i/words.length)*(item.end-item.start));
-    const visible=t>=start;
-    w.classList.toggle('visible',visible);
-    if(visible)currentWord=i;
-  });
-  words.forEach((w,i)=>w.classList.toggle('current',i===currentWord));
-
-  const q=el.querySelector('.question-mark');
-  if(q){
-    const hindi=el.querySelector('.word.deny');
-    const hindiIndex=Number(hindi?.dataset.wordIndex ?? -1);
-    const hindiCue=cues[hindiIndex] ?? item.start;
-    const qVisible=t>=hindiCue;
-    q.classList.toggle('visible',qVisible);
-    if(hindi)hindi.classList.toggle('crossed',qVisible);
-  }
-
-}
-
-function updateMotion(t){
-  const el=L.querySelector('.line.active');
-  if(!el||current<0)return;
-  const item=lines[current];
-  const scene=sceneFor(current);
-  const words=[...el.querySelectorAll('.word')];
-
-  if(scene==='kailan-fly'){
+    // One lightweight controller: center -> fly off-screen -> next word.
     const cues=item.cues||[];
     const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
-    const vw=window.innerWidth||390;
-    const vh=window.innerHeight||700;
-    const distance=Math.hypot(vw,vh)*1.35;
-    const directions=[
-      [-1.00,-0.25],[0.72,-0.95],[1.00,0.28],[-0.78,0.82],
-      [0.35,-1.00],[-0.98,-0.55],[0.86,0.68],[-0.28,1.00],
-      [1.00,-0.58],[-0.88,0.38]
-    ];
+    const vw=window.innerWidth||390, vh=window.innerHeight||700;
+    const distance=Math.hypot(vw,vh)*1.5;
+    const directions=[[-1,-.18],[.72,-.82],[.96,.38],[-.70,.86],[.34,-1],[-.95,-.52],[.80,.72],[-.25,1],[1,-.12],[-.84,.48]];
     const last=words.length-1;
     words.forEach((w,i)=>{
       const cue=cues[i] ?? item.start;
       const nextCue=cues[i+1] ?? item.end;
-      const [dx,dy]=directions[i%directions.length];
       if(t<cue){
         w.style.opacity='0';
-        w.style.transform='translate3d(-50%,-50%,0) scale(.86)';
-        w.style.filter='blur(4px)';
+        w.style.transform='translate3d(-50%,-50%,0) scale(.9)';
         return;
       }
       if(i===last){
-        const elapsed=t-cue;
-        const pulse=.48;
+        const elapsed=t-cue, pulse=.48;
         if(elapsed<2.40){
-          const n=Math.floor(elapsed/pulse);
+          const n=Math.min(4,Math.floor(elapsed/pulse));
           const p=(elapsed%pulse)/pulse;
-          const wave=Math.sin(p*Math.PI);
-          const base=[1,1.18,1.38,1.62,1.88][Math.min(n,4)];
-          const scale=base+wave*(.10+n*.018);
+          const scale=[1,1.18,1.38,1.62,1.88][n]+Math.sin(p*Math.PI)*(.10+n*.018);
           w.style.opacity='1';
           w.style.transform=`translate3d(-50%,-50%,0) scale(${scale})`;
-          w.style.filter=`drop-shadow(0 0 ${20+n*12+wave*22}px #ffb38a)`;
-          w.style.zIndex='12';
         }else{
-          const p=clamp((elapsed-2.40)/.58,0,1);
-          const e=p*p*(3-2*p);
+          const p=clamp((elapsed-2.40)/.58,0,1), e=p*p*(3-2*p);
           w.style.opacity=String(1-e);
-          w.style.transform=`translate3d(-50%,-50%,0) scale(${1.88+e*5.8})`;
-          w.style.filter=`blur(${e*10}px) drop-shadow(0 0 ${55+e*120}px #ffb38a)`;
-          w.style.zIndex='12';
-          const burst=el.querySelector('.kailan-burst');
-          if(burst){
-            [...burst.children].forEach((dot,j)=>{
-              const a=(Math.PI*2*j/burst.children.length);
-              const d=(30+e*180)*(1+(j%3)*.12);
-              dot.style.opacity=String(e*(1-(j%4)*.12));
-              dot.style.transform=`translate(calc(-50% + ${Math.cos(a)*d}px),calc(-50% + ${Math.sin(a)*d}px)) scale(${1+e*1.8})`;
-            });
-          }
+          w.style.transform=`translate3d(-50%,-50%,0) scale(${1.88+e*6})`;
         }
+        w.style.zIndex='12';
         return;
       }
       if(t<nextCue){
-        const p=clamp((t-cue)/.18,0,1);
-        const e=p*p*(3-2*p);
+        const p=clamp((t-cue)/.16,0,1), e=p*p*(3-2*p);
         w.style.opacity=String(e);
-        w.style.transform=`translate3d(-50%,-50%,0) scale(${.86+.14*e})`;
-        w.style.filter=`blur(${(1-e)*3}px)`;
+        w.style.transform=`translate3d(-50%,-50%,0) scale(${.9+.1*e})`;
         w.style.zIndex='5';
         return;
       }
-      const p=clamp((t-nextCue)/.58,0,1);
-      const e=p*p*(3-2*p);
-      const x=dx*distance*e;
-      const y=dy*distance*e;
+      const [dx,dy]=directions[i%directions.length];
+      const p=clamp((t-nextCue)/.42,0,1), e=p*p*(3-2*p);
+      const x=dx*distance*e, y=dy*distance*e;
       const rotation=(i%2===0?1:-1)*(10+i*3)*e;
       w.style.opacity=String(1-e);
-      w.style.transform=`translate3d(calc(-50% + ${x}px),calc(-50% + ${y}px),0) rotate(${rotation}deg) scale(${1+.10*e})`;
-      w.style.filter=`blur(${e*8}px)`;
+      w.style.transform=`translate3d(calc(-50% + ${x}px),calc(-50% + ${y}px),0) rotate(${rotation}deg)`;
       w.style.zIndex='2';
     });
-    const burst=el.querySelector('.kailan-burst');
-    if(burst && t < (cues[last]??item.end)+2.40){
-      [...burst.children].forEach(dot=>{ if(t<(cues[last]??item.end)+2.40) dot.style.opacity='0'; });
-    }
   }
 
   if(scene==='orbit'){
