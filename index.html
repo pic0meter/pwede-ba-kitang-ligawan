@@ -127,8 +127,7 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .puso-throb .word{animation:lyricThrob .72s ease-in-out infinite}.puso-throb .word.current{animation:lyricThrobCurrent .48s ease-in-out infinite}
 @keyframes lyricThrob{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-2px) scale(1.025)}}
 @keyframes lyricThrobCurrent{0%,100%{transform:translateY(-.055em) scale(1.06)}50%{transform:translateY(-.09em) scale(1.13)}}
-.puso-bg-heart{position:absolute;width:var(--size);height:var(--size);left:var(--x);top:var(--y);background:currentColor;opacity:0;rotate:-45deg;border-radius:2px;animation:pusoBgPulse var(--life) ease-in-out infinite}
-.puso-bg-heart::before,.puso-bg-heart::after{content:"";position:absolute;width:50%;height:50%;border-radius:50%;background:currentColor}.puso-bg-heart::before{left:0;top:0}.puso-bg-heart::after{right:0;top:0}
+.puso-bg-heart{position:absolute;left:var(--x);top:var(--y);font-size:var(--size);line-height:1;color:currentColor;opacity:0;transform:scale(.88);animation:pusoBgPulse var(--life) ease-in-out infinite;filter:drop-shadow(0 0 10px #ffb38a22);pointer-events:none}
 @keyframes pusoBgPulse{0%,100%{opacity:.035;transform:scale(.88)}50%{opacity:.16;transform:scale(1.12)}}
 
 /* PUSO heart burst — exists only while the PUSO cue is active */
@@ -1361,14 +1360,14 @@ function explodeOoIntoHearts(){const field=document.querySelector('#ooExplosion'
 
 let pusoBgActive=false;
 function clearPusoBackground(){const f=document.querySelector('#heartField');if(f)f.querySelectorAll('.puso-bg-heart').forEach(h=>h.remove());pusoBgActive=false}
-function spawnPusoBackground(){const f=document.querySelector('#heartField');if(!f||pusoBgActive)return;pusoBgActive=true;for(let i=0;i<24;i++){const h=document.createElement('span');h.className='puso-bg-heart';h.style.setProperty('--size',(14+Math.random()*58)+'px');h.style.setProperty('--x',(2+Math.random()*96)+'%');h.style.setProperty('--y',(4+Math.random()*90)+'%');h.style.setProperty('--life',(1.1+Math.random()*1.8)+'s');h.style.color=`hsl(${5+Math.random()*35},60%,70%)`;f.appendChild(h)}}
+function spawnPusoBackground(){const f=document.querySelector('#heartField');if(!f||pusoBgActive)return;pusoBgActive=true;for(let i=0;i<24;i++){const h=document.createElement('span');h.className='puso-bg-heart';h.textContent='♥';h.style.setProperty('--size',(14+Math.random()*58)+'px');h.style.setProperty('--x',(2+Math.random()*96)+'%');h.style.setProperty('--y',(4+Math.random()*90)+'%');h.style.setProperty('--life',(1.1+Math.random()*1.8)+'s');h.style.color=`hsl(${5+Math.random()*35},60%,70%)`;f.appendChild(h)}}
 
 let pusoBurstActive=false;
 let banatEchoActive=false;
 
 function clearPusoHearts(){
   const field=document.querySelector('#heartField');
-  if(field) field.replaceChildren();
+  if(field) field.querySelectorAll('.puso-heart').forEach(h=>h.remove());
   pusoBurstActive=false;
 }
 
@@ -1458,9 +1457,12 @@ function render(){
 
   // Time-locked visual effects:
   // PUSO burst only during the PUSO cue (11.680s–12.430s).
-  if(t>=11.680 && t<12.430){
+  if(t>=11.680 && t<15.85){
+    // Keep the soft background hearts alive for the remainder of the lyric line.
     spawnPusoBackground();
-    if(!pusoBurstActive) spawnPusoHearts();
+    // The foreground bubble burst remains tied only to the exact "puso" cue.
+    if(t<12.430 && !pusoBurstActive) spawnPusoHearts();
+    if(t>=12.430 && pusoBurstActive) clearPusoHearts();
   }else{
     if(pusoBurstActive) clearPusoHearts();
     if(pusoBgActive) clearPusoBackground();
