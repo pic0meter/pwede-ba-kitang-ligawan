@@ -564,7 +564,10 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   justify-content:flex-start;
   gap:clamp(2px,.7vh,14px);
   opacity:0;
-  transition:opacity .65s ease;
+  transition:opacity .48s ease;
+}
+.linyahan-bg.is-revealed{
+  opacity:.36;
 }
 .linyahan-bg-row{
   flex:0 0 auto;
@@ -1605,7 +1608,10 @@ function activate(i){
   const item=lines[i];
   const scene=(i===0)?'heart-split':sceneFor(i);
   const qClass=item.text==='Oo o hindi?'?' scene-question':'';
-  const body=scene==='clock'?buildClock(item.text):scene==='heart-split'?buildHeartSplitLine(item.text):buildWords(item.text);
+  const foregroundText=(i===5 || i===19)
+    ? item.text.replace(/\s+linyahan\s*$/i,'')
+    : item.text;
+  const body=scene==='clock'?buildClock(item.text):scene==='heart-split'?buildHeartSplitLine(item.text):buildWords(foregroundText);
   if(scene==='heart-split'){
     const el=document.createElement('div');
     el.className=`line motion scene-heart-split ${item.style}${qClass}`;
@@ -1708,13 +1714,21 @@ function activate(i){
     el.querySelectorAll('.word[data-word-index="6"], .word[data-word-index="7"], .word[data-word-index="8"]').forEach(w=>w.classList.add('scratch-word'));
   }
   if(i===3) el.classList.add('gusto-shiver');
-  if(i===5){
+  if(i===5 || i===19){
     el.classList.add('subtle-kinetic','linyahan-stack');
 
-    // The full-screen stack appears only for this lyric's turn.
+    /*
+      "Kahit 'di maganda ang mga" is the foreground lyric.
+      "Linyahan" is deliberately treated as a separate visual sub-line:
+      it does not exist visually until its own vocal cue at 49.50s
+      (or 113.15s in the final chorus).
+    */
     const bg=document.createElement('div');
     bg.className='linyahan-bg';
     bg.setAttribute('aria-hidden','true');
+
+    const stackStart=(i===5) ? 49.50 : 113.15;
+    bg.dataset.stackStart=String(stackStart);
 
     const rows=11;
     for(let n=0;n<rows;n++){
@@ -1725,13 +1739,6 @@ function activate(i){
       bg.appendChild(row);
     }
     el.appendChild(bg);
-
-    // Fade the typographic wall in softly so the foreground lyric remains readable.
-    requestAnimationFrame(()=>{
-      requestAnimationFrame(()=>{
-        bg.style.opacity='.42';
-      });
-    });
   }
   if(i===6) el.classList.add('cursive-clock-lyric');
   if(i===6) el.classList.add('clock-shake');
@@ -1800,6 +1807,13 @@ function updateWords(t){
   if(current===4){
     const lw=el.querySelector('.word.ligawan-chaos');
     if(lw && currentWord!==Number(lw.dataset.wordIndex)) lw.classList.remove('current');
+  }
+
+  const linyahanBg=el.querySelector('.linyahan-bg');
+  if(linyahanBg){
+    const stackStart=Number(linyahanBg.dataset.stackStart);
+    const stackVisible=t>=stackStart && t<item.end;
+    linyahanBg.classList.toggle('is-revealed',stackVisible);
   }
 
   const q=el.querySelector('.question-mark');
