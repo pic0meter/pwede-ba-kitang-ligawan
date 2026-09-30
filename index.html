@@ -1426,6 +1426,24 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .line.scene-kailan-flight .word{position:absolute;left:50%;top:50%;margin:0;white-space:nowrap;transform:translate3d(-50%,-50%,0);will-change:transform,opacity;animation:none!important}
 .line.scene-kailan-flight .word.accent{color:var(--accent)}
 
+
+@keyframes linyahanFootstepReverse{
+  0%{
+    opacity:0;
+    transform:rotate(var(--angle)) translateX(18vw);
+    background-position:0 0;
+  }
+  8%{opacity:.9}
+  22%{opacity:.72;background-position:14px 0}
+  50%{opacity:.48;background-position:34px 0}
+  78%{opacity:.22;background-position:58px 0}
+  100%{
+    opacity:0;
+    transform:rotate(var(--angle)) translateX(-125vw);
+    background-position:90px 0;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -2095,6 +2113,62 @@ function echo(){
   setTimeout(()=>e.remove(),1200);
 }
 
+
+let linyahanFootstepsActive=false;
+let linyahanFootstepsTimer=null;
+
+function clearLinyahanFootsteps(){
+  const field=document.querySelector('.linyahan-footsteps');
+  if(field) field.remove();
+  if(linyahanFootstepsTimer) clearTimeout(linyahanFootstepsTimer);
+  linyahanFootstepsTimer=null;
+  linyahanFootstepsActive=false;
+}
+
+function spawnLinyahanFootsteps(){
+  if(linyahanFootstepsActive)return;
+  const el=L.querySelector('.line.active');
+  if(!el || current!==5)return;
+
+  linyahanFootstepsActive=true;
+
+  const field=document.createElement('div');
+  field.className='linyahan-footsteps';
+  field.setAttribute('aria-hidden','true');
+  el.appendChild(field);
+
+  // Each stroke crosses the whole viewport, like a sequence of footsteps
+  // travelling from one side to the other. Angles alternate to make the
+  // trails feel like directional marks rather than parallel UI lines.
+  const paths=[
+    {y:'22%',angle:'-8deg',w:'38vw',d:'1.05s',delay:'0s',cls:'long'},
+    {y:'38%',angle:'5deg', w:'29vw',d:'0.92s',delay:'.16s',cls:'short'},
+    {y:'53%',angle:'-4deg',w:'44vw',d:'1.12s',delay:'.31s',cls:'long'},
+    {y:'68%',angle:'7deg', w:'31vw',d:'1.00s',delay:'.47s',cls:'short'},
+    {y:'81%',angle:'-6deg',w:'36vw',d:'1.08s',delay:'.64s',cls:'long'}
+  ];
+
+  paths.forEach((p,i)=>{
+    const dash=document.createElement('i');
+    dash.className='linyahan-footstep '+p.cls;
+    dash.style.setProperty('--start-x', i%2 ? '108vw' : '-46vw');
+    dash.style.setProperty('--start-y',p.y);
+    dash.style.setProperty('--angle',p.angle);
+    dash.style.setProperty('--trail-w',p.w);
+    dash.style.setProperty('--duration',p.d);
+    dash.style.setProperty('--delay',p.delay);
+    // Reverse the travel direction for alternating strokes.
+    if(i%2){
+      dash.style.animationName='linyahanFootstepReverse';
+    }
+    field.appendChild(dash);
+  });
+
+  linyahanFootstepsTimer=setTimeout(()=>{
+    clearLinyahanFootsteps();
+  },2100);
+}
+
 function updateSpecialVisuals(t){
   updateLaserHeart(t);
 function updateLaserHeart(t){
@@ -2125,6 +2199,13 @@ function updateLaserHeart(t){
   const fadeP=clamp((t-drawEnd)/(fadeEnd-drawEnd),0,1);
   svg.style.opacity=String(1-fadeP);
 }
+
+  // "linyahan" cue: crossing dashed trails, like fast footsteps.
+  if(current===5 && t>=49.50 && t<51.35){
+    if(!linyahanFootstepsActive) spawnLinyahanFootsteps();
+  }else if(linyahanFootstepsActive){
+    clearLinyahanFootsteps();
+  }
 
   const firstWasActive = current===0;
   if(firstWasActive && t>=11.680 && t<12.430 && !window._pusoHeartBurst){
