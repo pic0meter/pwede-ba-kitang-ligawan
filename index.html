@@ -553,7 +553,38 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .line.scene-squiggle.linyahan-stack > .word{
   display:none !important;
 }
+
+/* "Kahit 'di maganda ang mga" exits as its own motion beat before the
+   giant Linyahan background takes over. */
+.line.linyahan-stack .pre-linyahan-word{
+  transition:none;
+  will-change:transform,opacity,filter;
+}
+.line.linyahan-stack.linyahan-pre-exit .pre-linyahan-word{
+  animation:linyahanPreExit .62s cubic-bezier(.65,0,.9,.2) both;
+  animation-delay:calc(var(--pre-i) * .045s);
+}
+@keyframes linyahanPreExit{
+  0%{
+    opacity:1;
+    transform:translate3d(0,0,0) rotate(0deg) scale(1);
+    filter:blur(0);
+  }
+  45%{
+    opacity:.82;
+    transform:translate3d(calc(var(--pre-drift) * .45),-10px,0)
+               rotate(calc(var(--pre-rot) * .45)) scale(1.03);
+    filter:blur(0);
+  }
+  100%{
+    opacity:0;
+    transform:translate3d(var(--pre-drift),-54px,0)
+               rotate(var(--pre-rot)) scale(.88);
+    filter:blur(3px);
+  }
+}
 .linyahan-bg{
+
   position:fixed;
   inset:-14vh -18vw;
   z-index:-1;
@@ -591,6 +622,9 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .linyahan-bg-row.is-entering{
   animation:linyahanBgIn .5s cubic-bezier(.12,1.08,.25,1) both;
   animation-delay:var(--row-delay,0s);
+}
+.linyahan-bg-revealed .linyahan-bg-row{
+  animation-play-state:running;
 }
 @keyframes linyahanBgIn{
   0%{
@@ -1718,10 +1752,22 @@ function activate(i){
     el.classList.add('subtle-kinetic','linyahan-stack');
 
     /*
-      "Kahit 'di maganda ang mga" is the foreground lyric.
-      "Linyahan" is deliberately treated as a separate visual sub-line:
-      it does not exist visually until its own vocal cue at 49.50s
-      (or 113.15s in the final chorus).
+      The first five words are their own visual phrase:
+      "Kahit 'di maganda ang mga".
+      They remain on screen until the linyahan cue, then leave together
+      with a staggered upward/floating motion.
+    */
+    const preWords=[...el.querySelectorAll('.word')].slice(0,5);
+    preWords.forEach((w,n)=>{
+      w.classList.add('pre-linyahan-word');
+      w.style.setProperty('--pre-i',n);
+      w.style.setProperty('--pre-drift',((n%2===0?-1:1)*(24+n*9))+'px');
+      w.style.setProperty('--pre-rot',((n%2===0?-1:1)*(4+n*1.5))+'deg');
+    });
+
+    /*
+      Full-screen Linyahan is a separate visual beat. It starts hidden and
+      is revealed by updateWords() exactly at the linyahan cue.
     */
     const bg=document.createElement('div');
     bg.className='linyahan-bg';
@@ -1729,6 +1775,7 @@ function activate(i){
 
     const stackStart=(i===5) ? 49.50 : 113.15;
     bg.dataset.stackStart=String(stackStart);
+    bg.style.opacity='0';
 
     const rows=11;
     for(let n=0;n<rows;n++){
@@ -1814,6 +1861,27 @@ function updateWords(t){
     const stackStart=Number(linyahanBg.dataset.stackStart);
     const stackVisible=t>=stackStart && t<item.end;
     linyahanBg.classList.toggle('is-revealed',stackVisible);
+  }
+
+  /*
+    At the exact "linyahan" cue, remove the foreground phrase and reveal
+    the giant background stack as a separate visual scene.
+  */
+  if(current===5 || current===19){
+    const stackStart=(current===5) ? 49.50 : 113.15;
+    const bg=el.querySelector('.linyahan-bg');
+    const preWords=[...el.querySelectorAll('.pre-linyahan-word')];
+    const stackVisible=t>=stackStart;
+
+    if(stackVisible){
+      if(!el.classList.contains('linyahan-pre-exit')){
+        el.classList.add('linyahan-pre-exit');
+      }
+      if(bg && !bg.classList.contains('linyahan-bg-revealed')){
+        bg.classList.add('linyahan-bg-revealed');
+        bg.style.opacity='.42';
+      }
+    }
   }
 
   const q=el.querySelector('.question-mark');
