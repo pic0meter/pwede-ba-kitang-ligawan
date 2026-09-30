@@ -933,6 +933,20 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   50%{filter:drop-shadow(0 0 14px #ffb38a88)}
 }
 
+
+/* Gentle ~ wind exit for "Kailan kaya..." */
+.kailan-wind .word.wind-away{
+  animation:kailanWind 2.25s cubic-bezier(.22,.72,.28,1) forwards !important;
+  will-change:transform,opacity;
+}
+@keyframes kailanWind{
+  0%{opacity:1;transform:translate3d(0,0,0) rotate(0deg) skewX(0deg)}
+  28%{opacity:.96;transform:translate3d(calc(var(--wind-x)*.18),-5px,0) rotate(calc(var(--wind-r)*.2deg)) skewX(calc(var(--wind-s)*.2deg))}
+  52%{opacity:.82;transform:translate3d(calc(var(--wind-x)*.42),-13px,0) rotate(calc(var(--wind-r)*-.15deg)) skewX(calc(var(--wind-s)*-.25deg))}
+  74%{opacity:.48;transform:translate3d(calc(var(--wind-x)*.7),-24px,0) rotate(calc(var(--wind-r)*.35deg)) skewX(calc(var(--wind-s)*.3deg))}
+  100%{opacity:0;transform:translate3d(var(--wind-x),-38px,0) rotate(calc(var(--wind-r)*.55deg)) skewX(calc(var(--wind-s)*.45deg))}
+}
+
 </style>
 </head>
 <body>
@@ -1670,5 +1684,21 @@ APP.addEventListener('pointerleave',()=>{
 });
 render();
 </script>
+
+<script>
+(() => {
+  function seedKailanWind() {
+    document.querySelectorAll('.kailan-wind .word.wind-away').forEach((el, i) => {
+      const dir = i % 2 === 0 ? 1 : -1;
+      el.style.setProperty('--wind-x', `${dir * (75 + (i % 4) * 18)}px`);
+      el.style.setProperty('--wind-r', `${dir * (1.5 + (i % 3) * 1.1)}`);
+      el.style.setProperty('--wind-s', `${dir * (2 + (i % 3) * 1.2)}`);
+    });
+  }
+  seedKailanWind();
+  new MutationObserver(seedKailanWind).observe(document.body, {subtree:true, childList:true});
+})();
+</script>
+
 </body>
 </html>
