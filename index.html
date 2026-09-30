@@ -113,6 +113,127 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 }
 .word.accent,.word.visible.accent{color:var(--accent)}
 
+/* FIRST-CHORUS QUESTION-MARK CHAOS
+   Appears when "ligawan?" arrives, lives only until the next lyric,
+   then collapses/wipes away as the next line enters. */
+#questionChaos{
+  position:absolute;
+  inset:0;
+  z-index:6;
+  pointer-events:none;
+  overflow:hidden;
+  opacity:0;
+}
+#questionChaos.ready{opacity:1}
+#questionChaos.leaving{animation:qFieldOut .38s cubic-bezier(.18,.8,.2,1) forwards}
+#questionChaos .qmark{
+  position:absolute;
+  left:var(--x);
+  top:var(--y);
+  font-family:var(--font, Inter, system-ui, sans-serif);
+  font-size:var(--size);
+  font-weight:var(--weight);
+  line-height:1;
+  color:var(--color);
+  opacity:var(--opacity);
+  transform:translate(-50%,-50%) rotate(var(--rot)) scale(var(--scale));
+  text-shadow:0 0 18px #ffb38a35;
+  will-change:transform,opacity;
+  animation:qMarkShake var(--speed) steps(2,end) infinite;
+  animation-delay:var(--delay);
+}
+#questionChaos .qmark:nth-child(2n){
+  animation-name:qMarkShake2;
+}
+#questionChaos .qmark:nth-child(3n){
+  animation-name:qMarkShake3;
+}
+#questionChaos .qmark:nth-child(4n){
+  animation-name:qMarkShake4;
+}
+
+@keyframes qMarkShake{
+  0%{transform:translate(-50%,-50%) rotate(var(--rot)) scale(var(--scale))}
+  17%{transform:translate(calc(-50% + 4px),calc(-50% - 7px)) rotate(calc(var(--rot) + 7deg)) scale(1.04)}
+  31%{transform:translate(calc(-50% - 6px),calc(-50% + 3px)) rotate(calc(var(--rot) - 9deg)) scale(.94)}
+  52%{transform:translate(calc(-50% + 2px),calc(-50% + 8px)) rotate(calc(var(--rot) + 13deg)) scale(1.08)}
+  73%{transform:translate(calc(-50% - 5px),calc(-50% - 3px)) rotate(calc(var(--rot) - 5deg)) scale(.97)}
+  100%{transform:translate(-50%,-50%) rotate(var(--rot)) scale(var(--scale))}
+}
+@keyframes qMarkShake2{
+  0%{transform:translate(-50%,-50%) rotate(var(--rot)) scale(var(--scale))}
+  23%{transform:translate(calc(-50% - 7px),calc(-50% + 4px)) rotate(calc(var(--rot) - 12deg)) scale(1.08)}
+  47%{transform:translate(calc(-50% + 5px),calc(-50% - 5px)) rotate(calc(var(--rot) + 8deg)) scale(.92)}
+  69%{transform:translate(calc(-50% - 2px),calc(-50% + 7px)) rotate(calc(var(--rot) - 16deg)) scale(1.05)}
+  100%{transform:translate(-50%,-50%) rotate(var(--rot)) scale(var(--scale))}
+}
+@keyframes qMarkShake3{
+  0%{transform:translate(-50%,-50%) rotate(var(--rot)) scale(var(--scale))}
+  19%{transform:translate(calc(-50% + 8px),calc(-50% + 2px)) rotate(calc(var(--rot) + 15deg)) scale(.9)}
+  42%{transform:translate(calc(-50% - 4px),calc(-50% - 8px)) rotate(calc(var(--rot) - 6deg)) scale(1.12)}
+  81%{transform:translate(calc(-50% + 6px),calc(-50% + 5px)) rotate(calc(var(--rot) + 10deg)) scale(.96)}
+  100%{transform:translate(-50%,-50%) rotate(var(--rot)) scale(var(--scale))}
+}
+@keyframes qMarkShake4{
+  0%{transform:translate(-50%,-50%) rotate(var(--rot)) scale(var(--scale))}
+  28%{transform:translate(calc(-50% - 5px),calc(-50% - 6px)) rotate(calc(var(--rot) + 18deg)) scale(1.1)}
+  56%{transform:translate(calc(-50% + 7px),calc(-50% + 4px)) rotate(calc(var(--rot) - 13deg)) scale(.9)}
+  82%{transform:translate(calc(-50% - 3px),calc(-50% + 6px)) rotate(calc(var(--rot) + 5deg)) scale(1.05)}
+  100%{transform:translate(-50%,-50%) rotate(var(--rot)) scale(var(--scale))}
+}
+
+/* "ligawan?" itself gets the same nervous, unpredictable energy. */
+.line.question-chaos .word.ligawan-chaos{
+  color:var(--accent);
+  text-shadow:0 0 24px #ffb38a66;
+  animation:ligawanJitter .105s steps(2,end) infinite;
+  will-change:transform;
+}
+@keyframes ligawanJitter{
+  0%{transform:translate(0,0) rotate(-1deg) scale(1.03)}
+  19%{transform:translate(-2px,1px) rotate(1.5deg) scale(1.08)}
+  37%{transform:translate(3px,-2px) rotate(-2.5deg) scale(1.02)}
+  54%{transform:translate(-1px,-3px) rotate(2deg) scale(1.10)}
+  72%{transform:translate(2px,2px) rotate(-1deg) scale(1.05)}
+  100%{transform:translate(0,0) rotate(1deg) scale(1.03)}
+}
+
+/* The old line doesn't simply disappear: the question marks collapse inward. */
+.line.question-chaos.out{
+  animation:qLineOut .62s cubic-bezier(.18,.8,.2,1) forwards;
+}
+.line.question-chaos.out #questionChaos{
+  animation:qFieldOut .62s cubic-bezier(.18,.8,.2,1) forwards;
+}
+@keyframes qLineOut{
+  0%{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}
+  55%{opacity:1;transform:translateY(-5px) scale(1.025);filter:blur(0)}
+  100%{opacity:0;transform:translateY(-42px) scale(.88);filter:blur(8px)}
+}
+@keyframes qFieldOut{
+  0%{opacity:1;transform:scale(1)}
+  45%{opacity:1;transform:scale(1.02)}
+  100%{opacity:0;transform:scale(.72)}
+}
+
+/* Next lyric arrives through the space left by the question marks. */
+.line.question-next{
+  animation:qNextIn .68s cubic-bezier(.16,.86,.2,1) both;
+}
+@keyframes qNextIn{
+  0%{opacity:0;transform:translateY(34px) scale(.82) rotate(-1.5deg);filter:blur(10px)}
+  52%{opacity:1;transform:translateY(-5px) scale(1.035) rotate(.4deg);filter:blur(0)}
+  74%{transform:translateY(2px) scale(.985) rotate(-.2deg)}
+  100%{opacity:1;transform:translateY(0) scale(1) rotate(0);filter:blur(0)}
+}
+
+@media(max-width:600px){
+  #questionChaos .qmark{
+    text-shadow:0 0 13px #ffb38a44;
+  }
+}
+
+
 
 #ooExplosion{position:absolute;inset:0;z-index:8;overflow:hidden;pointer-events:none}
 .oo-field{position:absolute;left:50%;top:50%;white-space:nowrap;font-weight:900;letter-spacing:-.08em;color:#f8f0e6;opacity:0;transform:translate(-50%,-50%) scale(.15) rotate(var(--r));animation:ooTakeover var(--life) cubic-bezier(.12,.8,.18,1) forwards;text-shadow:0 0 24px #ffb38a33}
@@ -1058,46 +1179,6 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .line.scene-kailan-flight .word{position:absolute;left:50%;top:50%;margin:0;white-space:nowrap;transform:translate3d(-50%,-50%,0);will-change:transform,opacity;animation:none!important}
 .line.scene-kailan-flight .word.accent{color:var(--accent)}
 
-/* FIRST-CHORUS HEART THREAD — background decoration only */
-#redStringFate{
-  position:absolute;
-  inset:0;
-  z-index:3;
-  pointer-events:none;
-  overflow:hidden;
-  opacity:0;
-  transition:opacity .16s ease;
-}
-#redStringFate.active{opacity:1}
-#redStringFate svg{
-  position:absolute;
-  inset:0;
-  width:100%;
-  height:100%;
-  overflow:visible;
-}
-#redStringFate .string-glow,
-#redStringFate .string-path{
-  fill:none;
-  stroke:var(--accent);
-  stroke-linecap:round;
-  stroke-linejoin:round;
-  vector-effect:non-scaling-stroke;
-}
-#redStringFate .string-glow{
-  stroke-width:13;
-  opacity:.12;
-  filter:blur(7px);
-}
-#redStringFate .string-path{
-  stroke-width:4.6;
-  opacity:.58;
-  filter:drop-shadow(0 0 4px rgba(255,179,138,.22)) drop-shadow(0 0 10px rgba(255,179,138,.10));
-}
-@media(max-width:600px){
-  #redStringFate .string-path{stroke-width:3.7}
-  #redStringFate .string-glow{stroke-width:9}
-}
 </style>
 </head>
 <body>
@@ -1107,15 +1188,7 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   <div id="backgroundBanat" aria-hidden="true"></div>
   <div id="heartField" aria-hidden="true"></div><div id="ooExplosion" aria-hidden="true"></div>
   <div id="echoes"></div>
-  <div id="redStringFate" aria-hidden="true">
-    <svg viewBox="0 0 1000 620" preserveAspectRatio="none">
-      <path class="string-glow"></path>
-      <path class="string-path"></path>
-      <circle class="string-tip" r="4.5"></circle>
-    </svg>
-  </div>
-
-  <div id="top">
+<div id="top">
     <div class="title"><span class="dot"></span><span>Pwede Ba Kitang Ligawan</span></div>
     <div class="counter" id="counter">00:00 / 02:36</div>
   </div>
@@ -1393,6 +1466,50 @@ function activate(i){
   const el=L.firstElementChild;
   if(i===0) el.classList.add('puso-throb');
   if(i===4){
+    el.classList.add('question-chaos');
+
+    const field=document.createElement('div');
+    field.id='questionChaos';
+    field.setAttribute('aria-hidden','true');
+
+    const qStyles=[
+      ['-2%','28%','clamp(58px,15vw,150px)','800','#f8f0e6','.72','-14deg','1.00','.17s'],
+      ['8%','66%','clamp(32px,9vw,88px)','300','#ffb38a','.68','18deg','.86','-.08s'],
+      ['96%','31%','clamp(72px,19vw,190px)','900','#f8f0e6','.76','11deg','1.08','.03s'],
+      ['108%','68%','clamp(38px,10vw,100px)','600','#ffb38a','.62','-21deg','.92','-.19s'],
+      ['-5%','47%','clamp(26px,7vw,72px)','500','#ffb38a','.55','27deg','.86','-.31s'],
+      ['103%','49%','clamp(25px,6vw,64px)','800','#f8f0e6','.58','-7deg','1.14','-.42s'],
+      ['14%','17%','clamp(22px,5vw,55px)','400','#f8f0e6','.42','-32deg','.82','-.52s'],
+      ['88%','82%','clamp(25px,6vw,62px)','300','#ffb38a','.48','16deg','1.03','-.63s'],
+      ['-7%','82%','clamp(48px,12vw,120px)','900','#f8f0e6','.60','-9deg','.95','-.73s'],
+      ['111%','18%','clamp(20px,5vw,52px)','500','#ffb38a','.44','31deg','.88','-.82s']
+    ];
+
+    qStyles.forEach((v)=>{
+      const q=document.createElement('span');
+      q.className='qmark';
+      q.textContent='?';
+      q.style.setProperty('--x',v[0]);
+      q.style.setProperty('--y',v[1]);
+      q.style.setProperty('--size',v[2]);
+      q.style.setProperty('--weight',v[3]);
+      q.style.setProperty('--color',v[4]);
+      q.style.setProperty('--opacity',v[5]);
+      q.style.setProperty('--rot',v[6]);
+      q.style.setProperty('--scale',v[7]);
+      q.style.setProperty('--delay',v[8]);
+      q.style.setProperty('--speed',(0.33+(Math.random()*0.32)).toFixed(2)+'s');
+      field.appendChild(q);
+    });
+
+    el.appendChild(field);
+
+    /* Target only the "ligawan?" word (word index 3). */
+    const ligawan=el.querySelector('.word[data-word-index="3"]');
+    if(ligawan)ligawan.classList.add('ligawan-chaos');
+  }
+
+  if(i===4){
     const laserHeart=buildLaserHeart();
     el.appendChild(laserHeart);
     const path=laserHeart.querySelector('.laser-heart-path');
@@ -1403,6 +1520,7 @@ function activate(i){
       laserHeart.dataset.pathLength=String(length);
     }
   }
+  if(i===5) el.classList.add('question-next');
   if(i===1){
     el.classList.add('banat-scratch');
     // The complete phrase "banat na 'to" gets the animated scratch treatment.
@@ -1843,6 +1961,15 @@ function render(){
 
   updateWords(t);
   updateMotion(t);
+  if(current===4){
+    const qf=document.getElementById('questionChaos');
+    if(qf){
+      const ready=t>=42.65 && t<46.75;
+      qf.classList.toggle('ready',ready);
+      if(t>=46.37) qf.classList.add('leaving');
+    }
+  }
+
   updateClock(t);
   pulse(t);
 const d=Math.min(A.duration||135,135);
@@ -1930,165 +2057,7 @@ APP.addEventListener('pointerleave',()=>{
 render();
 </script>
 
-<script>
-/*
-  FIRST CHORUS — HEART THREAD
-  ------------------------------------------------------------
-  Only the first chorus line (39.65–46.75s).
 
-  The thread comes from outside the left edge, traces a
-  recognizable heart behind the lyric, then continues from the
-  bottom point and disappears beyond the right edge.
-*/
-(function(){
-  try{
-    var root=document.getElementById('redStringFate');
-    var audio=document.getElementById('audio');
-    var path=root && root.querySelector('.string-path');
-    var glow=root && root.querySelector('.string-glow');
-
-    if(!root || !audio || !path || !glow) return;
-
-    /*
-      Classic heart silhouette:
-        off-screen → left lobe → center notch → right lobe
-        → bottom point → off-screen.
-
-      The top notch is deliberately deep and the bottom point
-      deliberately sharp so it reads as an actual heart.
-    */
-    var d=[
-      /* long sweeping entry from off-screen */
-      "M -180 610",
-      "C -70 585 40 540 145 470",
-      "C 220 420 285 365 330 310",
-
-      /* small, loose hand-drawn heart */
-      "C 300 270 245 268 214 300",
-      "C 181 334 193 380 232 392",
-      "C 264 402 286 374 288 340",
-      "C 291 292 332 274 365 297",
-      "C 404 324 405 386 373 424",
-      "C 342 460 284 476 230 468",
-      "C 165 459 116 420 118 377",
-      "C 120 342 151 319 181 325",
-
-      /* the same thread crosses and pulls upward */
-      "C 225 334 287 395 330 455",
-      "C 371 512 400 560 430 610",
-      "C 468 673 520 696 564 655",
-
-      /* long rising sweep */
-      "C 616 606 628 505 650 402",
-      "C 670 306 676 196 722 132",
-
-      /* little loop at the top */
-      "C 755 86 816 88 842 125",
-      "C 866 160 847 201 815 210",
-      "C 785 218 760 196 766 170",
-      "C 773 140 810 124 841 137",
-
-      /* continue seamlessly out of frame */
-      "C 882 154 916 129 948 96",
-      "C 985 58 1025 26 1085 5"
-    ].join(" ");
-
-    /*
-      The above naturally closes the heart, but we want the
-      thread to leave from the bottom point. Use a simpler open
-      heart path instead: enter → left lobe → notch → right lobe
-      → bottom point → exit.
-    */
-    d=[
-      /* off-screen entry */
-      "M -120 690",
-
-      /* climb into the left lobe */
-      "C -20 640 55 545 95 425",
-      "C 120 350 112 260 150 205",
-      "C 190 145 270 125 325 170",
-      "C 370 206 390 270 405 335",
-
-      /* deep center notch */
-      "C 420 370 458 400 500 425",
-
-      /* climb back up through the right lobe */
-      "C 542 400 580 370 595 335",
-      "C 610 270 630 206 675 170",
-      "C 730 125 810 145 850 205",
-      "C 888 260 880 350 905 425",
-
-      /* taper into the unmistakable bottom point */
-      "C 890 500 850 575 790 635",
-      "C 720 705 625 775 500 845",
-
-      /* same continuous thread leaves the frame */
-      "C 610 820 735 820 850 855",
-      "C 955 887 1050 900 1140 875"
-    ].join(" ");
-
-    /*
-      This is still one continuous path. The visible drawing is
-      revealed in order, so it looks like a thread being pulled
-      through the heart rather than a static graphic appearing.
-    */
-    path.setAttribute("d",d);
-    glow.setAttribute("d",d);
-
-    var length=path.getTotalLength();
-    if(!isFinite(length) || length<=0) return;
-
-    function ease(t){
-      t=Math.max(0,Math.min(1,t));
-      return t*t*(3-2*t);
-    }
-
-    function frame(){
-      var t=Number(audio.currentTime)||0;
-
-      if(t<39.65 || t>46.75){
-        root.classList.remove("active");
-        path.style.strokeDasharray="0 "+length;
-        glow.style.strokeDasharray="0 "+length;
-        path.style.strokeDashoffset="0";
-        glow.style.strokeDashoffset="0";
-        window.requestAnimationFrame(frame);
-        return;
-      }
-
-      root.classList.add("active");
-
-      /*
-        One continuous gesture, like the reference:
-        sweep in → form a small imperfect heart → cross through it
-        → rise into a loose loop → continue off-screen.
-      */
-      var q=Math.max(0,Math.min(1,(t-39.65)/(46.75-39.65)));
-      var visible, offset;
-
-      if(q < 0.86){
-        visible=length*ease(q/0.86);
-        offset=0;
-      }else{
-        /* keep the finished gesture visible for the final beat */
-        visible=length;
-        offset=0;
-      }
-
-      path.style.strokeDasharray=visible+" "+length;
-      glow.style.strokeDasharray=visible+" "+length;
-      path.style.strokeDashoffset=offset;
-      glow.style.strokeDashoffset=offset;
-
-      window.requestAnimationFrame(frame);
-    }
-
-    frame();
-  }catch(error){
-    console.warn("Heart thread effect disabled:",error);
-  }
-})();
-</script>
 
 </body>
 </html>
