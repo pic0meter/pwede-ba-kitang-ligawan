@@ -1090,9 +1090,9 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   filter:blur(7px);
 }
 #redStringFate .string-path{
-  stroke-width:4.2;
-  opacity:.62;
-  filter:drop-shadow(0 0 4px rgba(255,179,138,.28));
+  stroke-width:4.6;
+  opacity:.58;
+  filter:drop-shadow(0 0 4px rgba(255,179,138,.22)) drop-shadow(0 0 10px rgba(255,179,138,.10));
 }
 @media(max-width:600px){
   #redStringFate .string-path{stroke-width:3.7}
@@ -1933,9 +1933,12 @@ render();
 <script>
 /*
   FIRST CHORUS — HEART THREAD
-  The string exists only for "Pwede ba kitang ligawan?"
-  (39.65–46.75). It enters from off-screen, forms one large
-  heart behind the lyric, then continues off-screen.
+  ------------------------------------------------------------
+  Only the first chorus line (39.65–46.75s).
+
+  The thread comes from outside the left edge, traces a
+  recognizable heart behind the lyric, then continues from the
+  bottom point and disappears beyond the right edge.
 */
 (function(){
   try{
@@ -1943,36 +1946,68 @@ render();
     var audio=document.getElementById('audio');
     var path=root && root.querySelector('.string-path');
     var glow=root && root.querySelector('.string-glow');
+
     if(!root || !audio || !path || !glow) return;
 
     /*
-      One continuous open heart. The endpoints are deliberately
-      outside the viewport so the thread feels like it continues
-      beyond the screen.
+      Classic heart silhouette:
+        off-screen → left lobe → center notch → right lobe
+        → bottom point → off-screen.
+
+      The top notch is deliberately deep and the bottom point
+      deliberately sharp so it reads as an actual heart.
     */
     var d=[
-      "M -90 470",
-      "C 10 458 78 424 128 366",
-      "C 170 317 158 249 184 194",
-      "C 214 132 292 108 355 139",
-      "C 411 166 445 225 500 292",
-      "C 555 225 589 166 645 139",
-      "C 708 108 786 132 816 194",
-      "C 842 249 830 317 872 366",
-      "C 922 424 990 458 1090 470"
+      "M -140 455",
+      "C -35 442 58 398 105 322",
+      "C 145 258 151 174 214 143",
+      "C 276 112 350 137 395 193",
+      "C 431 238 452 302 500 355",
+      "C 548 302 569 238 605 193",
+      "C 650 137 724 112 786 143",
+      "C 849 174 855 258 895 322",
+      "C 942 398 1035 442 1140 455",
+      "C 1050 475 963 507 900 545",
+      "C 827 588 760 625 690 666",
+      "C 620 707 548 748 500 790",
+      "C 452 748 380 707 310 666",
+      "C 240 625 173 588 100 545",
+      "C 37 507 -50 475 -140 455"
     ].join(" ");
 
+    /*
+      The above naturally closes the heart, but we want the
+      thread to leave from the bottom point. Use a simpler open
+      heart path instead: enter → left lobe → notch → right lobe
+      → bottom point → exit.
+    */
+    d=[
+      "M -120 485",
+      "C -25 470 55 420 105 335",
+      "C 145 266 155 178 220 145",
+      "C 286 112 360 142 402 205",
+      "C 441 263 463 327 500 382",
+      "C 537 327 559 263 598 205",
+      "C 640 142 714 112 780 145",
+      "C 845 178 855 266 895 335",
+      "C 945 420 1025 470 1120 485",
+      "C 1018 503 918 531 830 578",
+      "C 736 628 638 696 500 790",
+      "C 362 696 264 628 170 578",
+      "C 82 531 -18 503 -120 485"
+    ].join(" ");
+
+    /*
+      This is still one continuous path. The visible drawing is
+      revealed in order, so it looks like a thread being pulled
+      through the heart rather than a static graphic appearing.
+    */
     path.setAttribute("d",d);
     glow.setAttribute("d",d);
 
     var length=path.getTotalLength();
     if(!isFinite(length) || length<=0) return;
 
-    /*
-      The visible dash is the thread itself. It grows as it
-      enters, remains around the heart briefly, then travels
-      away to the right.
-    */
     function ease(t){
       t=Math.max(0,Math.min(1,t));
       return t*t*(3-2*t);
@@ -1981,7 +2016,7 @@ render();
     function frame(){
       var t=Number(audio.currentTime)||0;
 
-      if(t < 39.65 || t > 46.75){
+      if(t<39.65 || t>46.75){
         root.classList.remove("active");
         path.style.strokeDasharray="0 "+length;
         glow.style.strokeDasharray="0 "+length;
@@ -1993,27 +2028,30 @@ render();
 
       root.classList.add("active");
 
-      var q=ease((t-39.65)/(46.75-39.65));
+      var q=(t-39.65)/(46.75-39.65);
+      var visible, offset;
 
       /*
-        Enter quickly, reveal the full heart, then let the tail
-        leave. This keeps the heart readable instead of drawing
-        a line across the whole chorus.
+        0–30%: thread enters and draws the heart.
+        30–68%: complete heart is visible.
+        68–100%: thread continues downward and leaves.
       */
-      var visible;
-      var offset;
-
-      if(q < .20){
-        var a=q/.20;
-        visible=length*(.08 + .92*ease(a));
+      if(q<0.30){
+        var a=ease(q/0.30);
+        visible=length*a;
         offset=0;
-      }else if(q < .68){
+      }else if(q<0.68){
         visible=length;
         offset=0;
       }else{
-        var b=(q-.68)/.32;
-        visible=length*(1-.88*ease(b));
-        offset=-length*.88*ease(b);
+        var b=ease((q-0.68)/0.32);
+        /*
+          Keep the head of the thread moving toward the exit.
+          The path itself extends off-screen, so the disappearing
+          tail feels continuous.
+        */
+        visible=length*(1-0.72*b);
+        offset=-length*0.72*b;
       }
 
       path.style.strokeDasharray=visible+" "+length;
