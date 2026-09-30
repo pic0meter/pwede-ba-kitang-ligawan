@@ -1236,30 +1236,44 @@ function updateMotion(t){
   const words=[...el.querySelectorAll('.word')];
 
   if(scene==='orbit'){
-    /* A calmer, readable orbit: the currently sung word stays centered,
-       while the other words gently float around it instead of continuously
-       sweeping through the middle of the lyric. */
-    const others=words.filter(w=>!w.classList.contains('current'));
+    /* Sequential drift instead of an infinity/orbit path:
+       each word appears in the center, then gently drifts away only
+       when the next word arrives. The currently sung word always stays
+       centered and readable. */
+    const itemCues=item.cues||[];
     const currentWord=words.find(w=>w.classList.contains('current'));
-    const n=Math.max(others.length,1);
-    const rx=Math.min(360,245+n*15);
-    const ry=Math.min(220,145+n*8);
-    const drift=t*.22;
+    const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 
     words.forEach(w=>{
+      const wi=Number(w.dataset.wordIndex||0);
+      const cue=itemCues[wi] ?? item.start;
+
       if(w===currentWord){
-        w.style.transform='translate3d(-50%,-50%,0) scale(1.12)';
+        w.style.transform='translate3d(-50%,-50%,0) scale(1.08)';
+        w.style.opacity='1';
         w.style.zIndex='5';
         return;
       }
-      const i=others.indexOf(w);
-      const base=(-Math.PI/2)+(i/n)*Math.PI*2;
-      const a=base+drift;
-      const x=Math.cos(a)*rx;
-      const y=Math.sin(a)*ry;
-      const bob=Math.sin(t*.7+i*.9)*7;
-      const scale=1+.025*Math.sin(t*.8+i);
+
+      /* A word begins drifting when the following word appears. */
+      const nextCue=itemCues[wi+1] ?? item.end;
+      const driftStart=nextCue;
+      const p=clamp((t-driftStart)/1.15,0,1);
+      const eased=p*p*(3-2*p);
+
+      /* Each word has its own gentle direction, spreading the lyric
+         outward without crossing through the center again. */
+      const angle=(-Math.PI/2)+(wi*1.72);
+      const maxX=155+(wi%3)*42;
+      const maxY=88+(wi%4)*20;
+      const x=Math.cos(angle)*maxX*eased;
+      const y=Math.sin(angle)*maxY*eased;
+      const bob=Math.sin((t-cue)*1.5+wi)*2.5*eased;
+      const scale=1-.07*eased;
+      const opacity=1-.32*eased;
+
       w.style.zIndex='2';
+      w.style.opacity=String(opacity);
       w.style.transform=`translate3d(calc(-50% + ${x}px),calc(-50% + ${y+bob}px),0) scale(${scale})`;
     });
   }
