@@ -1057,6 +1057,53 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .line.scene-kailan-flight{position:relative;display:block;width:min(92vw,900px);min-height:48vh;overflow:visible}
 .line.scene-kailan-flight .word{position:absolute;left:50%;top:50%;margin:0;white-space:nowrap;transform:translate3d(-50%,-50%,0);will-change:transform,opacity;animation:none!important}
 .line.scene-kailan-flight .word.accent{color:var(--accent)}
+
+/* RED STRING OF FATE — decorative layer, independent of the player */
+#redStringFate{
+  position:absolute;
+  inset:0;
+  z-index:7;
+  pointer-events:none;
+  overflow:hidden;
+  opacity:0;
+  transition:opacity .28s ease;
+}
+#redStringFate.active{opacity:1}
+#redStringFate svg{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  overflow:visible;
+}
+#redStringFate .string-glow,
+#redStringFate .string-path{
+  fill:none;
+  stroke:#ff3f58;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  vector-effect:non-scaling-stroke;
+}
+#redStringFate .string-glow{
+  stroke-width:8;
+  opacity:.18;
+  filter:blur(4px);
+}
+#redStringFate .string-path{
+  stroke-width:2.35;
+  opacity:.96;
+  filter:drop-shadow(0 0 3px #ff4054) drop-shadow(0 0 7px #ff405455);
+}
+#redStringFate .string-tip{
+  fill:#ff7080;
+  opacity:0;
+  filter:drop-shadow(0 0 4px white) drop-shadow(0 0 9px #ff4054);
+}
+@media(max-width:600px){
+  #redStringFate .string-path{stroke-width:2.1}
+  #redStringFate .string-glow{stroke-width:6}
+}
+
 </style>
 </head>
 <body>
@@ -1066,6 +1113,13 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   <div id="backgroundBanat" aria-hidden="true"></div>
   <div id="heartField" aria-hidden="true"></div><div id="ooExplosion" aria-hidden="true"></div>
   <div id="echoes"></div>
+  <div id="redStringFate" aria-hidden="true">
+    <svg viewBox="0 0 1000 620" preserveAspectRatio="none">
+      <path class="string-glow"></path>
+      <path class="string-path"></path>
+      <circle class="string-tip" r="4.5"></circle>
+    </svg>
+  </div>
 
   <div id="top">
     <div class="title"><span class="dot"></span><span>Pwede Ba Kitang Ligawan</span></div>
@@ -1881,5 +1935,132 @@ APP.addEventListener('pointerleave',()=>{
 });
 render();
 </script>
+
+<script>
+/*
+  RED STRING OF FATE
+  ------------------------------------------------------------
+  This is deliberately isolated from the existing lyric player.
+  It does not replace or call play(), pause(), render(),
+  updateSpecialVisuals(), activate(), or any existing listener.
+*/
+(function(){
+  try{
+    var root=document.getElementById('redStringFate');
+    var audio=document.getElementById('audio');
+    var path=root && root.querySelector('.string-path');
+    var glow=root && root.querySelector('.string-glow');
+    var tip=root && root.querySelector('.string-tip');
+
+    if(!root || !audio || !path || !glow) return;
+
+    var START=39.65;
+    var END=71.00;
+
+    /* One continuous whimsical thread: curls, loops, reverses,
+       makes small figure-eights, and finally winds around the chorus. */
+    var d=[
+      "M 78 350",
+      "C 105 320 120 270 174 262",
+      "C 225 254 270 286 257 329",
+      "C 244 372 183 383 151 347",
+      "C 119 311 139 251 198 229",
+      "C 259 206 326 238 330 289",
+      "C 334 342 276 370 250 415",
+      "C 221 466 274 510 342 492",
+      "C 414 473 455 412 417 365",
+      "C 379 318 317 321 303 270",
+      "C 286 209 348 161 421 177",
+      "C 494 193 530 254 492 303",
+      "C 456 350 399 347 376 306",
+      "C 349 259 383 216 433 218",
+      "C 487 220 514 274 488 315",
+      "C 462 355 406 361 388 405",
+      "C 368 452 410 500 472 498",
+      "C 541 496 579 441 550 393",
+      "C 521 345 459 350 444 394",
+      "C 428 440 472 473 520 457",
+      "C 568 441 588 390 567 349",
+      "C 543 301 484 285 451 318",
+      "C 417 351 433 399 477 412",
+      "C 523 425 564 397 560 355",
+      "C 555 311 510 278 472 293",
+      "C 430 310 420 355 452 382",
+      "C 489 414 544 394 565 355",
+      "C 588 312 621 293 662 311",
+      "C 707 330 717 381 689 412",
+      "C 659 445 603 438 587 397",
+      "C 571 356 603 322 641 330",
+      "C 681 339 693 382 671 410",
+      "C 647 442 600 443 574 474",
+      "C 544 510 578 548 640 544",
+      "C 710 539 772 494 770 438",
+      "C 768 385 719 358 681 382",
+      "C 644 406 654 452 692 464",
+      "C 731 476 764 447 756 413",
+      "C 748 380 710 364 686 386",
+      "C 662 408 670 441 698 448",
+      "C 727 455 750 432 745 410",
+      "C 740 389 716 379 700 392",
+      "C 680 408 688 432 710 436"
+    ].join(" ");
+
+    path.setAttribute("d",d);
+    glow.setAttribute("d",d);
+
+    var length=path.getTotalLength();
+    if(!isFinite(length) || length<=0) return;
+
+    path.style.strokeDasharray=length+" "+length;
+    glow.style.strokeDasharray=length+" "+length;
+    path.style.strokeDashoffset=length;
+    glow.style.strokeDashoffset=length;
+
+    function frame(){
+      var t=Number(audio.currentTime)||0;
+      var on=(t>=START && t<END);
+
+      if(!on){
+        root.classList.remove("active");
+        path.style.strokeDashoffset=length;
+        glow.style.strokeDashoffset=length;
+        if(t<START) tip.style.opacity="0";
+      }else{
+        root.classList.add("active");
+
+        var p=(t-START)/(END-START);
+        p=Math.max(0,Math.min(1,p));
+
+        /* Visible birth curl immediately at 39.65s. */
+        var eased=p*p*(3-2*p);
+        var drawn=length*(0.035+0.965*eased);
+        var offset=length-drawn;
+
+        path.style.strokeDashoffset=offset;
+        glow.style.strokeDashoffset=offset;
+
+        if(tip){
+          try{
+            var point=path.getPointAtLength(Math.min(drawn,length));
+            tip.setAttribute("cx",point.x);
+            tip.setAttribute("cy",point.y);
+            tip.style.opacity=p<.995?"1":"0";
+          }catch(e){
+            tip.style.opacity="0";
+          }
+        }
+      }
+
+      window.requestAnimationFrame(frame);
+    }
+
+    frame();
+  }catch(error){
+    /* The decorative effect is never allowed to interrupt the player. */
+    console.warn("Red string effect disabled:",error);
+  }
+})();
+</script>
+
 </body>
 </html>
