@@ -1255,22 +1255,30 @@ function updateMotion(t){
         return;
       }
 
-      /* A word begins drifting when the following word appears. */
+      /* A word begins drifting when the following word appears, then
+         slowly leaves the frame instead of orbiting around the center. */
       const nextCue=itemCues[wi+1] ?? item.end;
       const driftStart=nextCue;
-      const p=clamp((t-driftStart)/1.15,0,1);
+      const p=clamp((t-driftStart)/2.8,0,1);
       const eased=p*p*(3-2*p);
 
-      /* Each word has its own gentle direction, spreading the lyric
-         outward without crossing through the center again. */
-      const angle=(-Math.PI/2)+(wi*1.72);
-      const maxX=155+(wi%3)*42;
-      const maxY=88+(wi%4)*20;
-      const x=Math.cos(angle)*maxX*eased;
-      const y=Math.sin(angle)*maxY*eased;
-      const bob=Math.sin((t-cue)*1.5+wi)*2.5*eased;
-      const scale=1-.07*eased;
-      const opacity=1-.32*eased;
+      /* Send each completed word toward a different edge/corner. The
+         travel is deliberately long and slow so the lyric stays readable
+         while it gradually disappears beyond the screen. */
+      const vw=Math.max(window.innerWidth||900,900);
+      const vh=Math.max(window.innerHeight||600,600);
+      const directions=[
+        [-1.00,-0.18],[-0.72,-0.78],[0.72,-0.82],[1.00,-0.20],
+        [0.82,0.72],[-0.70,0.82],[-1.00,0.28],[0.52,-1.00],
+        [-0.48,1.00]
+      ];
+      const [dx,dy]=directions[wi%directions.length];
+      const distance=Math.hypot(vw,vh)*1.08 + wi*35;
+      const x=dx*distance*eased;
+      const y=dy*distance*eased;
+      const bob=Math.sin((t-driftStart)*1.1+wi)*3*eased;
+      const scale=1-.10*eased;
+      const opacity=1-.72*eased;
 
       w.style.zIndex='2';
       w.style.opacity=String(opacity);
