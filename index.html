@@ -1370,7 +1370,14 @@ function buildLaserHeart(){
   return svg;
 }
 
-initRedString();
+// Initialize the decorative red string without allowing an SVG/browser
+// compatibility issue to break the entire lyric player.
+try{
+  initRedString();
+}catch(err){
+  console.warn('Red string initialization skipped:',err);
+  redStringLength=0;
+}
 
 function activate(i){
   if(i===current)return;
@@ -1771,10 +1778,12 @@ function updateRedString(t){
 
   const p=Math.max(0,Math.min(1,(t-RED_STRING_START)/(RED_STRING_END-RED_STRING_START)));
 
-  // Smooth acceleration/deceleration, so the thread feels pulled rather
-  // than mechanically revealed.
+  // Do NOT begin at zero length: the thread must be visibly born with
+  // the first "Pwede". A tiny initial curl is already on-screen at 39.65s,
+  // then the rest of the string is continuously drawn toward "Oo o hindi?".
   const eased=p*p*(3-2*p);
-  const drawn=redStringLength*eased;
+  const minimumBirth=0.035;
+  const drawn=redStringLength*(minimumBirth + (1-minimumBirth)*eased);
   const offset=redStringLength-drawn;
 
   RED_STRING_PATH.style.strokeDashoffset=offset;
@@ -1785,7 +1794,7 @@ function updateRedString(t){
       const pt=RED_STRING_PATH.getPointAtLength(Math.min(drawn,redStringLength));
       RED_STRING_TIP.setAttribute("cx",pt.x);
       RED_STRING_TIP.setAttribute("cy",pt.y);
-      RED_STRING_TIP.style.opacity=p<.995?"1":"0";
+      RED_STRING_TIP.style.opacity=(p<.995)?"1":"0";
     }catch(e){}
   }
 }
