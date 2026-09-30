@@ -538,51 +538,38 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   100%{transform:translate(0,0) rotate(-1deg) scale(1.03)}
 }
 
-/* SECOND CHORUS LINE — "linyahan" peels away like a soft ribbon in air. */
-.line.scene-squiggle.linyahan-ribbon{
+/* SECOND CHORUS LINE — "linyahan" repeats downward like a typographic echo. */
+.line.scene-squiggle.linyahan-stack{
   position:relative;
   overflow:visible;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:0;
+  white-space:nowrap;
 }
-.line.scene-squiggle.linyahan-ribbon .word{
-  will-change:transform,opacity,filter;
+.line.scene-squiggle.linyahan-stack .word{
+  will-change:transform,opacity;
 }
-.line.scene-squiggle.linyahan-ribbon .word.linyahan-ribbon-word.visible{
-  animation:linyahanRibbon .95s cubic-bezier(.16,.88,.18,1) both,
-            ribbonFloat 2.8s ease-in-out .95s infinite alternate;
-  transform-origin:left center;
-  z-index:4;
+.line.scene-squiggle.linyahan-stack .word.linyahan-stack-word{
+  position:absolute;
+  left:50%;
+  top:50%;
+  font-size:clamp(30px,7vw,72px);
+  font-weight:inherit;
+  letter-spacing:.01em;
+  color:var(--ink);
+  transform:translate(-50%,-50%);
+  animation:none;
 }
-@keyframes linyahanRibbon{
-  0%{
-    opacity:0;
-    transform:translate3d(-20px,22px,0) rotate(-7deg) skewX(-8deg) scaleX(.72);
-    filter:blur(7px);
-  }
-  18%{
-    opacity:1;
-    transform:translate3d(5px,-4px,0) rotate(4deg) skewX(3deg) scaleX(1.03);
-    filter:blur(0);
-  }
-  45%{
-    opacity:1;
-    transform:translate3d(18px,-12px,0) rotate(-2deg) skewX(-7deg) scaleX(1.08);
-  }
-  70%{
-    opacity:.92;
-    transform:translate3d(95px,-45px,0) rotate(8deg) skewX(-15deg) scaleX(1.18);
-    filter:blur(.3px);
-  }
-  100%{
-    opacity:0;
-    transform:translate3d(calc(100vw + 120px),-115px,0) rotate(22deg) skewX(-24deg) scaleX(1.48);
-    filter:blur(2px);
-  }
+.line.scene-squiggle.linyahan-stack .word.linyahan-stack-word.visible{
+  animation:linyahanStackIn .38s cubic-bezier(.15,1.15,.25,1) both;
 }
-@keyframes ribbonFloat{
-  0%{transform:translate3d(0,0,0) rotate(1deg) skewX(-4deg) scaleX(1.04)}
-  100%{transform:translate3d(10px,-9px,0) rotate(-2deg) skewX(3deg) scaleX(1.08)}
+@keyframes linyahanStackIn{
+  0%{opacity:0;transform:translate(-50%,calc(-50% + 18px)) scale(.9)}
+  100%{opacity:1;transform:translate(-50%,calc(-50% + var(--stack-y))) scale(1)}
 }
-
 /* THIRD CHORUS LINE — unified cursive treatment; no mismatched word sizing. */
 .line.scene-clock.cursive-clock-lyric .clock-lyric{
   font-family:"Snell Roundhand","Segoe Script","Bradley Hand","Brush Script MT",cursive;
@@ -1689,9 +1676,36 @@ function activate(i){
   }
   if(i===3) el.classList.add('gusto-shiver');
   if(i===5){
-    el.classList.add('subtle-kinetic','linyahan-ribbon');
-    const linyahan=[...el.querySelectorAll('.word')].find(w=>w.textContent.trim().toLowerCase()==='linyahan');
-    if(linyahan) linyahan.classList.add('linyahan-ribbon-word');
+    el.classList.add('subtle-kinetic','linyahan-stack');
+
+    /*
+      Keep the original lyric line, but turn each occurrence of
+      "linyahan" into a vertical echo. The echoes are deliberately
+      allowed to run beyond the viewport.
+    */
+    const words=[...el.querySelectorAll('.word')];
+    const target=words.find(w=>w.textContent.trim().toLowerCase()==='linyahan');
+
+    if(target){
+      const baseIndex=Number(target.dataset.wordIndex||0);
+      const copies=5;
+      const spacing=1.02; // em-ish visual spacing
+
+      target.classList.add('linyahan-stack-word');
+      target.style.setProperty('--stack-y','0em');
+
+      for(let n=1;n<copies;n++){
+        const copy=target.cloneNode(true);
+        copy.dataset.stackIndex=String(n);
+        copy.classList.add('linyahan-stack-word');
+        copy.classList.remove('current','visible');
+        copy.dataset.wordIndex=String(baseIndex);
+        copy.style.setProperty('--stack-y',(n*spacing)+'em');
+        copy.style.setProperty('--stack-delay',(n*.08)+'s');
+        copy.style.animationDelay=(n*.08)+'s';
+        el.appendChild(copy);
+      }
+    }
   }
   if(i===6) el.classList.add('cursive-clock-lyric');
   if(i===6) el.classList.add('clock-shake');
@@ -1746,7 +1760,7 @@ function updateWords(t){
   const el=L.querySelector('.line.active');
   if(!el||current<0)return;
   const item=lines[current];
-  const words=[...el.querySelectorAll('.word')];
+  const words=[...el.querySelectorAll('.word:not([data-stack-index])')];
   const cues=item.cues;
   let currentWord=-1;
 
