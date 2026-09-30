@@ -1261,7 +1261,7 @@ function buildHeartSplitLine(text){
 function sceneFor(i){
   // Each lyric becomes a small motion-graphics scene.
   const scenes=[
-    'fly','slit','orbit','wind','zoom','squiggle','clock','flip',
+    'fly','slit','fly','wind','zoom','squiggle','clock','flip',
     'fly','question','crawl','slit','orbit','wind','rubber','chase',
     'longa','fly','clock','crawl','flip','zoom','question'
   ];
@@ -1893,11 +1893,14 @@ function render(){
     clearBanatEchoes();
   }
 
-  updateWords(t);
-  updateMotion(t);
-  updateClock(t);
-  updateSpecialVisuals(t);
-  pulse(t);
+  // Keep the animation loop alive even if one visual effect encounters a
+  // browser-specific rendering edge case. A single effect must never freeze
+  // the lyric progression.
+  try{ updateWords(t); }catch(err){ console.error('updateWords:',err); }
+  try{ updateMotion(t); }catch(err){ console.error('updateMotion:',err); }
+  try{ updateClock(t); }catch(err){ console.error('updateClock:',err); }
+  try{ updateSpecialVisuals(t); }catch(err){ console.error('updateSpecialVisuals:',err); }
+  try{ pulse(t); }catch(err){ console.error('pulse:',err); }
 const d=Math.min(A.duration||135,135);
   P.style.width=Math.min(100,(t/d)*100)+'%';
   T.textContent=fmt(t);
