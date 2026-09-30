@@ -1261,7 +1261,7 @@ function buildHeartSplitLine(text){
 function sceneFor(i){
   // Each lyric becomes a small motion-graphics scene.
   const scenes=[
-    'fly','slit','fly','wind','zoom','squiggle','clock','flip',
+    'fly','slit','kailan-wind','wind','zoom','squiggle','clock','flip',
     'fly','question','crawl','slit','orbit','wind','rubber','chase',
     'longa','fly','clock','crawl','flip','zoom','question'
   ];
@@ -1524,6 +1524,32 @@ function updateMotion(t){
   const item=lines[current];
   const scene=sceneFor(current);
   const words=[...el.querySelectorAll('.word')];
+
+  if(scene==='kailan-wind'){
+    const cues=item.cues||[];
+    const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+    words.forEach((w,i)=>{
+      if(!w.classList.contains('visible')) return;
+      const nextCue=cues[i+1] ?? item.end;
+      const isLast=i===words.length-1;
+      // The current word stays readable. Once the next word arrives,
+      // the previous word slowly drifts away instead of disappearing abruptly.
+      if(isLast && w.classList.contains('kailan-sayo')) return;
+      if(t < nextCue){
+        w.style.opacity='1';
+        w.style.transform='translate3d(0,0,0) rotate(0deg) skewX(0deg)';
+        return;
+      }
+      const p=clamp((t-nextCue)/1.45,0,1);
+      const e=p*p*(3-2*p);
+      const dir=i%2===0?1:-1;
+      const x=dir*(55+i*13)*e;
+      const y=-34*e;
+      const r=dir*(2+i%3)*e;
+      w.style.opacity=String(1-.88*e);
+      w.style.transform=`translate3d(${x}px,${y}px,0) rotate(${r}deg) skewX(${dir*2.5*e}deg)`;
+    });
+  }
 
   if(scene==='orbit'){
     /*
