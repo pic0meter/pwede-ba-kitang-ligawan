@@ -564,12 +564,217 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   .line.scene-orbit .word{font-size:clamp(23px,7.2vw,42px)}
   .line.scene-longa{font-size:clamp(34px,10vw,58px)}
 }
+
+/* --- ROMANTIC BACKGROUND / HEART FIELD --- */
+#heartField,
+#backgroundBanat{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  overflow:hidden;
+}
+#heartField{z-index:1}
+#backgroundBanat{
+  z-index:2;
+  opacity:.22;
+  mix-blend-mode:screen;
+}
+.bg-banat{
+  position:absolute;
+  white-space:nowrap;
+  font-weight:800;
+  letter-spacing:-.065em;
+  color:#f8f0e6;
+  opacity:var(--op,.055);
+  filter:blur(var(--blur,0px));
+  transform:translate3d(0,0,0) rotate(var(--rot,0deg));
+  animation:banatDrift var(--dur,12s) ease-in-out var(--delay,0s) infinite alternate;
+  user-select:none;
+}
+@keyframes banatDrift{
+  0%{transform:translate3d(var(--x1),var(--y1),0) rotate(var(--rot));}
+  100%{transform:translate3d(var(--x2),var(--y2),0) rotate(calc(var(--rot) + 2deg));}
+}
+
+.heart{
+  position:absolute;
+  left:var(--hx);
+  top:var(--hy);
+  width:var(--hs);
+  height:var(--hs);
+  opacity:var(--ho);
+  color:var(--hc,var(--accent));
+  filter:blur(var(--hb,0px));
+  transform:rotate(-45deg) scale(.72);
+  animation:
+    heartFloat var(--hd,6s) ease-in-out var(--hdelay,0s) infinite,
+    heartPulse var(--hp,2.2s) ease-in-out var(--hdelay,0s) infinite;
+  will-change:transform,opacity;
+}
+.heart::before,
+.heart::after{
+  content:"";
+  position:absolute;
+  width:100%;
+  height:100%;
+  border-radius:50%;
+  background:currentColor;
+}
+.heart::before{top:-50%;left:0}
+.heart::after{top:0;left:50%}
+.heart{background:currentColor}
+@keyframes heartFloat{
+  0%,100%{translate:0 0 rotate(-45deg)}
+  50%{translate:var(--drift-x) var(--drift-y) rotate(-35deg)}
+}
+@keyframes heartPulse{
+  0%,100%{scale:.72}
+  45%{scale:1}
+  60%{scale:.82}
+}
+
+/* The first lyric's "puso" is deliberately oversized and becomes the visual anchor. */
+.line.puso-scene .word.puso-word{
+  font-size:clamp(85px,18vw,250px)!important;
+  font-weight:900;
+  letter-spacing:-.095em;
+  line-height:.72;
+  color:var(--ink);
+  text-shadow:
+    0 0 35px #ffb38a44,
+    0 0 90px #ffb38a20;
+  z-index:8;
+}
+.line.puso-scene .word.puso-word.visible{
+  animation:pusoReveal .8s cubic-bezier(.12,1.35,.22,1) both,
+            pusoHeartbeat 1.65s ease-in-out .8s infinite;
+}
+@keyframes pusoReveal{
+  0%{opacity:0;transform:translate3d(0,70px,0) scale(.35) rotate(-8deg);filter:blur(12px)}
+  55%{opacity:1;transform:translate3d(0,-14px,0) scale(1.13) rotate(2deg);filter:blur(0)}
+  100%{opacity:1;transform:translate3d(0,0,0) scale(1) rotate(0);filter:blur(0)}
+}
+@keyframes pusoHeartbeat{
+  0%,100%{transform:scale(1) rotate(0)}
+  12%{transform:scale(1.045) rotate(-1deg)}
+  20%{transform:scale(.985) rotate(1deg)}
+  32%{transform:scale(1.065) rotate(-1.5deg)}
+  44%{transform:scale(1) rotate(0)}
+}
+
+/* "gasgas" gets a visibly scratched / worn surface. */
+.word.gasgas-word{
+  position:relative;
+  color:#eee3d9;
+  text-shadow:0 0 22px #fff2;
+}
+.word.gasgas-word::before,
+.word.gasgas-word::after{
+  content:"";
+  position:absolute;
+  pointer-events:none;
+  left:-5%;
+  right:-5%;
+  top:10%;
+  height:80%;
+  opacity:.82;
+  background:
+    repeating-linear-gradient(
+      166deg,
+      transparent 0 7px,
+      #f8f0e6 8px 9px,
+      transparent 10px 17px,
+      #9f9187 18px 20px,
+      transparent 21px 30px
+    );
+  mix-blend-mode:screen;
+  clip-path:polygon(
+    0 14%, 12% 9%, 19% 22%, 31% 5%, 43% 18%,
+    57% 3%, 67% 25%, 79% 8%, 100% 17%,
+    93% 36%, 100% 51%, 86% 62%, 94% 78%,
+    72% 68%, 61% 91%, 45% 73%, 29% 96%,
+    17% 72%, 3% 84%, 9% 55%, 0 43%
+  );
+  transform:rotate(-3deg) scaleX(1.04);
+  animation:scratchFlicker 1.25s steps(2) infinite;
+}
+.word.gasgas-word::after{
+  background:
+    repeating-linear-gradient(
+      174deg,
+      transparent 0 11px,
+      #ffb38a 12px 13px,
+      transparent 14px 24px
+    );
+  opacity:.38;
+  transform:rotate(4deg) translateY(3px);
+}
+@keyframes scratchFlicker{
+  0%,100%{transform:rotate(-3deg) translate(0,0) scaleX(1.04)}
+  25%{transform:rotate(-2deg) translate(2px,-1px) scaleX(1.01)}
+  50%{transform:rotate(-4deg) translate(-2px,1px) scaleX(1.07)}
+  75%{transform:rotate(-1deg) translate(1px,2px) scaleX(1.03)}
+}
+
+/* Special echo that appears during "banat na 'to" at ~00:21–00:23. */
+.banat-echo{
+  position:absolute;
+  white-space:nowrap;
+  font-weight:900;
+  letter-spacing:-.075em;
+  color:#fff;
+  opacity:0;
+  text-shadow:0 0 20px #fff3;
+  animation:banatEchoIn 2.25s cubic-bezier(.16,.8,.2,1) forwards;
+}
+@keyframes banatEchoIn{
+  0%{opacity:0;transform:translate3d(0,0,0) scale(.75) rotate(var(--er))}
+  12%{opacity:.16}
+  35%{opacity:.075}
+  100%{opacity:0;transform:translate3d(var(--edx),var(--edy),0) scale(1.16) rotate(calc(var(--er)*-1))}
+}
+
+/* Stronger idle life for readable lyric words. */
+.line.active .word.visible:not(.current){
+  animation-name:idleHeartbeat;
+  animation-duration:1.75s;
+  animation-timing-function:ease-in-out;
+  animation-iteration-count:infinite;
+}
+@keyframes idleHeartbeat{
+  0%,100%{transform:translateY(0) rotate(0deg) scale(1)}
+  18%{transform:translateY(-1px) rotate(-1deg) scale(1.018)}
+  28%{transform:translateY(1px) rotate(1deg) scale(.992)}
+  42%{transform:translateY(-2px) rotate(-1.5deg) scale(1.032)}
+  55%{transform:translateY(0) rotate(.5deg) scale(1)}
+}
+@media(max-width:600px){
+  .line.puso-scene .word.puso-word{
+    font-size:clamp(68px,24vw,150px)!important;
+  }
+  #backgroundBanat{opacity:.17}
+}
+
+
+@keyframes pusoHeartFloat{
+  0%{opacity:0;transform:rotate(-45deg) translate(0,10px) scale(.3)}
+  12%{opacity:.9}
+  100%{opacity:0;transform:rotate(var(--hr,-20deg)) translate(var(--drift-x),var(--drift-y)) scale(1.05)}
+}
+@keyframes pusoHeartPulse{
+  0%,100%{filter:drop-shadow(0 0 4px #ffb38a33)}
+  50%{filter:drop-shadow(0 0 14px #ffb38a88)}
+}
+
 </style>
 </head>
 <body>
 <div id="app">
   <div class="ambient"><div class="orb o1"></div><div class="orb o2"></div></div>
-  <div id="grain"></div><div id="echoes"></div>
+  <div id="grain"></div>
+  <div id="backgroundBanat" aria-hidden="true"></div>
+  <div id="heartField" aria-hidden="true"></div>
+  <div id="echoes"></div>
 
   <div id="top">
     <div class="title"><span class="dot"></span><span>Pwede Ba Kitang Ligawan</span></div>
@@ -682,6 +887,8 @@ function buildWords(text){
     const flyX=((wordIndex%2?-1:1)*(80+((wordIndex*47)%180)))+'px';
     const flyY=((wordIndex%3-1)*(70+((wordIndex*31)%150)))+'px';
     const flyR=((wordIndex%2?-1:1)*(8+(wordIndex%5)*7))+'deg';
+    if(clean==='puso')classes.push('puso-word');
+    if(clean==='gasgas')classes.push('gasgas-word');
     const html=`<span class="${classes.join(' ')}" data-word-index="${wordIndex}" style="--i:${wordIndex};--tilt:${tilt}deg;--fx:${flyX};--fy:${flyY};--fr:${flyR}">${base}</span>`;
     wordIndex++;
     if(isQuestionHindi) return html+'<span class="question-mark" data-question-index="'+(wordIndex-1)+'">?</span>';
@@ -824,7 +1031,8 @@ function activate(i){
     el.appendChild(fragment);
     L.replaceChildren(el);
   }else{
-    L.innerHTML=`<div class="line motion scene-${scene} ${item.style}${qClass}" data-index="${i}">${body}</div>`;
+    const specialClass = i===0 ? ' puso-scene' : '';
+  L.innerHTML=`<div class="line motion scene-${scene} ${item.style}${qClass}${specialClass}" data-index="${i}">${body}</div>`;
   }
   const el=L.firstElementChild;
   SEC.textContent=item.section;
@@ -1024,6 +1232,132 @@ function echo(){
   setTimeout(()=>e.remove(),1200);
 }
 
+function createHeartField(){
+  const field=document.querySelector('#heartField');
+  if(!field || field.dataset.ready)return;
+  field.dataset.ready='1';
+
+  const sizes=[10,14,18,23,29,36,46,58,72,92];
+  const colors=['#ffb38a','#f8f0e6','#e8a7b7','#d99a78','#ffd6c2'];
+  for(let i=0;i<34;i++){
+    const h=document.createElement('span');
+    h.className='heart';
+    h.style.setProperty('--hx',(Math.random()*100)+'%');
+    h.style.setProperty('--hy',(Math.random()*100)+'%');
+    h.style.setProperty('--hs',sizes[Math.floor(Math.random()*sizes.length)]+'px');
+    h.style.setProperty('--ho',(0.025+Math.random()*0.10).toFixed(3));
+    h.style.setProperty('--hc',colors[Math.floor(Math.random()*colors.length)]);
+    h.style.setProperty('--hb',(Math.random()<.65?'0px':(1+Math.random()*2)+'px'));
+    h.style.setProperty('--hd',(5+Math.random()*8)+'s');
+    h.style.setProperty('--hp',(1.7+Math.random()*2.4)+'s');
+    h.style.setProperty('--hdelay',(-Math.random()*8)+'s');
+    h.style.setProperty('--drift-x',(-35+Math.random()*70)+'px');
+    h.style.setProperty('--drift-y',(-12-Math.random()*35)+'px';
+    field.appendChild(h);
+  }
+}
+
+function createBanatBackground(){
+  const field=document.querySelector('#backgroundBanat');
+  if(!field || field.dataset.ready)return;
+  field.dataset.ready='1';
+
+  const fonts=[
+    'Georgia,serif',
+    'Arial Black,Impact,sans-serif',
+    'Courier New,monospace',
+    'Times New Roman,serif',
+    'Trebuchet MS,sans-serif',
+    'Palatino Linotype,serif'
+  ];
+  const count=17;
+  for(let i=0;i<count;i++){
+    const e=document.createElement('span');
+    e.className='bg-banat';
+    e.textContent="banat na 'to";
+    e.style.fontFamily=fonts[i%fonts.length];
+    e.style.fontSize=(18+Math.random()*76)+'px';
+    e.style.setProperty('--op',(0.025+Math.random()*0.055).toFixed(3));
+    e.style.setProperty('--blur',(Math.random()<.35?'1px':'0px'));
+    e.style.setProperty('--rot',(-12+Math.random()*24)+'deg');
+    e.style.setProperty('--x1',(-8+Math.random()*88)+'vw');
+    e.style.setProperty('--y1',(-8+Math.random()*110)+'vh');
+    e.style.setProperty('--x2',(-4+Math.random()*90)+'vw');
+    e.style.setProperty('--y2',(-5+Math.random()*108)+'vh');
+    e.style.setProperty('--dur',(9+Math.random()*11)+'s');
+    e.style.setProperty('--delay',(-Math.random()*12)+'s');
+    field.appendChild(e);
+  }
+}
+
+function spawnBanatEcho(){
+  const host=document.querySelector('#echoes');
+  if(!host)return;
+  const e=document.createElement('div');
+  e.className='banat-echo';
+  e.textContent="banat na 'to";
+  e.style.left=(18+Math.random()*62)+'%';
+  e.style.top=(25+Math.random()*48)+'%';
+  e.style.fontSize=(28+Math.random()*78)+'px';
+  e.style.fontFamily=[
+    'Georgia,serif',
+    'Arial Black,Impact,sans-serif',
+    'Courier New,monospace'
+  ][Math.floor(Math.random()*3)];
+  e.style.setProperty('--edx',(Math.random()*180-90)+'px');
+  e.style.setProperty('--edy',(Math.random()*130-65)+'px');
+  e.style.setProperty('--er',(Math.random()*16-8)+'deg');
+  host.appendChild(e);
+  setTimeout(()=>e.remove(),2300);
+}
+
+function spawnPusoHearts(){
+  const host=document.querySelector('#heartField');
+  const target=L.querySelector('.line.active .puso-word');
+  if(!host || !target)return;
+
+  const r=target.getBoundingClientRect();
+  const cx=r.left+r.width/2;
+  const cy=r.top+r.height*.45;
+
+  for(let i=0;i<18;i++){
+    const h=document.createElement('span');
+    h.className='heart puso-heart';
+    h.style.setProperty('--hx',(cx+(Math.random()-.5)*r.width*.95)+'px');
+    h.style.setProperty('--hy',(cy+(Math.random()-.5)*r.height*.5)+'px');
+    h.style.setProperty('--hs',(10+Math.random()*34)+'px');
+    h.style.setProperty('--ho',(0.45+Math.random()*.35).toFixed(2));
+    h.style.setProperty('--hc',['#ffb38a','#f8f0e6','#e8a7b7'][Math.floor(Math.random()*3)]);
+    h.style.setProperty('--hd',(2.2+Math.random()*1.8)+'s');
+    h.style.setProperty('--hp',(1.4+Math.random()*1.4)+'s');
+    h.style.setProperty('--hdelay',(Math.random()*.25)+'s');
+    h.style.setProperty('--drift-x',(-70+Math.random()*140)+'px');
+    h.style.setProperty('--drift-y',(-80-Math.random()*120)+'px');
+    h.style.animationName='pusoHeartFloat,pusoHeartPulse';
+    host.appendChild(h);
+    setTimeout(()=>h.remove(),4200);
+  }
+}
+
+function updateSpecialVisuals(t){
+  const firstWasActive = current===0;
+  if(firstWasActive && t>=11.680 && t<12.430 && !window._pusoHeartBurst){
+    window._pusoHeartBurst=true;
+    spawnPusoHearts();
+  }
+  if(!firstWasActive) window._pusoHeartBurst=false;
+
+  // The requested echo occurs during 00:21–00:23 (21.0–23.0s).
+  const inBanatEcho=(t>=21 && t<23);
+  if(inBanatEcho && !window._banatEchoStarted){
+    window._banatEchoStarted=true;
+    spawnBanatEcho();
+    setTimeout(spawnBanatEcho,420);
+    setTimeout(spawnBanatEcho,900);
+  }
+  if(!inBanatEcho) window._banatEchoStarted=false;
+}
+
 function render(){
   if((A.currentTime||0)>=135){A.currentTime=135;A.pause();}
   const t=Math.min(A.currentTime||0,135);
@@ -1033,6 +1367,7 @@ function render(){
   updateMotion(t);
   updateClock(t);
   pulse(t);
+  updateSpecialVisuals(t);
 
   const d=Math.min(A.duration||135,135);
   P.style.width=Math.min(100,(t/d)*100)+'%';
@@ -1117,6 +1452,8 @@ APP.addEventListener('pointerleave',()=>{
   document.documentElement.style.setProperty('--my','0px');
 });
 
+createHeartField();
+createBanatBackground();
 render();
 </script>
 </body>
