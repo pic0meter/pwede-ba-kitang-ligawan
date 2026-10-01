@@ -711,14 +711,14 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   height:2px;
   z-index:1;
   pointer-events:none;
-  background:linear-gradient(90deg,#ffb38a 0%,#ffb38a 96%,transparent 100%);
+  background:repeating-linear-gradient(90deg,#ffb38a 0 12px,transparent 12px 22px);
   box-shadow:0 0 9px #ffb38a66;
   transform:scaleX(0);
   transform-origin:left center;
   opacity:0;
 }
 .first-linyahan-vertical.active .first-linyahan-horizontal-line{
-  animation:firstLinyahanLineIn 1.8s cubic-bezier(.18,.8,.18,1) .02s forwards;
+  animation:firstLinyahanLineIn 3.2s cubic-bezier(.18,.8,.18,1) .02s forwards;
 }
 @keyframes firstLinyahanLineIn{
   0%{opacity:.9;transform:scaleX(0)}
