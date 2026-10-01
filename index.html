@@ -818,7 +818,7 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   line-height:1.0;
   max-width:92%;
   gap:.02em .08em;
-  transform:rotate(-1deg);
+  transform:translate(-50%,-50%) rotate(-1deg);
 }
 .line.scene-clock.cursive-clock-lyric .clock-lyric .word{
   font-size:1em !important;
@@ -832,7 +832,7 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   animation-delay:calc(var(--i)*.055s),calc(.68s + var(--i)*.045s);
 }
 .line.scene-clock.clock-whimsy-skill .clock-lyric{
-  transform:rotate(1.2deg) scale(1.02);
+  transform:translate(-50%,-50%) rotate(1.2deg) scale(1.02);
 }
 .line.scene-clock.clock-whimsy-skill .clock-lyric .word.visible{
   animation:playfulClockInSecond .52s cubic-bezier(.1,1.5,.2,1) both,
@@ -1138,7 +1138,7 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   max-width:min(88%,760px);
   gap:.04em .16em;
   text-wrap:balance;
-  transform:none;
+  transform:translate(-50%,-50%);
 }
 .line.scene-clock.playful-clock-lyric .clock-lyric .word{
   font-family:inherit!important;
@@ -1755,9 +1755,12 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 }
 .line.scene-clock .clock-face > .clock-hands{
   position:absolute;
-  inset:0;
-  left:auto;
-  top:auto;
+  left:0 !important;
+  top:0 !important;
+  right:0 !important;
+  bottom:0 !important;
+  width:auto !important;
+  height:auto !important;
 }
 
 .line.scene-clock .clock-tick{
@@ -1785,6 +1788,25 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .line.first-linyahan-vertical .word.current{
   color:var(--accent) !important;
   text-shadow:0 0 28px #ffb38a66 !important;
+}
+
+/* FINAL CLOCK ALIGNMENT GUARD — the lyric stays centered; the clock hands fill the face. */
+.line.scene-clock .clock-lyric,
+.line.scene-clock.cursive-clock-lyric .clock-lyric,
+.line.scene-clock.playful-clock-lyric .clock-lyric{
+  left:50% !important;
+  top:50% !important;
+  transform:translate(-50%,-50%) !important;
+  margin:0 !important;
+}
+.line.scene-clock .clock-face > .clock-hands{
+  position:absolute !important;
+  left:0 !important;
+  top:0 !important;
+  right:0 !important;
+  bottom:0 !important;
+  width:auto !important;
+  height:auto !important;
 }
 </style>
 </head>
