@@ -809,35 +809,58 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   display:none!important;
 }
 
-/* THIRD CHORUS LINE — unified cursive treatment; no mismatched word sizing. */
+/* CLOCK LYRICS — playful, rounded, hand-lettered feel; never cursive. */
 .line.scene-clock.cursive-clock-lyric .clock-lyric{
-  font-family:"Snell Roundhand","Segoe Script","Bradley Hand","Brush Script MT",cursive;
-  font-weight:500;
+  font-family:"Arial Rounded MT Bold","Trebuchet MS","Avenir Next Rounded",ui-rounded,sans-serif;
+  font-weight:800;
   font-size:clamp(28px,7.2vw,72px);
-  letter-spacing:.01em;
-  line-height:1.05;
+  letter-spacing:-.025em;
+  line-height:1.0;
   max-width:92%;
   gap:.02em .08em;
   transform:rotate(-1deg);
 }
 .line.scene-clock.cursive-clock-lyric .clock-lyric .word{
   font-size:1em !important;
-  font-weight:500 !important;
+  font-weight:800 !important;
   letter-spacing:inherit !important;
+  text-shadow:0 2px 0 #0002, 0 0 18px #ffb38a18;
 }
 .line.scene-clock.cursive-clock-lyric .clock-lyric .word.visible{
-  animation:scriptFlutter .55s cubic-bezier(.16,1.25,.25,1) both,
-            scriptBreathe 2.15s ease-in-out .55s infinite alternate;
-  animation-delay:calc(var(--i)*.07s),calc(.55s + var(--i)*.07s);
+  animation:playfulClockIn .58s cubic-bezier(.12,1.4,.25,1) both,
+            playfulClockDance 1.15s ease-in-out .58s infinite;
+  animation-delay:calc(var(--i)*.055s),calc(.68s + var(--i)*.045s);
 }
-@keyframes scriptFlutter{
-  0%{opacity:0;transform:translate3d(0,18px,0) rotate(-8deg) scale(.84)}
-  55%{opacity:1;transform:translate3d(3px,-5px,0) rotate(4deg) scale(1.05)}
+.line.scene-clock.clock-whimsy-skill .clock-lyric{
+  transform:rotate(1.2deg) scale(1.02);
+}
+.line.scene-clock.clock-whimsy-skill .clock-lyric .word.visible{
+  animation:playfulClockInSecond .52s cubic-bezier(.1,1.5,.2,1) both,
+            playfulClockHop 1.05s ease-in-out .52s infinite;
+  animation-delay:calc(var(--i)*.065s),calc(.62s + var(--i)*.055s);
+}
+@keyframes playfulClockIn{
+  0%{opacity:0;transform:translate3d(0,28px,0) rotate(-10deg) scale(.55)}
+  52%{opacity:1;transform:translate3d(4px,-9px,0) rotate(7deg) scale(1.13)}
+  78%{transform:translate3d(-2px,3px,0) rotate(-3deg) scale(.97)}
   100%{opacity:1;transform:none}
 }
-@keyframes scriptBreathe{
-  0%{transform:translate3d(-2px,2px,0) rotate(-1.5deg)}
-  100%{transform:translate3d(4px,-5px,0) rotate(2deg)}
+@keyframes playfulClockDance{
+  0%,100%{transform:translateY(0) rotate(-1.4deg)}
+  25%{transform:translateY(-4px) rotate(2deg) scale(1.015)}
+  50%{transform:translateY(2px) rotate(-1deg)}
+  75%{transform:translateY(-2px) rotate(1.4deg) scale(1.01)}
+}
+@keyframes playfulClockInSecond{
+  0%{opacity:0;transform:translate3d(0,-30px,0) rotate(10deg) scale(.5)}
+  48%{opacity:1;transform:translate3d(-5px,7px,0) rotate(-7deg) scale(1.16)}
+  76%{transform:translate3d(3px,-2px,0) rotate(3deg) scale(.98)}
+  100%{opacity:1;transform:none}
+}
+@keyframes playfulClockHop{
+  0%,100%{transform:translateY(0) rotate(1deg)}
+  30%{transform:translateY(-5px) rotate(-2deg) scale(1.02)}
+  60%{transform:translateY(2px) rotate(1.5deg)}
 }
 
 /* The clock is almost frozen: only the second hand is alive and fast. */
@@ -1773,13 +1796,17 @@ function updateClock(t){
   const el=L.querySelector('.line.active');
   if(!el||!el.classList.contains('scene-clock'))return;
   const idx=Number(el.dataset.index);
-  const startTime=lines[idx]?.start ?? t;
+  const originIdx=el.dataset.clockOriginIndex!=null ? Number(el.dataset.clockOriginIndex) : idx;
+  const startTime=lines[originIdx]?.start ?? t;
   const elapsed=Math.max(0,t-startTime);
   // Real clock geometry: 60 seconds per revolution, 60 minutes per hour,
   // and the hour hand advances continuously with the minutes.
-  const secondDeg=elapsed*6;
-  const minuteDeg=elapsed*0.1;
-  const hourDeg=elapsed*(30/3600);
+  // Whimsical accelerated clock: all three hands keep correct ratios,
+  // but the whole clock visibly spins faster for the kinetic sequence.
+  const clockSpeed=3;
+  const secondDeg=elapsed*6*clockSpeed;
+  const minuteDeg=elapsed*0.1*clockSpeed;
+  const hourDeg=elapsed*(30/3600)*clockSpeed;
   const second=el.querySelector('.clock-hand.second');
   const minuteH=el.querySelector('.clock-hand.minute');
   const hourH=el.querySelector('.clock-hand.hour');
@@ -1825,6 +1852,24 @@ function buildLaserHeart(){
 function activate(i){
   if(i===current)return;
   const old=L.querySelector('.line.active');
+
+  // The two clock lyrics share one continuous clock background. Only the lyric
+  // layer is swapped, so the clock face/hands never reset between the lines.
+  if(old && old.classList.contains('scene-clock') && i===7 && current===6){
+    const item=lines[i];
+    const lyric=old.querySelector('.clock-lyric');
+    if(lyric){
+      lyric.innerHTML=buildWords(item.text);
+      lyric.className='clock-lyric';
+    }
+    old.classList.remove('clock-whimsy-time','cursive-clock-lyric','out','clock-exit');
+    old.classList.add('clock-whimsy-skill','cursive-clock-lyric','active');
+    old.dataset.index=i;
+    current=i;
+    SEC.textContent=item.section;
+    return;
+  }
+
   if(old){
     old.classList.remove('active');
     if(old.classList.contains('scene-clock')) old.classList.add('clock-exit');
@@ -1853,6 +1898,7 @@ function activate(i){
   L.innerHTML=`<div class="line motion scene-${scene} ${item.style}${qClass}${specialClass}" data-index="${i}">${body}</div>`;
   }
   const el=L.firstElementChild;
+  if(scene==='clock') el.dataset.clockOriginIndex=String(i);
   if(i===0) el.classList.add('puso-throb');
   if(i===4){
     el.classList.add('question-chaos');
