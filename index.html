@@ -7,7 +7,7 @@
 <meta name="theme-color" content="#0d0b0a">
 <title>Pwede Ba Kitang Ligawan — Kinetic Lyrics</title>
 <style>
-@import url("https://fonts.googleapis.com/css2?family=Pacifico&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Coiny&display=swap");
 :root{
   --bg:#0d0b0a;--ink:#f8f0e6;--muted:#b6a99c;--accent:#ffb38a;
   --x:50%;--y:50%;--mx:0px;--my:0px;
@@ -1240,15 +1240,26 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 @keyframes gustoShiverStrong{0%{transform:translate(-2px,-1px) rotate(-1.2deg) scale(1.05)}50%{transform:translate(2px,1px) rotate(1.3deg) scale(1.08)}100%{transform:translate(-2px,0) rotate(-1deg) scale(1.05)}}
 @keyframes ooForeground{0%,100%{transform:scale(1.45) rotate(-1deg)}50%{transform:scale(1.62) rotate(1deg)}}
 .gusto-shiver .confetti,.gusto-shiver .particle,.gusto-shiver .spark,.gusto-shiver .trail{display:none!important}
-/* GUSTO lyric — Pacifico typography, with all decorative/confetti pieces removed. */
-.line.gusto-shiver{font-family:"Pacifico",cursive !important}
-.line.gusto-shiver .word{font-family:"Pacifico",cursive !important}
+/* GUSTO lyric — Coiny typography, with decorative/confetti pieces removed. */
+.line.gusto-shiver{font-family:"Coiny",cursive !important}
+.line.gusto-shiver .word{font-family:"Coiny",cursive !important}
 .line.gusto-shiver .confetti,
 .line.gusto-shiver .particle,
 .line.gusto-shiver .spark,
 .line.gusto-shiver .trail,
 .line.gusto-shiver::before,
 .line.gusto-shiver::after{display:none!important;content:none!important}
+
+/* The GUSTO lyric should have a clean stage: no leftover confetti/decorative particles. */
+.gusto-clean #heartField,
+.gusto-clean #backgroundBanat,
+.gusto-clean #echoes,
+.gusto-clean #siteSparkField,
+.gusto-clean #ooExplosion,
+.gusto-clean .confetti,
+.gusto-clean .particle,
+.gusto-clean .spark,
+.gusto-clean .trail{display:none!important}
 .subtle-kinetic .word.visible{animation:subtleKinetic 1.35s ease-in-out infinite}.subtle-kinetic .word.visible:last-child{animation:linyahanShake .18s steps(2,end) infinite;color:var(--accent)}
 @keyframes subtleKinetic{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-3px) rotate(.6deg)}}
 @keyframes linyahanShake{0%{transform:translate(-2px,0) rotate(-1.2deg)}25%{transform:translate(2px,-1px) rotate(1.4deg) scale(1.03)}50%{transform:translate(-2px,1px) rotate(-1.5deg) scale(1.01)}75%{transform:translate(2px,0) rotate(1.2deg) scale(1.03)}100%{transform:none}}
@@ -3210,6 +3221,15 @@ function render(){
   const i=lines.findIndex(x=>t>=x.start&&t<x.end);
   activate(i);
 
+  // Keep the GUSTO line completely clean of the old square/confetti decoration.
+  APP.classList.toggle('gusto-clean', i===3);
+  if(i===3){
+    ['heartField','backgroundBanat','echoes','siteSparkField','ooExplosion'].forEach(id=>{
+      const field=document.getElementById(id);
+      if(field) field.replaceChildren();
+    });
+  }
+
   // Time-locked visual effects:
   // PUSO burst only during the PUSO cue (11.680s–12.430s).
   if(t>=11.680 && t<15.85){
@@ -3229,7 +3249,9 @@ function render(){
   }
 
 
-  if(t>=36.42 && t<39.35){if(!ooTakeoverActive)spawnOoTakeover();if(t>=38.65&&!ooHeartBurstActive)explodeOoIntoHearts()}else if(ooTakeoverActive||ooHeartBurstActive){clearOoTakeover()}
+  // The GUSTO lyric keeps only the foreground 'oo' treatment; the old
+  // full-screen Oo/confetti takeover is intentionally disabled.
+  if(ooTakeoverActive||ooHeartBurstActive) clearOoTakeover();
 
   // "banat na 'to" exists ONLY from 00:21.000 through 00:23.499.
   // Clear first so seeking backward/forward can never leave stale echoes.
