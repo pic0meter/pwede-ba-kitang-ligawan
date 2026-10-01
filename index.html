@@ -2298,11 +2298,7 @@ function activate(i){
   if(scene==='clock') el.dataset.clockOriginIndex=String(i);
   if(i===0) el.classList.add('puso-throb');
   if(i===4){
-    el.classList.add('question-chaos','word-echo-scene');
-    el.querySelectorAll('.word').forEach((w,idx)=>{
-      w.setAttribute('data-echo',w.textContent.trim());
-      w.style.setProperty('--exit-x', (idx%2===0 ? '-16px' : '16px'));
-    });
+    el.classList.add('question-chaos');
 
     const field=document.createElement('div');
     field.id='questionChaos';
@@ -2383,6 +2379,15 @@ function activate(i){
       laserHeart.dataset.pathLength=String(length);
     }
   }
+  /* 1:03 chorus: word-by-word background echoes for "Pwede ba kitang ligawan?" */
+  if(i===8){
+    el.classList.add('word-echo-scene');
+    el.querySelectorAll('.word').forEach((w,idx)=>{
+      w.setAttribute('data-echo',w.textContent.trim());
+      w.style.setProperty('--exit-x', (idx%2===0 ? '-16px' : '16px'));
+    });
+  }
+
   if(i===5){
     el.classList.add('first-linyahan-vertical');
     const strokeSpecs=[
