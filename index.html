@@ -2206,7 +2206,7 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 </style>
 
 <style id="footsteps-scene">
-/* 01:14 — "Kahit malayo pa 'yan": a real walking route across the background. */
+/* 01:14 — "Kahit malayo pa 'yan": real uploaded footprints walking across the background. */
 .line.scene-footsteps{
   position:relative !important;
   width:100% !important;
@@ -2229,59 +2229,47 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   overflow:hidden;
   opacity:1;
 }
-.line.scene-footsteps .footprint{
+.line.scene-footsteps .footstep-img{
   position:absolute;
   left:var(--x);
   top:var(--y);
-  width:clamp(13px,1.65vw,25px);
-  height:clamp(30px,4.1vw,58px);
-  border-radius:58% 46% 48% 52% / 34% 31% 69% 66%;
-  background:linear-gradient(180deg,rgba(248,240,230,.58),rgba(255,179,138,.34));
-  box-shadow:0 0 8px rgba(255,179,138,.13);
+  width:clamp(34px,5.4vw,72px);
+  height:auto;
+  display:block;
   opacity:0;
-  filter:blur(.15px);
-  transform:translate(-50%,-50%) rotate(var(--rot)) scale(.35);
-  transform-origin:center 72%;
-  animation:footstepAppear .52s cubic-bezier(.16,.8,.24,1) var(--delay) forwards;
+  object-fit:contain;
+  transform-origin:50% 52%;
+  transform:translate(-50%,-50%) rotate(var(--rot)) scale(.72);
+  filter:drop-shadow(0 2px 5px rgba(0,0,0,.18)) drop-shadow(0 0 8px rgba(255,179,138,.10));
+  will-change:transform,opacity;
+  animation:realFootstepAppear .34s cubic-bezier(.2,.85,.25,1) var(--delay) forwards;
 }
-/* Small heel separation makes the mark read as an actual shoeprint rather than a pill. */
-.line.scene-footsteps .footprint::after{
-  content:"";
-  position:absolute;
-  left:50%;
-  bottom:-13%;
-  width:64%;
-  height:25%;
-  border-radius:45% 48% 48% 44%;
-  background:inherit;
-  transform:translateX(-50%);
-  box-shadow:0 0 7px rgba(255,179,138,.10);
-}
-.line.scene-footsteps .footprint::before{
-  content:"";
-  position:absolute;
-  left:50%;
-  top:8%;
-  width:52%;
-  height:18%;
-  border-radius:50%;
-  background:rgba(248,240,230,.23);
-  transform:translateX(-50%);
-}
-.line.scene-footsteps .footprint:nth-child(even){
-  background:linear-gradient(180deg,rgba(255,179,138,.48),rgba(248,240,230,.27));
-}
-@keyframes footstepAppear{
-  0%{opacity:0;transform:translate(-50%,-50%) rotate(var(--rot)) scale(.25);filter:blur(4px)}
-  55%{opacity:.68;transform:translate(-50%,-50%) rotate(var(--rot)) scale(1.08);filter:blur(.2px)}
-  100%{opacity:.43;transform:translate(-50%,-50%) rotate(var(--rot)) scale(1);filter:blur(0)}
+/* Keep the individual marks visible after they land, like a real trail. */
+@keyframes realFootstepAppear{
+  0%{
+    opacity:0;
+    transform:translate(-50%,-50%) rotate(var(--rot)) scale(.62);
+    filter:drop-shadow(0 0 0 rgba(0,0,0,0)) blur(2px);
+  }
+  65%{
+    opacity:.82;
+    transform:translate(-50%,calc(-50% - 4px)) rotate(var(--rot)) scale(1.04);
+    filter:drop-shadow(0 2px 5px rgba(0,0,0,.18)) drop-shadow(0 0 9px rgba(255,179,138,.12));
+  }
+  100%{
+    opacity:.66;
+    transform:translate(-50%,-50%) rotate(var(--rot)) scale(1);
+    filter:drop-shadow(0 2px 5px rgba(0,0,0,.18)) drop-shadow(0 0 8px rgba(255,179,138,.10));
+  }
 }
 .line.scene-footsteps .footstep-route.fade-out{
   animation:footstepRouteFade .55s ease forwards;
 }
-@keyframes footstepRouteFade{to{opacity:0;transform:translateX(2.5vw)}}
+@keyframes footstepRouteFade{
+  to{opacity:0;transform:translateX(1.5vw)}
+}
 
-/* The lyric sits over the route, as if the words are part of the journey. */
+/* The lyric remains clearly above the walking trail. */
 .line.scene-footsteps .word{
   position:relative;
   z-index:2;
@@ -2290,10 +2278,10 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .line.scene-footsteps .word.current{
   text-shadow:0 0 12px #ffb38a44;
 }
+
 @media(max-width:600px){
-  .line.scene-footsteps .footprint{
-    width:clamp(12px,3.9vw,19px);
-    height:clamp(28px,9vw,46px);
+  .line.scene-footsteps .footstep-img{
+    width:clamp(28px,10vw,52px);
   }
 }
 </style>
@@ -2823,23 +2811,35 @@ function activate(i){
     route.className='footstep-route';
     route.setAttribute('aria-hidden','true');
 
-    // One continuous walk from the left edge to the right edge.
-    // The path rises through the middle, then settles toward the destination.
+    // Use the user's actual left/right footprint PNGs and lay them down
+    // one at a time along a natural walking path from left to right.
+    const leftFoot="Left.png";
+    const rightFoot="Right.png";
     const steps=18;
+
     for(let j=0;j<steps;j++){
       const p=j/(steps-1);
-      const x=5 + p*90;
-      const y=66 - Math.sin(p*Math.PI)*27 + Math.sin(p*Math.PI*2)*3.2;
-      const side=(j%2===0?-1:1);
-      const yOffset=side*1.8;
-      const rot=(side*8) + Math.sin(p*Math.PI*1.5)*7;
 
-      const foot=document.createElement('i');
-      foot.className='footprint';
+      // A gentle walking path that travels across the entire background.
+      const x=4.5 + p*91;
+      const y=67 - Math.sin(p*Math.PI)*25 + Math.sin(p*Math.PI*2.15)*2.5;
+
+      // Alternate feet. Each image is rotated to follow the direction of travel,
+      // with a small alternating angle so it reads as an actual person's stride.
+      const isLeft=(j%2===0);
+      const foot=document.createElement('img');
+      foot.className='footstep-img';
+      foot.src=isLeft ? leftFoot : rightFoot;
+      foot.alt='';
+      foot.draggable=false;
+
+      const strideAngle=-10 + Math.sin(p*Math.PI)*17 + (isLeft ? -2.5 : 2.5);
       foot.style.setProperty('--x',x+'%');
-      foot.style.setProperty('--y',(y+yOffset)+'%');
-      foot.style.setProperty('--rot',rot+'deg');
-      foot.style.setProperty('--delay',(j*0.13).toFixed(2)+'s');
+      foot.style.setProperty('--y',y+'%');
+      foot.style.setProperty('--rot',strideAngle.toFixed(2)+'deg');
+
+      // Footsteps appear in sequence, with a slight pause between each step.
+      foot.style.setProperty('--delay',(j*0.16).toFixed(2)+'s');
       route.appendChild(foot);
     }
 
