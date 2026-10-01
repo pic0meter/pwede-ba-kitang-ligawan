@@ -2206,7 +2206,7 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 </style>
 
 <style id="malayo-scene">
-/* 01:14 — "Kahit malayo pa 'yan": simple typography with a full-screen echo field. */
+/* 01:14 — ONLY: simple "malayo pa yan" typography + repeated echoes. */
 .line.scene-malayo{
   position:relative !important;
   width:min(1120px,92vw) !important;
@@ -2217,8 +2217,6 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   justify-content:center !important;
   overflow:visible !important;
   isolation:isolate;
-}
-.line.scene-malayo.active{
   animation:none !important;
   transform:none !important;
   filter:none !important;
@@ -2242,59 +2240,85 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   font-weight:700;
   letter-spacing:-.055em;
   line-height:1;
-  transform:translate(-50%,-50%) scale(.94) rotate(var(--r));
-  filter:blur(.25px);
-  text-shadow:0 0 18px #ffb38a18;
+  transform:translate(-50%,-50%) scale(.96);
   animation:malayoEcho var(--dur) ease-in-out var(--delay) infinite;
 }
 @keyframes malayoEcho{
-  0%,100%{opacity:0;transform:translate(-50%,-50%) scale(.94) rotate(var(--r))}
-  18%{opacity:var(--op);transform:translate(-50%,-50%) scale(1) rotate(var(--r))}
-  52%{opacity:calc(var(--op)*.72);transform:translate(-50%,-50%) scale(1.035) rotate(var(--r))}
-  78%{opacity:calc(var(--op)*.38);transform:translate(-50%,-50%) scale(1.07) rotate(var(--r))}
-}
-.line.scene-malayo .malayo-echo-field::after{
-  content:"";
-  position:absolute;
-  inset:0;
-  background:radial-gradient(circle at center,transparent 18%,#0d0b0a22 68%,#0d0b0a58 100%);
-  pointer-events:none;
+  0%,100%{opacity:0;transform:translate(-50%,-50%) scale(.96)}
+  20%{opacity:var(--op);transform:translate(-50%,-50%) scale(1)}
+  55%{opacity:calc(var(--op)*.62);transform:translate(-50%,-50%) scale(1.035)}
+  82%{opacity:calc(var(--op)*.25);transform:translate(-50%,-50%) scale(1.06)}
 }
 .line.scene-malayo .malayo-main{
   position:relative;
   z-index:3;
-  display:flex;
-  flex-wrap:wrap;
-  align-items:center;
-  justify-content:center;
-  gap:.04em .11em;
+  display:block;
   width:100%;
+  text-align:center;
 }
-.line.scene-malayo .word{
-  margin:.03em .02em;
-  color:var(--ink);
-  font-size:clamp(38px,7vw,92px) !important;
+.line.scene-malayo .malayo-title{
+  position:relative;
+  display:inline-block;
+  color:var(--ink) !important;
+  font-family:inherit !important;
+  font-size:clamp(40px,7vw,92px) !important;
   font-weight:600 !important;
   letter-spacing:-.055em !important;
   line-height:.98 !important;
-  text-shadow:0 0 20px #ffb38a16;
-  animation:none !important;
-  transition:none !important;
+  white-space:nowrap;
+  opacity:0;
+  text-shadow:none !important;
+  animation:malayoTitleIn .22s ease-out forwards;
 }
-.line.scene-malayo .word.visible{
-  opacity:1;
-  filter:none;
+/* One restrained same-word echo behind the main type. */
+.line.scene-malayo .malayo-title::before,
+.line.scene-malayo .malayo-title::after{
+  content:attr(data-echo);
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  white-space:nowrap;
+  font:inherit;
+  letter-spacing:inherit;
+  line-height:inherit;
+  z-index:-1;
 }
-.line.scene-malayo .word.current{
-  color:var(--accent);
-  transform:none !important;
-  scale:1 !important;
-  text-shadow:0 0 28px #ffb38a44;
+.line.scene-malayo .malayo-title::before{
+  color:#ffb38a;
+  opacity:.18;
+  transform:translate(-7px,3px) scale(1.045);
+  filter:blur(1px);
+  animation:malayoTitleEcho1 1.8s ease-in-out infinite alternate;
+}
+.line.scene-malayo .malayo-title::after{
+  color:#f8f0e6;
+  opacity:.11;
+  transform:translate(8px,-3px) scale(1.085);
+  filter:blur(2px);
+  animation:malayoTitleEcho2 2.25s ease-in-out .12s infinite alternate;
+}
+@keyframes malayoTitleIn{
+  from{opacity:0;transform:scale(.97)}
+  to{opacity:1;transform:scale(1)}
+}
+@keyframes malayoTitleEcho1{
+  from{opacity:.08;transform:translate(-5px,2px) scale(1.025)}
+  to{opacity:.20;transform:translate(-10px,4px) scale(1.07)}
+}
+@keyframes malayoTitleEcho2{
+  from{opacity:.06;transform:translate(5px,-2px) scale(1.05)}
+  to{opacity:.13;transform:translate(11px,-4px) scale(1.11)}
+}
+/* Keep the existing music-beat treatment for this line: a quick title pulse,
+   plus the global white flash. No extra lyric/effect is spawned here. */
+#app.beat .line.scene-malayo .malayo-title{
+  scale:1.045;
+  text-shadow:0 0 24px #ffb38a55 !important;
 }
 @media(max-width:600px){
   .line.scene-malayo .malayo-echo-field{inset:-22vh -48vw}
   .line.scene-malayo .malayo-echo{font-size:clamp(22px,7vw,42px)}
-  .line.scene-malayo .word{font-size:clamp(34px,10vw,52px) !important}
+  .line.scene-malayo .malayo-title{font-size:clamp(34px,10vw,52px) !important}
 }
 </style>
 
@@ -2817,42 +2841,43 @@ function activate(i){
   }
 
   if(i===11){
-    el.classList.add('malayo-scene');
+    // Remove the old lyric words/effects entirely. This line is only the
+    // simple "malayo pa yan" typography and its echoes.
+    el.classList.add('scene-malayo');
+    el.querySelectorAll('.word').forEach(w=>w.remove());
 
     const field=document.createElement('div');
     field.className='malayo-echo-field';
     field.setAttribute('aria-hidden','true');
 
-    // Full-screen repeated echoes. Positions are intentionally spread across
-    // the entire background so the phrase feels like it is lingering in space.
     const echoes=[
-      [9,10,-5,.13,3.8,0], [31,8,4,.10,4.2,.35], [58,12,-2,.12,4.0,.7], [84,9,6,.10,4.5,1.05],
-      [18,25,3,.12,4.1,.5], [46,28,-6,.095,4.6,.15], [73,24,2,.11,4.0,.9], [94,31,-4,.09,4.3,.2],
-      [5,43,5,.105,4.4,.75], [28,47,-3,.12,4.1,.3], [56,43,4,.10,4.7,1.0], [82,49,-5,.115,4.2,.55],
-      [15,64,-4,.11,4.3,.1], [42,67,5,.095,4.6,.65], [70,62,-2,.12,4.0,.4], [96,69,4,.10,4.5,.95],
-      [7,83,-6,.10,4.2,.45], [34,87,2,.12,4.5,.05], [62,82,-4,.095,4.1,.8], [88,89,5,.11,4.4,.25]
+      [9,10,.13,3.8,0], [31,8,.10,4.2,.35], [58,12,.12,4.0,.7], [84,9,.10,4.5,1.05],
+      [18,25,.12,4.1,.5], [46,28,.095,4.6,.15], [73,24,.11,4.0,.9], [94,31,.09,4.3,.2],
+      [5,43,.105,4.4,.75], [28,47,.12,4.1,.3], [56,43,.10,4.7,1.0], [82,49,.115,4.2,.55],
+      [15,64,.11,4.3,.1], [42,67,.095,4.6,.65], [70,62,.12,4.0,.4], [96,69,.10,4.5,.95],
+      [7,83,.10,4.2,.45], [34,87,.12,4.5,.05], [62,82,.095,4.1,.8], [88,89,.11,4.4,.25]
     ];
 
-    echoes.forEach(([x,y,r,op,dur,delay])=>{
+    echoes.forEach(([x,y,op,dur,delay])=>{
       const echo=document.createElement('span');
       echo.className='malayo-echo';
-      echo.textContent='malayo pa yan';
+      echo.textContent='kahit malayo pa yan';
       echo.style.setProperty('--x',x+'%');
       echo.style.setProperty('--y',y+'%');
-      echo.style.setProperty('--r',r+'deg');
       echo.style.setProperty('--op',op);
       echo.style.setProperty('--dur',dur+'s');
       echo.style.setProperty('--delay',(-delay)+'s');
       field.appendChild(echo);
     });
-
     el.appendChild(field);
 
-    // Put the main lyric above the echo field.
     const main=document.createElement('div');
     main.className='malayo-main';
-    const words=[...el.querySelectorAll('.word')];
-    words.forEach(w=>main.appendChild(w));
+    const title=document.createElement('span');
+    title.className='malayo-title';
+    title.textContent='malayo pa yan';
+    title.setAttribute('data-echo','malayo pa yan');
+    main.appendChild(title);
     el.appendChild(main);
   }
 
@@ -3179,22 +3204,25 @@ function updateMotion(t){
 
 
   if(scene==='malayo'){
-    // Simple, clean foreground typography. The background echoes do the motion.
-    words.forEach((w,i)=>{
-      const cue=item.cues?.[i] ?? item.start;
-      const nextCue=item.cues?.[i+1] ?? item.end;
-      if(t<cue || t>=nextCue){
-        w.style.opacity='0';
-        return;
-      }
-      const enter=Math.min(1,(t-cue)/.18);
-      const leave=Math.min(1,(nextCue-t)/.18);
+    // No generic word motion, current-word styling, shake, orbit, or fly effect.
+    const title=el?.querySelector('.malayo-title');
+    if(title){
+      const enter=Math.min(1,Math.max(0,(t-item.start)/.22));
+      const leave=Math.min(1,Math.max(0,(item.end-t)/.22));
       const easeIn=enter*enter*(3-2*enter);
       const easeOut=leave*leave*(3-2*leave);
-      w.style.opacity=String(Math.min(easeIn,easeOut));
-      w.style.transform='none';
-      w.style.zIndex='4';
-    });
+      const alpha=Math.min(easeIn,easeOut);
+
+      // Energetic, whimsical bob: lively vertical movement with a tiny
+      // sideways sway and soft scale pulse, while keeping the typography clean.
+      const phase=(t-item.start)*7.2;
+      const x=Math.sin(phase)*5.5;
+      const y=Math.cos(phase*1.08)*8.5;
+      const r=Math.sin(phase*.72)*1.8;
+      const scale=1+0.035*Math.sin(phase*1.17);
+      title.style.opacity=String(alpha);
+      title.style.transform=`translate3d(${x}px,${y}px,0) rotate(${r}deg) scale(${scale})`;
+    }
   }
 
   // First chorus owns its motion at the LINE level only. Clear all generic
@@ -3220,7 +3248,7 @@ function updateMotion(t){
   }
 }
 
-function pulse(t){
+function pulse(t, allowAmbientEcho=true){
   const beat=60/123.046875;
   const idx=Math.floor((t-0.197)/beat);
   if(idx>lastBeat&&idx>=0){
@@ -3229,7 +3257,7 @@ function pulse(t){
     FLASH.classList.add('hit');
     setTimeout(()=>APP.classList.remove('beat'),90);
     setTimeout(()=>FLASH.classList.remove('hit'),150);
-    if(idx%8===0)echo();
+    if(allowAmbientEcho && idx%8===0)echo();
   }
 }
 
@@ -3817,7 +3845,13 @@ function render(){
   }
 
   updateClock(t);
-  pulse(t);
+  if(i===11){
+    // Restore only the synchronized beat + flash for this line.
+    // Do not trigger the unrelated ambient text-echo burst.
+    pulse(t,false);
+  }else{
+    pulse(t);
+  }
 const d=Math.min(A.duration||135,135);
   P.style.width=Math.min(100,(t/d)*100)+'%';
   T.textContent=fmt(t);
