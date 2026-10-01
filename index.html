@@ -3074,10 +3074,10 @@ function updateMotion(t){
 
       // Much faster orbit for the first four words only.
       const phase=t*8+i*1.45;
-      const radius=14+i*5;
-      const x=Math.cos(phase*(i%2?0.92:1.08))*radius;
-      const y=Math.sin(phase*(i%2?0.92:1.08))*radius*.72;
-      const rot=Math.sin(phase)*2.8;
+      const radius=20+i*7;
+      const x=Math.cos(phase)*radius;
+      const y=Math.sin(phase)*radius*.78;
+      const rot=Math.sin(phase)*3.5;
       const scale=(.92+.08*fadeE)*(1+.018*Math.sin(phase*1.7));
       w.style.opacity=String(fadeE);
       w.style.transform=`translate3d(calc(-50% + ${x}px),calc(-50% + ${y}px),0) rotate(${rot}deg) scale(${scale})`;
