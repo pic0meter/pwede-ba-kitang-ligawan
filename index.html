@@ -2839,7 +2839,7 @@ function activate(i){
       // The uploaded PNGs have opposite native orientations.  These rotations
       // turn both feet toward the upper-right, matching a left-to-right walk
       // that is also moving upward across the screen.
-      const baseRotation=isLeft ? 25 : 85;
+      const baseRotation=isLeft ? 30 : 85;
       const pathAngle=-34 + Math.cos(p*Math.PI)*2.5;
       const strideAngle=baseRotation + (pathAngle + 34) + (isLeft ? -2 : 2);
 
