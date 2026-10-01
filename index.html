@@ -2467,7 +2467,7 @@ function sceneFor(i){
 }
 
 function buildClock(text){
-  const nums=Array.from({length:12},(_,j)=>`<span class="clock-number" style="--n:${j}">${j+1}</span>`).join('');
+  const nums=Array.from({length:12},(_,j)=>`<span class="clock-number" style="--n:${j}">${j===0?12:j}</span>`).join('');
   const ticks=Array.from({length:60},(_,j)=>`<i class="clock-tick ${j%5===0?'major':''}" data-tick="${j}"></i>`).join('');
   const lyric=buildWords(text);
   const sparks=Array.from({length:42},(_,i)=>{
