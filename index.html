@@ -2205,84 +2205,96 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 
 </style>
 
-<style id="footsteps-scene">
-/* 01:14 — "Kahit malayo pa 'yan": real uploaded footprints walking across the background. */
-.line.scene-footsteps{
+<style id="malayo-scene">
+/* 01:14 — "Kahit malayo pa 'yan": simple typography with a full-screen echo field. */
+.line.scene-malayo{
   position:relative !important;
-  width:100% !important;
-  max-width:none !important;
-  height:100% !important;
-  min-height:0 !important;
-  display:block !important;
-  overflow:hidden !important;
+  width:min(1120px,92vw) !important;
+  min-height:48vh !important;
+  height:auto !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  overflow:visible !important;
   isolation:isolate;
 }
-.line.scene-footsteps.active{
+.line.scene-malayo.active{
   animation:none !important;
   transform:none !important;
+  filter:none !important;
 }
-.line.scene-footsteps .footstep-route{
+.line.scene-malayo .malayo-echo-field{
   position:absolute;
-  inset:0;
+  inset:-28vh -18vw;
   z-index:0;
   pointer-events:none;
   overflow:hidden;
-  opacity:1;
 }
-.line.scene-footsteps .footstep-img{
+.line.scene-malayo .malayo-echo{
   position:absolute;
   left:var(--x);
   top:var(--y);
-  width:clamp(120px,24vw,250px);
-  height:auto;
-  display:block;
+  white-space:nowrap;
+  color:#f8f0e6;
   opacity:0;
-  object-fit:contain;
-  transform-origin:50% 52%;
-  transform:translate(-50%,-50%) rotate(var(--rot)) scale(.72);
-  filter:drop-shadow(0 2px 5px rgba(0,0,0,.18)) drop-shadow(0 0 8px rgba(255,179,138,.10));
-  will-change:transform,opacity;
-  animation:realFootstepAppear .34s cubic-bezier(.2,.85,.25,1) var(--delay) forwards;
+  font-family:inherit;
+  font-size:clamp(22px,4.2vw,64px);
+  font-weight:700;
+  letter-spacing:-.055em;
+  line-height:1;
+  transform:translate(-50%,-50%) scale(.94) rotate(var(--r));
+  filter:blur(.25px);
+  text-shadow:0 0 18px #ffb38a18;
+  animation:malayoEcho var(--dur) ease-in-out var(--delay) infinite;
 }
-/* Keep the individual marks visible after they land, like a real trail. */
-@keyframes realFootstepAppear{
-  0%{
-    opacity:0;
-    transform:translate(-50%,-50%) rotate(var(--rot)) scale(.62);
-    filter:drop-shadow(0 0 0 rgba(0,0,0,0)) blur(2px);
-  }
-  65%{
-    opacity:.82;
-    transform:translate(-50%,calc(-50% - 4px)) rotate(var(--rot)) scale(1.04);
-    filter:drop-shadow(0 2px 5px rgba(0,0,0,.18)) drop-shadow(0 0 9px rgba(255,179,138,.12));
-  }
-  100%{
-    opacity:.66;
-    transform:translate(-50%,-50%) rotate(var(--rot)) scale(1);
-    filter:drop-shadow(0 2px 5px rgba(0,0,0,.18)) drop-shadow(0 0 8px rgba(255,179,138,.10));
-  }
+@keyframes malayoEcho{
+  0%,100%{opacity:0;transform:translate(-50%,-50%) scale(.94) rotate(var(--r))}
+  18%{opacity:var(--op);transform:translate(-50%,-50%) scale(1) rotate(var(--r))}
+  52%{opacity:calc(var(--op)*.72);transform:translate(-50%,-50%) scale(1.035) rotate(var(--r))}
+  78%{opacity:calc(var(--op)*.38);transform:translate(-50%,-50%) scale(1.07) rotate(var(--r))}
 }
-.line.scene-footsteps .footstep-route.fade-out{
-  animation:footstepRouteFade .55s ease forwards;
+.line.scene-malayo .malayo-echo-field::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:radial-gradient(circle at center,transparent 18%,#0d0b0a22 68%,#0d0b0a58 100%);
+  pointer-events:none;
 }
-@keyframes footstepRouteFade{
-  to{opacity:0;transform:translateX(1.5vw)}
-}
-
-/* The lyric remains clearly above the walking trail. */
-.line.scene-footsteps .word{
+.line.scene-malayo .malayo-main{
   position:relative;
-  z-index:2;
-  will-change:transform,opacity;
+  z-index:3;
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  justify-content:center;
+  gap:.04em .11em;
+  width:100%;
 }
-.line.scene-footsteps .word.current{
-  text-shadow:0 0 12px #ffb38a44;
+.line.scene-malayo .word{
+  margin:.03em .02em;
+  color:var(--ink);
+  font-size:clamp(38px,7vw,92px) !important;
+  font-weight:600 !important;
+  letter-spacing:-.055em !important;
+  line-height:.98 !important;
+  text-shadow:0 0 20px #ffb38a16;
+  animation:none !important;
+  transition:none !important;
 }
-
+.line.scene-malayo .word.visible{
+  opacity:1;
+  filter:none;
+}
+.line.scene-malayo .word.current{
+  color:var(--accent);
+  transform:none !important;
+  scale:1 !important;
+  text-shadow:0 0 28px #ffb38a44;
+}
 @media(max-width:600px){
-  .line.scene-footsteps .footstep-img{
-    width:clamp(92px,28vw,170px);
-  }
+  .line.scene-malayo .malayo-echo-field{inset:-22vh -48vw}
+  .line.scene-malayo .malayo-echo{font-size:clamp(22px,7vw,42px)}
+  .line.scene-malayo .word{font-size:clamp(34px,10vw,52px) !important}
 }
 </style>
 
@@ -2539,7 +2551,7 @@ function sceneFor(i){
   // Each lyric becomes a small motion-graphics scene.
   const scenes=[
     'fly','slit','kailan-flight','wind','zoom','squiggle','clock','clock',
-    'fly','question','pupuntahan','footsteps','orbit','wind','rubber','chase',
+    'fly','question','pupuntahan','malayo','orbit','wind','rubber','chase',
     'longa','fly','clock','crawl','flip','zoom','question'
   ];
   return scenes[i]||'chase';
@@ -2805,46 +2817,43 @@ function activate(i){
   }
 
   if(i===11){
-    el.classList.add('footsteps-scene');
+    el.classList.add('malayo-scene');
 
-    const route=document.createElement('div');
-    route.className='footstep-route';
-    route.setAttribute('aria-hidden','true');
+    const field=document.createElement('div');
+    field.className='malayo-echo-field';
+    field.setAttribute('aria-hidden','true');
 
-    // Use the user's actual left/right footprint PNGs and lay them down
-    // as three large walking pairs moving from the bottom of the screen upward.
-    // The PNGs already have the correct upright orientation, so no rotation is applied.
-    const leftFoot="Left.png";
-    const rightFoot="Right.png";
-    const steps=6; // three pairs
+    // Full-screen repeated echoes. Positions are intentionally spread across
+    // the entire background so the phrase feels like it is lingering in space.
+    const echoes=[
+      [9,10,-5,.13,3.8,0], [31,8,4,.10,4.2,.35], [58,12,-2,.12,4.0,.7], [84,9,6,.10,4.5,1.05],
+      [18,25,3,.12,4.1,.5], [46,28,-6,.095,4.6,.15], [73,24,2,.11,4.0,.9], [94,31,-4,.09,4.3,.2],
+      [5,43,5,.105,4.4,.75], [28,47,-3,.12,4.1,.3], [56,43,4,.10,4.7,1.0], [82,49,-5,.115,4.2,.55],
+      [15,64,-4,.11,4.3,.1], [42,67,5,.095,4.6,.65], [70,62,-2,.12,4.0,.4], [96,69,4,.10,4.5,.95],
+      [7,83,-6,.10,4.2,.45], [34,87,2,.12,4.5,.05], [62,82,-4,.095,4.1,.8], [88,89,5,.11,4.4,.25]
+    ];
 
-    for(let j=0;j<steps;j++){
-      const p=j/(steps-1);
-      const isLeft=(j%2===0);
+    echoes.forEach(([x,y,r,op,dur,delay])=>{
+      const echo=document.createElement('span');
+      echo.className='malayo-echo';
+      echo.textContent='malayo pa yan';
+      echo.style.setProperty('--x',x+'%');
+      echo.style.setProperty('--y',y+'%');
+      echo.style.setProperty('--r',r+'deg');
+      echo.style.setProperty('--op',op);
+      echo.style.setProperty('--dur',dur+'s');
+      echo.style.setProperty('--delay',(-delay)+'s');
+      field.appendChild(echo);
+    });
 
-      // Vertical walking path: three pairs span almost the full screen height.
-      // A small alternating x offset keeps the two feet readable as left/right
-      // steps without changing their orientation.
-      const x=isLeft ? 43 : 57;
-      const y=94 - p*88;
+    el.appendChild(field);
 
-      const foot=document.createElement('img');
-      foot.className='footstep-img';
-      foot.src=isLeft ? leftFoot : rightFoot;
-      foot.alt='';
-      foot.draggable=false;
-
-      foot.style.setProperty('--x',x+'%');
-      foot.style.setProperty('--y',y+'%');
-      foot.style.setProperty('--rot','0deg');
-
-      // One footprint appears after another, progressing upward.
-      foot.style.setProperty('--delay',(j*0.28).toFixed(2)+'s');
-      route.appendChild(foot);
-    }
-
-    el.appendChild(route);
-    el._footstepRoute=route;
+    // Put the main lyric above the echo field.
+    const main=document.createElement('div');
+    main.className='malayo-main';
+    const words=[...el.querySelectorAll('.word')];
+    words.forEach(w=>main.appendChild(w));
+    el.appendChild(main);
   }
 
   if(i===5){
@@ -3169,18 +3178,8 @@ function updateMotion(t){
   }
 
 
-  if(scene==='footsteps'){
-    const route=el._footstepRoute || el.querySelector('.footstep-route');
-    if(route){
-      // The route exists only for this lyric and fades just before the line exits.
-      if(t>=item.end-.58){
-        route.classList.add('fade-out');
-      }else{
-        route.classList.remove('fade-out');
-      }
-    }
-
-    // Keep the words simple and let the walking trail carry the scene.
+  if(scene==='malayo'){
+    // Simple, clean foreground typography. The background echoes do the motion.
     words.forEach((w,i)=>{
       const cue=item.cues?.[i] ?? item.start;
       const nextCue=item.cues?.[i+1] ?? item.end;
@@ -3188,17 +3187,13 @@ function updateMotion(t){
         w.style.opacity='0';
         return;
       }
-      const enter=Math.min(1,(t-cue)/.16);
-      const leave=Math.min(1,(nextCue-t)/.16);
+      const enter=Math.min(1,(t-cue)/.18);
+      const leave=Math.min(1,(nextCue-t)/.18);
       const easeIn=enter*enter*(3-2*enter);
       const easeOut=leave*leave*(3-2*leave);
-      const alpha=Math.min(easeIn,easeOut);
-      const phase=t*4.8+i*.8;
-      const bobY=Math.sin(phase)*2.5;
-      const bobR=Math.sin(phase*.8+i)*.7;
-      w.style.opacity=String(alpha);
-      w.style.transform=`translateY(${bobY}px) rotate(${bobR}deg)`;
-      w.style.zIndex='2';
+      w.style.opacity=String(Math.min(easeIn,easeOut));
+      w.style.transform='none';
+      w.style.zIndex='4';
     });
   }
 
