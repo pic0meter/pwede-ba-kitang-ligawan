@@ -2246,9 +2246,12 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .line.scene-clock .clock-number-burst-layer{z-index:1 !important;}
 .clock-number-bg-burst{
   font-weight:800 !important;
+  color:var(--accent) !important;
   filter:blur(.35px) !important;
-  text-shadow:0 0 20px #ffb38a28 !important;
+  text-shadow:0 0 20px #ffb38a42 !important;
 }
+/* Clock number bursts stay behind the lyric but use the lyric's orange accent. */
+.line.scene-clock .clock-number-bg-burst{color:var(--accent) !important;}
 </style>
 </head>
 <body>
@@ -3183,7 +3186,7 @@ function clearWordBackgroundBursts(){
   wordBackgroundBursts=[];
   clockNumberBackgroundBursts=[];
 }
-function spawnClockNumberBackgroundBurst(wordIndex){
+function spawnClockNumberBackgroundBurst(wordIndex, opts={}){
   const line=L.querySelector('.line.active.scene-clock');
   const word=line?.querySelector('.word[data-word-index="'+wordIndex+'"]');
   const wrap=line?.querySelector('.clock-wrap');
@@ -3199,25 +3202,30 @@ function spawnClockNumberBackgroundBurst(wordIndex){
   const cx=rect.left+rect.width/2-base.left;
   const cy=rect.top+rect.height/2-base.top;
   const count=5;
+  const elevated=!!opts.elevated;
+  const large=!!opts.large;
   for(let i=0;i<count;i++){
     const e=document.createElement('span');
     e.className='clock-number-bg-burst';
     e.textContent=String(1+Math.floor(Math.random()*12));
     e.style.left=cx+'px';
     e.style.top=cy+'px';
-    e.style.fontSize=(58+Math.random()*24)+'px';
-    const a=(Math.PI*2/count)*i+(Math.random()-.5)*.6;
-    const distance=45+Math.random()*105;
+    e.style.fontSize=(large ? 78+Math.random()*28 : 62+Math.random()*24)+'px';
+    const a=elevated
+      ? (-Math.PI/2)+(Math.random()-.5)*1.9
+      : (Math.PI*2/count)*i+(Math.random()-.5)*.6;
+    const distance=elevated ? 35+Math.random()*75 : 48+Math.random()*115;
+    const rise=elevated ? -(45+Math.random()*65) : 0;
     e.style.setProperty('--dx',(Math.cos(a)*distance)+'px');
-    e.style.setProperty('--dy',(Math.sin(a)*distance)+'px');
-    e.style.setProperty('--scale',(0.72+Math.random()*0.7).toFixed(2));
+    e.style.setProperty('--dy',(Math.sin(a)*distance+rise)+'px');
+    e.style.setProperty('--scale',(large ? 0.9+Math.random()*0.7 : 0.76+Math.random()*0.7).toFixed(2));
     e.style.setProperty('--r',(-10+Math.random()*20)+'deg');
     e.style.setProperty('--r2',(-22+Math.random()*44)+'deg');
-    e.style.setProperty('--alpha',(0.32+Math.random()*0.12).toFixed(3));
-    e.style.setProperty('--life',(0.68+Math.random()*0.14)+'s');
+    e.style.setProperty('--alpha',(0.34+Math.random()*0.14).toFixed(3));
+    e.style.setProperty('--life',(1.15+Math.random()*0.32)+'s');
     field.appendChild(e);
   }
-  setTimeout(()=>{field.querySelectorAll('.clock-number-bg-burst').forEach(e=>e.remove())},1300);
+  setTimeout(()=>{field.querySelectorAll('.clock-number-bg-burst').forEach(e=>e.remove())},1900);
 }
 
 function spawnWordBackgroundBurst(wordIndex){
@@ -3493,16 +3501,36 @@ function render(){
     // Clock-line treatment: the random clock-number burst lands about one second
     // after the corresponding word is highlighted. Maximum five numbers per word.
     const burstCues=[
-      [0,54.80],[2,55.55],[3,55.90],[5,56.42]
+      [0,54.80,false,false],   // Bibigay — ~1s after the word
+      [1,55.18,false,false],   // ko
+      [2,55.55,false,false],   // nang
+      [3,55.90,false,false],   // buo
+      [5,56.42,false,false]    // oras
     ];
-    burstCues.forEach(([wordIndex,cue])=>{
+    burstCues.forEach(([wordIndex,cue,elevated,large])=>{
       const key=String(wordIndex);
       if(t>=cue && t<cue+0.07 && !clockNumberBackgroundBursts.includes(key)){
         clockNumberBackgroundBursts.push(key);
-        spawnClockNumberBackgroundBurst(wordIndex);
+        spawnClockNumberBackgroundBurst(wordIndex,{elevated,large});
       }
     });
-  }else{
+  }else if(i===7){
+    // The following clock lyric gets the same delayed orange number-burst language.
+    // Magaling/ako rise above their words and use larger numbers.
+    const burstCues=[
+      [0,59.70,false,false],   // Kasi
+      [2,60.48,false,false],   // alam
+      [4,61.30,true,true],     // magaling
+      [5,61.72,true,true]      // ako
+    ];
+    burstCues.forEach(([wordIndex,cue,elevated,large])=>{
+      const key='7-'+wordIndex;
+      if(t>=cue && t<cue+0.07 && !clockNumberBackgroundBursts.includes(key)){
+        clockNumberBackgroundBursts.push(key);
+        spawnClockNumberBackgroundBurst(wordIndex,{elevated,large});
+      }
+    });
+  }else{ 
     if(wordBackgroundBursts.length)clearWordBackgroundBursts();
     clockNumberBackgroundBursts=[];
   }
