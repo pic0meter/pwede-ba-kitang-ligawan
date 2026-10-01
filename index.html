@@ -705,26 +705,24 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 
 .first-linyahan-horizontal-line{
   position:absolute;
-  left:50%;
+  left:-50vw;
   top:50%;
-  width:112%;
+  width:200vw;
   height:2px;
   z-index:1;
   pointer-events:none;
-  background:linear-gradient(90deg,transparent 0%,#ffb38a 7%,#ffb38a 93%,transparent 100%);
+  background:linear-gradient(90deg,#ffb38a 0%,#ffb38a 96%,transparent 100%);
   box-shadow:0 0 9px #ffb38a66;
-  transform:translateX(-50%) scaleX(0);
+  transform:scaleX(0);
   transform-origin:left center;
   opacity:0;
 }
 .first-linyahan-vertical.active .first-linyahan-horizontal-line{
-  animation:firstLinyahanLineIn .72s cubic-bezier(.18,.8,.18,1) .02s forwards;
+  animation:firstLinyahanLineIn 1.8s cubic-bezier(.18,.8,.18,1) .02s forwards;
 }
 @keyframes firstLinyahanLineIn{
-  0%{opacity:0;transform:translateX(-50%) scaleX(0)}
-  8%{opacity:.95}
-  72%{opacity:.9;transform:translateX(-50%) scaleX(1)}
-  100%{opacity:.72;transform:translateX(-50%) scaleX(1)}
+  0%{opacity:.9;transform:scaleX(0)}
+  100%{opacity:.72;transform:scaleX(1)}
 }
 
 .line.first-linyahan-vertical.out{
@@ -734,8 +732,8 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   animation:firstLinyahanLineOut .28s ease-in forwards;
 }
 @keyframes firstLinyahanLineOut{
-  from{opacity:.72;transform:translateX(-50%) scaleX(1)}
-  to{opacity:0;transform:translateX(-50%) scaleX(1)}
+  from{opacity:.72;transform:scaleX(1)}
+  to{opacity:0;transform:scaleX(1)}
 }
 
 /* Keep the older dashed-line machinery inactive for this treatment. */
