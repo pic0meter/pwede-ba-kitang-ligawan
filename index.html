@@ -1300,96 +1300,52 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .standup-exit{animation:kasiExit .72s cubic-bezier(.7,0,.9,.2) forwards;transform-origin:50% 50%}
 @keyframes kasiExit{0%{clip-path:inset(0);filter:blur(0);opacity:1}58%{clip-path:inset(0);filter:blur(0);opacity:1;transform:scale(1)}100%{clip-path:inset(0 50% 0 50%);filter:blur(12px);opacity:0;transform:scale(1.12) rotateX(18deg)}}
 
-/* 3 — SECOND-HALF \"Ikaw ay lagi kong pupuntahan\" scene.
-   This scene is isolated from the older orbit/Kailan treatment.
-   Words appear one at a time; the active word gets a large orbiting echo.
-   The final word, \"pupuntahan\", locks in place once it appears. */
+/* 3 — "Kailan..." : each word appears at center, then slowly drifts
+   away from center as the next word takes its place. */
 .line.scene-orbit{
   position:relative;
-  width:min(1100px,94vw);
+  width:min(980px,94vw);
   height:min(52vh,440px);
   display:block;
   overflow:visible;
-  text-align:center;
-  font-size:clamp(42px,7.5vw,94px);
-  font-weight:900;
-  letter-spacing:-.055em;
-  line-height:.92;
-}
-.line.scene-orbit.active{
-  animation:none!important;
-  transform:translateY(0) scale(1)!important;
 }
 .line.scene-orbit .word{
   position:absolute;
   left:50%;
   top:50%;
   margin:0;
-  white-space:nowrap;
-  font-size:1em!important;
-  font-weight:900!important;
-  letter-spacing:inherit!important;
-  line-height:inherit!important;
-  color:var(--ink);
-  opacity:0;
-  transform:translate3d(-50%,-50%,0) scale(.82);
   transform-origin:center center;
-  transition:none!important;
-  animation:none!important;
+  white-space:nowrap;
+  opacity:0;
+  color:var(--ink);
+  filter:blur(0);
+  transition:none;
   will-change:transform,opacity,filter;
-  z-index:3;
+}
+.line.scene-orbit .word.visible{
+  animation:none;
 }
 .line.scene-orbit .word.current{
   color:var(--accent);
-  text-shadow:0 0 30px #ffb38a66;
-  z-index:6;
+  text-shadow:0 0 28px #ffb38a66;
+  z-index:5;
 }
-.line.scene-orbit .word[data-word-index="4"]{
-  color:var(--accent);
+@keyframes centerWordIn{
+  0%{opacity:0;transform:translate3d(-50%,-50%,0) scale(.86)}
+  70%{opacity:1;transform:translate3d(-50%,-50%,0) scale(1.045)}
+  100%{opacity:1;transform:translate3d(-50%,-50%,0) scale(1)}
 }
-.line.scene-orbit .word[data-word-index="4"].current{
-  transform:translate3d(-50%,-50%,0) scale(1)!important;
+
+/* Wind-like exit: the whole word catches a gentle sideways/upward gust. */
+.line.scene-orbit .word.kailan-drifting{
+  animation:kailanWindOut 1.25s cubic-bezier(.22,.65,.2,1) forwards!important;
+  z-index:2;
 }
-.line.scene-orbit .word.current::after{
-  content:attr(data-echo);
-  position:absolute;
-  left:50%;
-  top:50%;
-  display:block;
-  white-space:nowrap;
-  color:#f8f0e6;
-  font:inherit;
-  letter-spacing:inherit;
-  line-height:inherit;
-  opacity:.16;
-  pointer-events:none;
-  z-index:-1;
-  filter:blur(1.4px);
-  text-shadow:0 0 22px #ffb38a44;
-  transform-origin:center center;
-  animation:ikawEchoOrbit 1.65s linear infinite;
-}
-.line.scene-orbit .word[data-word-index="4"].current::after{
-  opacity:0;
-  animation:none;
-}
-@keyframes ikawEchoOrbit{
-  0%{transform:translate(-50%,-50%) rotate(0deg) translateX(34px) scale(1.18)}
-  25%{transform:translate(-50%,-50%) rotate(90deg) translateX(34px) scale(1.28)}
-  50%{transform:translate(-50%,-50%) rotate(180deg) translateX(34px) scale(1.18)}
-  75%{transform:translate(-50%,-50%) rotate(270deg) translateX(34px) scale(1.28)}
-  100%{transform:translate(-50%,-50%) rotate(360deg) translateX(34px) scale(1.18)}
-}
-@media(max-width:600px){
-  .line.scene-orbit{
-    width:94vw;
-    height:48vh;
-    font-size:clamp(34px,10.2vw,62px);
-  }
-  .line.scene-orbit .word{
-    font-size:1em!important;
-    font-weight:900!important;
-  }
+@keyframes kailanWindOut{
+  0%{opacity:1;transform:translate3d(-50%,-50%,0) rotate(0deg) skewX(0deg) scale(1)}
+  18%{opacity:.96;transform:translate3d(calc(-50% + var(--wind-x)*.10),calc(-50% + var(--wind-y)*.10),0) rotate(calc(var(--wind-r)*.15)) skewX(calc(var(--wind-skew)*.18)) scale(1.01)}
+  55%{opacity:.62;transform:translate3d(calc(-50% + var(--wind-x)*.52),calc(-50% + var(--wind-y)*.52),0) rotate(calc(var(--wind-r)*.55)) skewX(calc(var(--wind-skew)*.6)) scale(1.035)}
+  100%{opacity:0;transform:translate3d(calc(-50% + var(--wind-x)),calc(-50% + var(--wind-y)),0) rotate(var(--wind-r)) skewX(var(--wind-skew)) scale(1.08)}
 }
 
 /* 4 — build toward the "oo" like a rubber band */
@@ -1542,6 +1498,7 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   .heart-field{width:82vw;height:130px}
 
   .line.scene-orbit{width:94vw;height:48vh}
+  .line.scene-orbit .word{font-size:clamp(23px,7.2vw,42px)}
   .line.scene-longa{font-size:clamp(34px,10vw,58px)}
 }
 
@@ -2247,6 +2204,77 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 }
 
 </style>
+
+<style id="pupuntahan-scene">
+/* 01:11 — IKAW AY LAGI KONG PUPUNTAHAN
+   Dedicated scene. The first four words orbit gently; their echoes trail behind.
+   The final word is completely stationary once it appears. */
+.line.pupuntahan-scene{
+  position:relative;
+  width:min(94vw,980px);
+  height:min(50vh,430px);
+  display:block;
+  overflow:visible;
+  text-align:center;
+}
+.line.pupuntahan-scene .word{
+  position:absolute;
+  left:50%;
+  top:50%;
+  margin:0;
+  white-space:nowrap;
+  font-family:"Poppins",sans-serif !important;
+  font-size:clamp(42px,8.4vw,104px) !important;
+  font-weight:900 !important;
+  letter-spacing:-.075em !important;
+  line-height:.9 !important;
+  transform-origin:center;
+  opacity:0;
+  filter:none;
+  transition:none;
+  will-change:transform,opacity;
+}
+.line.pupuntahan-scene .word.visible{
+  opacity:1;
+}
+.line.pupuntahan-scene .word.current{
+  color:var(--accent);
+  text-shadow:0 0 28px #ffb38a66;
+}
+.line.pupuntahan-scene .word::before{
+  content:attr(data-pupuntahan-echo);
+  position:absolute;
+  left:50%;
+  top:50%;
+  z-index:-1;
+  white-space:nowrap;
+  font:inherit;
+  color:#ffb38a;
+  opacity:.16;
+  filter:blur(2px);
+  pointer-events:none;
+  transform:translate(-50%,-50%) translate(var(--echo-x,0px),var(--echo-y,0px)) scale(1.18) rotate(var(--echo-r,0deg));
+  transform-origin:center;
+}
+.line.pupuntahan-scene .word.visible:not(:last-child)::before{
+  animation:pupuntahanEcho 1.35s ease-in-out infinite alternate;
+}
+@keyframes pupuntahanEcho{
+  0%{opacity:.07;transform:translate(-50%,-50%) translate(-5px,3px) scale(1.08) rotate(-2deg)}
+  100%{opacity:.19;transform:translate(-50%,-50%) translate(8px,-5px) scale(1.24) rotate(2deg)}
+}
+.line.pupuntahan-scene .word:last-child{
+  color:var(--ink);
+  text-shadow:none;
+}
+.line.pupuntahan-scene .word:last-child.current{
+  color:var(--accent);
+  text-shadow:0 0 28px #ffb38a66;
+}
+@media(max-width:600px){
+  .line.pupuntahan-scene .word{font-size:clamp(34px,10vw,58px) !important}
+}
+</style>
 </head>
 <body>
 <div id="app">
@@ -2423,7 +2451,7 @@ function sceneFor(i){
   const scenes=[
     'fly','slit','kailan-flight','wind','zoom','squiggle','clock','clock',
     'fly','question','crawl','slit','orbit','wind','rubber','chase',
-    'longa','fly','clock','crawl','flip','zoom','question'
+    'longa','fly','clock','pupuntahan','flip','zoom','question'
   ];
   return scenes[i]||'chase';
 }
@@ -2679,17 +2707,12 @@ function activate(i){
     });
   }
 
-  // 01:11 "Ikaw ay lagi kong pupuntahan" gets its own isolated
-  // orbiting-echo treatment. No previous word-echo scene is reused here.
   if(i===10){
-    el.classList.add('ikaw-pupuntahan-scene');
-    el.querySelectorAll('.word').forEach(w=>{
-      w.setAttribute('data-echo',w.textContent.trim());
-      w.classList.remove('stretch');
-      w.style.removeProperty('animation');
-      w.style.removeProperty('translate');
-      w.style.removeProperty('rotate');
-      w.style.removeProperty('scale');
+    el.classList.add('pupuntahan-scene');
+    el.querySelectorAll('.word').forEach((w,idx)=>{
+      w.setAttribute('data-pupuntahan-echo',w.textContent.trim());
+      w.style.setProperty('--p-orbit',(idx%2===0?'-1':'1'));
+      w.style.setProperty('--p-delay',(idx*0.10)+'s');
     });
   }
 
@@ -2818,72 +2841,6 @@ function updateMotion(t){
   const item=lines[current];
   const scene=sceneFor(current);
   const words=[...el.querySelectorAll('.word')];
-
-  /* 01:11 — isolated \"Ikaw ay lagi kong pupuntahan\" motion.
-     The first four words have a controlled orbit/echo motion.
-     \"pupuntahan\" is deliberately locked after appearing. */
-  if(scene==='orbit'){
-    const cues=item.cues||[];
-    const lastIndex=words.length-1;
-    const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
-
-    words.forEach((w,i)=>{
-      const cue=cues[i] ?? item.start;
-      const nextCue=cues[i+1] ?? item.end;
-      const visible=t>=cue;
-
-      if(!visible){
-        w.style.opacity='0';
-        w.style.filter='blur(4px)';
-        w.style.transform='translate3d(-50%,-50%,0) scale(.78)';
-        w.style.zIndex='2';
-        return;
-      }
-
-      /* Final word: once it appears, it never moves. */
-      if(i===lastIndex){
-        const enter=clamp((t-cue)/.28,0,1);
-        const eased=enter*enter*(3-2*enter);
-        w.style.opacity=String(eased);
-        w.style.filter=`blur(${(1-eased)*5}px)`;
-        w.style.transform=`translate3d(-50%,-50%,0) scale(${.84+.16*eased})`;
-        w.style.zIndex='8';
-        return;
-      }
-
-      /* Active word: large, thick, gently orbits while its echo circles it. */
-      if(t<nextCue){
-        const elapsed=Math.max(0,t-cue);
-        const enter=clamp(elapsed/.28,0,1);
-        const e=enter*enter*(3-2*enter);
-        const phase=elapsed*2.55+i*.9;
-        const radius=8+4*Math.sin(elapsed*2.1+i);
-        const x=Math.cos(phase)*radius;
-        const y=Math.sin(phase)*radius*.62;
-        const rot=Math.sin(phase*.82)*1.8;
-        const scale=.86+.14*e + .018*Math.sin(phase*1.7);
-        w.style.opacity=String(e);
-        w.style.filter=`blur(${(1-e)*4}px) drop-shadow(0 0 ${16+12*Math.max(0,Math.sin(phase))}px #ffb38a55)`;
-        w.style.transform=`translate3d(calc(-50% + ${x}px),calc(-50% + ${y}px),0) rotate(${rot}deg) scale(${scale})`;
-        w.style.zIndex='6';
-        return;
-      }
-
-      /* Once the next word arrives, the previous word exits on a small
-         continuing orbit instead of using the generic line/word animation. */
-      const p=clamp((t-nextCue)/.48,0,1);
-      const e=p*p*(3-2*p);
-      const phase=.48*2.55+i*.9;
-      const x=Math.cos(phase+p*2.8)*34;
-      const y=Math.sin(phase+p*2.8)*22;
-      const rot=Math.sin(phase+p*2.8)*7;
-      w.style.opacity=String(1-e);
-      w.style.filter=`blur(${e*4}px)`;
-      w.style.transform=`translate3d(calc(-50% + ${x}px),calc(-50% + ${y}px),0) rotate(${rot}deg) scale(${1+.06*e})`;
-      w.style.zIndex='3';
-    });
-    return;
-  }
 
   if(scene==='kailan-flight'){
     // Lightweight, time-driven word flight. No observers, particles, or CSS
@@ -3028,7 +2985,7 @@ function updateMotion(t){
   // Extra idle heartbeat for every scene, layered through independent transform properties.
   words.forEach((w,i)=>{
     if(!w.classList.contains('visible'))return;
-    if(scene==='fly' || scene==='flip' || scene==='orbit')return; // scene owns its transform
+    if(scene==='fly' || scene==='flip' || scene==='orbit' || scene==='pupuntahan')return; // scene owns its transform
     const idleX=Math.sin(t*5.4+i*.9)*1.8;
     const idleY=Math.cos(t*5.4+i*1.1)*1.4;
     const idleR=Math.sin(t*5.4+i)*.75;
@@ -3036,6 +2993,42 @@ function updateMotion(t){
     w.style.rotate=`${idleR}deg`;
     w.style.scale=`${1+0.012*Math.sin(t*5.4+i)}`;
   });
+
+  /* 01:11 — "Ikaw ay lagi kong pupuntahan"
+     Dedicated motion only. The first four words orbit gently with their own
+     trailing echo. "pupuntahan" is deliberately locked after it appears. */
+  if(scene==='pupuntahan'){
+    words.forEach((w,i)=>{
+      if(!w.classList.contains('visible')){
+        w.style.opacity='0';
+        w.style.transform='translate3d(-50%,-50%,0) scale(.82)';
+        return;
+      }
+      if(i===words.length-1){
+        w.style.opacity='1';
+        w.style.transform='translate3d(-50%,-50%,0) scale(1)';
+        w.style.translate='0 0';
+        w.style.rotate='0deg';
+        w.style.scale='1';
+        w.style.filter='none';
+        w.style.zIndex='8';
+        return;
+      }
+      const phase=t*1.75+i*1.45;
+      const radius=14+i*5;
+      const x=Math.cos(phase*(i%2?0.92:1.08))*radius;
+      const y=Math.sin(phase*(i%2?0.92:1.08))*radius*.72;
+      const rot=Math.sin(phase)*2.8;
+      const scale=1.015+.018*Math.sin(phase*1.7);
+      w.style.opacity='1';
+      w.style.transform=`translate3d(calc(-50% + ${x}px),calc(-50% + ${y}px),0) rotate(${rot}deg) scale(${scale})`;
+      w.style.translate='0 0';
+      w.style.rotate='0deg';
+      w.style.scale='1';
+      w.style.filter='none';
+      w.style.zIndex='5';
+    });
+  }
 
   // First chorus owns its motion at the LINE level only. Clear all generic
   // per-word idle transforms so no individual word can shake during the pulse.
