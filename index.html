@@ -1822,6 +1822,7 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 
 /* SITE-WIDE WHIMSY — scattered ✦ at varied sizes, positions, and rhythms. */
 #siteSparkField{
+  display:none!important;
   position:fixed;
   inset:0;
   z-index:4;
@@ -1844,6 +1845,50 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 @keyframes siteSparkFloat{
   0%,100%{transform:translate3d(0,0,0) rotate(var(--sr)) scale(.82);opacity:var(--so)}
   50%{transform:translate3d(var(--dx),var(--dy),0) rotate(calc(var(--sr) + 18deg)) scale(1.18);opacity:calc(var(--so) + .18)}
+}
+
+/* CLOCK-LYRIC WHIMSY FIELD — sparks exist only during the two clock lines. */
+#clockSparkField{
+  position:absolute;
+  inset:0;
+  z-index:1;
+  pointer-events:none;
+  overflow:visible;
+}
+.clock-spark{
+  position:absolute;
+  left:var(--sx);
+  top:var(--sy);
+  color:var(--sc,#ffb38a);
+  font-family:ui-rounded,sans-serif;
+  font-size:var(--ss);
+  line-height:1;
+  opacity:0;
+  text-shadow:0 0 12px #ffb38a44;
+  transform:translate(-50%,-50%) rotate(var(--sr)) scale(.35);
+  animation:
+    clockSparkEnter .58s cubic-bezier(.16,1.5,.24,1) var(--sdelay) both,
+    clockSparkFloat var(--sd) ease-in-out calc(var(--sdelay) + .58s) infinite;
+}
+@keyframes clockSparkEnter{
+  0%{opacity:0;transform:translate(-50%,-50%) rotate(calc(var(--sr) - 18deg)) scale(.2)}
+  58%{opacity:calc(var(--so) + .18);transform:translate(calc(-50% + 2px),calc(-50% - 7px)) rotate(calc(var(--sr) + 10deg)) scale(1.28)}
+  78%{opacity:var(--so);transform:translate(calc(-50% - 1px),calc(-50% + 2px)) rotate(calc(var(--sr) - 4deg)) scale(.9)}
+  100%{opacity:var(--so);transform:translate(-50%,-50%) rotate(var(--sr)) scale(1)}
+}
+@keyframes clockSparkFloat{
+  0%,100%{transform:translate(-50%,-50%) rotate(var(--sr)) scale(1);opacity:var(--so)}
+  25%{transform:translate(calc(-50% + var(--dx)*.45),calc(-50% + var(--dy)*.35)) rotate(calc(var(--sr) + 8deg)) scale(1.04);opacity:calc(var(--so) + .05)}
+  50%{transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) rotate(calc(var(--sr) + 22deg)) scale(1.16);opacity:calc(var(--so) + .16)}
+  75%{transform:translate(calc(-50% + var(--dx)*.35),calc(-50% + var(--dy)*.25)) rotate(calc(var(--sr) + 12deg)) scale(.96);opacity:calc(var(--so) + .04)}
+}
+.scene-clock.clock-exit #clockSparkField .clock-spark{
+  animation:clockSparkExit .58s cubic-bezier(.55,.05,.85,.35) forwards !important;
+}
+@keyframes clockSparkExit{
+  0%{opacity:var(--so);transform:translate(-50%,-50%) rotate(var(--sr)) scale(1)}
+  35%{opacity:calc(var(--so) + .08);transform:translate(calc(-50% + var(--dx)*.55),calc(-50% + var(--dy)*.55)) rotate(calc(var(--sr) + 20deg)) scale(1.12)}
+  100%{opacity:0;transform:translate(calc(-50% + var(--dx)*2.8),calc(-50% + var(--dy)*2.8 - 18px)) rotate(calc(var(--sr) + 55deg)) scale(.15)}
 }
 
 /* FINAL CLOCK ALIGNMENT GUARD — the lyric stays centered; the clock hands fill the face. */
@@ -2050,7 +2095,22 @@ function buildClock(text){
   const nums=Array.from({length:12},(_,j)=>`<span class="clock-number" style="--n:${j}">${j+1}</span>`).join('');
   const ticks=Array.from({length:60},(_,j)=>`<i class="clock-tick ${j%5===0?'major':''}" data-tick="${j}"></i>`).join('');
   const lyric=buildWords(text);
-  return `<div class="clock-wrap"><div class="clock-face">${ticks}${nums}<div class="clock-hands"><i class="clock-hand hour"></i><i class="clock-hand minute"></i><i class="clock-hand second"></i><i class="clock-center"></i></div></div><div class="clock-lyric">${lyric}</div></div>`;
+  const sparks=Array.from({length:42},(_,i)=>{
+    const angle=i*2.399963;
+    const radius=34+(i%7)*7;
+    const x=50+Math.cos(angle)*radius;
+    const y=50+Math.sin(angle)*radius;
+    const size=7+(i%9)*2.8;
+    const opacity=(.18+(i%6)*.07).toFixed(2);
+    const dx=Math.cos(angle+1.1)*(4+(i%5)*2);
+    const dy=Math.sin(angle+1.1)*(5+(i%6)*2);
+    const dur=(1.8+(i%8)*.38).toFixed(2);
+    const delay=(0.06+(i%9)*0.075).toFixed(2);
+    const rot=(-30+(i%13)*5);
+    const color=i%7===0?'#f8f0e6':'#ffb38a';
+    return `<span class="clock-spark" style="--sx:${x}%;--sy:${y}%;--ss:${size}px;--so:${opacity};--dx:${dx}px;--dy:${dy}px;--sd:${dur}s;--sdelay:${delay}s;--sr:${rot}deg;--sc:${color}">✦</span>`;
+  }).join('');
+  return `<div class="clock-wrap"><div id="clockSparkField" aria-hidden="true">${sparks}</div><div class="clock-face">${ticks}${nums}<div class="clock-hands"><i class="clock-hand hour"></i><i class="clock-hand minute"></i><i class="clock-hand second"></i><i class="clock-center"></i></div></div><div class="clock-lyric">${lyric}</div></div>`;
 }
 
 function layoutClock(){
@@ -2743,7 +2803,7 @@ function initSiteSparks(){
     field.appendChild(star);
   }
 }
-initSiteSparks();
+// Disabled: whimsy sparks are now scoped to the two clock lyric lines only.
 
 function clearBanatEchoes(){
   const field=document.querySelector('#backgroundBanat');
