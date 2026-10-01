@@ -2206,9 +2206,7 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 </style>
 
 <style id="pupuntahan-scene">
-/* 01:11 — IKAW AY LAGI KONG PUPUNTAHAN
-   Dedicated scene. The first four words orbit gently; their echoes trail behind.
-   The final word is completely stationary once it appears. */
+/* 01:11 — keep this close to the original verse typography. */
 .line.pupuntahan-scene{
   position:relative;
   width:min(94vw,980px);
@@ -2217,30 +2215,34 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   overflow:visible;
   text-align:center;
 }
-.line.pupuntahan-scene .word{
+
+/* This scene owns every word transform. Do not let the global idle/chorus
+   animations, nth-child sizing, or the base word animation touch it. */
+.line.pupuntahan-scene .word,
+.line.pupuntahan-scene .word.visible,
+.line.pupuntahan-scene .word.current{
   position:absolute;
   left:50%;
   top:50%;
   margin:0;
   white-space:nowrap;
-  font-family:"Poppins",sans-serif !important;
-  font-size:clamp(42px,8.4vw,104px) !important;
-  font-weight:900 !important;
-  letter-spacing:-.075em !important;
-  line-height:.9 !important;
+  font-family:inherit !important;
+  font-size:clamp(28px,4.4vw,68px) !important;
+  font-weight:600 !important;
+  letter-spacing:-.045em !important;
+  line-height:1.05 !important;
   transform-origin:center;
   opacity:0;
   filter:none;
-  transition:none;
+  animation:none !important;
+  transition:none !important;
   will-change:transform,opacity;
 }
 .line.pupuntahan-scene .word.visible{
   opacity:1;
 }
-.line.pupuntahan-scene .word.current{
-  color:var(--accent);
-  text-shadow:0 0 28px #ffb38a66;
-}
+
+/* The orbiting words get a soft echo of the WORD THAT FOLLOWS them. */
 .line.pupuntahan-scene .word::before{
   content:attr(data-pupuntahan-echo);
   position:absolute;
@@ -2250,29 +2252,43 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   white-space:nowrap;
   font:inherit;
   color:#ffb38a;
-  opacity:.16;
+  opacity:.14;
   filter:blur(2px);
   pointer-events:none;
-  transform:translate(-50%,-50%) translate(var(--echo-x,0px),var(--echo-y,0px)) scale(1.18) rotate(var(--echo-r,0deg));
+  transform:translate(-50%,-50%) translate(var(--echo-x,0px),var(--echo-y,0px)) scale(1.10) rotate(var(--echo-r,0deg));
   transform-origin:center;
 }
 .line.pupuntahan-scene .word.visible:not(:last-child)::before{
-  animation:pupuntahanEcho 1.35s ease-in-out infinite alternate;
+  animation:pupuntahanEcho 1.35s ease-in-out infinite alternate !important;
 }
 @keyframes pupuntahanEcho{
-  0%{opacity:.07;transform:translate(-50%,-50%) translate(-5px,3px) scale(1.08) rotate(-2deg)}
-  100%{opacity:.19;transform:translate(-50%,-50%) translate(8px,-5px) scale(1.24) rotate(2deg)}
+  0%{opacity:.06;transform:translate(-50%,-50%) translate(-4px,2px) scale(1.05) rotate(-1.5deg)}
+  100%{opacity:.16;transform:translate(-50%,-50%) translate(6px,-3px) scale(1.16) rotate(1.5deg)}
 }
-.line.pupuntahan-scene .word:last-child{
-  color:var(--ink);
+
+/* pupuntahan is the anchor: once visible it stays exactly centered. */
+.line.pupuntahan-scene .word:last-child,
+.line.pupuntahan-scene .word:last-child.visible,
+.line.pupuntahan-scene .word:last-child.current{
+  animation:none !important;
+  transform:translate3d(-50%,-50%,0) !important;
+  translate:0 0 !important;
+  rotate:0deg !important;
+  scale:1 !important;
+  filter:none !important;
   text-shadow:none;
 }
 .line.pupuntahan-scene .word:last-child.current{
   color:var(--accent);
-  text-shadow:0 0 28px #ffb38a66;
+  text-shadow:0 0 20px #ffb38a55;
 }
+
 @media(max-width:600px){
-  .line.pupuntahan-scene .word{font-size:clamp(34px,10vw,58px) !important}
+  .line.pupuntahan-scene .word,
+  .line.pupuntahan-scene .word.visible,
+  .line.pupuntahan-scene .word.current{
+    font-size:clamp(27px,8.5vw,42px) !important;
+  }
 }
 </style>
 </head>
@@ -2710,9 +2726,12 @@ function activate(i){
   if(i===10){
     el.classList.add('pupuntahan-scene');
     el.querySelectorAll('.word').forEach((w,idx)=>{
-      w.setAttribute('data-pupuntahan-echo',w.textContent.trim());
+      w.setAttribute('data-pupuntahan-echo', (el.querySelectorAll('.word')[idx+1]?.textContent || '').trim());
       w.style.setProperty('--p-orbit',(idx%2===0?'-1':'1'));
       w.style.setProperty('--p-delay',(idx*0.10)+'s');
+      w.style.setProperty('--echo-x',(idx%2===0?'-5px':'5px'));
+      w.style.setProperty('--echo-y',((idx%3)-1)*3+'px');
+      w.style.setProperty('--echo-r',(idx%2===0?'-1.5':'1.5')+'deg');
     });
   }
 
