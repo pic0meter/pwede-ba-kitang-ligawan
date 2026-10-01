@@ -312,8 +312,8 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 #wordExplosionField{position:absolute;inset:0;z-index:1;overflow:hidden;pointer-events:none}
 .clock-number-burst-layer{position:absolute;inset:0;z-index:1;overflow:visible;pointer-events:none}
 .word-bg-burst{position:absolute;left:0;top:0;white-space:nowrap;font-family:inherit;font-weight:inherit;letter-spacing:inherit;line-height:inherit;color:#f8f0e6;opacity:0;transform:translate(-50%,-50%) scale(.18) rotate(var(--r));animation:wordBgBurst var(--life) cubic-bezier(.12,.8,.18,1) forwards;filter:blur(.35px);text-shadow:0 0 18px #ffb38a2e}
-.clock-number-bg-burst{position:absolute;left:0;top:0;white-space:nowrap;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-weight:700;letter-spacing:0;color:var(--accent);opacity:0;transform:translate(-50%,-50%) scale(.22) rotate(var(--r));animation:clockNumberBgBurst var(--life) cubic-bezier(.12,.8,.18,1) forwards;filter:blur(.4px);text-shadow:0 0 16px #ffb38a30;z-index:1;pointer-events:none}
-@keyframes clockNumberBgBurst{0%{opacity:0;transform:translate(-50%,-50%) scale(.22) rotate(var(--r))}10%{opacity:var(--alpha)}38%{opacity:var(--alpha)}68%{opacity:calc(var(--alpha)*.72)}100%{opacity:0;transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(var(--scale)) rotate(var(--r2))}}
+.clock-number-bg-burst{position:absolute;left:0;top:0;white-space:nowrap;font-family:"Helvetica Neue",Arial,sans-serif;font-weight:300;letter-spacing:-.02em;color:var(--accent);opacity:0;transform:translate(-50%,-50%) scale(.35) rotate(var(--r));animation:clockNumberBgBurst var(--life) cubic-bezier(.2,.8,.25,1) forwards;filter:blur(.15px);text-shadow:0 0 10px #ffb38a22;z-index:1;pointer-events:none}
+@keyframes clockNumberBgBurst{0%{opacity:0;transform:translate(-50%,-50%) scale(.35) rotate(var(--r))}8%{opacity:var(--alpha);transform:translate(-50%,-50%) scale(.9) rotate(var(--r))}24%{opacity:calc(var(--alpha)*.72);transform:translate(calc(-50% + var(--dx)*.45),calc(-50% + var(--dy)*.45)) scale(1) rotate(var(--r2))}100%{opacity:0;transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(var(--scale)) rotate(var(--r2))}}
 @keyframes wordBgBurst{0%{opacity:0;transform:translate(-50%,-50%) scale(.18) rotate(var(--r))}12%{opacity:var(--alpha)}45%{opacity:calc(var(--alpha)*.72)}100%{opacity:0;transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(var(--scale)) rotate(var(--r2))}}
 
 #ooExplosion{position:absolute;inset:0;z-index:8;overflow:hidden;pointer-events:none}
@@ -2250,14 +2250,6 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   pointer-events:none !important;
   overflow:visible !important;
 }
-.line.scene-clock .clock-number-bg-burst{
-  font-size:var(--burst-size) !important;
-  font-weight:700 !important;
-  color:var(--accent) !important;
-  opacity:0;
-  filter:blur(.4px) !important;
-  text-shadow:0 0 16px #ffb38a30 !important;
-}
 
 </style>
 </head>
@@ -3194,12 +3186,13 @@ function clearWordBackgroundBursts(){
   clockNumberBackgroundBursts=[];
 }
 function spawnClockNumberBackgroundBurst(wordIndex, opts={}){
-  // Clean clock burst: numbers are anchored to the highlighted word, sit
-  // between the clock face and lyric, and linger long enough to read.
+  // Single clock-number burst system. Numbers are anchored to the spoken word,
+  // layered between the clock and lyric, small, thin, quick, and immediately fading.
   const line=L.querySelector('.line.active.scene-clock');
   const word=line?.querySelector('.clock-lyric .word[data-word-index="'+wordIndex+'"]');
   const wrap=line?.querySelector('.clock-wrap');
   if(!line||!word||!wrap)return;
+
   const field=wrap.querySelector('.clock-number-burst-layer');
   if(!field)return;
 
@@ -3208,48 +3201,47 @@ function spawnClockNumberBackgroundBurst(wordIndex, opts={}){
   const cx=rect.left+rect.width/2-base.left;
   const cy=rect.top+rect.height/2-base.top;
   const elevated=!!opts.elevated;
-  const count=5;
+  const count=3;
+  const group=String(Date.now())+'-'+Math.random();
 
   for(let n=0;n<count;n++){
     const e=document.createElement('span');
     e.className='clock-number-bg-burst';
+    e.dataset.burstGroup=group;
     e.textContent=String(1+Math.floor(Math.random()*12));
     e.style.left=cx+'px';
     e.style.top=cy+'px';
-    // Return to the earlier, smaller scale. Elevated bursts are only slightly
-    // larger so "magaling/ako" still read as a special treatment.
-    e.style.setProperty('--burst-size',(elevated ? 48+Math.random()*14 : 42+Math.random()*18)+'px');
 
-    const a=elevated
-      ? (-Math.PI/2)+(Math.random()-.5)*1.8
-      : (Math.PI*2/count)*n+(Math.random()-.5)*.55;
-    const distance=elevated ? 28+Math.random()*65 : 42+Math.random()*92;
-    const rise=elevated ? -(32+Math.random()*55) : 0;
-    e.style.setProperty('--dx',(Math.cos(a)*distance)+'px');
-    e.style.setProperty('--dy',(Math.sin(a)*distance+rise)+'px');
-    e.style.setProperty('--scale',(0.82+Math.random()*0.48).toFixed(2));
-    e.style.setProperty('--r',(-9+Math.random()*18)+'deg');
-    e.style.setProperty('--r2',(-18+Math.random()*36)+'deg');
-    // More visible than before, but still clearly a background echo.
-    e.style.setProperty('--alpha',(0.30+Math.random()*0.10).toFixed(3));
-    // The numbers remain on screen substantially longer.
-    e.style.setProperty('--life',(2.35+Math.random()*0.35)+'s');
+    // Keep every burst small. Elevated words are only slightly larger.
+    e.style.fontSize=(elevated ? 30+Math.random()*7 : 26+Math.random()*6)+'px';
+    e.style.fontWeight='300';
+    e.style.setProperty('--alpha',(0.24+Math.random()*0.08).toFixed(3));
+    e.style.setProperty('--life',(0.78+Math.random()*0.16).toFixed(2)+'s');
+    e.style.setProperty('--scale',(0.82+Math.random()*0.22).toFixed(2));
+    e.style.setProperty('--r',(-8+Math.random()*16)+'deg');
+    e.style.setProperty('--r2',(-14+Math.random()*28)+'deg');
+
+    if(elevated){
+      // Magaling / ako: burst around the word in all directions, not upward.
+      const angle=(Math.PI*2/count)*n+(Math.random()-.5)*.5;
+      const distance=42+Math.random()*42;
+      e.style.setProperty('--dx',(Math.cos(angle)*distance)+'px');
+      e.style.setProperty('--dy',(Math.sin(angle)*distance)+'px');
+    }else{
+      // Other clock words: compact radial burst.
+      const angle=(Math.PI*2/count)*n+(Math.random()-.5)*.45;
+      const distance=34+Math.random()*34;
+      e.style.setProperty('--dx',(Math.cos(angle)*distance)+'px');
+      e.style.setProperty('--dy',(Math.sin(angle)*distance)+'px');
+    }
     field.appendChild(e);
   }
 
-  // Remove only this burst after its full animation has finished.
-  const cleanup=()=>{
+  setTimeout(()=>{
     field.querySelectorAll('.clock-number-bg-burst').forEach(e=>{
-      if(!e.isConnected)return;
-      // Do not wipe newer bursts from another word.
-      if(e.dataset.burstGroup===group) e.remove();
+      if(e.dataset.burstGroup===group)e.remove();
     });
-  };
-  const group=String(Date.now())+'-'+Math.random();
-  field.lastElementChild;
-  const recent=Array.from(field.querySelectorAll('.clock-number-bg-burst')).slice(-count);
-  recent.forEach(e=>e.dataset.burstGroup=group);
-  setTimeout(cleanup,2850);
+  },1100);
 }
 
 function spawnWordBackgroundBurst(wordIndex){
@@ -3522,14 +3514,16 @@ function render(){
       }
     });
   }else if(i===6){
-    // CLEAN CLOCK BURST TIMELINE. Every burst is exactly ~1 second after its
-    // word cue. Both "ko" words receive the effect; no word is skipped.
+    // One second after the spoken word. Three small, thin numbers per burst.
+    // Both "ko" words are explicitly included.
     const burstCues=[
-      [0,54.80,false], // Bibigay (53.80 + 1.00)
-      [1,55.18,false], // ko (54.18 + 1.00)
-      [2,55.55,false], // nang (54.55 + 1.00)
-      [3,55.90,false], // buo (54.90 + 1.00)
-      [6,56.78,false]  // final ko (55.78 + 1.00)
+      [0,54.80,false], // Bibigay
+      [1,55.18,false], // ko
+      [2,55.55,false], // nang
+      [3,55.90,false], // buo
+      [4,56.12,false], // ang
+      [5,56.42,false], // oras
+      [6,56.78,false]  // ko
     ];
     burstCues.forEach(([wordIndex,cue,elevated])=>{
       const key='6-'+wordIndex;
@@ -3539,13 +3533,13 @@ function render(){
       }
     });
   }else if(i===7){
-    // The following clock lyric gets the same delayed orange number-burst language.
-    // Magaling/ako rise above their words and use larger numbers.
+    // Same one-second delay for the next line. Magaling/ako burst around
+    // the word in all directions, with the same three-number limit.
     const burstCues=[
-      [0,59.70,false,false],   // Kasi
-      [2,60.48,false,false],   // alam
-      [4,61.30,true,true],     // magaling
-      [5,61.72,true,true]      // ako
+      [0,59.70,false],   // Kasi
+      [2,60.48,false],   // alam
+      [4,61.30,true],    // magaling
+      [5,61.72,true]     // ako
     ];
     burstCues.forEach(([wordIndex,cue,elevated])=>{
       const key='7-'+wordIndex;
