@@ -2273,6 +2273,15 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
     font-size:clamp(29px,9vw,46px) !important;
   }
 }
+
+/* 01:11 FINAL OVERRIDE — the pupuntahan scene owns its word opacity/motion. */
+.line.pupuntahan-scene.active .word,
+.line.pupuntahan-scene.active .word.visible,
+.line.pupuntahan-scene.active .word.current{
+  animation:none !important;
+  transition:none !important;
+}
+.line.pupuntahan-scene.active .word::before{pointer-events:none !important;}
 </style>
 </head>
 <body>
@@ -2449,8 +2458,8 @@ function sceneFor(i){
   // Each lyric becomes a small motion-graphics scene.
   const scenes=[
     'fly','slit','kailan-flight','wind','zoom','squiggle','clock','clock',
-    'fly','question','crawl','slit','orbit','wind','rubber','chase',
-    'longa','fly','clock','pupuntahan','flip','zoom','question'
+    'fly','question','pupuntahan','slit','orbit','wind','rubber','chase',
+    'longa','fly','clock','crawl','flip','zoom','question'
   ];
   return scenes[i]||'chase';
 }
@@ -2999,41 +3008,39 @@ function updateMotion(t){
     words.forEach((w,i)=>{
       const cue=item.cues?.[i] ?? item.start;
       const nextCue=item.cues?.[i+1] ?? item.end;
-      const fadeIn=.14;
-      const fadeOut=.16;
-      const visibleWindow=t>=cue && t<nextCue;
+      const fadeIn=.12;
+      const fadeOut=.12;
 
       if(t<cue || t>=nextCue){
         w.classList.remove('pupuntahan-show');
         w.style.opacity='0';
-        w.style.transform='translate3d(-50%,-50%,0) scale(.90)';
+        w.style.transform='translate3d(-50%,-50%,0) scale(.94)';
         return;
       }
 
-      const since=t-cue;
-      const until=nextCue-t;
-      const inP=Math.min(1,since/fadeIn);
-      const outP=Math.min(1,until/fadeOut);
-      const inE=inP*inP*(3-2*inP);
-      const outE=outP*outP*(3-2*outP);
-      const alpha=Math.min(inE,outE);
+      const elapsed=t-cue;
+      const remaining=nextCue-t;
+      const inP=Math.min(1,elapsed/fadeIn);
+      const outP=Math.min(1,remaining/fadeOut);
+      const easeIn=inP*inP*(3-2*inP);
+      const easeOut=outP*outP*(3-2*outP);
+      const alpha=Math.min(easeIn,easeOut);
 
-      // Fast, energetic bob without any orbital travel.
-      const bobSpeed=8.8+i*.35;
-      const phase=t*bobSpeed+i*1.15;
-      const bobX=Math.sin(phase)*4.5;
-      const bobY=Math.cos(phase*1.17)*6.5;
-      const rot=Math.sin(phase*.83)*2.2;
-      const scale=(.92+.08*inE)*(1+.035*Math.sin(phase*1.35));
+      // Energetic bob, but no orbit: each word gets its own lively motion.
+      const phase=t*(9.5+i*.45)+i*1.3;
+      const x=Math.sin(phase)*5.5;
+      const y=Math.cos(phase*1.18)*8;
+      const r=Math.sin(phase*.9)*2.8;
+      const scale=(.94+.06*easeIn)*(1+.04*Math.sin(phase*1.25));
 
       w.style.opacity=String(alpha);
-      w.style.transform=`translate3d(calc(-50% + ${bobX}px),calc(-50% + ${bobY}px),0) rotate(${rot}deg) scale(${scale})`;
+      w.style.transform=`translate3d(calc(-50% + ${x}px),calc(-50% + ${y}px),0) rotate(${r}deg) scale(${scale})`;
       w.style.translate='0 0';
       w.style.rotate='0deg';
       w.style.scale='1';
       w.style.filter='none';
       w.style.zIndex='5';
-      if(!w.classList.contains('pupuntahan-show')) w.classList.add('pupuntahan-show');
+      w.classList.add('pupuntahan-show');
     });
   }
 
