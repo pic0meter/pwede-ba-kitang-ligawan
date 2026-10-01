@@ -306,10 +306,10 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   100%{transform:translate3d(0,0,0) scale(1) rotate(0);filter:none}
 }
 .line.question-chaos.question-chorus-fade{
-  animation:questionChorusFade 2.20s cubic-bezier(.22,.72,.2,1) both !important;
+  animation:questionChorusFade 1.00s cubic-bezier(.22,.72,.2,1) both !important;
 }
 .line.question-chaos.question-chorus-fade #questionChaos{
-  animation:questionChorusFieldFade 2.20s cubic-bezier(.22,.72,.2,1) both !important;
+  animation:questionChorusFieldFade 1.00s cubic-bezier(.22,.72,.2,1) both !important;
 }
 @keyframes questionChorusFade{
   0%{opacity:1;transform:translate3d(0,0,0) scale(1);filter:blur(0)}
@@ -343,6 +343,7 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 
 
 #wordExplosionField{position:absolute;inset:0;z-index:1;overflow:hidden;pointer-events:none}
+.clock-number-burst-layer{position:absolute;inset:0;z-index:1;overflow:visible;pointer-events:none}
 .word-bg-burst{position:absolute;left:0;top:0;white-space:nowrap;font-family:inherit;font-weight:inherit;letter-spacing:inherit;line-height:inherit;color:#f8f0e6;opacity:0;transform:translate(-50%,-50%) scale(.18) rotate(var(--r));animation:wordBgBurst var(--life) cubic-bezier(.12,.8,.18,1) forwards;filter:blur(.35px);text-shadow:0 0 18px #ffb38a2e}
 .clock-number-bg-burst{position:absolute;left:0;top:0;white-space:nowrap;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-weight:700;letter-spacing:0;color:#f8f0e6;opacity:0;transform:translate(-50%,-50%) scale(.18) rotate(var(--r));animation:clockNumberBgBurst var(--life) cubic-bezier(.12,.8,.18,1) forwards;filter:blur(.55px);text-shadow:0 0 14px #ffb38a18;z-index:1;pointer-events:none}
 @keyframes clockNumberBgBurst{0%{opacity:0;transform:translate(-50%,-50%) scale(.18) rotate(var(--r))}14%{opacity:var(--alpha)}48%{opacity:calc(var(--alpha)*.68)}100%{opacity:0;transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(var(--scale)) rotate(var(--r2))}}
@@ -2289,6 +2290,31 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   from{opacity:.08;transform:translate(-50%,-50%) translate(var(--echo-x),var(--echo-y)) scale(1.42) rotate(var(--echo-rot))}
   to{opacity:0;transform:translate(-50%,-50%) translate(var(--echo-x),calc(var(--echo-y) - 10px)) scale(1.65) rotate(calc(var(--echo-rot) + 4deg))}
 }
+<style id="linyahan-pure-bob-final">
+/* Final linyahan motion: PURE VERTICAL BOB only. No shake, side drift, or rotation. */
+.line.first-linyahan-vertical .word,
+.line.first-linyahan-vertical .word.visible,
+.line.first-linyahan-vertical .word.current{
+  animation-duration:var(--pure-bob-dur,1.5s) !important;
+  animation-timing-function:cubic-bezier(.45,.05,.55,.95) !important;
+  animation-iteration-count:infinite !important;
+  animation-direction:alternate !important;
+  animation-fill-mode:both !important;
+  transform-origin:50% 50% !important;
+}
+.line.first-linyahan-vertical .word:nth-child(1){--pure-bob-dur:1.35s;animation-name:linyahanPureBob1 !important}
+.line.first-linyahan-vertical .word:nth-child(2){--pure-bob-dur:1.62s;animation-name:linyahanPureBob2 !important}
+.line.first-linyahan-vertical .word:nth-child(3){--pure-bob-dur:1.48s;animation-name:linyahanPureBob3 !important}
+.line.first-linyahan-vertical .word:nth-child(4){--pure-bob-dur:1.72s;animation-name:linyahanPureBob4 !important}
+.line.first-linyahan-vertical .word:nth-child(5){--pure-bob-dur:1.42s;animation-name:linyahanPureBob5 !important}
+.line.first-linyahan-vertical .word:nth-child(6){--pure-bob-dur:1.58s;animation-name:linyahanPureBob6 !important}
+@keyframes linyahanPureBob1{0%{transform:translate3d(0,5px,0) scale(1)}100%{transform:translate3d(0,-7px,0) scale(1.025)}}
+@keyframes linyahanPureBob2{0%{transform:translate3d(0,-4px,0) scale(1.015)}100%{transform:translate3d(0,8px,0) scale(1)}}
+@keyframes linyahanPureBob3{0%{transform:translate3d(0,6px,0) scale(1)}100%{transform:translate3d(0,-9px,0) scale(1.03)}}
+@keyframes linyahanPureBob4{0%{transform:translate3d(0,-6px,0) scale(1.02)}100%{transform:translate3d(0,7px,0) scale(1)}}
+@keyframes linyahanPureBob5{0%{transform:translate3d(0,7px,0) scale(1)}100%{transform:translate3d(0,-8px,0) scale(1.025)}}
+@keyframes linyahanPureBob6{0%{transform:translate3d(0,-5px,0) scale(1.01)}100%{transform:translate3d(0,9px,0) scale(1)}}
+</style>
 </style>
 </head>
 <body>
@@ -2490,7 +2516,7 @@ function buildClock(text){
     const color=i%7===0?'#f8f0e6':'#ffb38a';
     return `<span class="clock-spark" style="--sx:${x}%;--sy:${y}%;--ss:${size}px;--so:${opacity};--dx:${dx}px;--dy:${dy}px;--sd:${dur}s;--sdelay:${delay}s;--sr:${rot}deg;--sc:${color}">✦</span>`;
   }).join('');
-  return `<div class="clock-wrap"><div id="clockSparkField" aria-hidden="true">${sparks}</div><div class="clock-face">${ticks}${nums}<div class="clock-hands"><i class="clock-hand hour"></i><i class="clock-hand minute"></i><i class="clock-hand second"></i><i class="clock-center"></i></div></div><div class="clock-lyric">${lyric}</div></div>`;
+  return `<div class="clock-wrap"><div id="clockSparkField" aria-hidden="true">${sparks}</div><div class="clock-face">${ticks}${nums}<div class="clock-hands"><i class="clock-hand hour"></i><i class="clock-hand minute"></i><i class="clock-hand second"></i><i class="clock-center"></i></div></div><div class="clock-number-burst-layer" aria-hidden="true"></div><div class="clock-lyric">${lyric}</div></div>`;
 }
 
 function layoutClock(){
@@ -3176,7 +3202,7 @@ function updateLaserHeart(t){
     const qLine=L.querySelector('.line.active.question-chaos');
     const pulseStart=44.00;
     const pulseEnd=44.52;
-    const fadeStart=44.52;
+    const fadeStart=45.72;
     const fadeEnd=46.72;
     if(qLine && t>=pulseStart && t<pulseEnd){
       qLine.classList.remove('question-chorus-fade');
@@ -3221,10 +3247,16 @@ function clearWordBackgroundBursts(){
   clockNumberBackgroundBursts=[];
 }
 function spawnClockNumberBackgroundBurst(wordIndex){
-  const field=document.querySelector('#wordExplosionField');
-  const line=L.querySelector('.line.active[data-index="6"]');
+  const line=L.querySelector('.line.active.scene-clock');
   const word=line?.querySelector('.word[data-word-index="'+wordIndex+'"]');
-  if(!field||!word)return;
+  const wrap=line?.querySelector('.clock-wrap');
+  if(!line||!word||!wrap)return;
+  let field=wrap.querySelector('.clock-number-burst-layer');
+  if(!field){
+    field=document.createElement('div');
+    field.className='clock-number-burst-layer';
+    wrap.appendChild(field);
+  }
   const rect=word.getBoundingClientRect();
   const base=field.getBoundingClientRect();
   const cx=rect.left+rect.width/2-base.left;
@@ -3236,7 +3268,7 @@ function spawnClockNumberBackgroundBurst(wordIndex){
     e.textContent=String(1+Math.floor(Math.random()*12));
     e.style.left=cx+'px';
     e.style.top=cy+'px';
-    e.style.fontSize=(14+Math.random()*30)+'px';
+    e.style.fontSize=(18+Math.random()*34)+'px';
     const a=(Math.PI*2/count)*i+(Math.random()-.5)*.6;
     const distance=45+Math.random()*105;
     e.style.setProperty('--dx',(Math.cos(a)*distance)+'px');
@@ -3244,7 +3276,7 @@ function spawnClockNumberBackgroundBurst(wordIndex){
     e.style.setProperty('--scale',(0.72+Math.random()*0.7).toFixed(2));
     e.style.setProperty('--r',(-10+Math.random()*20)+'deg');
     e.style.setProperty('--r2',(-22+Math.random()*44)+'deg');
-    e.style.setProperty('--alpha',(0.055+Math.random()*0.055).toFixed(3));
+    e.style.setProperty('--alpha',(0.12+Math.random()*0.08).toFixed(3));
     e.style.setProperty('--life',(0.72+Math.random()*0.34)+'s');
     field.appendChild(e);
   }
@@ -3528,7 +3560,7 @@ function render(){
     ];
     burstCues.forEach(([wordIndex,cue])=>{
       const key=String(wordIndex);
-      if(t>=cue && t<cue+0.12 && !clockNumberBackgroundBursts.includes(key)){
+      if(t>=cue && t<cue+0.28 && !clockNumberBackgroundBursts.includes(key)){
         clockNumberBackgroundBursts.push(key);
         spawnClockNumberBackgroundBurst(wordIndex);
       }
