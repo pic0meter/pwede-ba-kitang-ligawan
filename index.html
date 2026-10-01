@@ -2203,6 +2203,80 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   height:auto !important;
 }
 </style>
+
+<style id="first-linyahan-poppins-whimsy">
+/* First chorus linyahan: playful Poppins + independent whimsical bobbing. */
+.line.first-linyahan-vertical .word,
+.line.first-linyahan-vertical .word.visible,
+.line.first-linyahan-vertical .word.current{
+  font-family:"Poppins",sans-serif !important;
+  font-weight:700 !important;
+  animation-duration:var(--whimsy-dur,1.55s) !important;
+  animation-timing-function:cubic-bezier(.45,.05,.55,.95) !important;
+  animation-iteration-count:infinite !important;
+  animation-direction:alternate !important;
+  animation-fill-mode:both !important;
+  text-shadow:none !important;
+}
+.line.first-linyahan-vertical .word:nth-child(1){--whimsy-dur:1.35s;animation-name:linyahanWhimsy1 !important}
+.line.first-linyahan-vertical .word:nth-child(2){--whimsy-dur:1.62s;animation-name:linyahanWhimsy2 !important}
+.line.first-linyahan-vertical .word:nth-child(3){--whimsy-dur:1.48s;animation-name:linyahanWhimsy3 !important}
+.line.first-linyahan-vertical .word:nth-child(4){--whimsy-dur:1.72s;animation-name:linyahanWhimsy4 !important}
+.line.first-linyahan-vertical .word:nth-child(5){--whimsy-dur:1.42s;animation-name:linyahanWhimsy5 !important}
+.line.first-linyahan-vertical .word:nth-child(6){--whimsy-dur:1.58s;animation-name:linyahanWhimsy6 !important}
+@keyframes linyahanWhimsy1{0%{transform:translate3d(-3px,2px,0) rotate(-1deg) scale(1)}45%{transform:translate3d(2px,-5px,0) rotate(1.4deg) scale(1.025)}100%{transform:translate3d(-1px,4px,0) rotate(-.6deg) scale(1.01)}}
+@keyframes linyahanWhimsy2{0%{transform:translate3d(2px,-3px,0) rotate(.8deg) scale(1.01)}40%{transform:translate3d(-4px,4px,0) rotate(-1.5deg) scale(1.03)}100%{transform:translate3d(3px,-2px,0) rotate(1.1deg) scale(1)}}
+@keyframes linyahanWhimsy3{0%{transform:translate3d(-2px,4px,0) rotate(-.7deg) scale(1)}50%{transform:translate3d(4px,-4px,0) rotate(1.7deg) scale(1.035)}100%{transform:translate3d(-3px,1px,0) rotate(-1.2deg) scale(1.015)}}
+@keyframes linyahanWhimsy4{0%{transform:translate3d(3px,1px,0) rotate(1.2deg) scale(1)}35%{transform:translate3d(-3px,-5px,0) rotate(-1.4deg) scale(1.035)}100%{transform:translate3d(4px,3px,0) rotate(1.5deg) scale(1.01)}}
+@keyframes linyahanWhimsy5{0%{transform:translate3d(-4px,-1px,0) rotate(-1.4deg) scale(1.015)}50%{transform:translate3d(2px,5px,0) rotate(1.5deg) scale(1.04)}100%{transform:translate3d(-1px,-4px,0) rotate(-.8deg) scale(1)}}
+@keyframes linyahanWhimsy6{0%{transform:translate3d(1px,3px,0) rotate(.7deg) scale(1)}42%{transform:translate3d(-4px,-4px,0) rotate(-1.8deg) scale(1.04)}100%{transform:translate3d(3px,2px,0) rotate(1.2deg) scale(1.015)}}
+
+/* Faded word echoes sit behind each linyahan word. They echo the same text
+   without competing with the main lyric or the dashed strokes. */
+.line.first-linyahan-vertical .word{
+  position:relative;
+  z-index:2;
+}
+.line.first-linyahan-vertical .word::before{
+  content:attr(data-linyahan-echo);
+  position:absolute;
+  left:50%;
+  top:50%;
+  z-index:-1;
+  white-space:nowrap;
+  font-family:inherit;
+  font-size:1em;
+  font-weight:inherit;
+  line-height:inherit;
+  letter-spacing:inherit;
+  color:#ffb38a;
+  opacity:0;
+  pointer-events:none;
+  filter:blur(1.8px);
+  transform:translate(-50%,-50%) translate(var(--echo-x,0),var(--echo-y,0)) scale(1.42) rotate(var(--echo-rot,0deg));
+  transform-origin:center;
+}
+.line.first-linyahan-vertical.active .word::before{
+  animation:linyahanEchoIn .7s cubic-bezier(.16,1.05,.25,1) var(--echo-delay,0s) both,
+            linyahanEchoDrift 2.8s ease-in-out calc(var(--echo-delay,0s) + .55s) infinite alternate;
+}
+.line.first-linyahan-vertical.out .word::before{
+  animation:linyahanEchoOut .42s ease-in forwards !important;
+}
+@keyframes linyahanEchoIn{
+  0%{opacity:0;transform:translate(-50%,-50%) translate(0,2px) scale(.82) rotate(0)}
+  55%{opacity:.12;transform:translate(-50%,-50%) translate(var(--echo-x),var(--echo-y)) scale(1.48) rotate(var(--echo-rot))}
+  100%{opacity:.075;transform:translate(-50%,-50%) translate(var(--echo-x),var(--echo-y)) scale(1.42) rotate(var(--echo-rot))}
+}
+@keyframes linyahanEchoDrift{
+  0%{opacity:.055;transform:translate(-50%,-50%) translate(var(--echo-x),calc(var(--echo-y) + 3px)) scale(1.42) rotate(var(--echo-rot))}
+  100%{opacity:.10;transform:translate(-50%,-50%) translate(calc(var(--echo-x) - 3px),calc(var(--echo-y) - 4px)) scale(1.46) rotate(calc(var(--echo-rot) + .7deg))}
+}
+@keyframes linyahanEchoOut{
+  from{opacity:.08;transform:translate(-50%,-50%) translate(var(--echo-x),var(--echo-y)) scale(1.42) rotate(var(--echo-rot))}
+  to{opacity:0;transform:translate(-50%,-50%) translate(var(--echo-x),calc(var(--echo-y) - 10px)) scale(1.65) rotate(calc(var(--echo-rot) + 4deg))}
+}
+</style>
 </head>
 <body>
 <div id="app">
@@ -2628,6 +2702,13 @@ function activate(i){
 
   if(i===5){
     el.classList.add('first-linyahan-vertical');
+    el.querySelectorAll('.word').forEach((w,idx)=>{
+      w.setAttribute('data-linyahan-echo',w.textContent.trim());
+      w.style.setProperty('--echo-delay',(idx*0.07)+'s');
+      w.style.setProperty('--echo-x',((idx%2===0?-1:1)*(7+idx*1.5))+'px');
+      w.style.setProperty('--echo-y',((idx%3)-1)*4+'px');
+      w.style.setProperty('--echo-rot',((idx%2===0?-1:1)*(idx%3+0.5))+'deg');
+    });
     const strokeSpecs=[
       ['h',false,18,2,.42,3.4,0.02,10,12],['h',true,30,3,.30,4.1,.18,16,17],
       ['h',false,42,1,.62,2.7,.34,8,13],['h',true,55,2,.48,3.6,.52,12,10],
