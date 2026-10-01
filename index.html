@@ -516,12 +516,15 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .line.motion .word:nth-child(4n){font-size:.88em}
 .line.motion .word:nth-child(7n+1){font-size:1.12em}
 
-.clock-wrap{position:relative;width:min(92vw,700px);height:min(48vh,410px);display:grid;place-items:center}
-.clock-face{position:absolute;width:min(78vw,350px);height:min(78vw,350px);border:1px solid #ffffff20;border-radius:50%;opacity:.8;box-shadow:0 0 45px #ffb38a0d inset,0 0 25px #ffb38a0b}
-.clock-face::before{content:"";position:absolute;inset:8%;border:1px dashed #ffffff12;border-radius:50%}
-.clock-number{position:absolute;left:50%;top:50%;font:700 clamp(9px,2.3vw,14px) ui-monospace,SFMono-Regular,Menlo,monospace;color:#a99d93;transform:translate(-50%,-50%);opacity:0;animation:clockNumberIn .45s cubic-bezier(.15,1.35,.3,1) forwards;animation-delay:calc(var(--n)*35ms)}
-@keyframes clockNumberIn{0%{opacity:0;transform:translate(-50%,-50%) scale(.2) rotate(-20deg)}70%{opacity:1;transform:translate(-50%,-50%) scale(1.18) rotate(3deg)}100%{opacity:.85;transform:translate(-50%,-50%) scale(1) rotate(0)}}
-.clock-tick{position:absolute;left:50%;top:50%;width:2px;height:7px;background:#ffffff30;transform-origin:50% calc(min(39vw,175px));border-radius:2px}
+.clock-wrap{position:relative;width:min(94vw,760px);height:min(52vh,450px);display:grid;place-items:center}
+.clock-face{position:absolute;width:min(78vw,360px);height:min(78vw,360px);border:2px solid #ffffff28;border-radius:50%;opacity:.9;background:radial-gradient(circle,#ffb38a08 0 55%,transparent 72%);box-shadow:0 0 55px #ffb38a10 inset,0 0 34px #ffb38a10}
+.clock-face::before{content:"";position:absolute;inset:7%;border:1px solid #ffffff14;border-radius:50%}
+.clock-face::after{content:"";position:absolute;inset:1.8%;border:1px dotted #ffb38a18;border-radius:50%;animation:clockOrbit 14s linear infinite}
+.clock-number{position:absolute;left:50%;top:50%;font:700 clamp(10px,2.4vw,15px) ui-monospace,SFMono-Regular,Menlo,monospace;color:#b7aaa0;transform:translate(-50%,-50%);opacity:0;animation:clockNumberIn .48s cubic-bezier(.15,1.35,.3,1) forwards;animation-delay:calc(var(--n)*28ms)}
+@keyframes clockNumberIn{0%{opacity:0;transform:translate(-50%,-50%) scale(.2) rotate(-20deg)}70%{opacity:1;transform:translate(-50%,-50%) scale(1.16) rotate(3deg)}100%{opacity:.9;transform:translate(-50%,-50%) scale(1) rotate(0)}}
+.clock-tick{position:absolute;left:50%;top:50%;width:1px;height:5px;background:#ffffff28;transform-origin:50% calc(min(39vw,180px));border-radius:2px}
+.clock-tick.major{width:2px;height:10px;background:#ffffff48}
+@keyframes clockOrbit{to{transform:rotate(360deg)}}
 
 /* FIRST CHORUS — "ligawan?" becomes erratic only while highlighted. */
 .line.question-chaos .word.ligawan-chaos.current{
@@ -838,24 +841,18 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 }
 
 /* The clock is almost frozen: only the second hand is alive and fast. */
-.line.scene-clock .clock-hand.minute,
-.line.scene-clock .clock-hand.hour{
-  transform:translate(-50%,-100%) rotate(0deg) !important;
-}
-.line.scene-clock .clock-hand.second{
-  transition:none;
-  will-change:transform;
-}
+.line.scene-clock .clock-hand{transition:none;will-change:transform}
 
-.clock-hands{position:absolute;inset:0;pointer-events:none}
+.clock-hands{position:absolute;inset:0;pointer-events:none;z-index:1}
 .clock-hand{position:absolute;left:50%;top:50%;height:28%;width:2px;background:#f8f0e6;border-radius:99px;transform-origin:50% 100%;box-shadow:0 0 12px #fff3}
 .clock-hand.hour{height:20%;width:3px}
-.clock-hand.second{height:31%;width:1px;background:var(--accent)}
-.clock-center{position:absolute;left:50%;top:50%;width:8px;height:8px;border-radius:50%;background:var(--accent);transform:translate(-50%,-50%);box-shadow:0 0 15px #ffb38a88}
-.clock-lyric{position:relative;z-index:2;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;max-width:78%;text-align:center;gap:.03em .10em}
-.clock-lyric .word.visible{animation:clockLyricIn .5s cubic-bezier(.12,1.3,.3,1) both}
-@keyframes clockLyricIn{0%{opacity:0;transform:translateY(20px) scale(.65) rotate(-4deg)}65%{opacity:1;transform:translateY(-5px) scale(1.06) rotate(1deg)}100%{opacity:1;transform:none}}
-.clock-face .clock-number:nth-child(12n+1){color:var(--accent)}
+.clock-hand.minute{height:25%;width:2px}
+.clock-hand.second{height:31%;width:1px;background:var(--accent);box-shadow:0 0 10px #ffb38a99}
+.clock-center{position:absolute;left:50%;top:50%;width:9px;height:9px;border-radius:50%;background:var(--accent);transform:translate(-50%,-50%);box-shadow:0 0 15px #ffb38a88}
+.clock-lyric{position:relative;z-index:2;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;max-width:82%;text-align:center;gap:.03em .10em}
+.clock-lyric .word.visible{animation:clockLyricIn .62s cubic-bezier(.12,1.3,.3,1) both;animation-delay:calc(var(--i)*.07s)}
+@keyframes clockLyricIn{0%{opacity:0;transform:translateY(26px) scale(.58) rotate(calc(-8deg + var(--i)*2deg))}55%{opacity:1;transform:translateY(-7px) scale(1.08) rotate(calc(3deg - var(--i)*1deg))}78%{transform:translateY(3px) scale(.98) rotate(calc(-2deg + var(--i)*.7deg))}100%{opacity:1;transform:none}}
+.clock-face .clock-number:nth-of-type(12n+1){color:var(--accent)}
 
 
 /* --- PUSO / HEARTBEAT ENHANCEMENT --- */
@@ -1025,8 +1022,18 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .subtle-kinetic .word.visible{animation:subtleKinetic 1.35s ease-in-out infinite}.subtle-kinetic .word.visible:last-child{animation:linyahanShake .18s steps(2,end) infinite;color:var(--accent)}
 @keyframes subtleKinetic{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-3px) rotate(.6deg)}}
 @keyframes linyahanShake{0%{transform:translate(-2px,0) rotate(-1.2deg)}25%{transform:translate(2px,-1px) rotate(1.4deg) scale(1.03)}50%{transform:translate(-2px,1px) rotate(-1.5deg) scale(1.01)}75%{transform:translate(2px,0) rotate(1.2deg) scale(1.03)}100%{transform:none}}
-.clock-shake .word.visible{animation:clockLyricShake .14s steps(2,end) infinite}.clock-shake .clock-face{animation:clockFastSpin 2.4s linear infinite}.clock-shake .confetti,.clock-shake .particle,.clock-shake .spark{display:none!important}
-@keyframes clockLyricShake{0%{transform:translate(-1px,0) rotate(-.5deg)}50%{transform:translate(1px,.5px) rotate(.6deg)}100%{transform:none}}@keyframes clockFastSpin{to{transform:rotate(360deg)}}
+.scene-clock.clock-exit{opacity:0!important;transform:scale(1.12) rotate(-2deg)!important;filter:blur(8px)!important;transition:opacity .55s ease,transform .65s cubic-bezier(.7,0,.9,.2),filter .45s ease!important}
+.clock-whimsy-time .clock-face{animation:clockBob 2.8s ease-in-out infinite}
+.clock-whimsy-time .clock-lyric .word.visible{animation:clockDanceIn .62s cubic-bezier(.12,1.3,.3,1) both,clockDance 1.35s ease-in-out .62s infinite;animation-delay:calc(var(--i)*.07s),calc(.72s + var(--i)*.05s)}
+.clock-whimsy-skill .clock-face{animation:clockBobReverse 3.2s ease-in-out infinite}
+.clock-whimsy-skill .clock-lyric .word.visible{animation:clockBounceIn .68s cubic-bezier(.12,1.35,.3,1) both,clockWiggle 1.7s ease-in-out .68s infinite;animation-delay:calc(var(--i)*.065s),calc(.78s + var(--i)*.06s)}
+@keyframes clockDanceIn{0%{opacity:0;transform:translateY(28px) rotate(-10deg) scale(.55)}55%{opacity:1;transform:translateY(-9px) rotate(5deg) scale(1.1)}78%{transform:translateY(3px) rotate(-2deg) scale(.98)}100%{opacity:1;transform:none}}
+@keyframes clockDance{0%,100%{transform:translateY(0) rotate(-1.2deg)}25%{transform:translateY(-3px) rotate(1.4deg)}50%{transform:translateY(2px) rotate(-.7deg)}75%{transform:translateY(-2px) rotate(1deg)}}
+@keyframes clockBounceIn{0%{opacity:0;transform:translateY(-34px) scale(.55) rotate(8deg)}55%{opacity:1;transform:translateY(8px) scale(1.1) rotate(-4deg)}80%{transform:translateY(-3px) scale(.98) rotate(1deg)}100%{opacity:1;transform:none}}
+@keyframes clockWiggle{0%,100%{transform:translateY(0) rotate(1deg)}33%{transform:translateY(-2px) rotate(-1.5deg)}66%{transform:translateY(2px) rotate(1.2deg)}}
+@keyframes clockBob{0%,100%{transform:translateY(0) rotate(-.4deg) scale(1)}50%{transform:translateY(-4px) rotate(.5deg) scale(1.01)}}
+@keyframes clockBobReverse{0%,100%{transform:translateY(0) rotate(.4deg) scale(1)}50%{transform:translateY(4px) rotate(-.5deg) scale(1.01)}}
+.clock-whimsy-time .confetti,.clock-whimsy-time .particle,.clock-whimsy-time .spark,.clock-whimsy-skill .confetti,.clock-whimsy-skill .particle,.clock-whimsy-skill .spark{display:none!important}
 .standup-exit .word.current{animation:standUpHighlighted .32s cubic-bezier(.15,1.4,.3,1) both;transform-origin:50% 100%;z-index:5}
 @keyframes standUpHighlighted{0%{transform:translateY(12px) rotate(-18deg) scale(.92)}70%{transform:translateY(-5px) rotate(4deg) scale(1.08)}100%{transform:translateY(0) rotate(0) scale(1.06)}}
 .standup-exit{animation:kasiExit .72s cubic-bezier(.7,0,.9,.2) forwards;transform-origin:50% 50%}
@@ -1194,22 +1201,6 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .line.motion .word:nth-child(5n+3){letter-spacing:-.035em}
 .line.motion .word:nth-child(4n){font-size:.88em}
 .line.motion .word:nth-child(7n+1){font-size:1.12em}
-
-.clock-wrap{position:relative;width:min(92vw,700px);height:min(48vh,410px);display:grid;place-items:center}
-.clock-face{position:absolute;width:min(78vw,350px);height:min(78vw,350px);border:1px solid #ffffff20;border-radius:50%;opacity:.8;box-shadow:0 0 45px #ffb38a0d inset,0 0 25px #ffb38a0b}
-.clock-face::before{content:"";position:absolute;inset:8%;border:1px dashed #ffffff12;border-radius:50%}
-.clock-number{position:absolute;left:50%;top:50%;font:700 clamp(9px,2.3vw,14px) ui-monospace,SFMono-Regular,Menlo,monospace;color:#a99d93;transform:translate(-50%,-50%);opacity:0;animation:clockNumberIn .45s cubic-bezier(.15,1.35,.3,1) forwards;animation-delay:calc(var(--n)*35ms)}
-@keyframes clockNumberIn{0%{opacity:0;transform:translate(-50%,-50%) scale(.2) rotate(-20deg)}70%{opacity:1;transform:translate(-50%,-50%) scale(1.18) rotate(3deg)}100%{opacity:.85;transform:translate(-50%,-50%) scale(1) rotate(0)}}
-.clock-tick{position:absolute;left:50%;top:50%;width:2px;height:7px;background:#ffffff30;transform-origin:50% calc(min(39vw,175px));border-radius:2px}
-.clock-hands{position:absolute;inset:0;pointer-events:none}
-.clock-hand{position:absolute;left:50%;top:50%;height:28%;width:2px;background:#f8f0e6;border-radius:99px;transform-origin:50% 100%;box-shadow:0 0 12px #fff3}
-.clock-hand.hour{height:20%;width:3px}
-.clock-hand.second{height:31%;width:1px;background:var(--accent)}
-.clock-center{position:absolute;left:50%;top:50%;width:8px;height:8px;border-radius:50%;background:var(--accent);transform:translate(-50%,-50%);box-shadow:0 0 15px #ffb38a88}
-.clock-lyric{position:relative;z-index:2;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;max-width:78%;text-align:center;gap:.03em .10em}
-.clock-lyric .word.visible{animation:clockLyricIn .5s cubic-bezier(.12,1.3,.3,1) both}
-@keyframes clockLyricIn{0%{opacity:0;transform:translateY(20px) scale(.65) rotate(-4deg)}65%{opacity:1;transform:translateY(-5px) scale(1.06) rotate(1deg)}100%{opacity:1;transform:none}}
-.clock-face .clock-number:nth-child(12n+1){color:var(--accent)}
 
 @media(max-width:600px){
   .line.motion{width:88vw;min-height:44vh;gap:.04em .10em}
@@ -1748,7 +1739,7 @@ function buildHeartSplitLine(text){
 function sceneFor(i){
   // Each lyric becomes a small motion-graphics scene.
   const scenes=[
-    'fly','slit','kailan-flight','wind','zoom','squiggle','clock','flip',
+    'fly','slit','kailan-flight','wind','zoom','squiggle','clock','clock',
     'fly','question','crawl','slit','orbit','wind','rubber','chase',
     'longa','fly','clock','crawl','flip','zoom','question'
   ];
@@ -1757,7 +1748,7 @@ function sceneFor(i){
 
 function buildClock(text){
   const nums=Array.from({length:12},(_,j)=>`<span class="clock-number" style="--n:${j}">${j+1}</span>`).join('');
-  const ticks=Array.from({length:12},(_,j)=>`<i class="clock-tick" data-tick="${j}"></i>`).join('');
+  const ticks=Array.from({length:60},(_,j)=>`<i class="clock-tick ${j%5===0?'major':''}" data-tick="${j}"></i>`).join('');
   const lyric=buildWords(text);
   return `<div class="clock-wrap"><div class="clock-face">${ticks}${nums}<div class="clock-hands"><i class="clock-hand hour"></i><i class="clock-hand minute"></i><i class="clock-hand second"></i><i class="clock-center"></i></div></div><div class="clock-lyric">${lyric}</div></div>`;
 }
@@ -1773,22 +1764,22 @@ function layoutClock(){
     n.style.transform=`translate(-50%,-50%) translate(${Math.cos(a)*r}px,${Math.sin(a)*r}px)`;
   });
   el.querySelectorAll('.clock-tick').forEach((tick,i)=>{
-    const a=(i/12)*Math.PI*2;
-    tick.style.transform=`translate(-50%,-50%) translate(${Math.cos(a)*r*.96}px,${Math.sin(a)*r*.96}px) rotate(${i*30}deg)`;
+    const a=(i/60)*Math.PI*2-Math.PI/2;
+    tick.style.transform=`translate(-50%,-50%) translate(${Math.cos(a)*r*.96}px,${Math.sin(a)*r*.96}px) rotate(${i*6}deg)`;
   });
 }
 
 function updateClock(t){
   const el=L.querySelector('.line.active');
   if(!el||!el.classList.contains('scene-clock'))return;
-  const sec=((t%60)+60)%60;
-  const minute=(t%3600)/60;
-  const hour=(t%43200)/3600;
-  // Freeze hour/minute hands. The second hand is intentionally much faster
-  // for this kinetic lyric scene.
-  const secondDeg=(t-31.70)*120;
-  const minuteDeg=0;
-  const hourDeg=0;
+  const idx=Number(el.dataset.index);
+  const startTime=lines[idx]?.start ?? t;
+  const elapsed=Math.max(0,t-startTime);
+  // Real clock geometry: 60 seconds per revolution, 60 minutes per hour,
+  // and the hour hand advances continuously with the minutes.
+  const secondDeg=elapsed*6;
+  const minuteDeg=elapsed*0.1;
+  const hourDeg=elapsed*(30/3600);
   const second=el.querySelector('.clock-hand.second');
   const minuteH=el.querySelector('.clock-hand.minute');
   const hourH=el.querySelector('.clock-hand.hour');
@@ -1836,6 +1827,7 @@ function activate(i){
   const old=L.querySelector('.line.active');
   if(old){
     old.classList.remove('active');
+    if(old.classList.contains('scene-clock')) old.classList.add('clock-exit');
     old.classList.add('out');
     setTimeout(()=>old.remove(),700);
   }
@@ -1953,9 +1945,6 @@ function activate(i){
       ['v',false,16,2,.38,3.8,.12,10,12],['v',true,29,3,.52,3.2,.30,15,15],
       ['v',false,43,1,.66,2.8,.46,7,11],['v',true,57,2,.32,4.0,.64,18,16],
       ['v',false,71,3,.50,3.5,.82,12,12],['v',true,84,1,.44,4.2,.96,9,18],
-      ['d',false,24,2,.40,3.7,.06,10,14],['d',true,37,3,.28,4.3,.24,17,16],
-      ['d',false,50,2,.58,3.1,.42,8,12],['d',true,63,1,.46,3.9,.60,13,17],
-      ['d',false,76,4,.24,4.5,.78,21,19],['d',true,88,2,.52,3.3,.92,11,13]
     ];
     strokeSpecs.forEach(([type,reverse,pos,thick,op,dur,delay,dash,gap])=>{
       const stroke=document.createElement('div');
@@ -1978,9 +1967,8 @@ function activate(i){
     el.querySelectorAll('.word[data-word-index="6"], .word[data-word-index="7"], .word[data-word-index="8"]').forEach(w=>w.classList.add('scratch-word'));
   }
   if(i===3) el.classList.add('gusto-shiver');
-  if(i===6) el.classList.add('cursive-clock-lyric');
-  if(i===6) el.classList.add('clock-shake');
-  if(i===7) el.classList.add('standup-exit');
+  if(i===6) el.classList.add('cursive-clock-lyric','clock-whimsy-time');
+  if(i===7) el.classList.add('cursive-clock-lyric','clock-whimsy-skill');
   SEC.textContent=item.section;
   requestAnimationFrame(()=>{el.classList.add('active'); if(scene==='clock') layoutClock();});
 
