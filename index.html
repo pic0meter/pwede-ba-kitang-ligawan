@@ -2233,7 +2233,7 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   position:absolute;
   left:var(--x);
   top:var(--y);
-  width:clamp(42px,6.2vw,82px);
+  width:clamp(120px,24vw,250px);
   height:auto;
   display:block;
   opacity:0;
@@ -2281,7 +2281,7 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 
 @media(max-width:600px){
   .line.scene-footsteps .footstep-img{
-    width:clamp(34px,11vw,58px);
+    width:clamp(92px,28vw,170px);
   }
 }
 </style>
@@ -2812,23 +2812,21 @@ function activate(i){
     route.setAttribute('aria-hidden','true');
 
     // Use the user's actual left/right footprint PNGs and lay them down
-    // one at a time along a natural walking path from left to right.
+    // as three large walking pairs moving from the bottom of the screen upward.
+    // The PNGs already have the correct upright orientation, so no rotation is applied.
     const leftFoot="Left.png";
     const rightFoot="Right.png";
-    const steps=18;
+    const steps=6; // three pairs
 
     for(let j=0;j<steps;j++){
       const p=j/(steps-1);
       const isLeft=(j%2===0);
 
-      // Build a real-looking diagonal walking trail: the person travels
-      // from the lower-left toward the upper-right, while each foot lands
-      // on alternating sides of the walking line.
-      const x=7 + p*86;
-      const centerY=82 - p*57;
-      const lateral=isLeft ? -4.8 : 4.8;
-      const gentleCurve=Math.sin(p*Math.PI)*2.2;
-      const y=centerY + lateral + gentleCurve;
+      // Vertical walking path: three pairs span almost the full screen height.
+      // A small alternating x offset keeps the two feet readable as left/right
+      // steps without changing their orientation.
+      const x=isLeft ? 43 : 57;
+      const y=94 - p*88;
 
       const foot=document.createElement('img');
       foot.className='footstep-img';
@@ -2836,19 +2834,12 @@ function activate(i){
       foot.alt='';
       foot.draggable=false;
 
-      // The uploaded PNGs have opposite native orientations.  These rotations
-      // turn both feet toward the upper-right, matching a left-to-right walk
-      // that is also moving upward across the screen.
-      const baseRotation=isLeft ? 30 : 85;
-      const pathAngle=-34 + Math.cos(p*Math.PI)*2.5;
-      const strideAngle=baseRotation + (pathAngle + 34) + (isLeft ? 47 : 2);
-
       foot.style.setProperty('--x',x+'%');
       foot.style.setProperty('--y',y+'%');
-      foot.style.setProperty('--rot',strideAngle.toFixed(2)+'deg');
+      foot.style.setProperty('--rot','0deg');
 
-      // One step lands after another, like an actual walking sequence.
-      foot.style.setProperty('--delay',(j*0.17).toFixed(2)+'s');
+      // One footprint appears after another, progressing upward.
+      foot.style.setProperty('--delay',(j*0.28).toFixed(2)+'s');
       route.appendChild(foot);
     }
 
