@@ -3052,7 +3052,7 @@ function updateMotion(t){
       if(!w.classList.contains('visible')){
         w.style.opacity='0';
         if(i===words.length-1) w.style.transform='translate(-50%,-50%)';
-        else w.style.transform='translate3d(-50%,-50%,0) scale(.82)';
+        else w.style.transform='translate3d(-50%,-50%,0) scale(.92)';
         return;
       }
       if(i===words.length-1){
@@ -3067,13 +3067,19 @@ function updateMotion(t){
         w.style.zIndex='8';
         return;
       }
-      const phase=t*3.15+i*1.45;
+      // Smooth appearance: fade/settle into the orbit instead of popping in.
+      const sinceCue=Math.max(0,t-(item.cues?.[i] ?? item.start));
+      const fadeP=Math.min(1,sinceCue/.20);
+      const fadeE=fadeP*fadeP*(3-2*fadeP);
+
+      // Much faster orbit for the first four words only.
+      const phase=t*6.2+i*1.45;
       const radius=14+i*5;
       const x=Math.cos(phase*(i%2?0.92:1.08))*radius;
       const y=Math.sin(phase*(i%2?0.92:1.08))*radius*.72;
       const rot=Math.sin(phase)*2.8;
-      const scale=1.015+.018*Math.sin(phase*1.7);
-      w.style.opacity='1';
+      const scale=(.92+.08*fadeE)*(1+.018*Math.sin(phase*1.7));
+      w.style.opacity=String(fadeE);
       w.style.transform=`translate3d(calc(-50% + ${x}px),calc(-50% + ${y}px),0) rotate(${rot}deg) scale(${scale})`;
       w.style.translate='0 0';
       w.style.rotate='0deg';
