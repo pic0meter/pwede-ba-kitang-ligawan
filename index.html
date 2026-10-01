@@ -227,12 +227,12 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   will-change:transform;
 }
 @keyframes ligawanJitter{
-  0%{transform:translate(0,0) rotate(-1deg) scale(1.06)}
-  19%{transform:translate(-2px,1px) rotate(1.5deg) scale(1.06)}
-  37%{transform:translate(3px,-2px) rotate(-2.5deg) scale(1.06)}
-  54%{transform:translate(-1px,-3px) rotate(2deg) scale(1.06)}
-  72%{transform:translate(2px,2px) rotate(-1deg) scale(1.06)}
-  100%{transform:translate(0,0) rotate(1deg) scale(1.06)}
+  0%{transform:translate(0,0) rotate(-1deg) scale(1)}
+  19%{transform:translate(-2px,1px) rotate(1.5deg) scale(1)}
+  37%{transform:translate(3px,-2px) rotate(-2.5deg) scale(1)}
+  54%{transform:translate(-1px,-3px) rotate(2deg) scale(1)}
+  72%{transform:translate(2px,2px) rotate(-1deg) scale(1)}
+  100%{transform:translate(0,0) rotate(1deg) scale(1)}
 }
 
 /* The old line doesn't simply disappear: the question marks collapse inward. */
@@ -1058,6 +1058,55 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   100%{opacity:.15;transform:translate(-50%,-50%) translate(calc(var(--echo-x) + 3px),calc(var(--echo-y) - 4px)) scale(calc(var(--echo-scale) * 1.025)) rotate(calc(var(--echo-rot) + 1deg))}
 }
 .line.word-echo-scene.out .word::before{animation:wordEchoOut .38s ease-in forwards!important}
+
+/* More energetic bob for the 1:03 chorus line. */
+.line.word-echo-scene.active{
+  animation:wordEchoSceneBob 1.15s cubic-bezier(.36,.07,.19,.97) infinite alternate !important;
+}
+@keyframes wordEchoSceneBob{
+  0%{transform:translate3d(-7px,5px,0) rotate(-.55deg)}
+  22%{transform:translate3d(5px,-8px,0) rotate(.7deg)}
+  47%{transform:translate3d(-4px,7px,0) rotate(-.8deg)}
+  71%{transform:translate3d(7px,-5px,0) rotate(.55deg)}
+  100%{transform:translate3d(-5px,4px,0) rotate(-.45deg)}
+}
+
+/* The same word-echo treatment is used for "Oo o hindi?". */
+.line.scene-question.word-echo-scene .word::before{
+  filter:blur(1px);
+}
+
+/* After "hindi", the entire question gets one grand elastic pulse. */
+.line.scene-question.grand-question-pulse{
+  animation:grandQuestionPulse 1.12s cubic-bezier(.16,.9,.2,1) both !important;
+  z-index:8;
+}
+.line.scene-question.grand-question-pulse::before{
+  content:"";
+  position:absolute;
+  left:50%; top:50%;
+  width:34%; height:34%;
+  border:2px solid #ffb38a99;
+  border-radius:50%;
+  pointer-events:none;
+  transform:translate(-50%,-50%) scale(.35);
+  opacity:0;
+  animation:grandQuestionRing 1.12s cubic-bezier(.12,.8,.2,1) both;
+}
+@keyframes grandQuestionPulse{
+  0%{transform:translate3d(-3px,2px,0) scale(1);filter:none}
+  16%{transform:translate3d(2px,-5px,0) scale(1.08) rotate(-1deg);filter:drop-shadow(0 0 18px #ffb38a55)}
+  34%{transform:translate3d(-2px,3px,0) scale(.96) rotate(1deg)}
+  55%{transform:translate3d(3px,-2px,0) scale(1.16) rotate(-.7deg);filter:drop-shadow(0 0 34px #ffb38a88)}
+  76%{transform:translate3d(-2px,1px,0) scale(1.06) rotate(.45deg)}
+  100%{transform:translate3d(0,0,0) scale(1) rotate(0);filter:none}
+}
+@keyframes grandQuestionRing{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.35)}
+  18%{opacity:.9}
+  58%{opacity:.42;transform:translate(-50%,-50%) scale(2.25)}
+  100%{opacity:0;transform:translate(-50%,-50%) scale(3.7)}
+}
 @keyframes wordEchoOut{
   from{opacity:.14;transform:translate(-50%,-50%) translate(var(--echo-x),var(--echo-y)) scale(var(--echo-scale)) rotate(var(--echo-rot))}
   to{opacity:0;transform:translate(-50%,-50%) translate(calc(var(--echo-x) + var(--exit-x,18px)),calc(var(--echo-y) - 12px)) scale(.72) rotate(calc(var(--echo-rot) + 8deg))}
@@ -2379,8 +2428,8 @@ function activate(i){
       laserHeart.dataset.pathLength=String(length);
     }
   }
-  /* 1:03 chorus: word-by-word background echoes for "Pwede ba kitang ligawan?" */
-  if(i===8){
+  /* Word-by-word background echoes for the 1:03 "Pwede..." line and the following "Oo o hindi?" line. */
+  if(i===8 || i===9){
     el.classList.add('word-echo-scene');
     el.querySelectorAll('.word').forEach((w,idx)=>{
       w.setAttribute('data-echo',w.textContent.trim());
@@ -2648,6 +2697,17 @@ function updateMotion(t){
     w.style.rotate=`${idleR}deg`;
     w.style.scale=`${1+0.012*Math.sin(t*5.4+i)}`;
   });
+
+  // Make the 1:03 "Pwede..." line physically bob more than the normal idle motion.
+  if(current===8){
+    words.forEach((w,i)=>{
+      if(!w.classList.contains('visible'))return;
+      const phase=t*7.2+i*.85;
+      w.style.translate=`${Math.sin(phase)*4.2}px ${Math.cos(phase*1.08)*5.5}px`;
+      w.style.rotate=`${Math.sin(phase*.92)*2.4}deg`;
+      w.style.scale=`${1+0.025*Math.sin(phase*1.15)}`;
+    });
+  }
 }
 
 function pulse(t){
@@ -2787,6 +2847,20 @@ function updateLaserHeart(t){
     setTimeout(spawnBanatEcho,900);
   }
   if(!inBanatEcho) window._banatEchoStarted=false;
+
+  // Grand pulse immediately after "hindi" is spoken on the question line.
+  if(current===9){
+    const qLine=L.querySelector('.line.active.scene-question');
+    const pulseStart=69.38;
+    const pulseEnd=70.58;
+    if(qLine && t>=pulseStart && t<pulseEnd){
+      if(!qLine.classList.contains('grand-question-pulse')){
+        qLine.classList.add('grand-question-pulse');
+      }
+    }else if(qLine && t>=pulseEnd){
+      qLine.classList.remove('grand-question-pulse');
+    }
+  }
 }
 
 
