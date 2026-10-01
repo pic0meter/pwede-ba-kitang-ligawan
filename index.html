@@ -1795,9 +1795,9 @@ function layoutClock(){
 function updateClock(t){
   const el=L.querySelector('.line.active');
   if(!el||!el.classList.contains('scene-clock'))return;
-  const idx=Number(el.dataset.index);
-  const originIdx=el.dataset.clockOriginIndex!=null ? Number(el.dataset.clockOriginIndex) : idx;
-  const startTime=lines[originIdx]?.start ?? t;
+  // Both clock lyrics share ONE visual clock timeline.
+  // Never derive the clock phase from the second lyric's start time.
+  const startTime=lines[6].start;
   const elapsed=Math.max(0,t-startTime);
   // Real clock geometry: 60 seconds per revolution, 60 minutes per hour,
   // and the hour hand advances continuously with the minutes.
@@ -1856,19 +1856,21 @@ function activate(i){
   // ONE persistent clock scene for the two consecutive lyrics.
   // Do not remove/recreate the line, face, ticks, numbers, or hands.
   // Only replace the lyric layer; the clock timeline keeps running from line 6.
-  if(old && old.classList.contains('scene-clock') && current===6 && i===7){
+  if(old && old.classList.contains('scene-clock') && (current===6 || current===7) && i===7){
     const item=lines[i];
     const lyric=old.querySelector('.clock-lyric');
     if(lyric){
+      // ONLY replace the lyric contents. The clock DOM, its animations,
+      // and its hand phase remain untouched.
       lyric.innerHTML=buildWords(item.text);
       lyric.classList.add('clock-whimsy-skill');
       lyric.classList.remove('clock-whimsy-time');
     }
-    // Keep the original clock origin. This is deliberately NOT changed to 7.
-    old.dataset.index='7';
+    // Keep the host line permanently anchored to the first clock lyric.
+    // The audio lyric index may advance to 7, but the visual clock never does.
+    old.dataset.index='6';
     old.dataset.clockOriginIndex='6';
     old.classList.remove('out','clock-exit');
-    old.classList.add('active');
     current=i;
     SEC.textContent=item.section;
     return;
