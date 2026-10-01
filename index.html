@@ -1126,8 +1126,8 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   animation:grandQuestionRing2 1.05s cubic-bezier(.1,.85,.2,1) .08s both;
 }
 @keyframes grandQuestionPulse{
-  0%{transform:translate3d(-2px,1px,0) scale(1);filter:none}
-  12%{transform:translate3d(3px,-5px,0) scale(1.12) rotate(-1.2deg);filter:drop-shadow(0 0 22px #ffb38a88)}
+  0%{transform:translate3d(0,0,0) scale(1.18) rotate(0);filter:drop-shadow(0 0 30px #ffb38aaa)}
+  9%{transform:translate3d(3px,-5px,0) scale(1.08) rotate(-1.2deg);filter:drop-shadow(0 0 22px #ffb38a88)}
   27%{transform:translate3d(-4px,3px,0) scale(.94) rotate(1.4deg)}
   46%{transform:translate3d(4px,-3px,0) scale(1.19) rotate(-1deg);filter:drop-shadow(0 0 42px #ffb38aaa)}
   68%{transform:translate3d(-3px,2px,0) scale(1.07) rotate(.6deg);filter:drop-shadow(0 0 24px #ffb38a66)}
@@ -1135,22 +1135,22 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   100%{transform:translate3d(0,0,0) scale(1) rotate(0);filter:none}
 }
 @keyframes grandQuestionWordPulse{
-  0%{filter:none;text-shadow:none}
-  12%{filter:drop-shadow(0 0 10px #ffb38a88);text-shadow:0 0 18px #ffb38a88}
+  0%{filter:drop-shadow(0 0 22px #ffb38aaa);text-shadow:0 0 28px #ffb38aaa}
+  9%{filter:drop-shadow(0 0 10px #ffb38a88);text-shadow:0 0 18px #ffb38a88}
   28%{filter:none}
   46%{filter:drop-shadow(0 0 24px #ffb38aaa);text-shadow:0 0 32px #ffb38aaa}
   68%{filter:drop-shadow(0 0 12px #ffb38a66);text-shadow:0 0 18px #ffb38a66}
   100%{filter:none;text-shadow:none}
 }
 @keyframes grandQuestionRing{
-  0%{opacity:0;transform:translate(-50%,-50%) scale(.25)}
-  10%{opacity:1}
+  0%{opacity:1;transform:translate(-50%,-50%) scale(.65)}
+  10%{opacity:.95}
   42%{opacity:.72;transform:translate(-50%,-50%) scale(1.65)}
   100%{opacity:0;transform:translate(-50%,-50%) scale(4.8)}
 }
 @keyframes grandQuestionRing2{
-  0%{opacity:0;transform:translate(-50%,-50%) scale(.2)}
-  18%{opacity:.75}
+  0%{opacity:.8;transform:translate(-50%,-50%) scale(.45)}
+  18%{opacity:.7}
   55%{opacity:.35;transform:translate(-50%,-50%) scale(2.3)}
   100%{opacity:0;transform:translate(-50%,-50%) scale(4.2)}
 }
@@ -2898,8 +2898,8 @@ function updateLaserHeart(t){
   // Grand pulse immediately after "hindi" is spoken on the question line.
   if(current===9){
     const qLine=L.querySelector('.line.active.scene-question');
-    const pulseStart=69.48;
-    const pulseEnd=70.53;
+    const pulseStart=69.36;
+    const pulseEnd=70.41;
     if(qLine && t>=pulseStart && t<pulseEnd){
       if(!qLine.classList.contains('grand-question-pulse')){
         qLine.classList.add('grand-question-pulse');
