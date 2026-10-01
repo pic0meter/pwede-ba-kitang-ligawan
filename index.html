@@ -2736,14 +2736,14 @@ function updateMotion(t){
         // Five pulses, each larger. The final pulse becomes the transition.
         const elapsed=t-cue;
         const pulseLength=.46;
-        const pulseCount=5;
+        const pulseCount=3;
         const pulseTotal=pulseLength*pulseCount;
 
         if(elapsed<pulseTotal){
           const n=Math.min(pulseCount-1,Math.floor(elapsed/pulseLength));
           const phase=(elapsed%pulseLength)/pulseLength;
           const wave=Math.sin(phase*Math.PI);
-          const base=[1,1.14,1.30,1.50,1.74][n];
+          const base=[1,1.14,1.30][n];
           const scale=base+wave*(.06+n*.012);
           w.style.opacity='1';
           w.style.filter=`drop-shadow(0 0 ${12+n*8+wave*10}px #ffb38a88)`;
