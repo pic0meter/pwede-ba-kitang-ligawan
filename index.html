@@ -2990,11 +2990,16 @@ function spawnPusoBackground(){const f=document.querySelector('#heartField');if(
 
 let pusoBurstActive=false;
 let moBurstActive=false;
+let pusoSecondBurstActive=false;
+let moSecondBurstActive=false;
 
 function clearPusoHearts(){
   const field=document.querySelector('#heartField');
   if(field) field.querySelectorAll('.puso-heart').forEach(h=>h.remove());
   pusoBurstActive=false;
+  moBurstActive=false;
+  pusoSecondBurstActive=false;
+  moSecondBurstActive=false;
 }
 function clearMoHearts(){
   const field=document.querySelector('#heartField');
@@ -3040,12 +3045,27 @@ function spawnMoHearts(){
   moBurstActive=true;
   spawnHeartPop(7,'mo-heart-pop',26);
 }
+
+function spawnPusoSecondHearts(){
+  if(pusoSecondBurstActive) return;
+  pusoSecondBurstActive=true;
+  spawnHeartPop(6,'puso-heart-pop',30);
+}
+
+function spawnMoSecondHearts(){
+  if(moSecondBurstActive) return;
+  moSecondBurstActive=true;
+  spawnHeartPop(7,'mo-heart-pop',30);
+}
 let banatEchoActive=false;
 
 function clearPusoHearts(){
   const field=document.querySelector('#heartField');
   if(field) field.querySelectorAll('.puso-heart').forEach(h=>h.remove());
   pusoBurstActive=false;
+  moBurstActive=false;
+  pusoSecondBurstActive=false;
+  moSecondBurstActive=false;
 }
 
 function spawnPusoHearts(){
@@ -3163,8 +3183,11 @@ function render(){
     spawnPusoBackground();
     // The "puso" hearts stay visible until the "mo?" cue.
     if(t<12.430 && !pusoBurstActive) spawnPusoHearts();
-    // A second, immediate heart pop comes from "mo?" itself.
+    // The first heart pop follows the original "puso" cue, then "mo?" gets its own pop.
     if(t>=12.430 && !moBurstActive) spawnMoHearts();
+    // Second wave: a renewed "puso" burst at 00:14, followed by another "mo?" burst.
+    if(t>=14.000 && !pusoSecondBurstActive) spawnPusoSecondHearts();
+    if(t>=14.700 && !moSecondBurstActive) spawnMoSecondHearts();
   }else{
     if(pusoBurstActive) clearPusoHearts();
     if(moBurstActive) clearMoHearts();
