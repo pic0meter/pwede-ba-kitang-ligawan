@@ -7,7 +7,7 @@
 <meta name="theme-color" content="#0d0b0a">
 <title>Pwede Ba Kitang Ligawan — Kinetic Lyrics</title>
 <style>
-@import url("https://fonts.googleapis.com/css2?family=Coiny&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Coiny&family=Lilita+One&display=swap");
 :root{
   --bg:#0d0b0a;--ink:#f8f0e6;--muted:#b6a99c;--accent:#ffb38a;
   --x:50%;--y:50%;--mx:0px;--my:0px;
@@ -1241,8 +1241,8 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 @keyframes ooForeground{0%,100%{transform:scale(1.45) rotate(-1deg)}50%{transform:scale(1.62) rotate(1deg)}}
 .gusto-shiver .confetti,.gusto-shiver .particle,.gusto-shiver .spark,.gusto-shiver .trail{display:none!important}
 /* GUSTO lyric — Coiny typography, with decorative/confetti pieces removed. */
-.line.gusto-shiver{font-family:"Coiny",cursive !important}
-.line.gusto-shiver .word{font-family:"Coiny",cursive !important}
+.line.gusto-shiver{font-family:"Lilita One",cursive !important}
+.line.gusto-shiver .word{font-family:"Lilita One",cursive !important}
 .line.gusto-shiver .confetti,
 .line.gusto-shiver .particle,
 .line.gusto-shiver .spark,
@@ -3224,7 +3224,7 @@ function render(){
   // Keep the GUSTO line completely clean of the old square/confetti decoration.
   APP.classList.toggle('gusto-clean', i===3);
   if(i===3){
-    ['heartField','backgroundBanat','echoes','siteSparkField','ooExplosion'].forEach(id=>{
+    ['heartField','backgroundBanat','echoes','siteSparkField'].forEach(id=>{
       const field=document.getElementById(id);
       if(field) field.replaceChildren();
     });
@@ -3249,9 +3249,17 @@ function render(){
   }
 
 
-  // The GUSTO lyric keeps only the foreground 'oo' treatment; the old
-  // full-screen Oo/confetti takeover is intentionally disabled.
-  if(ooTakeoverActive||ooHeartBurstActive) clearOoTakeover();
+  // GUSTO's final 'oo' gets the full-screen Oo burst again at its cue.
+  if(i===3 && t>=36.42 && t<39.25){
+    if(!ooTakeoverActive && !ooHeartBurstActive){
+      spawnOoTakeover();
+      setTimeout(()=>{
+        if(current===3 && A.currentTime>=36.42 && A.currentTime<39.25) explodeOoIntoHearts();
+      },520);
+    }
+  }else if(i!==3 && (ooTakeoverActive||ooHeartBurstActive)){
+    clearOoTakeover();
+  }
 
   // "banat na 'to" exists ONLY from 00:21.000 through 00:23.499.
   // Clear first so seeking backward/forward can never leave stale echoes.
