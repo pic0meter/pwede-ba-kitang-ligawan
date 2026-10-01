@@ -2206,7 +2206,7 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 </style>
 
 <style id="pupuntahan-scene">
-/* 01:11 — keep this close to the original verse typography. */
+/* 01:11 — word-by-word entrance/exit scene. No orbit. */
 .line.pupuntahan-scene{
   position:relative;
   width:min(94vw,980px);
@@ -2215,15 +2215,11 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   overflow:visible;
   text-align:center;
 }
-
-/* Final musical energy is handled per-word below. The scene container itself
-   must stay still so the "pupuntahan" anchor never changes position. */
 .line.pupuntahan-scene.active{
   animation:none !important;
+  transform:none !important;
+  transition:none !important;
 }
-
-/* This scene owns every word transform. Do not let the global idle/chorus
-   animations, nth-child sizing, or the base word animation touch it. */
 .line.pupuntahan-scene .word,
 .line.pupuntahan-scene .word.visible,
 .line.pupuntahan-scene .word.current{
@@ -2237,18 +2233,14 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   font-weight:700 !important;
   letter-spacing:-.045em !important;
   line-height:1.05 !important;
-  transform-origin:center;
+  transform-origin:center center;
   opacity:0;
-  filter:none;
+  filter:none !important;
   animation:none !important;
   transition:none !important;
   will-change:transform,opacity;
 }
-.line.pupuntahan-scene .word.visible{
-  opacity:1;
-}
-
-/* The orbiting words get a soft echo of the WORD THAT FOLLOWS them. */
+/* Larger same-word echo behind every lyric word. */
 .line.pupuntahan-scene .word::before{
   content:attr(data-pupuntahan-echo);
   position:absolute;
@@ -2258,52 +2250,22 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   white-space:nowrap;
   font:inherit;
   color:#ffb38a;
-  opacity:.14;
-  filter:blur(2px);
+  font-size:1.22em;
+  font-weight:700;
+  opacity:0;
+  filter:blur(2.5px);
   pointer-events:none;
-  transform:translate(-50%,-50%) translate(var(--echo-x,0px),var(--echo-y,0px)) scale(1.10) rotate(var(--echo-r,0deg));
+  transform:translate(-50%,-50%) scale(1.12);
   transform-origin:center;
 }
-.line.pupuntahan-scene .word.visible:not(:last-child)::before{
-  animation:pupuntahanEcho 1.08s ease-in-out infinite alternate !important;
+.line.pupuntahan-scene .word.pupuntahan-show::before{
+  animation:pupuntahanEcho 0.62s ease-out forwards !important;
 }
 @keyframes pupuntahanEcho{
-  0%{opacity:.06;transform:translate(-50%,-50%) translate(-4px,2px) scale(1.05) rotate(-1.5deg)}
-  100%{opacity:.16;transform:translate(-50%,-50%) translate(6px,-3px) scale(1.16) rotate(1.5deg)}
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.98)}
+  35%{opacity:.18;transform:translate(-50%,-50%) scale(1.16)}
+  100%{opacity:0;transform:translate(-50%,-50%) scale(1.28)}
 }
-
-/* pupuntahan is the anchor: its position is fixed; only scale may pulse. */
-.line.pupuntahan-scene .pupuntahan-anchor{
-  position:absolute;
-  left:50%;
-  top:50%;
-  width:0;
-  height:0;
-  margin:0;
-  padding:0;
-  transform:none !important;
-  translate:none !important;
-  rotate:none !important;
-  scale:1 !important;
-  animation:none !important;
-}
-.line.pupuntahan-scene .pupuntahan-anchor .word:last-child,
-.line.pupuntahan-scene .pupuntahan-anchor .word:last-child.visible,
-.line.pupuntahan-scene .pupuntahan-anchor .word:last-child.current{
-  animation:none !important;
-  font-size:1.08em !important;
-  transform:translate(-50%,-50%) !important;
-  translate:0 0 !important;
-  rotate:0deg !important;
-  filter:none !important;
-  text-shadow:none;
-  transform-origin:center center;
-}
-.line.pupuntahan-scene .pupuntahan-anchor .word:last-child.current{
-  color:var(--accent);
-  text-shadow:0 0 20px #ffb38a55;
-}
-
 @media(max-width:600px){
   .line.pupuntahan-scene .word,
   .line.pupuntahan-scene .word.visible,
@@ -2747,23 +2709,9 @@ function activate(i){
   if(i===10){
     el.classList.add('pupuntahan-scene');
     const pupWords=[...el.querySelectorAll('.word')];
-    pupWords.forEach((w,idx)=>{
+    pupWords.forEach(w=>{
       w.setAttribute('data-pupuntahan-echo', w.textContent.trim());
-      w.style.setProperty('--p-orbit',(idx%2===0?'-1':'1'));
-      w.style.setProperty('--p-delay',(idx*0.10)+'s');
-      w.style.setProperty('--echo-x',(idx%2===0?'-5px':'5px'));
-      w.style.setProperty('--echo-y',((idx%3)-1)*3+'px');
-      w.style.setProperty('--echo-r',(idx%2===0?'-1.5':'1.5')+'deg');
     });
-    // The final word gets its own fixed anchor. Its position is never driven
-    // by the lyric motion loop; only its child scale is allowed to pulse.
-    const anchorWord=pupWords[pupWords.length-1];
-    if(anchorWord){
-      const anchor=document.createElement('span');
-      anchor.className='pupuntahan-anchor';
-      anchorWord.parentNode.insertBefore(anchor,anchorWord);
-      anchor.appendChild(anchorWord);
-    }
   }
 
   if(i===5){
@@ -3045,47 +2993,47 @@ function updateMotion(t){
   });
 
   /* 01:11 — "Ikaw ay lagi kong pupuntahan"
-     Dedicated motion only. The first four words orbit gently with their own
-     trailing echo. "pupuntahan" is deliberately locked after it appears. */
+     New scene: each word owns the center one at a time. It fades/bobs in,
+     stays energetic for its cue window, then fades/bobs out as the next word appears. */
   if(scene==='pupuntahan'){
     words.forEach((w,i)=>{
-      if(!w.classList.contains('visible')){
-        w.style.opacity='0';
-        if(i===words.length-1) w.style.transform='translate(-50%,-50%)';
-        else w.style.transform='translate3d(-50%,-50%,0) scale(.92)';
-        return;
-      }
-      if(i===words.length-1){
-        // HARD ANCHOR: this word never receives X/Y/rotation motion.
-        // The anchor element holds its position; the word only scales.
-        w.style.opacity='1';
-        w.style.transform='translate(-50%,-50%)';
-        w.style.translate='0 0';
-        w.style.rotate='0deg';
-        w.style.scale=String(1.025+.018*Math.sin(t*5.2+.7));
-        w.style.filter='none';
-        w.style.zIndex='8';
-        return;
-      }
-      // Smooth appearance: fade/settle into the orbit instead of popping in.
-      const sinceCue=Math.max(0,t-(item.cues?.[i] ?? item.start));
-      const fadeP=Math.min(1,sinceCue/.20);
-      const fadeE=fadeP*fadeP*(3-2*fadeP);
+      const cue=item.cues?.[i] ?? item.start;
+      const nextCue=item.cues?.[i+1] ?? item.end;
+      const fadeIn=.14;
+      const fadeOut=.16;
+      const visibleWindow=t>=cue && t<nextCue;
 
-      // Much faster orbit for the first four words only.
-      const phase=t*15+i*1.45;
-      const radius=20+i*7;
-      const x=Math.cos(phase)*radius;
-      const y=Math.sin(phase)*radius*.78;
-      const rot=Math.sin(phase)*3.5;
-      const scale=(.92+.08*fadeE)*(1+.018*Math.sin(phase*1.7));
-      w.style.opacity=String(fadeE);
-      w.style.transform=`translate3d(calc(-50% + ${x}px),calc(-50% + ${y}px),0) rotate(${rot}deg) scale(${scale})`;
+      if(t<cue || t>=nextCue){
+        w.classList.remove('pupuntahan-show');
+        w.style.opacity='0';
+        w.style.transform='translate3d(-50%,-50%,0) scale(.90)';
+        return;
+      }
+
+      const since=t-cue;
+      const until=nextCue-t;
+      const inP=Math.min(1,since/fadeIn);
+      const outP=Math.min(1,until/fadeOut);
+      const inE=inP*inP*(3-2*inP);
+      const outE=outP*outP*(3-2*outP);
+      const alpha=Math.min(inE,outE);
+
+      // Fast, energetic bob without any orbital travel.
+      const bobSpeed=8.8+i*.35;
+      const phase=t*bobSpeed+i*1.15;
+      const bobX=Math.sin(phase)*4.5;
+      const bobY=Math.cos(phase*1.17)*6.5;
+      const rot=Math.sin(phase*.83)*2.2;
+      const scale=(.92+.08*inE)*(1+.035*Math.sin(phase*1.35));
+
+      w.style.opacity=String(alpha);
+      w.style.transform=`translate3d(calc(-50% + ${bobX}px),calc(-50% + ${bobY}px),0) rotate(${rot}deg) scale(${scale})`;
       w.style.translate='0 0';
       w.style.rotate='0deg';
       w.style.scale='1';
       w.style.filter='none';
       w.style.zIndex='5';
+      if(!w.classList.contains('pupuntahan-show')) w.classList.add('pupuntahan-show');
     });
   }
 
