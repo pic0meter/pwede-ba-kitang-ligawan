@@ -684,7 +684,9 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   100%{opacity:0;transform:scale(1.08)}
 }
 
-/* USER OVERRIDE — "Kahit 'di maganda ang mga linyahan": keep ONLY the shake. */
+/* FIRST-CHORUS — horizontal line behind the stacked words.
+   It draws once from left to right when the lyric enters, while the words
+   remain fully above it. */
 .line.first-linyahan-vertical .word.visible{
   animation:verticalWordShake .16s steps(2,end) infinite!important;
   opacity:1!important;
@@ -700,14 +702,44 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   color:var(--ink)!important;
   text-shadow:none!important;
 }
+
+.first-linyahan-horizontal-line{
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:112%;
+  height:2px;
+  z-index:1;
+  pointer-events:none;
+  background:linear-gradient(90deg,transparent 0%,#ffb38a 7%,#ffb38a 93%,transparent 100%);
+  box-shadow:0 0 9px #ffb38a66;
+  transform:translateX(-50%) scaleX(0);
+  transform-origin:left center;
+  opacity:0;
+}
+.first-linyahan-vertical.active .first-linyahan-horizontal-line{
+  animation:firstLinyahanLineIn .72s cubic-bezier(.18,.8,.18,1) .02s forwards;
+}
+@keyframes firstLinyahanLineIn{
+  0%{opacity:0;transform:translateX(-50%) scaleX(0)}
+  8%{opacity:.95}
+  72%{opacity:.9;transform:translateX(-50%) scaleX(1)}
+  100%{opacity:.72;transform:translateX(-50%) scaleX(1)}
+}
+
 .line.first-linyahan-vertical.out{
   animation:none!important;
-  opacity:1!important;
-  transform:none!important;
-  filter:none!important;
 }
-.first-linyahan-vertical .linyahan-dash-field,
-.first-linyahan-vertical.linyahan-hit .linyahan-dash-field{
+.line.first-linyahan-vertical.out .first-linyahan-horizontal-line{
+  animation:firstLinyahanLineOut .28s ease-in forwards;
+}
+@keyframes firstLinyahanLineOut{
+  from{opacity:.72;transform:translateX(-50%) scaleX(1)}
+  to{opacity:0;transform:translateX(-50%) scaleX(1)}
+}
+
+/* Keep the older dashed-line machinery inactive for this treatment. */
+.first-linyahan-vertical .linyahan-dash-field{
   display:none!important;
 }
 
@@ -1480,32 +1512,6 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   text-shadow:0 0 28px #ffb38a66 !important;
 }
 </style>
-<style>
-/* FIRST LINYAHAN — one background line travels left → right and stays on-screen. */
-.line.first-linyahan-vertical::before{
-  content:"";
-  position:absolute;
-  left:0;
-  top:50%;
-  width:55vw;
-  height:2px;
-  background:var(--accent);
-  opacity:.7;
-  z-index:0;
-  pointer-events:none;
-  transform:translateX(-100%);
-  animation:linyahanBackgroundLine 6.85s linear forwards;
-}
-@keyframes linyahanBackgroundLine{
-  0%{transform:translateX(-100%)}
-  100%{transform:translateX(45vw)}
-}
-.line.first-linyahan-vertical .word,
-.line.first-linyahan-vertical .linyahan-dash-field{
-  position:relative;
-  z-index:5;
-}
-</style>
 </head>
 <body>
 <div id="app">
@@ -1877,30 +1883,13 @@ function activate(i){
   }
   if(i===5){
     el.classList.add('first-linyahan-vertical');
-    const dashField=document.createElement('div');
-    dashField.className='linyahan-dash-field';
-    dashField.setAttribute('aria-hidden','true');
 
-    const dashStyles=[
-      ['-86vw','-44vh','-18deg','.00s','1.05s'],
-      ['92vw','-18vh','17deg','.10s','1.12s'],
-      ['-78vw','14vh','-11deg','.20s','.98s'],
-      ['86vw','34vh','13deg','.31s','1.08s'],
-      ['-72vw','-2vh','-4deg','.43s','.92s'],
-      ['78vw','-36vh','7deg','.55s','1.04s'],
-      ['-88vw','42vh','-21deg','.67s','1.00s']
-    ];
-    dashStyles.forEach(([x,y,r,delay,life])=>{
-      const d=document.createElement('span');
-      d.className='linyahan-dash';
-      d.style.setProperty('--dash-x',x);
-      d.style.setProperty('--dash-y',y);
-      d.style.setProperty('--dash-r',r);
-      d.style.setProperty('--dash-delay',delay);
-      d.style.setProperty('--dash-life',life);
-      dashField.appendChild(d);
-    });
-    el.appendChild(dashField);
+    /* One clean horizontal stroke behind the stacked lyric.
+       The CSS draws it left -> right; the words stay above it. */
+    const horizontalLine=document.createElement('div');
+    horizontalLine.className='first-linyahan-horizontal-line';
+    horizontalLine.setAttribute('aria-hidden','true');
+    el.appendChild(horizontalLine);
   }
   if(i===1){
     el.classList.add('banat-scratch');
@@ -1972,13 +1961,6 @@ function updateWords(t){
     if(visible)currentWord=i;
   });
   words.forEach((w,i)=>w.classList.toggle('current',i===currentWord));
-
-  // The first chorus "linyahan" cue is index 5 / 49.50s.
-  // Resetting the class on every non-hit frame lets the dashed sweeps replay
-  // cleanly when the user scrubs back to the word.
-  if(current===5){
-    el.classList.toggle('linyahan-hit',currentWord===5);
-  }
 
   if(current===4){
     const lw=el.querySelector('.word.ligawan-chaos');
