@@ -3073,7 +3073,7 @@ function updateMotion(t){
       const fadeE=fadeP*fadeP*(3-2*fadeP);
 
       // Much faster orbit for the first four words only.
-      const phase=t*8+i*1.45;
+      const phase=t*15+i*1.45;
       const radius=20+i*7;
       const x=Math.cos(phase)*radius;
       const y=Math.sin(phase)*radius*.78;
