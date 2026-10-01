@@ -1790,6 +1790,62 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   text-shadow:0 0 28px #ffb38a66 !important;
 }
 
+
+/* MAGALING — make the payoff word visibly bigger without breaking the centered line. */
+.line.scene-clock.playful-clock-lyric .clock-lyric .word.magaling-word{
+  font-size:1.32em !important;
+  line-height:.86 !important;
+  position:relative;
+  z-index:6;
+  color:var(--accent);
+  text-shadow:0 3px 0 #0002,0 0 28px #ffb38a55;
+  transform-origin:50% 90%;
+}
+.line.scene-clock.playful-clock-lyric .clock-lyric .word.magaling-word.visible{
+  animation:magalingPop .78s cubic-bezier(.12,1.65,.2,1) both,
+             magalingBounce 1.15s ease-in-out .82s infinite;
+  animation-delay:calc(var(--i)*.075s),calc(.82s + var(--i)*.08s);
+}
+@keyframes magalingPop{
+  0%{opacity:0;transform:translate3d(0,110px,0) rotate(-8deg) scale(.42,.62)}
+  32%{opacity:1;transform:translate3d(-8px,-18px,0) rotate(5deg) scale(1.22,.9)}
+  54%{transform:translate3d(5px,7px,0) rotate(-3deg) scale(.96,1.08)}
+  74%{transform:translate3d(-2px,-3px,0) rotate(2deg) scale(1.08,.96)}
+  100%{opacity:1;transform:none}
+}
+@keyframes magalingBounce{
+  0%,100%{transform:translate3d(0,0,0) rotate(-1deg) scale(1)}
+  25%{transform:translate3d(-3px,-8px,0) rotate(3deg) scale(1.045,.97)}
+  50%{transform:translate3d(4px,2px,0) rotate(-2deg) scale(.98,1.04)}
+  75%{transform:translate3d(-2px,-5px,0) rotate(1.5deg) scale(1.025,.985)}
+}
+
+/* SITE-WIDE WHIMSY — scattered ✦ at varied sizes, positions, and rhythms. */
+#siteSparkField{
+  position:fixed;
+  inset:0;
+  z-index:4;
+  pointer-events:none;
+  overflow:hidden;
+}
+.site-spark{
+  position:absolute;
+  left:var(--sx);
+  top:var(--sy);
+  color:var(--spark-color,#ffb38a);
+  font-family:ui-rounded,sans-serif;
+  font-size:var(--ss);
+  line-height:1;
+  opacity:var(--so);
+  text-shadow:0 0 12px #ffb38a44;
+  transform:translate3d(0,0,0) rotate(var(--sr));
+  animation:siteSparkFloat var(--sd) ease-in-out var(--sdelay) infinite;
+}
+@keyframes siteSparkFloat{
+  0%,100%{transform:translate3d(0,0,0) rotate(var(--sr)) scale(.82);opacity:var(--so)}
+  50%{transform:translate3d(var(--dx),var(--dy),0) rotate(calc(var(--sr) + 18deg)) scale(1.18);opacity:calc(var(--so) + .18)}
+}
+
 /* FINAL CLOCK ALIGNMENT GUARD — the lyric stays centered; the clock hands fill the face. */
 .line.scene-clock .clock-lyric,
 .line.scene-clock.cursive-clock-lyric .clock-lyric,
@@ -1815,7 +1871,7 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   <div class="ambient"><div class="orb o1"></div><div class="orb o2"></div></div>
   <div id="grain"></div>
   <div id="backgroundBanat" aria-hidden="true"></div>
-  <div id="heartField" aria-hidden="true"></div><div id="ooExplosion" aria-hidden="true"></div>
+  <div id="heartField" aria-hidden="true"></div><div id="ooExplosion" aria-hidden="true"></div><div id="siteSparkField" aria-hidden="true"></div>
   <div id="echoes"></div>
 <div id="top">
     <div class="title"><span class="dot"></span><span>Pwede Ba Kitang Ligawan</span></div>
@@ -1926,6 +1982,7 @@ function buildWords(text){
     const classes=['word'];
     if(accent)classes.push('accent');
     if(scratch)classes.push('scratch-word');
+    if(clean==='magaling')classes.push('magaling-word');
     if(isQuestionHindi)classes.push('deny');
     const flyX=((wordIndex%2?-1:1)*(80+((wordIndex*47)%180)))+'px';
     const flyY=((wordIndex%3-1)*(70+((wordIndex*31)%150)))+'px';
@@ -2663,6 +2720,30 @@ function spawnPusoHearts(){
   // The field is completely cleared after the burst.
   setTimeout(clearPusoHearts,1550);
 }
+
+
+function initSiteSparks(){
+  const field=document.querySelector('#siteSparkField');
+  if(!field || field.children.length) return;
+  const count=42;
+  for(let i=0;i<count;i++){
+    const star=document.createElement('span');
+    star.className='site-spark';
+    star.textContent='✦';
+    star.style.setProperty('--sx',(2+Math.random()*96)+'%');
+    star.style.setProperty('--sy',(5+Math.random()*90)+'%');
+    star.style.setProperty('--ss',(7+Math.random()*24)+'px');
+    star.style.setProperty('--so',(0.16+Math.random()*0.5).toFixed(2));
+    star.style.setProperty('--sr',(-30+Math.random()*60)+'deg');
+    star.style.setProperty('--dx',(-8+Math.random()*16)+'px');
+    star.style.setProperty('--dy',(-12+Math.random()*24)+'px');
+    star.style.setProperty('--sd',(1.8+Math.random()*3.8).toFixed(2)+'s');
+    star.style.setProperty('--sdelay',(-Math.random()*4)+'s');
+    if(i%5===0) star.style.setProperty('--spark-color','#f8f0e6');
+    field.appendChild(star);
+  }
+}
+initSiteSparks();
 
 function clearBanatEchoes(){
   const field=document.querySelector('#backgroundBanat');
