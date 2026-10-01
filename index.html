@@ -2074,6 +2074,14 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   transform-origin:50% 85%;
 }
 
+
+/* Linyahan transition beat at 00:53: quick pulse, then soft fade into the next line. */
+.line.first-linyahan-vertical.linyahan-transition-pulse{animation:linyahanTransitionPulse .34s cubic-bezier(.16,.9,.2,1) both !important;z-index:9}
+.line.first-linyahan-vertical.linyahan-transition-pulse .word{text-shadow:0 0 32px #ffb38a66}
+.line.first-linyahan-vertical.linyahan-transition-fade{animation:linyahanTransitionFade .42s cubic-bezier(.22,.72,.2,1) both !important}
+@keyframes linyahanTransitionPulse{0%{opacity:1;transform:translate3d(0,0,0) scale(1)}32%{transform:translate3d(-3px,2px,0) scale(1.045) rotate(-.35deg);filter:drop-shadow(0 0 15px #ffb38a55)}62%{transform:translate3d(3px,-3px,0) scale(1.085) rotate(.4deg);filter:drop-shadow(0 0 27px #ffb38a77)}100%{opacity:1;transform:translate3d(0,0,0) scale(1) rotate(0);filter:none}}
+@keyframes linyahanTransitionFade{0%{opacity:1;transform:translate3d(0,0,0) scale(1);filter:none}45%{opacity:.78;transform:translate3d(0,-4px,0) scale(.99);filter:blur(.35px)}100%{opacity:0;transform:translate3d(0,-12px,0) scale(.965);filter:blur(1.8px)}}
+
 </style>
 <style>
 /* Restore ONLY the spoken-word highlight for the first linyahan line.
@@ -3118,6 +3126,21 @@ function updateLaserHeart(t){
   const fadeP=clamp((t-drawEnd)/(fadeEnd-drawEnd),0,1);
   svg.style.opacity=String(1-fadeP);
 }
+
+  // 00:53 transition beat: quick pulse, then a soft fade into the next lyric.
+  if(current===5){
+    const linyahanLine=L.querySelector('.line.active.first-linyahan-vertical');
+    const pulseStart=53.00, pulseEnd=53.34, fadeEnd=53.78;
+    if(linyahanLine && t>=pulseStart && t<pulseEnd){
+      linyahanLine.classList.remove('linyahan-transition-fade');
+      linyahanLine.classList.add('linyahan-transition-pulse');
+    }else if(linyahanLine && t>=pulseEnd && t<fadeEnd){
+      linyahanLine.classList.remove('linyahan-transition-pulse');
+      linyahanLine.classList.add('linyahan-transition-fade');
+    }else if(linyahanLine && t<pulseStart){
+      linyahanLine.classList.remove('linyahan-transition-pulse','linyahan-transition-fade');
+    }
+  }
 
   // "linyahan" cue: crossing dashed trails, like fast footsteps.
   if(current===5 && t>=49.50 && t<51.35){
