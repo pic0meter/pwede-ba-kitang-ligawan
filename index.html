@@ -2418,67 +2418,54 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 }
 .line.pupuntahan-scene.active .word::before{pointer-events:none !important;}
 
-/* 00:56 — three centered rows with a clean, non-rounded type treatment. */
-.line.scene-clock.structured-bigay-lyric .clock-lyric{
+/* 00:56 — clean centered three-line layout.
+   Styling only: the clock scene lifecycle and lyric DOM remain untouched. */
+.line.scene-clock.bigay-clean .clock-lyric{
   font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif !important;
   font-weight:800 !important;
-  letter-spacing:-.045em !important;
-  line-height:.88 !important;
-  width:min(92vw,760px) !important;
-  max-width:92vw !important;
-  display:flex !important;
-  flex-direction:column !important;
+  width:min(94vw,760px) !important;
+  max-width:94vw !important;
+  display:grid !important;
+  grid-template-columns:1fr 1fr 1fr !important;
+  grid-template-rows:auto auto auto !important;
   align-items:center !important;
-  justify-content:center !important;
-  gap:.02em !important;
+  justify-items:center !important;
+  column-gap:.04em !important;
+  row-gap:0 !important;
   transform:translate(-50%,-50%) !important;
 }
-.line.scene-clock.structured-bigay-lyric .bigay-row{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  width:100%;
-  white-space:nowrap;
-  line-height:.88;
-}
-.line.scene-clock.structured-bigay-lyric .clock-lyric .word{
+.line.scene-clock.bigay-clean .clock-lyric .word{
   font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif !important;
-  font-size:clamp(40px,8.5vw,92px) !important;
+  font-size:clamp(38px,8.5vw,92px) !important;
   font-weight:800 !important;
   letter-spacing:-.055em !important;
-  margin:.01em .055em !important;
+  line-height:.9 !important;
+  margin:0 !important;
   text-shadow:none !important;
 }
-@media(max-width:600px){
-  .line.scene-clock.structured-bigay-lyric .clock-lyric{
-    width:94vw !important;
-    max-width:94vw !important;
-    gap:.015em !important;
-  }
-  .line.scene-clock.structured-bigay-lyric .clock-lyric .word{
-    font-size:clamp(35px,10.5vw,64px) !important;
-    margin:.01em .045em !important;
-  }
-}
-
-/* 00:56 FINAL OVERRIDE — this replaces the old rounded/whimsical lyric effects. */
-.line.scene-clock.structured-bigay-lyric .clock-lyric,
-.line.scene-clock.structured-bigay-lyric .clock-lyric .word{
-  font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif !important;
-}
-.line.scene-clock.structured-bigay-lyric .clock-lyric .word.visible{
+/* Bibigay ko nang */
+.line.scene-clock.bigay-clean .clock-lyric .word:nth-child(1){grid-row:1;grid-column:1}
+.line.scene-clock.bigay-clean .clock-lyric .word:nth-child(2){grid-row:1;grid-column:2}
+.line.scene-clock.bigay-clean .clock-lyric .word:nth-child(3){grid-row:1;grid-column:3}
+/* buo ang — centered as a pair */
+.line.scene-clock.bigay-clean .clock-lyric .word:nth-child(4){grid-row:2;grid-column:1 / span 1}
+.line.scene-clock.bigay-clean .clock-lyric .word:nth-child(5){grid-row:2;grid-column:3 / span 1}
+/* oras ko — centered as a pair */
+.line.scene-clock.bigay-clean .clock-lyric .word:nth-child(6){grid-row:3;grid-column:1 / span 1}
+.line.scene-clock.bigay-clean .clock-lyric .word:nth-child(7){grid-row:3;grid-column:3 / span 1}
+/* Remove only the old lyric-specific decoration/motion for this scene. */
+.line.scene-clock.bigay-clean .clock-lyric .word.visible{
   animation:none !important;
   transform:none !important;
   filter:none !important;
 }
-.line.scene-clock.structured-bigay-lyric .clock-lyric::before,
-.line.scene-clock.structured-bigay-lyric .clock-lyric::after,
-.line.scene-clock.structured-bigay-lyric .clock-number-bg-burst,
-.line.scene-clock.structured-bigay-lyric .confetti,
-.line.scene-clock.structured-bigay-lyric .particle,
-.line.scene-clock.structured-bigay-lyric .spark{
-  display:none !important;
+.line.scene-clock.bigay-clean .clock-lyric::before,
+.line.scene-clock.bigay-clean .clock-lyric::after{display:none !important}
+@media(max-width:600px){
+  .line.scene-clock.bigay-clean .clock-lyric{width:96vw !important;max-width:96vw !important}
+  .line.scene-clock.bigay-clean .clock-lyric .word{font-size:clamp(33px,10vw,64px) !important}
 }
+
 </style>
 </head>
 <body>
@@ -2829,26 +2816,7 @@ function activate(i){
   if(i<=9) el.classList.add('first-half-transition');
   L.appendChild(el);
   if(scene==='clock') el.dataset.clockOriginIndex=String(i);
-  if(i===6){
-    // 00:56 — replace the old clock-lyric treatment completely.
-    // The lyric is rebuilt into exactly three centered rows:
-    //   Bibigay ko nang
-    //   buo ang
-    //   oras ko
-    const lyric=el.querySelector('.clock-lyric');
-    if(lyric){
-      lyric.classList.add('structured-bigay-lyric');
-      lyric.classList.remove('cursive-clock-lyric','clock-whimsy-time','playful-clock-lyric','clock-whimsy-skill');
-      const words=[...lyric.querySelectorAll('.word')];
-      lyric.replaceChildren();
-      [[0,1,2],[3,4],[5,6]].forEach(indices=>{
-        const row=document.createElement('div');
-        row.className='bigay-row';
-        indices.forEach(idx=>{ if(words[idx]) row.appendChild(words[idx]); });
-        lyric.appendChild(row);
-      });
-    }
-  }
+  if(i===6) el.classList.add('bigay-clean');
   if(i===0) el.classList.add('puso-throb');
   if(i===4){
     el.classList.add('question-chaos');
