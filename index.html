@@ -78,6 +78,27 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .line.out{
   opacity:0;transform:translateY(-35px) scale(1.035);filter:blur(6px);
 }
+
+/* FIRST-HALF LINE-TO-LINE TRANSITIONS
+   Keep the old lyric on screen while the next one enters. The movement is
+   deliberately restrained so each scene change feels connected rather than
+   like one lyric is being thrown away and another is being dropped in. */
+.line.first-half-transition{
+  transition:
+    opacity .42s cubic-bezier(.22,.7,.25,1),
+    transform .58s cubic-bezier(.22,.8,.22,1),
+    filter .42s ease;
+}
+.line.first-half-transition.out{
+  opacity:0;
+  transform:translateY(-12px) scale(.985);
+  filter:blur(3px);
+}
+.line.first-half-transition.active{
+  opacity:1;
+  transform:translateY(0) scale(1);
+  filter:blur(0);
+}
 .line.verse{
   font-size:clamp(28px,4.4vw,68px);font-weight:600;
   letter-spacing:-.045em;line-height:1.05;
@@ -2379,18 +2400,26 @@ function activate(i){
   const scene=(i===0)?'heart-split':sceneFor(i);
   const qClass=item.text==='Oo o hindi?'?' scene-question':'';
   const body=scene==='clock'?buildClock(item.text):scene==='heart-split'?buildHeartSplitLine(item.text):buildWords(item.text);
+  let el;
   if(scene==='heart-split'){
-    const el=document.createElement('div');
+    el=document.createElement('div');
     el.className=`line motion scene-heart-split ${item.style}${qClass}`;
     el.dataset.index=i;
-    const fragment=body;
-    el.appendChild(fragment);
-    L.replaceChildren(el);
+    el.appendChild(body);
   }else{
     const specialClass = i===0 ? ' puso-scene' : '';
-  L.innerHTML=`<div class="line motion scene-${scene} ${item.style}${qClass}${specialClass}" data-index="${i}">${body}</div>`;
+    el=document.createElement('div');
+    el.className=`line motion scene-${scene} ${item.style}${qClass}${specialClass}`;
+    el.dataset.index=i;
+    el.innerHTML=body;
   }
-  const el=L.firstElementChild;
+
+  // Keep the outgoing lyric in the stage while the new lyric enters.
+  // Previously L.replaceChildren()/L.innerHTML removed the old line instantly,
+  // so its exit animation could never actually be seen. The overlap below gives
+  // the first-half transitions a real crossfade instead of a hard cut.
+  if(i<=9) el.classList.add('first-half-transition');
+  L.appendChild(el);
   if(scene==='clock') el.dataset.clockOriginIndex=String(i);
   if(i===0) el.classList.add('puso-throb');
   if(i===4){
