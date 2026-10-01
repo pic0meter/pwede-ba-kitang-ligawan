@@ -840,27 +840,32 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   animation-delay:calc(var(--i)*.065s),calc(.62s + var(--i)*.055s);
 }
 @keyframes playfulClockIn{
-  0%{opacity:0;transform:translate3d(0,28px,0) rotate(-10deg) scale(.55)}
-  52%{opacity:1;transform:translate3d(4px,-9px,0) rotate(7deg) scale(1.13)}
-  78%{transform:translate3d(-2px,3px,0) rotate(-3deg) scale(.97)}
+  0%{opacity:0;transform:translate3d(-18px,34px,0) rotate(-16deg) scale(.45)}
+  38%{opacity:1;transform:translate3d(8px,-12px,0) rotate(10deg) scale(1.18)}
+  62%{transform:translate3d(-5px,5px,0) rotate(-7deg) scale(.94)}
+  82%{transform:translate3d(3px,-3px,0) rotate(4deg) scale(1.04)}
   100%{opacity:1;transform:none}
 }
 @keyframes playfulClockDance{
-  0%,100%{transform:translateY(0) rotate(-1.4deg)}
-  25%{transform:translateY(-4px) rotate(2deg) scale(1.015)}
-  50%{transform:translateY(2px) rotate(-1deg)}
-  75%{transform:translateY(-2px) rotate(1.4deg) scale(1.01)}
+  0%,100%{transform:translate3d(0,0,0) rotate(-2deg) scale(1)}
+  18%{transform:translate3d(-3px,-6px,0) rotate(4deg) scale(1.03)}
+  36%{transform:translate3d(4px,2px,0) rotate(-3deg) scale(.98)}
+  55%{transform:translate3d(-2px,-4px,0) rotate(2deg) scale(1.025)}
+  76%{transform:translate3d(3px,1px,0) rotate(-1deg) scale(1)}
 }
 @keyframes playfulClockInSecond{
-  0%{opacity:0;transform:translate3d(0,-30px,0) rotate(10deg) scale(.5)}
-  48%{opacity:1;transform:translate3d(-5px,7px,0) rotate(-7deg) scale(1.16)}
-  76%{transform:translate3d(3px,-2px,0) rotate(3deg) scale(.98)}
+  0%{opacity:0;transform:translate3d(20px,-36px,0) rotate(15deg) scale(.42)}
+  32%{opacity:1;transform:translate3d(-8px,10px,0) rotate(-11deg) scale(1.2)}
+  58%{transform:translate3d(5px,-5px,0) rotate(7deg) scale(.93)}
+  80%{transform:translate3d(-3px,3px,0) rotate(-3deg) scale(1.05)}
   100%{opacity:1;transform:none}
 }
 @keyframes playfulClockHop{
-  0%,100%{transform:translateY(0) rotate(1deg)}
-  30%{transform:translateY(-5px) rotate(-2deg) scale(1.02)}
-  60%{transform:translateY(2px) rotate(1.5deg)}
+  0%,100%{transform:translate3d(0,0,0) rotate(1deg) scale(1)}
+  20%{transform:translate3d(0,-8px,0) rotate(-5deg) scale(1.04)}
+  42%{transform:translate3d(4px,2px,0) rotate(4deg) scale(.97)}
+  64%{transform:translate3d(-4px,-5px,0) rotate(-3deg) scale(1.06)}
+  84%{transform:translate3d(2px,1px,0) rotate(2deg) scale(1)}
 }
 
 /* The clock is almost frozen: only the second hand is alive and fast. */
@@ -1803,7 +1808,7 @@ function updateClock(t){
   // and the hour hand advances continuously with the minutes.
   // Whimsical accelerated clock: all three hands keep correct ratios,
   // but the whole clock visibly spins faster for the kinetic sequence.
-  const clockSpeed=3;
+  const clockSpeed=10;
   const secondDeg=elapsed*6*clockSpeed;
   const minuteDeg=elapsed*0.1*clockSpeed;
   const hourDeg=elapsed*(30/3600)*clockSpeed;
