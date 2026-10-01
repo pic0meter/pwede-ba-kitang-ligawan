@@ -7,6 +7,7 @@
 <meta name="theme-color" content="#0d0b0a">
 <title>Pwede Ba Kitang Ligawan — Kinetic Lyrics</title>
 <style>
+@import url("https://fonts.googleapis.com/css2?family=Coiny&family=Lilita+One&family=Poppins:wght@400;500;600;700;800;900&display=swap");
 :root{
   --bg:#0d0b0a;--ink:#f8f0e6;--muted:#b6a99c;--accent:#ffb38a;
   --x:50%;--y:50%;--mx:0px;--my:0px;
@@ -78,6 +79,27 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .line.out{
   opacity:0;transform:translateY(-35px) scale(1.035);filter:blur(6px);
 }
+
+/* FIRST-HALF LINE-TO-LINE TRANSITIONS
+   Keep the old lyric on screen while the next one enters. The movement is
+   deliberately restrained so each scene change feels connected rather than
+   like one lyric is being thrown away and another is being dropped in. */
+.line.first-half-transition{
+  transition:
+    opacity .42s cubic-bezier(.22,.7,.25,1),
+    transform .58s cubic-bezier(.22,.8,.22,1),
+    filter .42s ease;
+}
+.line.first-half-transition.out{
+  opacity:0;
+  transform:translateY(-12px) scale(.985);
+  filter:blur(3px);
+}
+.line.first-half-transition.active{
+  opacity:1;
+  transform:translateY(0) scale(1);
+  filter:blur(0);
+}
 .line.verse{
   font-size:clamp(28px,4.4vw,68px);font-weight:600;
   letter-spacing:-.045em;line-height:1.05;
@@ -113,6 +135,20 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 }
 .word.accent,.word.visible.accent{color:var(--accent)}
 
+/* Energetic first-chorus bob: the whole question line stays alive while the
+   background marks settle into their final positions. */
+.line.question-chaos.active{
+  animation:firstChorusBob 1.18s cubic-bezier(.36,.07,.19,.97) infinite alternate !important;
+}
+@keyframes firstChorusBob{
+  0%{transform:translate3d(-6px,4px,0) rotate(-.45deg) scale(1)}
+  17%{transform:translate3d(5px,-7px,0) rotate(.65deg) scale(1.012)}
+  36%{transform:translate3d(-4px,8px,0) rotate(-.8deg) scale(.994)}
+  55%{transform:translate3d(7px,-4px,0) rotate(.55deg) scale(1.018)}
+  74%{transform:translate3d(-5px,6px,0) rotate(-.65deg) scale(1.005)}
+  100%{transform:translate3d(4px,-5px,0) rotate(.4deg) scale(1.012)}
+}
+
 /* FIRST-CHORUS QUESTION-MARK CHAOS
    Appears when "ligawan?" arrives, lives only until the next lyric,
    then collapses/wipes away as the next line enters. */
@@ -125,7 +161,6 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   opacity:0;
 }
 #questionChaos.ready{opacity:1}
-#questionChaos.leaving{animation:qFieldOut .38s cubic-bezier(.18,.8,.2,1) forwards}
 #questionChaos .qmark{
   position:absolute;
   /* x positions beyond 100% / below 0% are intentionally clipped by the viewport */
@@ -144,8 +179,8 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
      existing erratic shake. Both animations use the same transform, so the
      entrance feels like a peek rather than a pop. */
   animation:
-    qMarkPeek .72s cubic-bezier(.16,.82,.22,1) var(--delay) both,
-    qMarkShake var(--speed) steps(2,end) calc(var(--delay) + .58s) infinite;
+    qMarkCenterIn .72s cubic-bezier(.16,.82,.22,1) var(--delay) both,
+    qMarkShake var(--speed) steps(2,end) calc(var(--delay) + .72s) infinite;
 }
 #questionChaos .qmark:nth-child(2n){
   animation-name:qMarkPeek,qMarkShake2;
@@ -157,23 +192,22 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   animation-name:qMarkPeek,qMarkShake4;
 }
 
-@keyframes qMarkPeek{
+@keyframes qMarkCenterIn{
   0%{
-    opacity:0;
-    transform:translate(calc(-50% + var(--enter-x)),calc(-50% + var(--enter-y)))
-      rotate(calc(var(--rot) - 10deg)) scale(.72);
+    left:50%; top:50%; opacity:0;
+    transform:translate(-50%,-50%) rotate(calc(var(--rot) - 18deg)) scale(.10);
   }
-  48%{
+  42%{
     opacity:var(--opacity);
-    transform:translate(calc(-50% + var(--enter-x)*.22),calc(-50% + var(--enter-y)*.22))
-      rotate(calc(var(--rot) + 3deg)) scale(1.035);
+    transform:translate(-50%,-50%) rotate(calc(var(--rot) + 7deg)) scale(.78);
   }
   72%{
-    opacity:var(--opacity);
-    transform:translate(-50%,-50%) rotate(calc(var(--rot) - 2deg)) scale(.985);
+    left:calc(var(--x) + (50% - var(--x))*0.18);
+    top:calc(var(--y) + (50% - var(--y))*0.18);
+    transform:translate(-50%,-50%) rotate(calc(var(--rot) - 3deg)) scale(1.06);
   }
   100%{
-    opacity:var(--opacity);
+    left:var(--x); top:var(--y); opacity:var(--opacity);
     transform:translate(-50%,-50%) rotate(var(--rot)) scale(var(--scale));
   }
 }
@@ -210,40 +244,50 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 
 /* "ligawan?" itself gets the same nervous, unpredictable energy. */
 .line.question-chaos .word.ligawan-chaos{
+  /* Keep "ligawan?" typographically identical to the other lyric words.
+     Its personality comes from motion/color, not a different typeface or scale. */
+  font-family:inherit !important;
+  font-size:inherit !important;
+  font-weight:inherit !important;
+  letter-spacing:inherit !important;
+  line-height:inherit !important;
   color:var(--accent);
   text-shadow:0 0 24px #ffb38a66;
 }
 
-/* Jitter ONLY while the word is actually highlighted/current. */
-.line.question-chaos .word.ligawan-chaos.current{
-  animation:ligawanJitter .105s steps(2,end) infinite;
-  will-change:transform;
-}
-@keyframes ligawanJitter{
-  0%{transform:translate(0,0) rotate(-1deg) scale(1.03)}
-  19%{transform:translate(-2px,1px) rotate(1.5deg) scale(1.08)}
-  37%{transform:translate(3px,-2px) rotate(-2.5deg) scale(1.02)}
-  54%{transform:translate(-1px,-3px) rotate(2deg) scale(1.10)}
-  72%{transform:translate(2px,2px) rotate(-1deg) scale(1.05)}
-  100%{transform:translate(0,0) rotate(1deg) scale(1.03)}
-}
 
-/* The old line doesn't simply disappear: the question marks collapse inward. */
-.line.question-chaos.out{
-  animation:qLineOut .62s cubic-bezier(.18,.8,.2,1) forwards;
+/* First-chorus transition beat: a musical pulse at 00:44, followed by a
+   long soft fade so the next lyric can enter without a hard cut. */
+.line.question-chaos.question-chorus-pulse{
+  animation:questionChorusPulse .52s cubic-bezier(.16,.9,.2,1) both !important;
+  z-index:7;
 }
-.line.question-chaos.out #questionChaos{
-  animation:qFieldOut .62s cubic-bezier(.18,.8,.2,1) forwards;
+.line.question-chaos.question-chorus-pulse .word{
+  text-shadow:0 0 34px #ffb38a66;
 }
-@keyframes qLineOut{
-  0%{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}
-  55%{opacity:1;transform:translateY(-5px) scale(1.025);filter:blur(0)}
-  100%{opacity:0;transform:translateY(-42px) scale(.88);filter:blur(8px)}
+@keyframes questionChorusPulse{
+  0%{opacity:1;transform:translate3d(0,0,0) scale(1);filter:blur(0)}
+  24%{transform:translate3d(-3px,2px,0) scale(1.045) rotate(-.35deg);filter:drop-shadow(0 0 16px #ffb38a55)}
+  52%{transform:translate3d(4px,-4px,0) scale(1.095) rotate(.45deg);filter:drop-shadow(0 0 30px #ffb38a88)}
+  78%{transform:translate3d(-2px,2px,0) scale(1.035) rotate(-.25deg);filter:drop-shadow(0 0 15px #ffb38a44)}
+  100%{transform:translate3d(0,0,0) scale(1) rotate(0);filter:none}
 }
-@keyframes qFieldOut{
+.line.question-chaos.question-chorus-fade{
+  animation:questionChorusFade 1.00s cubic-bezier(.22,.72,.2,1) both !important;
+}
+.line.question-chaos.question-chorus-fade #questionChaos{
+  animation:questionChorusFieldFade 1.00s cubic-bezier(.22,.72,.2,1) both !important;
+}
+@keyframes questionChorusFade{
+  0%{opacity:1;transform:translate3d(0,0,0) scale(1);filter:blur(0)}
+  42%{opacity:.92;transform:translate3d(0,-2px,0) scale(.995);filter:blur(.25px)}
+  72%{opacity:.48;transform:translate3d(0,-7px,0) scale(.985);filter:blur(1.6px)}
+  100%{opacity:0;transform:translate3d(0,-16px,0) scale(.97);filter:blur(4px)}
+}
+@keyframes questionChorusFieldFade{
   0%{opacity:1;transform:scale(1)}
-  45%{opacity:1;transform:scale(1.02)}
-  100%{opacity:0;transform:scale(.72)}
+  55%{opacity:.68;transform:scale(.99)}
+  100%{opacity:0;transform:scale(.95)}
 }
 
 /* Next lyric arrives through the space left by the question marks. */
@@ -265,6 +309,13 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 
 
 
+#wordExplosionField{position:absolute;inset:0;z-index:1;overflow:hidden;pointer-events:none}
+.clock-number-burst-layer{position:absolute;inset:0;z-index:1;overflow:visible;pointer-events:none}
+.word-bg-burst{position:absolute;left:0;top:0;white-space:nowrap;font-family:inherit;font-weight:inherit;letter-spacing:inherit;line-height:inherit;color:#f8f0e6;opacity:0;transform:translate(-50%,-50%) scale(.18) rotate(var(--r));animation:wordBgBurst var(--life) cubic-bezier(.12,.8,.18,1) forwards;filter:blur(.35px);text-shadow:0 0 18px #ffb38a2e}
+.clock-number-bg-burst{position:absolute;left:0;top:0;white-space:nowrap;font-family:"Helvetica Neue",Arial,sans-serif;font-weight:300;letter-spacing:-.02em;color:var(--accent);opacity:0;transform:translate(-50%,-50%) scale(.35) rotate(var(--r));animation:clockNumberBgBurst var(--life) cubic-bezier(.2,.8,.25,1) forwards;filter:blur(.15px);text-shadow:0 0 10px #ffb38a22;z-index:1;pointer-events:none}
+@keyframes clockNumberBgBurst{0%{opacity:0;transform:translate(-50%,-50%) scale(.35) rotate(var(--r))}8%{opacity:var(--alpha);transform:translate(-50%,-50%) scale(.9) rotate(var(--r))}24%{opacity:calc(var(--alpha)*.72);transform:translate(calc(-50% + var(--dx)*.45),calc(-50% + var(--dy)*.45)) scale(1) rotate(var(--r2))}100%{opacity:0;transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(var(--scale)) rotate(var(--r2))}}
+@keyframes wordBgBurst{0%{opacity:0;transform:translate(-50%,-50%) scale(.18) rotate(var(--r))}12%{opacity:var(--alpha)}45%{opacity:calc(var(--alpha)*.72)}100%{opacity:0;transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(var(--scale)) rotate(var(--r2))}}
+
 #ooExplosion{position:absolute;inset:0;z-index:8;overflow:hidden;pointer-events:none}
 .oo-field{position:absolute;left:50%;top:50%;white-space:nowrap;font-weight:900;letter-spacing:-.08em;color:#f8f0e6;opacity:0;transform:translate(-50%,-50%) scale(.15) rotate(var(--r));animation:ooTakeover var(--life) cubic-bezier(.12,.8,.18,1) forwards;text-shadow:0 0 24px #ffb38a33}
 @keyframes ooTakeover{0%{opacity:0;transform:translate(-50%,-50%) scale(.15) rotate(var(--r))}12%{opacity:.92}48%{opacity:.82}78%{opacity:.88}100%{opacity:0;transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(var(--scale)) rotate(var(--r2))}}
@@ -279,7 +330,13 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 @keyframes lyricThrob{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-2px) scale(1.025)}}
 @keyframes lyricThrobCurrent{0%,100%{transform:translateY(-.055em) scale(1.06)}50%{transform:translateY(-.09em) scale(1.13)}}
 .puso-bg-heart{position:absolute;left:var(--x);top:var(--y);font-size:var(--size);line-height:1;color:currentColor;opacity:0;transform:scale(.88);animation:pusoBgPulse var(--life) ease-in-out infinite;filter:drop-shadow(0 0 10px #ffb38a22);pointer-events:none}
-@keyframes pusoBgPulse{0%,100%{opacity:.035;transform:scale(.88)}50%{opacity:.16;transform:scale(1.12)}}
+@keyframes pusoBgPulse{
+  0%{opacity:.025;transform:translate3d(0,8px,0) scale(.82) rotate(-5deg)}
+  24%{opacity:.11;transform:translate3d(-12px,-8px,0) scale(1.02) rotate(4deg)}
+  52%{opacity:.18;transform:translate3d(10px,3px,0) scale(1.16) rotate(-3deg)}
+  76%{opacity:.09;transform:translate3d(-7px,-12px,0) scale(.96) rotate(6deg)}
+  100%{opacity:.025;transform:translate3d(6px,8px,0) scale(.84) rotate(-4deg)}
+}
 
 /* PUSO heart burst — exists only while the PUSO cue is active */
 #heartField{
@@ -516,27 +573,19 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .line.motion .word:nth-child(4n){font-size:.88em}
 .line.motion .word:nth-child(7n+1){font-size:1.12em}
 
-.clock-wrap{position:relative;width:min(92vw,700px);height:min(48vh,410px);display:grid;place-items:center}
-.clock-face{position:absolute;width:min(78vw,350px);height:min(78vw,350px);border:1px solid #ffffff20;border-radius:50%;opacity:.8;box-shadow:0 0 45px #ffb38a0d inset,0 0 25px #ffb38a0b}
-.clock-face::before{content:"";position:absolute;inset:8%;border:1px dashed #ffffff12;border-radius:50%}
-.clock-number{position:absolute;left:50%;top:50%;font:700 clamp(9px,2.3vw,14px) ui-monospace,SFMono-Regular,Menlo,monospace;color:#a99d93;transform:translate(-50%,-50%);opacity:0;animation:clockNumberIn .45s cubic-bezier(.15,1.35,.3,1) forwards;animation-delay:calc(var(--n)*35ms)}
-@keyframes clockNumberIn{0%{opacity:0;transform:translate(-50%,-50%) scale(.2) rotate(-20deg)}70%{opacity:1;transform:translate(-50%,-50%) scale(1.18) rotate(3deg)}100%{opacity:.85;transform:translate(-50%,-50%) scale(1) rotate(0)}}
-.clock-tick{position:absolute;left:50%;top:50%;width:2px;height:7px;background:#ffffff30;transform-origin:50% calc(min(39vw,175px));border-radius:2px}
+.clock-wrap{position:relative;width:min(94vw,760px);height:min(52vh,450px);display:grid;place-items:center}
+.clock-face{position:absolute;width:min(78vw,360px);height:min(78vw,360px);border:2px solid #ffffff28;border-radius:50%;opacity:.9;background:radial-gradient(circle,#ffb38a08 0 55%,transparent 72%);box-shadow:0 0 55px #ffb38a10 inset,0 0 34px #ffb38a10}
+/* Clock-number bursts sit above the clock face but below the lyric words. */
+.line.scene-clock .clock-face{z-index:0}
+.line.scene-clock .clock-lyric{z-index:2}
+.clock-face::before{content:"";position:absolute;inset:7%;border:1px solid #ffffff14;border-radius:50%}
+.clock-face::after{content:"";position:absolute;inset:1.8%;border:1px dotted #ffb38a18;border-radius:50%;animation:clockOrbit 14s linear infinite}
+.clock-number{position:absolute;left:50%;top:50%;font:700 clamp(10px,2.4vw,15px) ui-monospace,SFMono-Regular,Menlo,monospace;color:#b7aaa0;transform:translate(-50%,-50%);opacity:0;animation:clockNumberIn .48s cubic-bezier(.15,1.35,.3,1) forwards;animation-delay:calc(var(--n)*28ms)}
+@keyframes clockNumberIn{0%{opacity:0}70%{opacity:1}100%{opacity:.9}}
+.clock-tick{position:absolute;left:50%;top:50%;width:1px;height:5px;background:#ffffff28;transform-origin:center center;border-radius:2px}
+.clock-tick.major{width:2px;height:10px;background:#ffffff48}
+@keyframes clockOrbit{to{transform:rotate(360deg)}}
 
-/* FIRST CHORUS — "ligawan?" becomes erratic only while highlighted. */
-.line.question-chaos .word.ligawan-chaos.current{
-  animation:ligawanJitter .105s steps(2,end) infinite;
-  will-change:transform;
-}
-@keyframes ligawanJitter{
-  0%{transform:translate(0,0) rotate(-1deg) scale(1.03)}
-  17%{transform:translate(-3px,2px) rotate(2deg) scale(1.07)}
-  33%{transform:translate(3px,-3px) rotate(-3deg) scale(1.02)}
-  51%{transform:translate(-2px,-4px) rotate(2.5deg) scale(1.10)}
-  69%{transform:translate(4px,2px) rotate(-2deg) scale(1.05)}
-  84%{transform:translate(-2px,1px) rotate(3deg) scale(1.08)}
-  100%{transform:translate(0,0) rotate(-1deg) scale(1.03)}
-}
 
 /* FIRST "Kahit 'di maganda ang mga linyahan" treatment.
    The six words are a deliberate vertical stack. They do not fly.
@@ -565,36 +614,7 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   will-change:transform,opacity;
   animation:none!important;
 }
-.line.first-linyahan-vertical .word.visible{
-  animation:verticalWordIn .34s cubic-bezier(.16,1.1,.25,1) both!important;
-}
-.line.first-linyahan-vertical .word.visible:not(.current){
-  animation:verticalWordShake .16s steps(2,end) .34s infinite!important;
-}
-.line.first-linyahan-vertical .word.current{
-  color:var(--accent);
-  text-shadow:0 0 28px #ffb38a66;
-  animation:verticalWordShakeStrong .10s steps(2,end) infinite!important;
-}
-@keyframes verticalWordIn{
-  0%{opacity:0;transform:translateY(16px) scale(.9)}
-  65%{opacity:1;transform:translateY(-2px) scale(1.02)}
-  100%{opacity:1;transform:none}
-}
-@keyframes verticalWordShake{
-  0%{transform:translate(-1.5px,0) rotate(-.35deg)}
-  25%{transform:translate(1.5px,-.5px) rotate(.4deg)}
-  50%{transform:translate(-1px,.5px) rotate(-.45deg)}
-  75%{transform:translate(1px,0) rotate(.35deg)}
-  100%{transform:translate(0,.2px) rotate(0)}
-}
-@keyframes verticalWordShakeStrong{
-  0%{transform:translate(-2px,0) rotate(-.8deg) scale(1.04)}
-  25%{transform:translate(2px,-1px) rotate(.9deg) scale(1.07)}
-  50%{transform:translate(-2px,1px) rotate(-1deg) scale(1.045)}
-  75%{transform:translate(2px,0) rotate(.8deg) scale(1.07)}
-  100%{transform:translate(0,0) rotate(0) scale(1.055)}
-}
+/* First-linyahan words use only the final bob animation below. */
 
 /* Dashed "slashes" cross the entire screen from different directions.
    The trail follows the dash front instead of appearing as a static X. */
@@ -684,83 +704,182 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   100%{opacity:0;transform:scale(1.08)}
 }
 
-/* USER OVERRIDE — "Kahit 'di maganda ang mga linyahan": keep ONLY the shake. */
-.line.first-linyahan-vertical .word.visible{
-  animation:verticalWordShake .16s steps(2,end) infinite!important;
-  opacity:1!important;
-  filter:none!important;
-  transform:none;
-  color:var(--ink)!important;
-  text-shadow:none!important;
+/* FIRST-CHORUS — horizontal line behind the stacked words. */
+.first-linyahan-stroke{
+  position:absolute;
+  z-index:1;
+  pointer-events:none;
+  opacity:0;
+  will-change:transform,opacity;
+  border:0;
+  background:repeating-linear-gradient(90deg,#ffb38a 0 12px,transparent 12px 23px);
+  box-shadow:0 0 9px #ffb38a55;
 }
-.line.first-linyahan-vertical .word.current{
-  animation:verticalWordShakeStrong .10s steps(2,end) infinite!important;
-  opacity:1!important;
-  filter:none!important;
-  color:var(--ink)!important;
-  text-shadow:none!important;
+.first-linyahan-vertical.active .first-linyahan-stroke{
+  animation-timing-function:cubic-bezier(.18,.8,.18,1);
+  animation-fill-mode:forwards;
 }
-.line.first-linyahan-vertical.out{
-  animation:none!important;
-  opacity:1!important;
-  transform:none!important;
-  filter:none!important;
+
+/* Many independent edge-to-edge strokes. Every stroke still travels from one
+   side of the viewport to the opposite side; only its entry edge, angle,
+   speed, thickness and opacity vary. */
+.first-linyahan-stroke-h{
+  left:-125vw; width:150vw; height:var(--thick,2px);
+  top:var(--y,50%);
+  background:repeating-linear-gradient(90deg,#ffb38a 0 var(--dash,12px),transparent var(--dash,12px) calc(var(--dash,12px) + var(--gap,11px)));
+  animation-name:firstLinyahanTravelH;
+  animation-duration:var(--dur,3.2s);
+  animation-delay:var(--delay,0s);
+  animation-timing-function:linear!important;
 }
-.first-linyahan-vertical .linyahan-dash-field,
-.first-linyahan-vertical.linyahan-hit .linyahan-dash-field{
+.first-linyahan-stroke-h.reverse{
+  left:auto; right:-125vw;
+  animation-name:firstLinyahanTravelHReverse;
+}
+.first-linyahan-stroke-v{
+  top:-125vh; left:var(--x,50%); width:var(--thick,2px); height:150vh;
+  background:repeating-linear-gradient(0deg,#ffb38a 0 var(--dash,12px),transparent var(--dash,12px) calc(var(--dash,12px) + var(--gap,11px)));
+  animation-name:firstLinyahanTravelV;
+  animation-duration:var(--dur,3.2s);
+  animation-delay:var(--delay,0s);
+  animation-timing-function:linear!important;
+}
+.first-linyahan-stroke-v.reverse{
+  top:auto; bottom:-125vh;
+  animation-name:firstLinyahanTravelVReverse;
+}
+.first-linyahan-stroke-d{
+  width:155vw; height:var(--thick,2px);
+  left:-130vw; top:var(--y,50%);
+  transform:rotate(var(--angle,25deg));
+  transform-origin:center center;
+  background:repeating-linear-gradient(90deg,#ffb38a 0 var(--dash,11px),transparent var(--dash,11px) calc(var(--dash,11px) + var(--gap,14px)));
+  animation-name:firstLinyahanTravelD;
+  animation-duration:var(--dur,3.4s);
+  animation-delay:var(--delay,0s);
+  animation-timing-function:linear!important;
+}
+.first-linyahan-stroke-d.reverse{
+  left:auto; right:-130vw;
+  animation-name:firstLinyahanTravelDReverse;
+}
+@keyframes firstLinyahanTravelH{
+  0%{opacity:0;transform:translateX(-18vw)}
+  8%{opacity:var(--op,.5)}
+  88%{opacity:var(--op,.5);transform:translateX(150vw)}
+  100%{opacity:0;transform:translateX(175vw)}
+}
+@keyframes firstLinyahanTravelHReverse{
+  0%{opacity:0;transform:translateX(18vw)}
+  8%{opacity:var(--op,.5)}
+  88%{opacity:var(--op,.5);transform:translateX(-150vw)}
+  100%{opacity:0;transform:translateX(-175vw)}
+}
+@keyframes firstLinyahanTravelV{
+  0%{opacity:0;transform:translateY(-18vh)}
+  8%{opacity:var(--op,.5)}
+  88%{opacity:var(--op,.5);transform:translateY(150vh)}
+  100%{opacity:0;transform:translateY(175vh)}
+}
+@keyframes firstLinyahanTravelVReverse{
+  0%{opacity:0;transform:translateY(18vh)}
+  8%{opacity:var(--op,.5)}
+  88%{opacity:var(--op,.5);transform:translateY(-150vh)}
+  100%{opacity:0;transform:translateY(-175vh)}
+}
+@keyframes firstLinyahanTravelD{
+  0%{opacity:0;transform:translateX(-145vw) rotate(var(--angle,25deg))}
+  8%{opacity:var(--op,.5)}
+  88%{opacity:var(--op,.5);transform:translateX(145vw) rotate(var(--angle,25deg))}
+  100%{opacity:0;transform:translateX(175vw) rotate(var(--angle,25deg))}
+}
+@keyframes firstLinyahanTravelDReverse{
+  0%{opacity:0;transform:translateX(145vw) rotate(var(--angle,-25deg))}
+  8%{opacity:var(--op,.5)}
+  88%{opacity:var(--op,.5);transform:translateX(-145vw) rotate(var(--angle,-25deg))}
+  100%{opacity:0;transform:translateX(-175vw) rotate(var(--angle,-25deg))}
+}
+.line.first-linyahan-vertical.out{animation:none!important;}
+.line.first-linyahan-vertical.out .first-linyahan-stroke{animation:firstLinyahanStrokeOut .28s ease-in forwards!important;}
+@keyframes firstLinyahanStrokeOut{from{opacity:inherit}to{opacity:0}}
+
+/* Keep the older dashed-line machinery inactive for this treatment. */
+.first-linyahan-vertical .linyahan-dash-field{
   display:none!important;
 }
 
-/* THIRD CHORUS LINE — unified cursive treatment; no mismatched word sizing. */
+/* CLOCK LYRICS — playful, rounded, hand-lettered feel; never cursive. */
 .line.scene-clock.cursive-clock-lyric .clock-lyric{
-  font-family:"Snell Roundhand","Segoe Script","Bradley Hand","Brush Script MT",cursive;
-  font-weight:500;
+  font-family:"Arial Rounded MT Bold","Trebuchet MS","Avenir Next Rounded",ui-rounded,sans-serif;
+  font-weight:800;
   font-size:clamp(28px,7.2vw,72px);
-  letter-spacing:.01em;
-  line-height:1.05;
+  letter-spacing:-.025em;
+  line-height:1.0;
   max-width:92%;
   gap:.02em .08em;
-  transform:rotate(-1deg);
+  transform:translate(-50%,-50%) rotate(-1deg);
 }
 .line.scene-clock.cursive-clock-lyric .clock-lyric .word{
   font-size:1em !important;
-  font-weight:500 !important;
+  font-weight:800 !important;
   letter-spacing:inherit !important;
+  text-shadow:0 2px 0 #0002, 0 0 18px #ffb38a18;
 }
 .line.scene-clock.cursive-clock-lyric .clock-lyric .word.visible{
-  animation:scriptFlutter .55s cubic-bezier(.16,1.25,.25,1) both,
-            scriptBreathe 2.15s ease-in-out .55s infinite alternate;
-  animation-delay:calc(var(--i)*.07s),calc(.55s + var(--i)*.07s);
+  animation:playfulClockIn .58s cubic-bezier(.12,1.4,.25,1) both,
+            playfulClockDance 1.15s ease-in-out .58s infinite;
+  animation-delay:calc(var(--i)*.055s),calc(.68s + var(--i)*.045s);
 }
-@keyframes scriptFlutter{
-  0%{opacity:0;transform:translate3d(0,18px,0) rotate(-8deg) scale(.84)}
-  55%{opacity:1;transform:translate3d(3px,-5px,0) rotate(4deg) scale(1.05)}
+.line.scene-clock.clock-whimsy-skill .clock-lyric{
+  transform:translate(-50%,-50%) rotate(1.2deg) scale(1.02);
+}
+.line.scene-clock.clock-whimsy-skill .clock-lyric .word.visible{
+  animation:playfulClockInSecond .52s cubic-bezier(.1,1.5,.2,1) both,
+            playfulClockHop 1.05s ease-in-out .52s infinite;
+  animation-delay:calc(var(--i)*.065s),calc(.62s + var(--i)*.055s);
+}
+@keyframes playfulClockIn{
+  0%{opacity:0;transform:translate3d(-18px,34px,0) rotate(-16deg) scale(.45)}
+  38%{opacity:1;transform:translate3d(8px,-12px,0) rotate(10deg) scale(1.18)}
+  62%{transform:translate3d(-5px,5px,0) rotate(-7deg) scale(.94)}
+  82%{transform:translate3d(3px,-3px,0) rotate(4deg) scale(1.04)}
   100%{opacity:1;transform:none}
 }
-@keyframes scriptBreathe{
-  0%{transform:translate3d(-2px,2px,0) rotate(-1.5deg)}
-  100%{transform:translate3d(4px,-5px,0) rotate(2deg)}
+@keyframes playfulClockDance{
+  0%,100%{transform:translate3d(0,0,0) rotate(-2deg) scale(1)}
+  18%{transform:translate3d(-3px,-6px,0) rotate(4deg) scale(1.03)}
+  36%{transform:translate3d(4px,2px,0) rotate(-3deg) scale(.98)}
+  55%{transform:translate3d(-2px,-4px,0) rotate(2deg) scale(1.025)}
+  76%{transform:translate3d(3px,1px,0) rotate(-1deg) scale(1)}
+}
+@keyframes playfulClockInSecond{
+  0%{opacity:0;transform:translate3d(20px,-36px,0) rotate(15deg) scale(.42)}
+  32%{opacity:1;transform:translate3d(-8px,10px,0) rotate(-11deg) scale(1.2)}
+  58%{transform:translate3d(5px,-5px,0) rotate(7deg) scale(.93)}
+  80%{transform:translate3d(-3px,3px,0) rotate(-3deg) scale(1.05)}
+  100%{opacity:1;transform:none}
+}
+@keyframes playfulClockHop{
+  0%,100%{transform:translate3d(0,0,0) rotate(1deg) scale(1)}
+  20%{transform:translate3d(0,-8px,0) rotate(-5deg) scale(1.04)}
+  42%{transform:translate3d(4px,2px,0) rotate(4deg) scale(.97)}
+  64%{transform:translate3d(-4px,-5px,0) rotate(-3deg) scale(1.06)}
+  84%{transform:translate3d(2px,1px,0) rotate(2deg) scale(1)}
 }
 
 /* The clock is almost frozen: only the second hand is alive and fast. */
-.line.scene-clock .clock-hand.minute,
-.line.scene-clock .clock-hand.hour{
-  transform:translate(-50%,-100%) rotate(0deg) !important;
-}
-.line.scene-clock .clock-hand.second{
-  transition:none;
-  will-change:transform;
-}
+.line.scene-clock .clock-hand{transition:none;will-change:transform}
 
-.clock-hands{position:absolute;inset:0;pointer-events:none}
+.clock-hands{position:absolute;inset:0;pointer-events:none;z-index:1}
 .clock-hand{position:absolute;left:50%;top:50%;height:28%;width:2px;background:#f8f0e6;border-radius:99px;transform-origin:50% 100%;box-shadow:0 0 12px #fff3}
 .clock-hand.hour{height:20%;width:3px}
-.clock-hand.second{height:31%;width:1px;background:var(--accent)}
-.clock-center{position:absolute;left:50%;top:50%;width:8px;height:8px;border-radius:50%;background:var(--accent);transform:translate(-50%,-50%);box-shadow:0 0 15px #ffb38a88}
-.clock-lyric{position:relative;z-index:2;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;max-width:78%;text-align:center;gap:.03em .10em}
-.clock-lyric .word.visible{animation:clockLyricIn .5s cubic-bezier(.12,1.3,.3,1) both}
-@keyframes clockLyricIn{0%{opacity:0;transform:translateY(20px) scale(.65) rotate(-4deg)}65%{opacity:1;transform:translateY(-5px) scale(1.06) rotate(1deg)}100%{opacity:1;transform:none}}
-.clock-face .clock-number:nth-child(12n+1){color:var(--accent)}
+.clock-hand.minute{height:25%;width:2px}
+.clock-hand.second{height:31%;width:1px;background:var(--accent);box-shadow:0 0 10px #ffb38a99}
+.clock-center{position:absolute;left:50%;top:50%;width:9px;height:9px;border-radius:50%;background:var(--accent);transform:translate(-50%,-50%);box-shadow:0 0 15px #ffb38a88}
+.clock-lyric{position:relative;z-index:2;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;max-width:82%;text-align:center;gap:.03em .10em}
+.clock-lyric .word.visible{animation:clockLyricIn .62s cubic-bezier(.12,1.3,.3,1) both;animation-delay:calc(var(--i)*.07s)}
+@keyframes clockLyricIn{0%{opacity:0;transform:translateY(26px) scale(.58) rotate(calc(-8deg + var(--i)*2deg))}55%{opacity:1;transform:translateY(-7px) scale(1.08) rotate(calc(3deg - var(--i)*1deg))}78%{transform:translateY(3px) scale(.98) rotate(calc(-2deg + var(--i)*.7deg))}100%{opacity:1;transform:none}}
+.clock-face .clock-number:nth-of-type(12n+1){color:var(--accent)}
 
 
 /* --- PUSO / HEARTBEAT ENHANCEMENT --- */
@@ -821,6 +940,21 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   text-shadow:0 0 18px #ffb38a66;
   transform:translate(-50%,-50%) scale(.2) rotate(var(--hr));
   animation:heartFloat var(--hd,2.8s) cubic-bezier(.2,.7,.2,1) forwards;
+}
+.line.scene-heart-split .puso-heart-pop{
+  animation-duration:1.55s;
+  filter:drop-shadow(0 0 14px #ffb38a88);
+}
+.line.scene-heart-split .mo-heart-pop{
+  animation:heartFloatMo 1.35s cubic-bezier(.12,.9,.2,1) forwards;
+  filter:drop-shadow(0 0 18px #ffb38aaa);
+}
+@keyframes heartFloatMo{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.2) rotate(var(--hr))}
+  12%{opacity:1;transform:translate(-50%,-50%) scale(1.28) rotate(var(--hr))}
+  34%{opacity:.95;transform:translate(calc(-50% + var(--dx)*.35),calc(-50% + var(--dy)*.25)) scale(1.05) rotate(calc(var(--hr) + 7deg))}
+  68%{opacity:.58;transform:translate(calc(-50% + var(--dx)*.72),calc(-50% + var(--dy)*.72)) scale(.76) rotate(calc(var(--hr) - 5deg))}
+  100%{opacity:0;transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(.38) rotate(calc(var(--hr) + 10deg))}
 }
 @keyframes heartFloat{
   0%{opacity:0;transform:translate(-50%,-35%) scale(.2) rotate(var(--hr))}
@@ -889,6 +1023,101 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .line.motion.big.active .word.visible,
 .line.motion.active .word.stretch.visible{animation:none}
 
+
+/* WORD-BY-WORD BACKGROUND ECHO — "Pwede ba kitang ligawan?" */
+.line.word-echo-scene .word{
+  position:relative;
+  z-index:1;
+}
+/* Keep the 1:03 "ligawan?" word in the exact same type as the rest of the chorus.
+   The generic 4th-word sizing rule was shrinking it, which made the highlighted
+   word look like it switched fonts. */
+.line.word-echo-scene .word[data-word-index="3"]{
+  font-family:inherit !important;
+  font-size:1em !important;
+  font-weight:inherit !important;
+  letter-spacing:inherit !important;
+  line-height:inherit !important;
+}
+/* Keep 1:03 "ligawan?" exactly the same physical size when highlighted.
+   The global .word.current rule scales highlighted words to 1.06. */
+.line.word-echo-scene .word[data-word-index="3"].current{
+  transform:translateY(-.055em) scale(1) !important;
+  scale:1 !important;
+}
+.line.word-echo-scene .word::before{
+  content:attr(data-echo);
+  position:absolute;
+  left:50%;
+  top:50%;
+  z-index:-1;
+  display:block;
+  white-space:nowrap;
+  font-family:inherit;
+  font-size:1em;
+  font-weight:inherit;
+  letter-spacing:inherit;
+  line-height:inherit;
+  color:var(--echo-color,#ffb38a);
+  opacity:0;
+  filter:blur(1.5px);
+  pointer-events:none;
+  transform:translate(-50%,-50%) translate(var(--echo-x,0px),var(--echo-y,0px)) scale(var(--echo-scale,1.75)) rotate(var(--echo-rot,0deg));
+  transform-origin:center;
+  animation:wordEchoIn .72s cubic-bezier(.16,1.15,.25,1) forwards,
+            wordEchoBob var(--echo-dur,2.8s) ease-in-out var(--echo-delay,.2s) infinite alternate;
+}
+.line.word-echo-scene .word:nth-of-type(1)::before{--echo-scale:1.9;--echo-x:-2px;--echo-y:2px;--echo-rot:-2deg;--echo-color:#f8f0e6;--echo-delay:.05s;--echo-dur:3.1s}
+.line.word-echo-scene .word:nth-of-type(2)::before{--echo-scale:2.2;--echo-x:3px;--echo-y:-1px;--echo-rot:2deg;--echo-color:#ffb38a;--echo-delay:.14s;--echo-dur:2.6s}
+.line.word-echo-scene .word:nth-of-type(3)::before{--echo-scale:1.65;--echo-x:-3px;--echo-y:3px;--echo-rot:-1deg;--echo-color:#f8f0e6;--echo-delay:.23s;--echo-dur:3.4s}
+.line.word-echo-scene .word:nth-of-type(4)::before{--echo-scale:2.0;--echo-x:2px;--echo-y:-2px;--echo-rot:1.5deg;--echo-color:#ffb38a;--echo-delay:.32s;--echo-dur:2.9s}
+@keyframes wordEchoIn{
+  0%{opacity:0;transform:translate(-50%,-50%) translate(var(--echo-x),calc(var(--echo-y) + 8px)) scale(.8) rotate(calc(var(--echo-rot) - 6deg))}
+  65%{opacity:.19;transform:translate(-50%,-50%) translate(var(--echo-x),var(--echo-y)) scale(calc(var(--echo-scale) * 1.06)) rotate(calc(var(--echo-rot) + 2deg))}
+  100%{opacity:.13;transform:translate(-50%,-50%) translate(var(--echo-x),var(--echo-y)) scale(var(--echo-scale)) rotate(var(--echo-rot))}
+}
+@keyframes wordEchoBob{
+  0%{opacity:.10;transform:translate(-50%,-50%) translate(var(--echo-x),calc(var(--echo-y) + 3px)) scale(var(--echo-scale)) rotate(var(--echo-rot))}
+  100%{opacity:.15;transform:translate(-50%,-50%) translate(calc(var(--echo-x) + 3px),calc(var(--echo-y) - 4px)) scale(calc(var(--echo-scale) * 1.025)) rotate(calc(var(--echo-rot) + 1deg))}
+}
+.line.word-echo-scene.out .word::before{animation:wordEchoOut .38s ease-in forwards!important}
+
+/* More energetic bob for the 1:03 chorus line. */
+.line.word-echo-scene.active{
+  animation:wordEchoSceneBob 1.15s cubic-bezier(.36,.07,.19,.97) infinite alternate !important;
+}
+@keyframes wordEchoSceneBob{
+  0%{transform:translate3d(-7px,5px,0) rotate(-.55deg)}
+  22%{transform:translate3d(5px,-8px,0) rotate(.7deg)}
+  47%{transform:translate3d(-4px,7px,0) rotate(-.8deg)}
+  71%{transform:translate3d(7px,-5px,0) rotate(.55deg)}
+  100%{transform:translate3d(-5px,4px,0) rotate(-.45deg)}
+}
+
+/* The same word-echo treatment is used for "Oo o hindi?". */
+.line.scene-question.word-echo-scene .word::before{
+  filter:blur(1px);
+}
+
+/* 01:08 "Oo o hindi?": only the actual "Oo" word pulses after "hindi".
+   The rest of the line keeps its normal motion and disappears normally. */
+.line.scene-question.oo-final-pulse .word:first-child{
+  animation:ooFinalWordPulse .38s cubic-bezier(.35,.05,.25,1) infinite !important;
+  transform-origin:center center !important;
+  filter:drop-shadow(0 0 18px #ffb38a88);
+  text-shadow:0 0 24px #ffb38a88 !important;
+}
+@keyframes ooFinalWordPulse{
+  0%,100%{transform:scale(1);filter:drop-shadow(0 0 10px #ffb38a55);text-shadow:0 0 14px #ffb38a55}
+  45%{transform:scale(1.16);filter:drop-shadow(0 0 26px #ffb38aaa);text-shadow:0 0 30px #ffb38aaa}
+  70%{transform:scale(.98);filter:drop-shadow(0 0 12px #ffb38a66);text-shadow:0 0 16px #ffb38a66}
+}
+
+@keyframes wordEchoOut{
+  from{opacity:.14;transform:translate(-50%,-50%) translate(var(--echo-x),var(--echo-y)) scale(var(--echo-scale)) rotate(var(--echo-rot))}
+  to{opacity:0;transform:translate(-50%,-50%) translate(calc(var(--echo-x) + var(--exit-x,18px)),calc(var(--echo-y) - 12px)) scale(.72) rotate(calc(var(--echo-rot) + 8deg))}
+}
+
 /* 1 — words chase one another along a little elastic path */
 .line.scene-chase{gap:.02em .13em}
 .line.scene-chase .word.visible{animation:chaseIn .48s cubic-bezier(.16,1.25,.28,1) both, chaseFloat 1.8s ease-in-out .48s infinite alternate}
@@ -927,87 +1156,241 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 @keyframes gustoShiverStrong{0%{transform:translate(-2px,-1px) rotate(-1.2deg) scale(1.05)}50%{transform:translate(2px,1px) rotate(1.3deg) scale(1.08)}100%{transform:translate(-2px,0) rotate(-1deg) scale(1.05)}}
 @keyframes ooForeground{0%,100%{transform:scale(1.45) rotate(-1deg)}50%{transform:scale(1.62) rotate(1deg)}}
 .gusto-shiver .confetti,.gusto-shiver .particle,.gusto-shiver .spark,.gusto-shiver .trail{display:none!important}
-.subtle-kinetic .word.visible{animation:subtleKinetic 1.35s ease-in-out infinite}.subtle-kinetic .word.visible:last-child{animation:linyahanShake .18s steps(2,end) infinite;color:var(--accent)}
-@keyframes subtleKinetic{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-3px) rotate(.6deg)}}
-@keyframes linyahanShake{0%{transform:translate(-2px,0) rotate(-1.2deg)}25%{transform:translate(2px,-1px) rotate(1.4deg) scale(1.03)}50%{transform:translate(-2px,1px) rotate(-1.5deg) scale(1.01)}75%{transform:translate(2px,0) rotate(1.2deg) scale(1.03)}100%{transform:none}}
-.clock-shake .word.visible{animation:clockLyricShake .14s steps(2,end) infinite}.clock-shake .clock-face{animation:clockFastSpin 2.4s linear infinite}.clock-shake .confetti,.clock-shake .particle,.clock-shake .spark{display:none!important}
-@keyframes clockLyricShake{0%{transform:translate(-1px,0) rotate(-.5deg)}50%{transform:translate(1px,.5px) rotate(.6deg)}100%{transform:none}}@keyframes clockFastSpin{to{transform:rotate(360deg)}}
+/* GUSTO lyric — Poppins typography, with decorative/confetti pieces removed. */
+.line.gusto-shiver{font-family:"Poppins",sans-serif !important}
+.line.gusto-shiver .word{font-family:"Poppins",sans-serif !important}
+.line.gusto-shiver .confetti,
+.line.gusto-shiver .particle,
+.line.gusto-shiver .spark,
+.line.gusto-shiver .trail,
+.line.gusto-shiver::before,
+.line.gusto-shiver::after{display:none!important;content:none!important}
+
+/* The GUSTO lyric should have a clean stage: no leftover confetti/decorative particles. */
+.gusto-clean #heartField,
+.gusto-clean #backgroundBanat,
+.gusto-clean #echoes,
+.gusto-clean #siteSparkField,
+.gusto-clean .confetti,
+.gusto-clean .particle,
+.gusto-clean .spark,
+.gusto-clean .trail{display:none!important}
+.scene-clock.clock-exit{opacity:0!important;transform:scale(1.12) rotate(-2deg)!important;filter:blur(8px)!important;transition:opacity .55s ease,transform .65s cubic-bezier(.7,0,.9,.2),filter .45s ease!important}
+.clock-whimsy-time .clock-lyric .word.visible{animation:clockDanceIn .62s cubic-bezier(.12,1.3,.3,1) both,clockDance 1.35s ease-in-out .62s infinite;animation-delay:calc(var(--i)*.07s),calc(.72s + var(--i)*.05s)}
+.clock-whimsy-skill .clock-lyric .word.visible{animation:clockBounceIn .68s cubic-bezier(.12,1.35,.3,1) both,clockWiggle 1.7s ease-in-out .68s infinite;animation-delay:calc(var(--i)*.065s),calc(.78s + var(--i)*.06s)}
+@keyframes clockDanceIn{0%{opacity:0;transform:translateY(28px) rotate(-10deg) scale(.55)}55%{opacity:1;transform:translateY(-9px) rotate(5deg) scale(1.1)}78%{transform:translateY(3px) rotate(-2deg) scale(.98)}100%{opacity:1;transform:none}}
+@keyframes clockDance{0%,100%{transform:translateY(0) rotate(-1.2deg)}25%{transform:translateY(-3px) rotate(1.4deg)}50%{transform:translateY(2px) rotate(-.7deg)}75%{transform:translateY(-2px) rotate(1deg)}}
+@keyframes clockBounceIn{0%{opacity:0;transform:translateY(-34px) scale(.55) rotate(8deg)}55%{opacity:1;transform:translateY(8px) scale(1.1) rotate(-4deg)}80%{transform:translateY(-3px) scale(.98) rotate(1deg)}100%{opacity:1;transform:none}}
+@keyframes clockWiggle{0%,100%{transform:translateY(0) rotate(1deg)}33%{transform:translateY(-2px) rotate(-1.5deg)}66%{transform:translateY(2px) rotate(1.2deg)}}
+@keyframes clockBob{0%,100%{transform:translateY(0) rotate(-.4deg) scale(1)}50%{transform:translateY(-4px) rotate(.5deg) scale(1.01)}}
+@keyframes clockBobReverse{0%,100%{transform:translateY(0) rotate(.4deg) scale(1)}50%{transform:translateY(4px) rotate(-.5deg) scale(1.01)}}
+.clock-whimsy-time .confetti,.clock-whimsy-time .particle,.clock-whimsy-time .spark,.clock-whimsy-skill .confetti,.clock-whimsy-skill .particle,.clock-whimsy-skill .spark{display:none!important}
+/* EXTRA WHIMSY — elastic, buoyant lyric motion. Keep the clock itself untouched. */
+.line.scene-clock.clock-whimsy-time .clock-lyric .word,
+.line.scene-clock.clock-whimsy-skill .clock-lyric .word{
+  position:relative;
+  display:inline-block;
+  transform-origin:50% 85%;
+  will-change:transform,filter;
+}
+.line.scene-clock.clock-whimsy-time .clock-lyric .word.visible{
+  animation:
+    timeWordPop .62s cubic-bezier(.18,1.65,.25,1) both,
+    timeWordFloat 1.05s ease-in-out .62s infinite;
+  animation-delay:calc(var(--i)*.065s),calc(.72s + var(--i)*.075s);
+}
+.line.scene-clock.clock-whimsy-skill .clock-lyric .word.visible{
+  animation:
+    skillWordPop .68s cubic-bezier(.16,1.8,.24,1) both,
+    skillWordJelly 1.18s ease-in-out .68s infinite;
+  animation-delay:calc(var(--i)*.075s),calc(.82s + var(--i)*.085s);
+}
+@keyframes timeWordPop{
+  0%{opacity:0;transform:translate3d(-14px,42px,0) rotate(-14deg) scale(.35,.55)}
+  32%{opacity:1;transform:translate3d(9px,-15px,0) rotate(9deg) scale(1.18,.88)}
+  54%{transform:translate3d(-5px,5px,0) rotate(-6deg) scale(.94,1.08)}
+  72%{transform:translate3d(3px,-3px,0) rotate(3deg) scale(1.05,.97)}
+  100%{opacity:1;transform:none}
+}
+@keyframes timeWordFloat{
+  0%,100%{transform:translate3d(0,0,0) rotate(-1deg) scale(1)}
+  22%{transform:translate3d(-2px,-7px,0) rotate(3deg) scale(1.04, .98)}
+  46%{transform:translate3d(4px,2px,0) rotate(-2deg) scale(.98,1.03)}
+  70%{transform:translate3d(-3px,-4px,0) rotate(2deg) scale(1.025,.99)}
+}
+@keyframes skillWordPop{
+  0%{opacity:0;transform:translate3d(18px,-40px,0) rotate(16deg) scale(.38,.5)}
+  28%{opacity:1;transform:translate3d(-10px,12px,0) rotate(-12deg) scale(1.22,.86)}
+  50%{transform:translate3d(6px,-7px,0) rotate(8deg) scale(.9,1.1)}
+  70%{transform:translate3d(-3px,3px,0) rotate(-4deg) scale(1.06,.96)}
+  100%{opacity:1;transform:none}
+}
+@keyframes skillWordJelly{
+  0%,100%{transform:translate3d(0,0,0) rotate(1deg) skewX(0) scale(1)}
+  18%{transform:translate3d(2px,-8px,0) rotate(-4deg) skewX(-2deg) scale(1.06,.96)}
+  38%{transform:translate3d(-4px,3px,0) rotate(3deg) skewX(2deg) scale(.97,1.06)}
+  58%{transform:translate3d(3px,-5px,0) rotate(-2deg) skewX(-1deg) scale(1.04,.98)}
+  78%{transform:translate3d(-2px,1px,0) rotate(2deg) skewX(1deg) scale(.99,1.02)}
+}
+/* tiny floating doodle-like marks, generated without changing the clock DOM */
+.line.scene-clock.clock-whimsy-time .clock-lyric::before,
+.line.scene-clock.clock-whimsy-time .clock-lyric::after,
+.line.scene-clock.clock-whimsy-skill .clock-lyric::before,
+.line.scene-clock.clock-whimsy-skill .clock-lyric::after{
+  content:"✦";
+  position:absolute;
+  pointer-events:none;
+  font-family:ui-rounded,sans-serif;
+  color:var(--accent);
+  opacity:.72;
+  z-index:-1;
+}
+.line.scene-clock.clock-whimsy-time .clock-lyric::before{left:4%;top:12%;font-size:18px;animation:doodleFloatA 1.7s ease-in-out infinite}
+.line.scene-clock.clock-whimsy-time .clock-lyric::after{right:3%;bottom:9%;font-size:13px;animation:doodleFloatB 1.35s ease-in-out .2s infinite}
+.line.scene-clock.clock-whimsy-skill .clock-lyric::before{left:2%;bottom:12%;font-size:15px;animation:doodleFloatB 1.15s ease-in-out infinite}
+.line.scene-clock.clock-whimsy-skill .clock-lyric::after{right:2%;top:8%;font-size:21px;animation:doodleFloatA 1.45s ease-in-out .15s infinite}
+@keyframes doodleFloatA{0%,100%{transform:translate(0,3px) rotate(-12deg) scale(.8);opacity:.35}50%{transform:translate(5px,-7px) rotate(18deg) scale(1.25);opacity:.9}}
+@keyframes doodleFloatB{0%,100%{transform:translate(0,0) rotate(10deg) scale(.75);opacity:.3}50%{transform:translate(-5px,-5px) rotate(-15deg) scale(1.15);opacity:.85}}
+
+/* SECOND CLOCK LYRIC — playful chunky type, flying/staggered stack.
+   Deliberately non-cursive and kept within a readable central block. */
+.line.scene-clock.playful-clock-lyric .clock-lyric{
+  font-family:ui-rounded,"Arial Rounded MT Bold","Trebuchet MS",sans-serif;
+  font-weight:900;
+  font-size:clamp(27px,6.6vw,64px);
+  line-height:.98;
+  letter-spacing:-.025em;
+  max-width:min(88%,760px);
+  gap:.04em .16em;
+  text-wrap:balance;
+  transform:translate(-50%,-50%);
+}
+.line.scene-clock.playful-clock-lyric .clock-lyric .word{
+  font-family:inherit!important;
+  font-weight:900!important;
+  font-size:1em!important;
+  letter-spacing:inherit!important;
+  display:inline-block;
+  position:relative;
+  transform-origin:50% 100%;
+}
+.line.scene-clock.playful-clock-lyric .clock-lyric .word.visible{
+  animation:skillFlyStack .72s cubic-bezier(.14,1.55,.22,1) both,
+             skillPlayfulFloat 1.35s ease-in-out .78s infinite;
+  animation-delay:calc(var(--i)*.075s),calc(.82s + var(--i)*.08s);
+}
+@keyframes skillFlyStack{
+  0%{opacity:0;transform:translate3d(0,90px,0) rotate(-10deg) scale(.55,.72)}
+  30%{opacity:1;transform:translate3d(-12px,-18px,0) rotate(6deg) scale(1.16,.88)}
+  52%{transform:translate3d(8px,9px,0) rotate(-4deg) scale(.92,1.08)}
+  72%{transform:translate3d(-3px,-4px,0) rotate(2deg) scale(1.05,.97)}
+  100%{opacity:1;transform:translate3d(0,0,0) rotate(0) scale(1)}
+}
+@keyframes skillPlayfulFloat{
+  0%,100%{transform:translate3d(0,0,0) rotate(-1deg) scale(1)}
+  20%{transform:translate3d(-2px,-5px,0) rotate(2deg) scale(1.025, .985)}
+  42%{transform:translate3d(3px,2px,0) rotate(-1.5deg) scale(.985,1.025)}
+  68%{transform:translate3d(-2px,-4px,0) rotate(1.5deg) scale(1.02,.99)}
+}
+.line.scene-clock.playful-clock-lyric .clock-lyric::before{content:none!important;display:none!important}
+@keyframes skillSparkBounce{0%,100%{opacity:.25;transform:translate(-50%,4px) scale(.8) rotate(-3deg)}50%{opacity:.9;transform:translate(-50%,-5px) scale(1.12) rotate(3deg)}}
+
 .standup-exit .word.current{animation:standUpHighlighted .32s cubic-bezier(.15,1.4,.3,1) both;transform-origin:50% 100%;z-index:5}
 @keyframes standUpHighlighted{0%{transform:translateY(12px) rotate(-18deg) scale(.92)}70%{transform:translateY(-5px) rotate(4deg) scale(1.08)}100%{transform:translateY(0) rotate(0) scale(1.06)}}
 .standup-exit{animation:kasiExit .72s cubic-bezier(.7,0,.9,.2) forwards;transform-origin:50% 50%}
 @keyframes kasiExit{0%{clip-path:inset(0);filter:blur(0);opacity:1}58%{clip-path:inset(0);filter:blur(0);opacity:1;transform:scale(1)}100%{clip-path:inset(0 50% 0 50%);filter:blur(12px);opacity:0;transform:scale(1.12) rotateX(18deg)}}
 
-/* 10 — "Ikaw ay lagi kong pupuntahan": bold center words with a faint
-   orbiting echo of the NEXT word. The final "pupuntahan" locks in place. */
+/* 3 — SECOND-HALF \"Ikaw ay lagi kong pupuntahan\" scene.
+   This scene is isolated from the older orbit/Kailan treatment.
+   Words appear one at a time; the active word gets a large orbiting echo.
+   The final word, \"pupuntahan\", locks in place once it appears. */
 .line.scene-orbit{
   position:relative;
   width:min(1100px,94vw);
   height:min(52vh,440px);
   display:block;
   overflow:visible;
+  text-align:center;
+  font-size:clamp(42px,7.5vw,94px);
+  font-weight:900;
+  letter-spacing:-.055em;
+  line-height:.92;
+}
+.line.scene-orbit.active{
+  animation:none!important;
+  transform:translateY(0) scale(1)!important;
 }
 .line.scene-orbit .word{
   position:absolute;
   left:50%;
   top:50%;
   margin:0;
-  transform:translate3d(-50%,-50%,0);
-  transform-origin:center center;
   white-space:nowrap;
-  opacity:0;
+  font-size:1em!important;
+  font-weight:900!important;
+  letter-spacing:inherit!important;
+  line-height:inherit!important;
   color:var(--ink);
-  font-size:clamp(32px,8.2vw,72px);
-  font-weight:800;
-  letter-spacing:-.025em;
-  line-height:1;
-  filter:none;
-  transition:none;
-  will-change:transform,opacity;
-}
-.line.scene-orbit .word.visible{
-  animation:none;
+  opacity:0;
+  transform:translate3d(-50%,-50%,0) scale(.82);
+  transform-origin:center center;
+  transition:none!important;
+  animation:none!important;
+  will-change:transform,opacity,filter;
+  z-index:3;
 }
 .line.scene-orbit .word.current{
   color:var(--accent);
-  text-shadow:0 0 30px #ffb38a55;
-  z-index:5;
+  text-shadow:0 0 30px #ffb38a66;
+  z-index:6;
 }
-
-/* The following word appears as a thin, faded echo and orbits the current word. */
-.line.scene-orbit .word.current[data-next-echo]::after{
-  content:attr(data-next-echo);
+.line.scene-orbit .word[data-word-index="4"]{
+  color:var(--accent);
+}
+.line.scene-orbit .word[data-word-index="4"].current{
+  transform:translate3d(-50%,-50%,0) scale(1)!important;
+}
+.line.scene-orbit .word.current::after{
+  content:attr(data-echo);
   position:absolute;
   left:50%;
   top:50%;
-  width:max-content;
-  color:var(--accent);
-  font:300 clamp(16px,4.1vw,34px)/1 inherit;
-  letter-spacing:-.015em;
-  opacity:.30;
+  display:block;
   white-space:nowrap;
+  color:#f8f0e6;
+  font:inherit;
+  letter-spacing:inherit;
+  line-height:inherit;
+  opacity:.16;
   pointer-events:none;
+  z-index:-1;
+  filter:blur(1.4px);
+  text-shadow:0 0 22px #ffb38a44;
   transform-origin:center center;
-  text-shadow:0 0 14px #ffb38a55;
-  animation:nextWordOrbit 2.4s linear infinite;
+  animation:ikawEchoOrbit 1.65s linear infinite;
 }
-@keyframes nextWordOrbit{
-  0%{transform:translate(-50%,-50%) rotate(0deg) translateX(clamp(72px,12vw,150px)) rotate(0deg)}
-  25%{transform:translate(-50%,-50%) rotate(90deg) translateX(clamp(72px,12vw,150px)) rotate(-90deg)}
-  50%{transform:translate(-50%,-50%) rotate(180deg) translateX(clamp(72px,12vw,150px)) rotate(-180deg)}
-  75%{transform:translate(-50%,-50%) rotate(270deg) translateX(clamp(72px,12vw,150px)) rotate(-270deg)}
-  100%{transform:translate(-50%,-50%) rotate(360deg) translateX(clamp(72px,12vw,150px)) rotate(-360deg)}
+.line.scene-orbit .word[data-word-index="4"].current::after{
+  opacity:0;
+  animation:none;
 }
-
-/* "pupuntahan" is the final landing word: no orbit and no drift. */
-.line.scene-orbit .word.pupuntahan-final{
-  font-size:clamp(38px,9.6vw,84px);
-  font-weight:800;
+@keyframes ikawEchoOrbit{
+  0%{transform:translate(-50%,-50%) rotate(0deg) translateX(34px) scale(1.18)}
+  25%{transform:translate(-50%,-50%) rotate(90deg) translateX(34px) scale(1.28)}
+  50%{transform:translate(-50%,-50%) rotate(180deg) translateX(34px) scale(1.18)}
+  75%{transform:translate(-50%,-50%) rotate(270deg) translateX(34px) scale(1.28)}
+  100%{transform:translate(-50%,-50%) rotate(360deg) translateX(34px) scale(1.18)}
 }
-.line.scene-orbit .word.pupuntahan-final.current{
-  animation:none!important;
-  transform:translate3d(-50%,-50%,0)!important;
+@media(max-width:600px){
+  .line.scene-orbit{
+    width:94vw;
+    height:48vh;
+    font-size:clamp(34px,10.2vw,62px);
+  }
+  .line.scene-orbit .word{
+    font-size:1em!important;
+    font-weight:900!important;
+  }
 }
-.line.scene-orbit .word.pupuntahan-final::after{display:none!important}
 
 /* 4 — build toward the "oo" like a rubber band */
 .line.scene-stretch{gap:.06em .12em}
@@ -1050,6 +1433,34 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 /* continuous camera movement keeps the screen alive */
 .line.motion.active{animation:cameraFloat 3.6s ease-in-out infinite alternate}
 @keyframes cameraFloat{0%{transform:translate3d(-3px,2px,0) rotate(-.25deg)}100%{transform:translate3d(3px,-3px,0) rotate(.25deg)}}
+/* More energetic bob for the 'Parang masyado...' line. */
+.line.scene-slit[data-index="1"].active{
+  animation:banatLineBob 1.35s cubic-bezier(.36,.07,.19,.97) infinite alternate !important;
+}
+@keyframes banatLineBob{
+  0%{transform:translate3d(-7px,6px,0) rotate(-.55deg)}
+  20%{transform:translate3d(5px,-8px,0) rotate(.65deg)}
+  42%{transform:translate3d(-4px,7px,0) rotate(-.7deg)}
+  64%{transform:translate3d(7px,-5px,0) rotate(.55deg)}
+  82%{transform:translate3d(-5px,3px,0) rotate(-.4deg)}
+  100%{transform:translate3d(4px,-6px,0) rotate(.45deg)}
+}
+/* Energetic first lyric: the whole line bobs more, while each word keeps its own life. */
+.line.scene-heart-split.active{
+  animation:heartSplitEnergetic 1.45s cubic-bezier(.36,.07,.19,.97) infinite alternate !important;
+}
+@keyframes heartSplitEnergetic{
+  0%{transform:translate3d(-8px,5px,0) rotate(-.55deg)}
+  18%{transform:translate3d(5px,-7px,0) rotate(.7deg)}
+  37%{transform:translate3d(-6px,8px,0) rotate(-.8deg)}
+  56%{transform:translate3d(8px,-4px,0) rotate(.6deg)}
+  78%{transform:translate3d(-4px,6px,0) rotate(-.5deg)}
+  100%{transform:translate3d(6px,-5px,0) rotate(.45deg)}
+}
+.line.scene-heart-split.active .word.visible{
+  will-change:transform;
+}
+
 .line.scene-zoom.active{animation:cameraFloatZoom 3s ease-in-out infinite alternate}
 @keyframes cameraFloatZoom{0%{transform:scale(.985) translate3d(-3px,2px,0)}100%{transform:scale(1.015) translate3d(3px,-3px,0)}}
 
@@ -1124,22 +1535,6 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .line.motion .word:nth-child(4n){font-size:.88em}
 .line.motion .word:nth-child(7n+1){font-size:1.12em}
 
-.clock-wrap{position:relative;width:min(92vw,700px);height:min(48vh,410px);display:grid;place-items:center}
-.clock-face{position:absolute;width:min(78vw,350px);height:min(78vw,350px);border:1px solid #ffffff20;border-radius:50%;opacity:.8;box-shadow:0 0 45px #ffb38a0d inset,0 0 25px #ffb38a0b}
-.clock-face::before{content:"";position:absolute;inset:8%;border:1px dashed #ffffff12;border-radius:50%}
-.clock-number{position:absolute;left:50%;top:50%;font:700 clamp(9px,2.3vw,14px) ui-monospace,SFMono-Regular,Menlo,monospace;color:#a99d93;transform:translate(-50%,-50%);opacity:0;animation:clockNumberIn .45s cubic-bezier(.15,1.35,.3,1) forwards;animation-delay:calc(var(--n)*35ms)}
-@keyframes clockNumberIn{0%{opacity:0;transform:translate(-50%,-50%) scale(.2) rotate(-20deg)}70%{opacity:1;transform:translate(-50%,-50%) scale(1.18) rotate(3deg)}100%{opacity:.85;transform:translate(-50%,-50%) scale(1) rotate(0)}}
-.clock-tick{position:absolute;left:50%;top:50%;width:2px;height:7px;background:#ffffff30;transform-origin:50% calc(min(39vw,175px));border-radius:2px}
-.clock-hands{position:absolute;inset:0;pointer-events:none}
-.clock-hand{position:absolute;left:50%;top:50%;height:28%;width:2px;background:#f8f0e6;border-radius:99px;transform-origin:50% 100%;box-shadow:0 0 12px #fff3}
-.clock-hand.hour{height:20%;width:3px}
-.clock-hand.second{height:31%;width:1px;background:var(--accent)}
-.clock-center{position:absolute;left:50%;top:50%;width:8px;height:8px;border-radius:50%;background:var(--accent);transform:translate(-50%,-50%);box-shadow:0 0 15px #ffb38a88}
-.clock-lyric{position:relative;z-index:2;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;max-width:78%;text-align:center;gap:.03em .10em}
-.clock-lyric .word.visible{animation:clockLyricIn .5s cubic-bezier(.12,1.3,.3,1) both}
-@keyframes clockLyricIn{0%{opacity:0;transform:translateY(20px) scale(.65) rotate(-4deg)}65%{opacity:1;transform:translateY(-5px) scale(1.06) rotate(1deg)}100%{opacity:1;transform:none}}
-.clock-face .clock-number:nth-child(12n+1){color:var(--accent)}
-
 @media(max-width:600px){
   .line.motion{width:88vw;min-height:44vh;gap:.04em .10em}
   .line.scene-heart-split{width:88vw;min-height:44vh;gap:.1em}
@@ -1147,7 +1542,6 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   .heart-field{width:82vw;height:130px}
 
   .line.scene-orbit{width:94vw;height:48vh}
-  .line.scene-orbit .word{font-size:clamp(34px,8.8vw,72px)}
   .line.scene-longa{font-size:clamp(34px,10vw,58px)}
 }
 
@@ -1476,6 +1870,7 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .line.scene-kailan-flight{position:relative;display:block;width:min(92vw,900px);min-height:48vh;overflow:visible}
 .line.scene-kailan-flight .word{position:absolute;left:50%;top:50%;margin:0;white-space:nowrap;transform:translate3d(-50%,-50%,0);will-change:transform,opacity;animation:none!important}
 .line.scene-kailan-flight .word.accent{color:var(--accent)}
+.line.scene-kailan-flight .word{font-family:"Arial Rounded MT Bold","Trebuchet MS","Comic Sans MS",ui-rounded,sans-serif !important;font-weight:800;letter-spacing:-.035em;text-shadow:0 0 12px #ffb38a33;}
 
 
 @keyframes linyahanFootstepReverse{
@@ -1495,6 +1890,102 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   }
 }
 
+
+/* CLOCK BACKGROUND LOCK — keep the clock geometry perfectly centered.
+   The lyric can move; the clock face, ticks, and hands stay fixed in place. */
+.line.scene-clock{
+  width:100%;
+  max-width:none;
+  height:100%;
+  min-height:0;
+  display:block;
+  left:0;
+  top:0;
+  text-align:center;
+}
+.line.scene-clock.active{
+  animation:none!important;
+  transform:translateY(0) scale(1)!important;
+}
+.line.scene-clock .clock-wrap{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  display:block;
+  pointer-events:none;
+}
+.line.scene-clock .clock-face{
+  position:absolute;
+  left:50%;
+  top:50%;
+  margin:0;
+  transform:translate(-50%,-50%)!important;
+  animation:none!important;
+  will-change:auto;
+}
+
+/* The clock is centered by layout, but the whole clock scene gently bobs
+   together with the lyric. Keeping the motion on clock-wrap means the face,
+   hands, ticks, numbers, and lyric all move as one without losing center. */
+.line.scene-clock .clock-wrap{
+  animation:clockSceneBob 2.35s ease-in-out infinite;
+  will-change:transform;
+}
+@keyframes clockSceneBob{
+  0%,100%{transform:translate3d(0,0,0) rotate(0deg) scale(1)}
+  25%{transform:translate3d(-2px,-5px,0) rotate(-.18deg) scale(1.003)}
+  50%{transform:translate3d(1px,3px,0) rotate(.22deg) scale(.998)}
+  75%{transform:translate3d(2px,-3px,0) rotate(-.12deg) scale(1.002)}
+}
+.line.scene-clock .clock-face::after{
+  animation:clockOrbit 14s linear infinite;
+}
+.line.scene-clock .clock-number{
+  transform-origin:center center;
+}
+.line.scene-clock .clock-face > .clock-number,
+.line.scene-clock .clock-face > .clock-tick,
+.line.scene-clock .clock-face > .clock-hands{
+  left:50%;
+  top:50%;
+}
+.line.scene-clock .clock-face > .clock-hands{
+  position:absolute;
+  left:0 !important;
+  top:0 !important;
+  right:0 !important;
+  bottom:0 !important;
+  width:auto !important;
+  height:auto !important;
+}
+
+.line.scene-clock .clock-tick{
+  transform-origin:center center;
+}
+.line.scene-clock .clock-lyric{
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:min(90vw,780px);
+  max-width:90vw;
+  margin:0;
+  transform:translate(-50%,-50%);
+  z-index:2;
+}
+/* The lyric itself is centered; only individual words are allowed to dance. */
+.line.scene-clock .clock-lyric .word{
+  transform-origin:50% 85%;
+}
+
+
+/* Linyahan transition beat at 00:53: quick pulse, then soft fade into the next line. */
+.line.first-linyahan-vertical.linyahan-transition-pulse{animation:linyahanTransitionPulse .34s cubic-bezier(.16,.9,.2,1) both !important;z-index:9}
+.line.first-linyahan-vertical.linyahan-transition-pulse .word{text-shadow:0 0 32px #ffb38a66}
+.line.first-linyahan-vertical.linyahan-transition-fade{animation:linyahanTransitionFade .42s cubic-bezier(.22,.72,.2,1) both !important}
+@keyframes linyahanTransitionPulse{0%{opacity:1;transform:translate3d(0,0,0) scale(1)}32%{transform:translate3d(-3px,2px,0) scale(1.045) rotate(-.35deg);filter:drop-shadow(0 0 15px #ffb38a55)}62%{transform:translate3d(3px,-3px,0) scale(1.085) rotate(.4deg);filter:drop-shadow(0 0 27px #ffb38a77)}100%{opacity:1;transform:translate3d(0,0,0) scale(1) rotate(0);filter:none}}
+@keyframes linyahanTransitionFade{0%{opacity:1;transform:translate3d(0,0,0) scale(1);filter:none}45%{opacity:.78;transform:translate3d(0,-4px,0) scale(.99);filter:blur(.35px)}100%{opacity:0;transform:translate3d(0,-12px,0) scale(.965);filter:blur(1.8px)}}
+
 </style>
 <style>
 /* Restore ONLY the spoken-word highlight for the first linyahan line.
@@ -1503,6 +1994,258 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   color:var(--accent) !important;
   text-shadow:0 0 28px #ffb38a66 !important;
 }
+
+
+/* MAGALING — make the payoff word visibly bigger without breaking the centered line. */
+.line.scene-clock.playful-clock-lyric .clock-lyric .word.magaling-word{
+  font-size:1.32em !important;
+  line-height:.86 !important;
+  position:relative;
+  z-index:6;
+  color:var(--accent);
+  text-shadow:0 3px 0 #0002,0 0 28px #ffb38a55;
+  transform-origin:50% 90%;
+}
+.line.scene-clock.playful-clock-lyric .clock-lyric .word.magaling-word.visible{
+  animation:magalingPop .78s cubic-bezier(.12,1.65,.2,1) both,
+             magalingBounce 1.15s ease-in-out .82s infinite;
+  animation-delay:calc(var(--i)*.075s),calc(.82s + var(--i)*.08s);
+}
+@keyframes magalingPop{
+  0%{opacity:0;transform:translate3d(0,110px,0) rotate(-8deg) scale(.42,.62)}
+  32%{opacity:1;transform:translate3d(-8px,-18px,0) rotate(5deg) scale(1.22,.9)}
+  54%{transform:translate3d(5px,7px,0) rotate(-3deg) scale(.96,1.08)}
+  74%{transform:translate3d(-2px,-3px,0) rotate(2deg) scale(1.08,.96)}
+  100%{opacity:1;transform:none}
+}
+@keyframes magalingBounce{
+  0%,100%{transform:translate3d(0,0,0) rotate(-1deg) scale(1)}
+  25%{transform:translate3d(-3px,-8px,0) rotate(3deg) scale(1.045,.97)}
+  50%{transform:translate3d(4px,2px,0) rotate(-2deg) scale(.98,1.04)}
+  75%{transform:translate3d(-2px,-5px,0) rotate(1.5deg) scale(1.025,.985)}
+}
+
+/* SITE-WIDE WHIMSY — scattered ✦ at varied sizes, positions, and rhythms. */
+#siteSparkField{
+  display:none!important;
+  position:fixed;
+  inset:0;
+  z-index:4;
+  pointer-events:none;
+  overflow:hidden;
+}
+.site-spark{
+  position:absolute;
+  left:var(--sx);
+  top:var(--sy);
+  color:var(--spark-color,#ffb38a);
+  font-family:ui-rounded,sans-serif;
+  font-size:var(--ss);
+  line-height:1;
+  opacity:var(--so);
+  text-shadow:0 0 12px #ffb38a44;
+  transform:translate3d(0,0,0) rotate(var(--sr));
+  animation:siteSparkFloat var(--sd) ease-in-out var(--sdelay) infinite;
+}
+@keyframes siteSparkFloat{
+  0%,100%{transform:translate3d(0,0,0) rotate(var(--sr)) scale(.82);opacity:var(--so)}
+  50%{transform:translate3d(var(--dx),var(--dy),0) rotate(calc(var(--sr) + 18deg)) scale(1.18);opacity:calc(var(--so) + .18)}
+}
+
+/* CLOCK-LYRIC WHIMSY FIELD — sparks exist only during the two clock lines. */
+#clockSparkField{
+  position:absolute;
+  inset:0;
+  z-index:1;
+  pointer-events:none;
+  overflow:visible;
+}
+.clock-spark{
+  position:absolute;
+  left:var(--sx);
+  top:var(--sy);
+  color:var(--sc,#ffb38a);
+  font-family:ui-rounded,sans-serif;
+  font-size:var(--ss);
+  line-height:1;
+  opacity:0;
+  text-shadow:0 0 12px #ffb38a44;
+  transform:translate(-50%,-50%) rotate(var(--sr)) scale(.35);
+  animation:
+    clockSparkEnter .58s cubic-bezier(.16,1.5,.24,1) var(--sdelay) both,
+    clockSparkFloat var(--sd) ease-in-out calc(var(--sdelay) + .58s) infinite;
+}
+@keyframes clockSparkEnter{
+  0%{opacity:0;transform:translate(-50%,-50%) rotate(calc(var(--sr) - 18deg)) scale(.2)}
+  58%{opacity:calc(var(--so) + .18);transform:translate(calc(-50% + 2px),calc(-50% - 7px)) rotate(calc(var(--sr) + 10deg)) scale(1.28)}
+  78%{opacity:var(--so);transform:translate(calc(-50% - 1px),calc(-50% + 2px)) rotate(calc(var(--sr) - 4deg)) scale(.9)}
+  100%{opacity:var(--so);transform:translate(-50%,-50%) rotate(var(--sr)) scale(1)}
+}
+@keyframes clockSparkFloat{
+  0%,100%{transform:translate(-50%,-50%) rotate(var(--sr)) scale(1);opacity:var(--so)}
+  25%{transform:translate(calc(-50% + var(--dx)*.45),calc(-50% + var(--dy)*.35)) rotate(calc(var(--sr) + 8deg)) scale(1.04);opacity:calc(var(--so) + .05)}
+  50%{transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) rotate(calc(var(--sr) + 22deg)) scale(1.16);opacity:calc(var(--so) + .16)}
+  75%{transform:translate(calc(-50% + var(--dx)*.35),calc(-50% + var(--dy)*.25)) rotate(calc(var(--sr) + 12deg)) scale(.96);opacity:calc(var(--so) + .04)}
+}
+.scene-clock.clock-exit #clockSparkField .clock-spark{
+  animation:clockSparkExit .58s cubic-bezier(.55,.05,.85,.35) forwards !important;
+}
+@keyframes clockSparkExit{
+  0%{opacity:var(--so);transform:translate(-50%,-50%) rotate(var(--sr)) scale(1)}
+  35%{opacity:calc(var(--so) + .08);transform:translate(calc(-50% + var(--dx)*.55),calc(-50% + var(--dy)*.55)) rotate(calc(var(--sr) + 20deg)) scale(1.12)}
+  100%{opacity:0;transform:translate(calc(-50% + var(--dx)*2.8),calc(-50% + var(--dy)*2.8 - 18px)) rotate(calc(var(--sr) + 55deg)) scale(.15)}
+}
+
+/* FINAL CLOCK ALIGNMENT GUARD — the lyric stays centered; the clock hands fill the face. */
+.line.scene-clock .clock-lyric,
+.line.scene-clock.cursive-clock-lyric .clock-lyric,
+.line.scene-clock.playful-clock-lyric .clock-lyric{
+  left:50% !important;
+  top:50% !important;
+  transform:translate(-50%,-50%) !important;
+  margin:0 !important;
+}
+.line.scene-clock .clock-face > .clock-hands{
+  position:absolute !important;
+  left:0 !important;
+  top:0 !important;
+  right:0 !important;
+  bottom:0 !important;
+  width:auto !important;
+  height:auto !important;
+}
+</style>
+
+<style id="first-linyahan-poppins-whimsy">
+/* First chorus linyahan: Poppins + PURE VERTICAL BOB. No shaking,
+   horizontal drift, or rotation. This is the only word motion for this line. */
+.line.first-linyahan-vertical .word,
+.line.first-linyahan-vertical .word.visible,
+.line.first-linyahan-vertical .word.current{
+  font-family:"Poppins",sans-serif !important;
+  font-weight:700 !important;
+  animation-timing-function:cubic-bezier(.45,.05,.55,.95) !important;
+  animation-iteration-count:infinite !important;
+  animation-direction:alternate !important;
+  animation-fill-mode:both !important;
+  text-shadow:none !important;
+  transform-origin:50% 50% !important;
+}
+.line.first-linyahan-vertical .word:nth-child(1){animation:linyahanPureBob1 1.35s cubic-bezier(.45,.05,.55,.95) infinite alternate both !important}
+.line.first-linyahan-vertical .word:nth-child(2){animation:linyahanPureBob2 1.62s cubic-bezier(.45,.05,.55,.95) infinite alternate both !important}
+.line.first-linyahan-vertical .word:nth-child(3){animation:linyahanPureBob3 1.48s cubic-bezier(.45,.05,.55,.95) infinite alternate both !important}
+.line.first-linyahan-vertical .word:nth-child(4){animation:linyahanPureBob4 1.72s cubic-bezier(.45,.05,.55,.95) infinite alternate both !important}
+.line.first-linyahan-vertical .word:nth-child(5){animation:linyahanPureBob5 1.42s cubic-bezier(.45,.05,.55,.95) infinite alternate both !important}
+.line.first-linyahan-vertical .word:nth-child(6){animation:linyahanPureBob6 1.58s cubic-bezier(.45,.05,.55,.95) infinite alternate both !important}
+@keyframes linyahanPureBob1{0%{transform:translate3d(0,5px,0) scale(1)}100%{transform:translate3d(0,-7px,0) scale(1.025)}}
+@keyframes linyahanPureBob2{0%{transform:translate3d(0,-4px,0) scale(1.015)}100%{transform:translate3d(0,8px,0) scale(1)}}
+@keyframes linyahanPureBob3{0%{transform:translate3d(0,6px,0) scale(1)}100%{transform:translate3d(0,-9px,0) scale(1.03)}}
+@keyframes linyahanPureBob4{0%{transform:translate3d(0,-6px,0) scale(1.02)}100%{transform:translate3d(0,7px,0) scale(1)}}
+@keyframes linyahanPureBob5{0%{transform:translate3d(0,7px,0) scale(1)}100%{transform:translate3d(0,-8px,0) scale(1.025)}}
+@keyframes linyahanPureBob6{0%{transform:translate3d(0,-5px,0) scale(1.01)}100%{transform:translate3d(0,9px,0) scale(1)}}
+
+/* Faded word echoes sit behind each linyahan word. */
+.line.first-linyahan-vertical .word{
+  position:relative;
+  z-index:2;
+}
+.line.first-linyahan-vertical .word::before{
+  content:attr(data-linyahan-echo);
+  position:absolute;
+  left:50%;
+  top:50%;
+  z-index:-1;
+  white-space:nowrap;
+  font-family:inherit;
+  font-size:1em;
+  font-weight:inherit;
+  line-height:inherit;
+  letter-spacing:inherit;
+  color:#ffb38a;
+  opacity:0;
+  pointer-events:none;
+  filter:blur(1.8px);
+  transform:translate(-50%,-50%) translate(var(--echo-x,0),var(--echo-y,0)) scale(1.42) rotate(var(--echo-rot,0deg));
+  transform-origin:center;
+}
+.line.first-linyahan-vertical.active .word::before{
+  animation:linyahanEchoIn .7s cubic-bezier(.16,1.05,.25,1) var(--echo-delay,0s) both,
+            linyahanEchoDrift 2.8s ease-in-out calc(var(--echo-delay,0s) + .55s) infinite alternate;
+}
+.line.first-linyahan-vertical.out .word::before{
+  animation:linyahanEchoOut .42s ease-in forwards !important;
+}
+@keyframes linyahanEchoIn{
+  0%{opacity:0;transform:translate(-50%,-50%) translate(0,2px) scale(.82) rotate(0)}
+  55%{opacity:.12;transform:translate(-50%,-50%) translate(var(--echo-x),var(--echo-y)) scale(1.48) rotate(var(--echo-rot))}
+  100%{opacity:.075;transform:translate(-50%,-50%) translate(var(--echo-x),var(--echo-y)) scale(1.42) rotate(var(--echo-rot))}
+}
+@keyframes linyahanEchoDrift{
+  0%{opacity:.055;transform:translate(-50%,-50%) translate(var(--echo-x),calc(var(--echo-y) + 3px)) scale(1.42) rotate(var(--echo-rot))}
+  100%{opacity:.10;transform:translate(-50%,-50%) translate(calc(var(--echo-x) - 3px),calc(var(--echo-y) - 4px)) scale(1.46) rotate(calc(var(--echo-rot) + .7deg))}
+}
+@keyframes linyahanEchoOut{
+  from{opacity:.08;transform:translate(-50%,-50%) translate(var(--echo-x),var(--echo-y)) scale(1.42) rotate(var(--echo-rot))}
+  to{opacity:0;transform:translate(-50%,-50%) translate(var(--echo-x),calc(var(--echo-y) - 10px)) scale(1.65) rotate(calc(var(--echo-rot) + 4deg))}
+}
+
+<style id="final-targeted-animation-fixes">
+/* 00:39.65 chorus: REBUILT as one object.
+   The lyric words do not jitter, bob, scale, rotate, or pulse independently.
+   The parent line owns the single pulse/fade. */
+.line.question-chaos .word,
+.line.question-chaos .word.visible,
+.line.question-chaos .word.current{
+  animation-name:qWord !important;
+  animation-duration:.48s !important;
+  animation-timing-function:cubic-bezier(.15,1.4,.3,1) !important;
+  animation-iteration-count:1 !important;
+  animation-fill-mode:both !important;
+  translate:0 0 !important;
+  rotate:0deg !important;
+  scale:1 !important;
+}
+.line.question-chaos .word.current{
+  animation-name:qWord !important;
+}
+
+/* 00:39.65 chorus: one whole-line pulse, never a word-by-word pulse. */
+.line.question-chaos.active .word,
+.line.question-chaos.active .word.current,
+.line.question-chaos.active .word.visible{
+  translate:0 0 !important;
+  rotate:0deg !important;
+  scale:1 !important;
+}
+.line.question-chaos.question-chorus-pulse .word{
+  text-shadow:none !important;
+}
+
+/* 00:46.80 linyahan: REBUILT MOTION — vertical bob only.
+   All previous shake/current-word animation paths were removed. */
+.line.first-linyahan-vertical .word,
+.line.first-linyahan-vertical .word.visible,
+.line.first-linyahan-vertical .word.current{
+  animation-name:initial !important;
+  animation-duration:initial !important;
+  animation-iteration-count:initial !important;
+}
+.line.first-linyahan-vertical .word:nth-child(1){animation:linyahanPureBob1 1.35s cubic-bezier(.45,.05,.55,.95) infinite alternate both !important}
+.line.first-linyahan-vertical .word:nth-child(2){animation:linyahanPureBob2 1.62s cubic-bezier(.45,.05,.55,.95) infinite alternate both !important}
+.line.first-linyahan-vertical .word:nth-child(3){animation:linyahanPureBob3 1.48s cubic-bezier(.45,.05,.55,.95) infinite alternate both !important}
+.line.first-linyahan-vertical .word:nth-child(4){animation:linyahanPureBob4 1.72s cubic-bezier(.45,.05,.55,.95) infinite alternate both !important}
+.line.first-linyahan-vertical .word:nth-child(5){animation:linyahanPureBob5 1.42s cubic-bezier(.45,.05,.55,.95) infinite alternate both !important}
+.line.first-linyahan-vertical .word:nth-child(6){animation:linyahanPureBob6 1.58s cubic-bezier(.45,.05,.55,.95) infinite alternate both !important}
+
+/* REBUILT CLOCK NUMBER BURSTS — one clean implementation, no overlapping size/lifetime overrides. */
+.line.scene-clock .clock-number-burst-layer{
+  position:absolute !important;
+  inset:0 !important;
+  z-index:1 !important;
+  pointer-events:none !important;
+  overflow:visible !important;
+}
+
 </style>
 </head>
 <body>
@@ -1510,7 +2253,7 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   <div class="ambient"><div class="orb o1"></div><div class="orb o2"></div></div>
   <div id="grain"></div>
   <div id="backgroundBanat" aria-hidden="true"></div>
-  <div id="heartField" aria-hidden="true"></div><div id="ooExplosion" aria-hidden="true"></div>
+  <div id="heartField" aria-hidden="true"></div><div id="wordExplosionField" aria-hidden="true"></div><div id="ooExplosion" aria-hidden="true"></div><div id="siteSparkField" aria-hidden="true"></div>
   <div id="echoes"></div>
 <div id="top">
     <div class="title"><span class="dot"></span><span>Pwede Ba Kitang Ligawan</span></div>
@@ -1560,9 +2303,9 @@ const accentWords=new Set(['puso','mo','yo',"'oo'",'ligawan','oras','hindi','yan
   to 8.056s, matching the user's original cue.
 */
 const lines=[
-  {start:8.056,end:15.85,text:'Pwede ba akong tumambay dyan sa puso mo',style:'verse',section:'verse',cues:[8.056,9.261,9.589,10.186,10.555,11.305,11.680,12.430]},
+  {start:8.056,end:15.85,text:'Pwede ba akong tumambay dyan sa puso mo?',style:'verse',section:'verse',cues:[8.056,9.261,9.589,10.186,10.555,11.305,11.680,12.430]},
   {start:15.90,end:23.55,text:"Parang masyado na yatang gasgas ang banat na 'to",style:'soft',section:'verse',cues:[15.90,16.28,16.55,16.72,18.28,18.78,19.10,19.35,19.42]},
-  {start:23.70,end:31.55,text:"Kailan kaya ako makakaisip ng linyang para sa'yo?",style:'verse',section:'verse',cues:[23.70,24.15,24.48,24.92,25.38,27.30,27.78,28.12,28.42]},
+  {start:23.70,end:31.55,text:"Kailan kaya ako makakaisip ng linyang para sa'yo?",style:'verse',section:'verse',cues:[23.70,24.15,24.48,24.92,26.95,27.30,27.78,28.12,28.42]},
   {start:31.70,end:39.25,text:"Gusto ko lang naman ay makamit ang matamis mong 'oo'",style:'soft',section:'verse',cues:[31.70,32.18,32.48,32.72,32.88,33.15,34.85,35.48,35.92,36.42]},
   {start:39.65,end:46.75,text:'Pwede ba kitang ligawan?',style:'chorus',section:'chorus',cues:[39.65,40.25,40.75,42.65]},
   {start:46.80,end:53.65,text:"Kahit 'di maganda ang mga linyahan",style:'soft',section:'chorus',cues:[46.82,47.12,48.32,48.82,49.25,49.50]},
@@ -1621,6 +2364,7 @@ function buildWords(text){
     const classes=['word'];
     if(accent)classes.push('accent');
     if(scratch)classes.push('scratch-word');
+    if(clean==='magaling')classes.push('magaling-word');
     if(isQuestionHindi)classes.push('deny');
     const flyX=((wordIndex%2?-1:1)*(80+((wordIndex*47)%180)))+'px';
     const flyY=((wordIndex%3-1)*(70+((wordIndex*31)%150)))+'px';
@@ -1677,7 +2421,7 @@ function buildHeartSplitLine(text){
 function sceneFor(i){
   // Each lyric becomes a small motion-graphics scene.
   const scenes=[
-    'fly','slit','kailan-flight','wind','zoom','squiggle','clock','flip',
+    'fly','slit','kailan-flight','wind','zoom','squiggle','clock','clock',
     'fly','question','crawl','slit','orbit','wind','rubber','chase',
     'longa','fly','clock','crawl','flip','zoom','question'
   ];
@@ -1685,10 +2429,25 @@ function sceneFor(i){
 }
 
 function buildClock(text){
-  const nums=Array.from({length:12},(_,j)=>`<span class="clock-number" style="--n:${j}">${j+1}</span>`).join('');
-  const ticks=Array.from({length:12},(_,j)=>`<i class="clock-tick" data-tick="${j}"></i>`).join('');
+  const nums=Array.from({length:12},(_,j)=>`<span class="clock-number" style="--n:${j}">${j===0?12:j}</span>`).join('');
+  const ticks=Array.from({length:60},(_,j)=>`<i class="clock-tick ${j%5===0?'major':''}" data-tick="${j}"></i>`).join('');
   const lyric=buildWords(text);
-  return `<div class="clock-wrap"><div class="clock-face">${ticks}${nums}<div class="clock-hands"><i class="clock-hand hour"></i><i class="clock-hand minute"></i><i class="clock-hand second"></i><i class="clock-center"></i></div></div><div class="clock-lyric">${lyric}</div></div>`;
+  const sparks=Array.from({length:42},(_,i)=>{
+    const angle=i*2.399963;
+    const radius=34+(i%7)*7;
+    const x=50+Math.cos(angle)*radius;
+    const y=50+Math.sin(angle)*radius;
+    const size=7+(i%9)*2.8;
+    const opacity=(.18+(i%6)*.07).toFixed(2);
+    const dx=Math.cos(angle+1.1)*(4+(i%5)*2);
+    const dy=Math.sin(angle+1.1)*(5+(i%6)*2);
+    const dur=(1.8+(i%8)*.38).toFixed(2);
+    const delay=(0.06+(i%9)*0.075).toFixed(2);
+    const rot=(-30+(i%13)*5);
+    const color=i%7===0?'#f8f0e6':'#ffb38a';
+    return `<span class="clock-spark" style="--sx:${x}%;--sy:${y}%;--ss:${size}px;--so:${opacity};--dx:${dx}px;--dy:${dy}px;--sd:${dur}s;--sdelay:${delay}s;--sr:${rot}deg;--sc:${color}">✦</span>`;
+  }).join('');
+  return `<div class="clock-wrap"><div id="clockSparkField" aria-hidden="true">${sparks}</div><div class="clock-face">${ticks}${nums}<div class="clock-hands"><i class="clock-hand hour"></i><i class="clock-hand minute"></i><i class="clock-hand second"></i><i class="clock-center"></i></div></div><div class="clock-number-burst-layer" aria-hidden="true"></div><div class="clock-lyric">${lyric}</div></div>`;
 }
 
 function layoutClock(){
@@ -1702,22 +2461,26 @@ function layoutClock(){
     n.style.transform=`translate(-50%,-50%) translate(${Math.cos(a)*r}px,${Math.sin(a)*r}px)`;
   });
   el.querySelectorAll('.clock-tick').forEach((tick,i)=>{
-    const a=(i/12)*Math.PI*2;
-    tick.style.transform=`translate(-50%,-50%) translate(${Math.cos(a)*r*.96}px,${Math.sin(a)*r*.96}px) rotate(${i*30}deg)`;
+    const a=(i/60)*Math.PI*2-Math.PI/2;
+    tick.style.transform=`translate(-50%,-50%) translate(${Math.cos(a)*r*.96}px,${Math.sin(a)*r*.96}px) rotate(${i*6}deg)`;
   });
 }
 
 function updateClock(t){
   const el=L.querySelector('.line.active');
   if(!el||!el.classList.contains('scene-clock'))return;
-  const sec=((t%60)+60)%60;
-  const minute=(t%3600)/60;
-  const hour=(t%43200)/3600;
-  // Freeze hour/minute hands. The second hand is intentionally much faster
-  // for this kinetic lyric scene.
-  const secondDeg=(t-31.70)*120;
-  const minuteDeg=0;
-  const hourDeg=0;
+  // Both clock lyrics share ONE visual clock timeline.
+  // Never derive the clock phase from the second lyric's start time.
+  const startTime=lines[6].start;
+  const elapsed=Math.max(0,t-startTime);
+  // Real clock geometry: 60 seconds per revolution, 60 minutes per hour,
+  // and the hour hand advances continuously with the minutes.
+  // Whimsical accelerated clock: all three hands keep correct ratios,
+  // but the whole clock visibly spins faster for the kinetic sequence.
+  const clockSpeed=10;
+  const secondDeg=elapsed*6*clockSpeed;
+  const minuteDeg=elapsed*0.1*clockSpeed;
+  const hourDeg=elapsed*(30/3600)*clockSpeed;
   const second=el.querySelector('.clock-hand.second');
   const minuteH=el.querySelector('.clock-hand.minute');
   const hourH=el.querySelector('.clock-hand.hour');
@@ -1763,10 +2526,44 @@ function buildLaserHeart(){
 function activate(i){
   if(i===current)return;
   const old=L.querySelector('.line.active');
+
+  // ONE persistent clock scene for the two consecutive lyrics.
+  // Do not remove/recreate the line, face, ticks, numbers, or hands.
+  // Only replace the lyric layer; the clock timeline keeps running from line 6.
+  if(old && old.classList.contains('scene-clock') && (current===6 || current===7) && i===7){
+    const item=lines[i];
+    const lyric=old.querySelector('.clock-lyric');
+    if(lyric){
+      // ONLY replace the lyric contents. The clock DOM, its animations,
+      // and its hand phase remain untouched.
+      lyric.innerHTML=buildWords(item.text);
+      lyric.classList.add('clock-whimsy-skill');
+      lyric.classList.remove('clock-whimsy-time');
+    }
+    // Keep the host line permanently anchored to the first clock lyric.
+    // The audio lyric index may advance to 7, but the visual clock never does.
+    old.dataset.index='6';
+    old.dataset.clockOriginIndex='6';
+    old.classList.remove('out','clock-exit');
+    current=i;
+    SEC.textContent=item.section;
+    return;
+  }
+
   if(old){
+    const oldIndex=Number(old.dataset.index);
     old.classList.remove('active');
-    old.classList.add('out');
-    setTimeout(()=>old.remove(),700);
+    if(old.classList.contains('scene-clock')) old.classList.add('clock-exit');
+
+    // The first chorus has its own timed fade (45.75–46.75). Do NOT stack
+    // the generic .out animation on top of it when the next lyric enters.
+    if(oldIndex===4 && i===5){
+      old.classList.remove('question-chorus-pulse','question-chorus-fade');
+      setTimeout(()=>old.remove(),40);
+    }else{
+      old.classList.add('out');
+      setTimeout(()=>old.remove(),700);
+    }
   }
   current=i;
   heartCueShown=false;
@@ -1778,18 +2575,27 @@ function activate(i){
   const scene=(i===0)?'heart-split':sceneFor(i);
   const qClass=item.text==='Oo o hindi?'?' scene-question':'';
   const body=scene==='clock'?buildClock(item.text):scene==='heart-split'?buildHeartSplitLine(item.text):buildWords(item.text);
+  let el;
   if(scene==='heart-split'){
-    const el=document.createElement('div');
+    el=document.createElement('div');
     el.className=`line motion scene-heart-split ${item.style}${qClass}`;
     el.dataset.index=i;
-    const fragment=body;
-    el.appendChild(fragment);
-    L.replaceChildren(el);
+    el.appendChild(body);
   }else{
     const specialClass = i===0 ? ' puso-scene' : '';
-  L.innerHTML=`<div class="line motion scene-${scene} ${item.style}${qClass}${specialClass}" data-index="${i}">${body}</div>`;
+    el=document.createElement('div');
+    el.className=`line motion scene-${scene} ${item.style}${qClass}${specialClass}`;
+    el.dataset.index=i;
+    el.innerHTML=body;
   }
-  const el=L.firstElementChild;
+
+  // Keep the outgoing lyric in the stage while the new lyric enters.
+  // Previously L.replaceChildren()/L.innerHTML removed the old line instantly,
+  // so its exit animation could never actually be seen. The overlap below gives
+  // the first-half transitions a real crossfade instead of a hard cut.
+  if(i<=9) el.classList.add('first-half-transition');
+  L.appendChild(el);
+  if(scene==='clock') el.dataset.clockOriginIndex=String(i);
   if(i===0) el.classList.add('puso-throb');
   if(i===4){
     el.classList.add('question-chaos');
@@ -1826,7 +2632,7 @@ function activate(i){
       ['105%','96%','clamp(38px,10vw,95px)','500','#ffb38a','.44','-15deg','1.02','-1.16s']
     ];
 
-    qStyles.forEach((v)=>{
+    qStyles.forEach((v,idx)=>{
       const q=document.createElement('span');
       q.className='qmark';
       q.textContent='?';
@@ -1838,19 +2644,10 @@ function activate(i){
       q.style.setProperty('--opacity',v[5]);
       q.style.setProperty('--rot',v[6]);
       q.style.setProperty('--scale',v[7]);
-      q.style.setProperty('--delay',v[8]);
+      // Every mark begins at the exact center, then travels to its existing
+      // coded position. Stagger the release slightly so the field blooms outward.
+      q.style.setProperty('--delay',(idx*.055).toFixed(2)+'s');
       q.style.setProperty('--speed',(0.33+(Math.random()*0.32)).toFixed(2)+'s');
-
-      /*
-        Give each mark a physical "peek" direction. Marks beyond the
-        left/right viewport start farther outside, then glide into place.
-        The larger the mark, the slightly longer the visual travel feels.
-      */
-      const edgeX=parseFloat(v[0]);
-      const enterX=edgeX<0 ? '-110px' : edgeX>100 ? '110px' : '0px';
-      const enterY=edgeX<0 || edgeX>100 ? ((Math.random()*18)-9).toFixed(1)+'px' : '0px';
-      q.style.setProperty('--enter-x',enterX);
-      q.style.setProperty('--enter-y',enterY);
 
       field.appendChild(q);
     });
@@ -1873,32 +2670,60 @@ function activate(i){
       laserHeart.dataset.pathLength=String(length);
     }
   }
+  /* Word-by-word background echoes for the 1:03 "Pwede..." line and the following "Oo o hindi?" line. */
+  if(i===8 || i===9){
+    el.classList.add('word-echo-scene');
+    el.querySelectorAll('.word').forEach((w,idx)=>{
+      w.setAttribute('data-echo',w.textContent.trim());
+      w.style.setProperty('--exit-x', (idx%2===0 ? '-16px' : '16px'));
+    });
+  }
+
+  // 01:11 "Ikaw ay lagi kong pupuntahan" gets its own isolated
+  // orbiting-echo treatment. No previous word-echo scene is reused here.
+  if(i===10){
+    el.classList.add('ikaw-pupuntahan-scene');
+    el.querySelectorAll('.word').forEach(w=>{
+      w.setAttribute('data-echo',w.textContent.trim());
+      w.classList.remove('stretch');
+      w.style.removeProperty('animation');
+      w.style.removeProperty('translate');
+      w.style.removeProperty('rotate');
+      w.style.removeProperty('scale');
+    });
+  }
+
   if(i===5){
     el.classList.add('first-linyahan-vertical');
-    const dashField=document.createElement('div');
-    dashField.className='linyahan-dash-field';
-    dashField.setAttribute('aria-hidden','true');
-
-    const dashStyles=[
-      ['-86vw','-44vh','-18deg','.00s','1.05s'],
-      ['92vw','-18vh','17deg','.10s','1.12s'],
-      ['-78vw','14vh','-11deg','.20s','.98s'],
-      ['86vw','34vh','13deg','.31s','1.08s'],
-      ['-72vw','-2vh','-4deg','.43s','.92s'],
-      ['78vw','-36vh','7deg','.55s','1.04s'],
-      ['-88vw','42vh','-21deg','.67s','1.00s']
-    ];
-    dashStyles.forEach(([x,y,r,delay,life])=>{
-      const d=document.createElement('span');
-      d.className='linyahan-dash';
-      d.style.setProperty('--dash-x',x);
-      d.style.setProperty('--dash-y',y);
-      d.style.setProperty('--dash-r',r);
-      d.style.setProperty('--dash-delay',delay);
-      d.style.setProperty('--dash-life',life);
-      dashField.appendChild(d);
+    el.querySelectorAll('.word').forEach((w,idx)=>{
+      w.setAttribute('data-linyahan-echo',w.textContent.trim());
+      w.style.setProperty('--echo-delay',(idx*0.07)+'s');
+      w.style.setProperty('--echo-x',((idx%2===0?-1:1)*(7+idx*1.5))+'px');
+      w.style.setProperty('--echo-y',((idx%3)-1)*4+'px');
+      w.style.setProperty('--echo-rot',((idx%2===0?-1:1)*(idx%3+0.5))+'deg');
     });
-    el.appendChild(dashField);
+    const strokeSpecs=[
+      ['h',false,18,2,.42,3.4,0.02,10,12],['h',true,30,3,.30,4.1,.18,16,17],
+      ['h',false,42,1,.62,2.7,.34,8,13],['h',true,55,2,.48,3.6,.52,12,10],
+      ['h',false,68,4,.25,4.4,.70,20,18],['h',true,80,2,.55,3.0,.88,9,14],
+      ['v',false,16,2,.38,3.8,.12,10,12],['v',true,29,3,.52,3.2,.30,15,15],
+      ['v',false,43,1,.66,2.8,.46,7,11],['v',true,57,2,.32,4.0,.64,18,16],
+      ['v',false,71,3,.50,3.5,.82,12,12],['v',true,84,1,.44,4.2,.96,9,18],
+    ];
+    strokeSpecs.forEach(([type,reverse,pos,thick,op,dur,delay,dash,gap])=>{
+      const stroke=document.createElement('div');
+      stroke.className='first-linyahan-stroke first-linyahan-stroke-'+type+(reverse?' reverse':'');
+      stroke.setAttribute('aria-hidden','true');
+      stroke.style.setProperty('--'+(type==='h'?'y':type==='v'?'x':'y'),pos+'%');
+      stroke.style.setProperty('--thick',thick+'px');
+      stroke.style.setProperty('--op',op);
+      stroke.style.setProperty('--dur',dur+'s');
+      stroke.style.setProperty('--delay',delay+'s');
+      stroke.style.setProperty('--dash',dash+'px');
+      stroke.style.setProperty('--gap',gap+'px');
+      if(type==='d') stroke.style.setProperty('--angle',(reverse?-24:24)+'deg');
+      el.appendChild(stroke);
+    });
   }
   if(i===1){
     el.classList.add('banat-scratch');
@@ -1906,9 +2731,8 @@ function activate(i){
     el.querySelectorAll('.word[data-word-index="6"], .word[data-word-index="7"], .word[data-word-index="8"]').forEach(w=>w.classList.add('scratch-word'));
   }
   if(i===3) el.classList.add('gusto-shiver');
-  if(i===6) el.classList.add('cursive-clock-lyric');
-  if(i===6) el.classList.add('clock-shake');
-  if(i===7) el.classList.add('standup-exit');
+  if(i===6) el.classList.add('cursive-clock-lyric','clock-whimsy-time');
+  if(i===7) el.classList.add('playful-clock-lyric','clock-whimsy-skill');
   SEC.textContent=item.section;
   requestAnimationFrame(()=>{el.classList.add('active'); if(scene==='clock') layoutClock();});
 
@@ -1971,13 +2795,6 @@ function updateWords(t){
   });
   words.forEach((w,i)=>w.classList.toggle('current',i===currentWord));
 
-  // The first chorus "linyahan" cue is index 5 / 49.50s.
-  // Resetting the class on every non-hit frame lets the dashed sweeps replay
-  // cleanly when the user scrubs back to the word.
-  if(current===5){
-    el.classList.toggle('linyahan-hit',currentWord===5);
-  }
-
   if(current===4){
     const lw=el.querySelector('.word.ligawan-chaos');
     if(lw && currentWord!==Number(lw.dataset.wordIndex)) lw.classList.remove('current');
@@ -2001,6 +2818,72 @@ function updateMotion(t){
   const item=lines[current];
   const scene=sceneFor(current);
   const words=[...el.querySelectorAll('.word')];
+
+  /* 01:11 — isolated \"Ikaw ay lagi kong pupuntahan\" motion.
+     The first four words have a controlled orbit/echo motion.
+     \"pupuntahan\" is deliberately locked after appearing. */
+  if(scene==='orbit'){
+    const cues=item.cues||[];
+    const lastIndex=words.length-1;
+    const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+
+    words.forEach((w,i)=>{
+      const cue=cues[i] ?? item.start;
+      const nextCue=cues[i+1] ?? item.end;
+      const visible=t>=cue;
+
+      if(!visible){
+        w.style.opacity='0';
+        w.style.filter='blur(4px)';
+        w.style.transform='translate3d(-50%,-50%,0) scale(.78)';
+        w.style.zIndex='2';
+        return;
+      }
+
+      /* Final word: once it appears, it never moves. */
+      if(i===lastIndex){
+        const enter=clamp((t-cue)/.28,0,1);
+        const eased=enter*enter*(3-2*enter);
+        w.style.opacity=String(eased);
+        w.style.filter=`blur(${(1-eased)*5}px)`;
+        w.style.transform=`translate3d(-50%,-50%,0) scale(${.84+.16*eased})`;
+        w.style.zIndex='8';
+        return;
+      }
+
+      /* Active word: large, thick, gently orbits while its echo circles it. */
+      if(t<nextCue){
+        const elapsed=Math.max(0,t-cue);
+        const enter=clamp(elapsed/.28,0,1);
+        const e=enter*enter*(3-2*enter);
+        const phase=elapsed*2.55+i*.9;
+        const radius=8+4*Math.sin(elapsed*2.1+i);
+        const x=Math.cos(phase)*radius;
+        const y=Math.sin(phase)*radius*.62;
+        const rot=Math.sin(phase*.82)*1.8;
+        const scale=.86+.14*e + .018*Math.sin(phase*1.7);
+        w.style.opacity=String(e);
+        w.style.filter=`blur(${(1-e)*4}px) drop-shadow(0 0 ${16+12*Math.max(0,Math.sin(phase))}px #ffb38a55)`;
+        w.style.transform=`translate3d(calc(-50% + ${x}px),calc(-50% + ${y}px),0) rotate(${rot}deg) scale(${scale})`;
+        w.style.zIndex='6';
+        return;
+      }
+
+      /* Once the next word arrives, the previous word exits on a small
+         continuing orbit instead of using the generic line/word animation. */
+      const p=clamp((t-nextCue)/.48,0,1);
+      const e=p*p*(3-2*p);
+      const phase=.48*2.55+i*.9;
+      const x=Math.cos(phase+p*2.8)*34;
+      const y=Math.sin(phase+p*2.8)*22;
+      const rot=Math.sin(phase+p*2.8)*7;
+      w.style.opacity=String(1-e);
+      w.style.filter=`blur(${e*4}px)`;
+      w.style.transform=`translate3d(calc(-50% + ${x}px),calc(-50% + ${y}px),0) rotate(${rot}deg) scale(${1+.06*e})`;
+      w.style.zIndex='3';
+    });
+    return;
+  }
 
   if(scene==='kailan-flight'){
     // Lightweight, time-driven word flight. No observers, particles, or CSS
@@ -2032,14 +2915,14 @@ function updateMotion(t){
         // Five pulses, each larger. The final pulse becomes the transition.
         const elapsed=t-cue;
         const pulseLength=.46;
-        const pulseCount=5;
+        const pulseCount=3;
         const pulseTotal=pulseLength*pulseCount;
 
         if(elapsed<pulseTotal){
           const n=Math.min(pulseCount-1,Math.floor(elapsed/pulseLength));
           const phase=(elapsed%pulseLength)/pulseLength;
           const wave=Math.sin(phase*Math.PI);
-          const base=[1,1.14,1.30,1.50,1.74][n];
+          const base=[1,1.14,1.30][n];
           const scale=base+wave*(.06+n*.012);
           w.style.opacity='1';
           w.style.filter=`drop-shadow(0 0 ${12+n*8+wave*10}px #ffb38a88)`;
@@ -2058,11 +2941,22 @@ function updateMotion(t){
       }
 
       // Hold the current word in the center until the next cue.
+      // The center hold is deliberately lively: each word bobs, jitters and
+      // glows while it owns the stage, instead of sitting statically.
       if(t<nextCue){
         const enter=clamp((t-cue)/.16,0,1);
+        const elapsed=Math.max(0,t-cue);
+        // Independent, energetic bob for each word: each word gets its own
+        // phase and speed so they never move as one synchronized block.
+        const chaos=t*(8.6+i*0.72)+i*1.37;
+        const bobX=Math.sin(chaos)*8.5 + Math.sin(chaos*1.83+i*1.7)*4.2 + Math.cos(chaos*.63+i)*2.2;
+        const bobY=Math.cos(chaos*1.12)*10.5 + Math.sin(chaos*2.07+i*.7)*4.6 + Math.cos(chaos*.57+i*1.3)*2.4;
+        const bobR=Math.sin(chaos*.91+i)*4.4 + Math.cos(chaos*1.67+i*.4)*2.0;
+        const pulse=1 + .028*Math.sin(chaos*1.31) + .018*Math.sin(chaos*2.43+i);
+        const glow=24 + 24*(.5+.5*Math.sin(chaos*1.17+i*.8));
         w.style.opacity=String(enter);
-        w.style.filter='none';
-        w.style.transform=`translate3d(-50%,-50%,0) scale(${.94+.06*enter})`;
+        w.style.filter=`drop-shadow(0 0 ${glow}px #ffb38a99) drop-shadow(0 0 ${glow*.42}px #f8f0e688)`;
+        w.style.transform=`translate3d(calc(-50% + ${bobX}px),calc(-50% + ${bobY}px),0) rotate(${bobR}deg) scale(${(.94+.06*enter)*pulse})`;
         w.style.zIndex='5';
         return;
       }
@@ -2077,48 +2971,6 @@ function updateMotion(t){
       w.style.filter=`blur(${e*3}px)`;
       w.style.zIndex='2';
       w.style.transform=`translate3d(calc(-50% + ${x}px),calc(-50% + ${y}px),0) rotate(${(i%2?-1:1)*(7+i*2)*e}deg)`;
-    });
-  }
-
-  if(scene==='orbit'){
-    const cues=item.cues||[];
-    const lastIndex=words.length-1;
-
-    words.forEach((w,i)=>{
-      const cue=cues[i] ?? item.start;
-      if(i===lastIndex){
-        w.classList.add('pupuntahan-final');
-      }
-      if(t<cue){
-        w.style.opacity='0';
-        w.style.transform='translate3d(-50%,-50%,0) scale(.88)';
-        return;
-      }
-
-      /* Only the currently spoken word remains on stage. The previous word
-         exits as the next cue arrives, while the current word stays centered. */
-      const nextCue=cues[i+1] ?? item.end;
-      if(i!==lastIndex && t>=nextCue){
-        w.style.opacity='0';
-        w.style.transform='translate3d(-50%,-50%,0) scale(1)';
-        w.removeAttribute('data-next-echo');
-        return;
-      }
-
-      const enter=Math.min(1,Math.max(0,(t-cue)/.22));
-      const ease=enter*enter*(3-2*enter);
-      w.style.opacity=String(ease);
-      w.style.zIndex=String(i===lastIndex?7:5);
-
-      if(i===lastIndex){
-        w.style.transform='translate3d(-50%,-50%,0) scale(1)';
-        w.removeAttribute('data-next-echo');
-        return;
-      }
-
-      const nextWord=words[i+1]?.textContent?.trim();
-      if(nextWord) w.setAttribute('data-next-echo',nextWord);
-      w.style.transform=`translate3d(-50%,-50%,0) scale(${.96+.04*ease})`;
     });
   }
 
@@ -2173,7 +3025,6 @@ function updateMotion(t){
     const oo=words[0];
     if(oo) oo.style.transform=`translateY(${Math.sin(t*7)*3}px) scale(${1.02+.035*Math.max(0,Math.sin(t*4))})`;
   }
-
   // Extra idle heartbeat for every scene, layered through independent transform properties.
   words.forEach((w,i)=>{
     if(!w.classList.contains('visible'))return;
@@ -2185,6 +3036,28 @@ function updateMotion(t){
     w.style.rotate=`${idleR}deg`;
     w.style.scale=`${1+0.012*Math.sin(t*5.4+i)}`;
   });
+
+  // First chorus owns its motion at the LINE level only. Clear all generic
+  // per-word idle transforms so no individual word can shake during the pulse.
+  if(current===4){
+    words.forEach(w=>{
+      if(!w.classList.contains('visible'))return;
+      w.style.translate='0 0';
+      w.style.rotate='0deg';
+      w.style.scale='1';
+    });
+  }
+
+  // Make the 1:03 "Pwede..." line physically bob more than the normal idle motion.
+  if(current===8){
+    words.forEach((w,i)=>{
+      if(!w.classList.contains('visible'))return;
+      const phase=t*7.2+i*.85;
+      w.style.translate=`${Math.sin(phase)*4.2}px ${Math.cos(phase*1.08)*5.5}px`;
+      w.style.rotate=`${Math.sin(phase*.92)*2.4}deg`;
+      w.style.scale=(i===3 ? '1' : `${1+0.025*Math.sin(phase*1.15)}`);
+    });
+  }
 }
 
 function pulse(t){
@@ -2242,11 +3115,11 @@ function spawnLinyahanFootsteps(){
   // travelling from one side to the other. Angles alternate to make the
   // trails feel like directional marks rather than parallel UI lines.
   const paths=[
-    {y:'22%',angle:'-8deg',w:'38vw',d:'1.05s',delay:'0s',cls:'long'},
-    {y:'38%',angle:'5deg', w:'29vw',d:'0.92s',delay:'.16s',cls:'short'},
-    {y:'53%',angle:'-4deg',w:'44vw',d:'1.12s',delay:'.31s',cls:'long'},
-    {y:'68%',angle:'7deg', w:'31vw',d:'1.00s',delay:'.47s',cls:'short'},
-    {y:'81%',angle:'-6deg',w:'36vw',d:'1.08s',delay:'.64s',cls:'long'}
+    {y:'22%',angle:'-8deg',w:'38vw',d:'2.10s',delay:'0s',cls:'long'},
+    {y:'38%',angle:'5deg', w:'29vw',d:'1.90s',delay:'.28s',cls:'short'},
+    {y:'53%',angle:'-4deg',w:'44vw',d:'2.25s',delay:'.55s',cls:'long'},
+    {y:'68%',angle:'7deg', w:'31vw',d:'2.00s',delay:'.82s',cls:'short'},
+    {y:'81%',angle:'-6deg',w:'36vw',d:'2.15s',delay:'1.10s',cls:'long'}
   ];
 
   paths.forEach((p,i)=>{
@@ -2267,7 +3140,7 @@ function spawnLinyahanFootsteps(){
 
   linyahanFootstepsTimer=setTimeout(()=>{
     clearLinyahanFootsteps();
-  },2100);
+  },3600);
 }
 
 function updateSpecialVisuals(t){
@@ -2301,6 +3174,19 @@ function updateLaserHeart(t){
   svg.style.opacity=String(1-fadeP);
 }
 
+  // 00:46.80 linyahan: clean one-second fade ending exactly as the next line enters.
+  // No separate pulse is allowed to overlap this fade.
+  if(current===5){
+    const linyahanLine=L.querySelector('.line.active.first-linyahan-vertical');
+    const fadeStart=52.80, fadeEnd=53.80;
+    if(linyahanLine && t>=fadeStart && t<fadeEnd){
+      linyahanLine.classList.remove('linyahan-transition-pulse');
+      linyahanLine.classList.add('linyahan-transition-fade');
+    }else if(linyahanLine && t<fadeStart){
+      linyahanLine.classList.remove('linyahan-transition-pulse','linyahan-transition-fade');
+    }
+  }
+
   // "linyahan" cue: crossing dashed trails, like fast footsteps.
   if(current===5 && t>=49.50 && t<51.35){
     if(!linyahanFootstepsActive) spawnLinyahanFootsteps();
@@ -2324,27 +3210,233 @@ function updateLaserHeart(t){
     setTimeout(spawnBanatEcho,900);
   }
   if(!inBanatEcho) window._banatEchoStarted=false;
+
+  // First-chorus transition beat: pulse at 00:44, then dissolve into the next line.
+  if(current===4){
+    const qLine=L.querySelector('.line.active.question-chaos');
+    const pulseStart=44.00;
+    const pulseEnd=44.52;
+    const fadeStart=45.80;
+    const fadeEnd=46.80;
+    if(qLine && t>=pulseStart && t<pulseEnd){
+      qLine.classList.remove('question-chorus-fade');
+      qLine.classList.add('question-chorus-pulse');
+    }else if(qLine && t>=fadeStart && t<fadeEnd){
+      qLine.classList.remove('question-chorus-pulse');
+      qLine.classList.add('question-chorus-fade');
+    }else if(qLine && t< pulseStart){
+      qLine.classList.remove('question-chorus-pulse','question-chorus-fade');
+    }
+  }
+
+  // 01:08 "Oo o hindi?": begin pulsing ONLY the actual "Oo" word
+  // immediately after "hindi" and keep it pulsing until this lyric disappears.
+  if(current===9){
+    const qLine=L.querySelector('.line.active.scene-question');
+    const pulseStart=68.56;
+    const lineEnd=71.00;
+    if(qLine && t>=pulseStart && t<lineEnd){
+      qLine.classList.add('oo-final-pulse');
+    }else if(qLine && t< pulseStart){
+      qLine.classList.remove('oo-final-pulse');
+    }else if(qLine && t>=lineEnd){
+      qLine.classList.remove('oo-final-pulse');
+    }
+  }
 }
 
 
 let ooTakeoverActive=false;
 let ooHeartBurstActive=false;
 function clearOoTakeover(){const field=document.querySelector('#ooExplosion');if(field)field.replaceChildren();ooTakeoverActive=false;ooHeartBurstActive=false}
-function spawnOoTakeover(){const field=document.querySelector('#ooExplosion');if(!field||ooTakeoverActive)return;ooTakeoverActive=true;const fonts=['Arial Black, Impact, sans-serif','Georgia, serif','Times New Roman, serif','Courier New, monospace','Trebuchet MS, sans-serif','Verdana, sans-serif','Palatino Linotype, serif','Impact, sans-serif'];for(let i=0;i<30;i++){const e=document.createElement('div');e.className='oo-field';e.textContent='Oo';e.style.fontFamily=fonts[Math.floor(Math.random()*fonts.length)];e.style.fontSize=(26+Math.random()*150)+'px';e.style.setProperty('--r',(-16+Math.random()*32)+'deg');e.style.setProperty('--r2',(-30+Math.random()*60)+'deg');e.style.setProperty('--dx',(-55+Math.random()*110)+'vw');e.style.setProperty('--dy',(-55+Math.random()*110)+'vh');e.style.setProperty('--scale',(0.8+Math.random()*2.4).toFixed(2));e.style.setProperty('--life',(1.05+Math.random()*.55)+'s');const a=(i/30)*Math.PI*2;const radius=20+Math.random()*42;e.style.left=(50+Math.cos(a)*radius)+'%';e.style.top=(50+Math.sin(a)*radius)+'%';field.appendChild(e)}const wipe=document.createElement('div');wipe.className='oo-field wipe';wipe.textContent='Oo';wipe.style.fontFamily=fonts[Math.floor(Math.random()*fonts.length)];wipe.style.fontSize='clamp(90px,28vw,420px)';wipe.style.setProperty('--r','0deg');wipe.style.setProperty('--life','1.15s');field.appendChild(wipe)}
+function spawnOoTakeover(){const field=document.querySelector('#ooExplosion');if(!field||ooTakeoverActive)return;ooTakeoverActive=true;const fonts=['Arial Black, Impact, sans-serif','Georgia, serif','Times New Roman, serif','Courier New, monospace','Trebuchet MS, sans-serif','Verdana, sans-serif','Palatino Linotype, serif','Impact, sans-serif'];for(let i=0;i<30;i++){const e=document.createElement('div');e.className='oo-field';e.textContent='Oo';e.style.fontFamily=fonts[Math.floor(Math.random()*fonts.length)];e.style.fontSize=(26+Math.random()*150)+'px';e.style.setProperty('--r',(-16+Math.random()*32)+'deg');e.style.setProperty('--r2',(-30+Math.random()*60)+'deg');e.style.setProperty('--dx',(-55+Math.random()*110)+'vw');e.style.setProperty('--dy',(-55+Math.random()*110)+'vh');e.style.setProperty('--scale',(0.8+Math.random()*2.4).toFixed(2));e.style.setProperty('--life',(1.05+Math.random()*.55)+'s');const a=(i/30)*Math.PI*2;const radius=20+Math.random()*42;e.style.left=(50+Math.cos(a)*radius)+'%';e.style.top=(50+Math.sin(a)*radius)+'%';field.appendChild(e)}setTimeout(()=>{if(ooTakeoverActive)clearOoTakeover()},1550)}
 function explodeOoIntoHearts(){const field=document.querySelector('#ooExplosion');if(!field||ooHeartBurstActive)return;ooHeartBurstActive=true;for(let i=0;i<34;i++){const h=document.createElement('span');h.className='oo-heart';const a=(Math.PI*2/34)*i+(Math.random()-.5)*.4;const distance=100+Math.random()*330;h.style.setProperty('--size',(7+Math.random()*25)+'px');h.style.setProperty('--dx',(Math.cos(a)*distance)+'px');h.style.setProperty('--dy',(Math.sin(a)*distance)+'px');h.style.setProperty('--rot',(-35+Math.random()*70)+'deg');h.style.setProperty('--life',(0.65+Math.random()*.65)+'s');h.style.color=`hsl(${5+Math.random()*40},${65+Math.random()*25}%,${65+Math.random()*20}%)`;field.appendChild(h)}setTimeout(clearOoTakeover,1450)}
 
+
+let wordBackgroundBursts=[];
+let clockNumberBackgroundBursts=[];
+function clearWordBackgroundBursts(){
+  const field=document.querySelector('#wordExplosionField');
+  if(field)field.replaceChildren();
+  wordBackgroundBursts=[];
+  clockNumberBackgroundBursts=[];
+}
+function spawnClockNumberBackgroundBurst(wordIndex, opts={}){
+  // Single clock-number burst system. Numbers are anchored to the spoken word,
+  // layered between the clock and lyric, small, thin, quick, and immediately fading.
+  const line=L.querySelector('.line.active.scene-clock');
+  const word=line?.querySelector('.clock-lyric .word[data-word-index="'+wordIndex+'"]');
+  const wrap=line?.querySelector('.clock-wrap');
+  if(!line||!word||!wrap)return;
+
+  const field=wrap.querySelector('.clock-number-burst-layer');
+  if(!field)return;
+
+  const rect=word.getBoundingClientRect();
+  const base=field.getBoundingClientRect();
+  const cx=rect.left+rect.width/2-base.left;
+  const cy=rect.top+rect.height/2-base.top;
+  const elevated=!!opts.elevated;
+  const count=3;
+  const group=String(Date.now())+'-'+Math.random();
+
+  for(let n=0;n<count;n++){
+    const e=document.createElement('span');
+    e.className='clock-number-bg-burst';
+    e.dataset.burstGroup=group;
+    e.textContent=String(1+Math.floor(Math.random()*12));
+    e.style.left=cx+'px';
+    e.style.top=cy+'px';
+
+    // Keep every burst small. Elevated words are only slightly larger.
+    e.style.fontSize=(elevated ? 30+Math.random()*7 : 26+Math.random()*6)+'px';
+    e.style.fontWeight='300';
+    e.style.setProperty('--alpha',(0.24+Math.random()*0.08).toFixed(3));
+    e.style.setProperty('--life',(0.78+Math.random()*0.16).toFixed(2)+'s');
+    e.style.setProperty('--scale',(0.82+Math.random()*0.22).toFixed(2));
+    e.style.setProperty('--r',(-8+Math.random()*16)+'deg');
+    e.style.setProperty('--r2',(-14+Math.random()*28)+'deg');
+
+    if(elevated){
+      // Magaling / ako: burst around the word in all directions, not upward.
+      const angle=(Math.PI*2/count)*n+(Math.random()-.5)*.5;
+      const distance=42+Math.random()*42;
+      e.style.setProperty('--dx',(Math.cos(angle)*distance)+'px');
+      e.style.setProperty('--dy',(Math.sin(angle)*distance)+'px');
+    }else{
+      // Other clock words: compact radial burst.
+      const angle=(Math.PI*2/count)*n+(Math.random()-.5)*.45;
+      const distance=34+Math.random()*34;
+      e.style.setProperty('--dx',(Math.cos(angle)*distance)+'px');
+      e.style.setProperty('--dy',(Math.sin(angle)*distance)+'px');
+    }
+    field.appendChild(e);
+  }
+
+  setTimeout(()=>{
+    field.querySelectorAll('.clock-number-bg-burst').forEach(e=>{
+      if(e.dataset.burstGroup===group)e.remove();
+    });
+  },1100);
+}
+
+function spawnWordBackgroundBurst(wordIndex){
+  const field=document.querySelector('#wordExplosionField');
+  const line=L.querySelector('.line.active[data-index="3"]');
+  const word=line?.querySelector('.word[data-word-index="'+wordIndex+'"]');
+  if(!field||!word)return;
+  const rect=word.getBoundingClientRect();
+  const base=field.getBoundingClientRect();
+  const cx=rect.left+rect.width/2-base.left;
+  const cy=rect.top+rect.height/2-base.top;
+  const computed=getComputedStyle(word);
+  const count=16;
+  for(let i=0;i<count;i++){
+    const e=document.createElement('span');
+    e.className='word-bg-burst';
+    e.textContent=word.textContent.trim();
+    e.style.left=cx+'px';
+    e.style.top=cy+'px';
+    e.style.fontFamily=computed.fontFamily;
+    e.style.fontSize=(parseFloat(computed.fontSize)*(0.78+Math.random()*0.72))+'px';
+    e.style.fontWeight=computed.fontWeight;
+    e.style.letterSpacing=computed.letterSpacing;
+    const a=(Math.PI*2/count)*i+(Math.random()-.5)*.45;
+    const distance=55+Math.random()*155;
+    e.style.setProperty('--dx',(Math.cos(a)*distance)+'px');
+    e.style.setProperty('--dy',(Math.sin(a)*distance)+'px');
+    e.style.setProperty('--scale',(0.72+Math.random()*1.25).toFixed(2));
+    e.style.setProperty('--r',(-10+Math.random()*20)+'deg');
+    e.style.setProperty('--r2',(-24+Math.random()*48)+'deg');
+    e.style.setProperty('--alpha',(0.075+Math.random()*0.10).toFixed(3));
+    e.style.setProperty('--life',(0.78+Math.random()*0.48)+'s');
+    field.appendChild(e);
+  }
+  setTimeout(()=>{field.querySelectorAll('.word-bg-burst').forEach(e=>e.remove())},1500);
+}
 
 let pusoBgActive=false;
 function clearPusoBackground(){const f=document.querySelector('#heartField');if(f)f.querySelectorAll('.puso-bg-heart').forEach(h=>h.remove());pusoBgActive=false}
 function spawnPusoBackground(){const f=document.querySelector('#heartField');if(!f||pusoBgActive)return;pusoBgActive=true;for(let i=0;i<24;i++){const h=document.createElement('span');h.className='puso-bg-heart';h.textContent='♥';h.style.setProperty('--size',(14+Math.random()*58)+'px');h.style.setProperty('--x',(2+Math.random()*96)+'%');h.style.setProperty('--y',(4+Math.random()*90)+'%');h.style.setProperty('--life',(1.1+Math.random()*1.8)+'s');h.style.color=`hsl(${5+Math.random()*35},60%,70%)`;f.appendChild(h)}}
 
 let pusoBurstActive=false;
+let moBurstActive=false;
+let pusoSecondBurstActive=false;
+let moSecondBurstActive=false;
+
+function clearPusoHearts(){
+  const field=document.querySelector('#heartField');
+  if(field) field.querySelectorAll('.puso-heart').forEach(h=>h.remove());
+  pusoBurstActive=false;
+  moBurstActive=false;
+  pusoSecondBurstActive=false;
+  moSecondBurstActive=false;
+}
+function clearMoHearts(){
+  const field=document.querySelector('#heartField');
+  if(field) field.querySelectorAll('.mo-heart').forEach(h=>h.remove());
+  moBurstActive=false;
+}
+
+function spawnHeartPop(wordIndex, cls, count=20){
+  const field=document.querySelector('#heartField');
+  if(!field) return;
+  const anchor=document.querySelector('.line.scene-heart-split.active .word[data-word-index="'+wordIndex+'"]');
+  const fr=field.getBoundingClientRect();
+  const ar=anchor?.getBoundingClientRect();
+  const ox=ar ? ar.left+ar.width/2-fr.left : fr.width*.5;
+  const oy=ar ? ar.top+ar.height/2-fr.top : fr.height*.55;
+  for(let i=0;i<count;i++){
+    const h=document.createElement('span');
+    h.className='puso-heart '+cls;
+    h.textContent='♥';
+    const angle=(Math.PI*2/count)*i + (Math.random()-.5)*.55;
+    const distance=55 + Math.random()*190;
+    const size=8 + Math.random()*24;
+    h.style.setProperty('--size',size+'px');
+    h.style.setProperty('--dx',(Math.cos(angle)*distance)+'px');
+    h.style.setProperty('--dy',(Math.sin(angle)*distance - 25 - Math.random()*75)+'px');
+    h.style.setProperty('--rot',(-35+Math.random()*70)+'deg');
+    h.style.setProperty('--life',(1.05+Math.random()*.65)+'s');
+    h.style.left=ox+'px';
+    h.style.top=oy+'px';
+    h.style.animationDelay=(Math.random()*.08)+'s';
+    h.style.color=`hsl(${5+Math.random()*35}, ${65+Math.random()*25}%, ${65+Math.random()*20}%)`;
+    field.appendChild(h);
+  }
+}
+
+function spawnPusoHearts(){
+  if(pusoBurstActive) return;
+  pusoBurstActive=true;
+  spawnHeartPop(6,'puso-heart-pop',22);
+}
+function spawnMoHearts(){
+  if(moBurstActive) return;
+  moBurstActive=true;
+  spawnHeartPop(7,'mo-heart-pop',26);
+}
+
+function spawnPusoSecondHearts(){
+  if(pusoSecondBurstActive) return;
+  pusoSecondBurstActive=true;
+  spawnHeartPop(6,'puso-heart-pop',30);
+}
+
+function spawnMoSecondHearts(){
+  if(moSecondBurstActive) return;
+  moSecondBurstActive=true;
+  spawnHeartPop(7,'mo-heart-pop',30);
+}
 let banatEchoActive=false;
 
 function clearPusoHearts(){
   const field=document.querySelector('#heartField');
   if(field) field.querySelectorAll('.puso-heart').forEach(h=>h.remove());
   pusoBurstActive=false;
+  moBurstActive=false;
+  pusoSecondBurstActive=false;
+  moSecondBurstActive=false;
 }
 
 function spawnPusoHearts(){
@@ -2380,6 +3472,30 @@ function spawnPusoHearts(){
   // The field is completely cleared after the burst.
   setTimeout(clearPusoHearts,1550);
 }
+
+
+function initSiteSparks(){
+  const field=document.querySelector('#siteSparkField');
+  if(!field || field.children.length) return;
+  const count=42;
+  for(let i=0;i<count;i++){
+    const star=document.createElement('span');
+    star.className='site-spark';
+    star.textContent='✦';
+    star.style.setProperty('--sx',(2+Math.random()*96)+'%');
+    star.style.setProperty('--sy',(5+Math.random()*90)+'%');
+    star.style.setProperty('--ss',(7+Math.random()*24)+'px');
+    star.style.setProperty('--so',(0.16+Math.random()*0.5).toFixed(2));
+    star.style.setProperty('--sr',(-30+Math.random()*60)+'deg');
+    star.style.setProperty('--dx',(-8+Math.random()*16)+'px');
+    star.style.setProperty('--dy',(-12+Math.random()*24)+'px');
+    star.style.setProperty('--sd',(1.8+Math.random()*3.8).toFixed(2)+'s');
+    star.style.setProperty('--sdelay',(-Math.random()*4)+'s');
+    if(i%5===0) star.style.setProperty('--spark-color','#f8f0e6');
+    field.appendChild(star);
+  }
+}
+// Disabled: whimsy sparks are now scoped to the two clock lyric lines only.
 
 function clearBanatEchoes(){
   const field=document.querySelector('#backgroundBanat');
@@ -2431,21 +3547,95 @@ function render(){
   const i=lines.findIndex(x=>t>=x.start&&t<x.end);
   activate(i);
 
+  // Keep the GUSTO line completely clean of the old square/confetti decoration.
+  APP.classList.toggle('gusto-clean', i===3);
+  if(i===3){
+    ['heartField','backgroundBanat','echoes','siteSparkField'].forEach(id=>{
+      const field=document.getElementById(id);
+      if(field) field.replaceChildren();
+    });
+  }
+
   // Time-locked visual effects:
   // PUSO burst only during the PUSO cue (11.680s–12.430s).
   if(t>=11.680 && t<15.85){
-    // Keep the soft background hearts alive for the remainder of the lyric line.
+    // Keep the soft background hearts alive and moving through the whole line.
     spawnPusoBackground();
-    // The foreground bubble burst remains tied only to the exact "puso" cue.
+    // The "puso" hearts stay visible until the "mo?" cue.
     if(t<12.430 && !pusoBurstActive) spawnPusoHearts();
-    if(t>=12.430 && pusoBurstActive) clearPusoHearts();
+    // The first heart pop follows the original "puso" cue, then "mo?" gets its own pop.
+    if(t>=12.430 && !moBurstActive) spawnMoHearts();
+    // Second wave: a renewed "puso" burst at 00:14, followed by another "mo?" burst.
+    if(t>=14.000 && !pusoSecondBurstActive) spawnPusoSecondHearts();
+    if(t>=14.700 && !moSecondBurstActive) spawnMoSecondHearts();
   }else{
     if(pusoBurstActive) clearPusoHearts();
+    if(moBurstActive) clearMoHearts();
     if(pusoBgActive) clearPusoBackground();
   }
 
 
-  if(t>=36.42 && t<39.35){if(!ooTakeoverActive)spawnOoTakeover();if(t>=38.65&&!ooHeartBurstActive)explodeOoIntoHearts()}else if(ooTakeoverActive||ooHeartBurstActive){clearOoTakeover()}
+  // The GUSTO line gets subtle background word explosions as each highlighted
+  // word arrives. They use the same expanding-copy language as the full-screen
+  // Oo effect, but stay behind the lyric and at much lower opacity.
+  if(i===3){
+    const burstCues=[
+      [1,32.18],[3,32.72],[5,33.15],[7,35.48]
+    ];
+    burstCues.forEach(([wordIndex,cue])=>{
+      const key=String(wordIndex);
+      if(t>=cue && t<cue+0.12 && !wordBackgroundBursts.includes(key)){
+        wordBackgroundBursts.push(key);
+        spawnWordBackgroundBurst(wordIndex);
+      }
+    });
+  }else if(i===6){
+    // One second after the spoken word. Three small, thin numbers per burst.
+    // Both "ko" words are explicitly included.
+    const burstCues=[
+      [0,54.80,false], // Bibigay
+      [1,55.18,false], // ko
+      [2,55.55,false], // nang
+      [3,55.90,false], // buo
+      [4,56.12,false], // ang
+      [5,56.42,false], // oras
+      [6,56.78,false]  // ko
+    ];
+    burstCues.forEach(([wordIndex,cue,elevated])=>{
+      const key='6-'+wordIndex;
+      if(t>=cue && t<cue+0.07 && !clockNumberBackgroundBursts.includes(key)){
+        clockNumberBackgroundBursts.push(key);
+        spawnClockNumberBackgroundBurst(wordIndex,{elevated});
+      }
+    });
+  }else if(i===7){
+    // Same one-second delay for the next line. Magaling/ako burst around
+    // the word in all directions, with the same three-number limit.
+    const burstCues=[
+      [0,59.70,false],   // Kasi
+      [2,60.48,false],   // alam
+      [4,61.30,true],    // magaling
+      [5,61.72,true]     // ako
+    ];
+    burstCues.forEach(([wordIndex,cue,elevated])=>{
+      const key='7-'+wordIndex;
+      if(t>=cue && t<cue+0.07 && !clockNumberBackgroundBursts.includes(key)){
+        clockNumberBackgroundBursts.push(key);
+        spawnClockNumberBackgroundBurst(wordIndex,{elevated});
+      }
+    });
+  }else{ 
+    if(wordBackgroundBursts.length)clearWordBackgroundBursts();
+    clockNumberBackgroundBursts=[];
+  }
+
+  // GUSTO's final 'oo' gets ONE full-screen Oo-only burst at its cue.
+  // No second wipe, hearts, diamonds, or confetti: the screen is filled only by 'Oo'.
+  if(i===3 && t>=36.42 && t<39.25){
+    if(!ooTakeoverActive) spawnOoTakeover();
+  }else if(i!==3 && (ooTakeoverActive||ooHeartBurstActive)){
+    clearOoTakeover();
+  }
 
   // "banat na 'to" exists ONLY from 00:21.000 through 00:23.499.
   // Clear first so seeking backward/forward can never leave stale echoes.
@@ -2460,9 +3650,9 @@ function render(){
   if(current===4){
     const qf=document.getElementById('questionChaos');
     if(qf){
-      const ready=t>=42.65 && t<46.75;
+      const ready=t>=39.65 && t<46.75;
       qf.classList.toggle('ready',ready);
-      if(t>=46.37) qf.classList.add('leaving');
+      qf.classList.remove('leaving');
     }
   }
 
