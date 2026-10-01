@@ -2205,6 +2205,99 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 
 </style>
 
+<style id="footsteps-scene">
+/* 01:14 — "Kahit malayo pa 'yan": a real walking route across the background. */
+.line.scene-footsteps{
+  position:relative !important;
+  width:100% !important;
+  max-width:none !important;
+  height:100% !important;
+  min-height:0 !important;
+  display:block !important;
+  overflow:hidden !important;
+  isolation:isolate;
+}
+.line.scene-footsteps.active{
+  animation:none !important;
+  transform:none !important;
+}
+.line.scene-footsteps .footstep-route{
+  position:absolute;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
+  overflow:hidden;
+  opacity:1;
+}
+.line.scene-footsteps .footprint{
+  position:absolute;
+  left:var(--x);
+  top:var(--y);
+  width:clamp(13px,1.65vw,25px);
+  height:clamp(30px,4.1vw,58px);
+  border-radius:58% 46% 48% 52% / 34% 31% 69% 66%;
+  background:linear-gradient(180deg,rgba(248,240,230,.58),rgba(255,179,138,.34));
+  box-shadow:0 0 8px rgba(255,179,138,.13);
+  opacity:0;
+  filter:blur(.15px);
+  transform:translate(-50%,-50%) rotate(var(--rot)) scale(.35);
+  transform-origin:center 72%;
+  animation:footstepAppear .52s cubic-bezier(.16,.8,.24,1) var(--delay) forwards;
+}
+/* Small heel separation makes the mark read as an actual shoeprint rather than a pill. */
+.line.scene-footsteps .footprint::after{
+  content:"";
+  position:absolute;
+  left:50%;
+  bottom:-13%;
+  width:64%;
+  height:25%;
+  border-radius:45% 48% 48% 44%;
+  background:inherit;
+  transform:translateX(-50%);
+  box-shadow:0 0 7px rgba(255,179,138,.10);
+}
+.line.scene-footsteps .footprint::before{
+  content:"";
+  position:absolute;
+  left:50%;
+  top:8%;
+  width:52%;
+  height:18%;
+  border-radius:50%;
+  background:rgba(248,240,230,.23);
+  transform:translateX(-50%);
+}
+.line.scene-footsteps .footprint:nth-child(even){
+  background:linear-gradient(180deg,rgba(255,179,138,.48),rgba(248,240,230,.27));
+}
+@keyframes footstepAppear{
+  0%{opacity:0;transform:translate(-50%,-50%) rotate(var(--rot)) scale(.25);filter:blur(4px)}
+  55%{opacity:.68;transform:translate(-50%,-50%) rotate(var(--rot)) scale(1.08);filter:blur(.2px)}
+  100%{opacity:.43;transform:translate(-50%,-50%) rotate(var(--rot)) scale(1);filter:blur(0)}
+}
+.line.scene-footsteps .footstep-route.fade-out{
+  animation:footstepRouteFade .55s ease forwards;
+}
+@keyframes footstepRouteFade{to{opacity:0;transform:translateX(2.5vw)}}
+
+/* The lyric sits over the route, as if the words are part of the journey. */
+.line.scene-footsteps .word{
+  position:relative;
+  z-index:2;
+  will-change:transform,opacity;
+}
+.line.scene-footsteps .word.current{
+  text-shadow:0 0 12px #ffb38a44;
+}
+@media(max-width:600px){
+  .line.scene-footsteps .footprint{
+    width:clamp(12px,3.9vw,19px);
+    height:clamp(28px,9vw,46px);
+  }
+}
+</style>
+
 <style id="pupuntahan-scene">
 /* 01:11 — word-by-word entrance/exit scene. No orbit. */
 .line.pupuntahan-scene{
@@ -2458,7 +2551,7 @@ function sceneFor(i){
   // Each lyric becomes a small motion-graphics scene.
   const scenes=[
     'fly','slit','kailan-flight','wind','zoom','squiggle','clock','clock',
-    'fly','question','pupuntahan','slit','orbit','wind','rubber','chase',
+    'fly','question','pupuntahan','footsteps','orbit','wind','rubber','chase',
     'longa','fly','clock','crawl','flip','zoom','question'
   ];
   return scenes[i]||'chase';
@@ -2721,6 +2814,37 @@ function activate(i){
     pupWords.forEach(w=>{
       w.setAttribute('data-pupuntahan-echo', w.textContent.trim());
     });
+  }
+
+  if(i===11){
+    el.classList.add('footsteps-scene');
+
+    const route=document.createElement('div');
+    route.className='footstep-route';
+    route.setAttribute('aria-hidden','true');
+
+    // One continuous walk from the left edge to the right edge.
+    // The path rises through the middle, then settles toward the destination.
+    const steps=18;
+    for(let j=0;j<steps;j++){
+      const p=j/(steps-1);
+      const x=5 + p*90;
+      const y=66 - Math.sin(p*Math.PI)*27 + Math.sin(p*Math.PI*2)*3.2;
+      const side=(j%2===0?-1:1);
+      const yOffset=side*1.8;
+      const rot=(side*8) + Math.sin(p*Math.PI*1.5)*7;
+
+      const foot=document.createElement('i');
+      foot.className='footprint';
+      foot.style.setProperty('--x',x+'%');
+      foot.style.setProperty('--y',(y+yOffset)+'%');
+      foot.style.setProperty('--rot',rot+'deg');
+      foot.style.setProperty('--delay',(j*0.13).toFixed(2)+'s');
+      route.appendChild(foot);
+    }
+
+    el.appendChild(route);
+    el._footstepRoute=route;
   }
 
   if(i===5){
@@ -2992,7 +3116,7 @@ function updateMotion(t){
   // Extra idle heartbeat for every scene, layered through independent transform properties.
   words.forEach((w,i)=>{
     if(!w.classList.contains('visible'))return;
-    if(scene==='fly' || scene==='flip' || scene==='orbit' || scene==='pupuntahan')return; // scene owns its transform
+    if(scene==='fly' || scene==='flip' || scene==='orbit' || scene==='pupuntahan' || scene==='footsteps')return; // scene owns its transform
     const idleX=Math.sin(t*5.4+i*.9)*1.8;
     const idleY=Math.cos(t*5.4+i*1.1)*1.4;
     const idleR=Math.sin(t*5.4+i)*.75;
@@ -3041,6 +3165,40 @@ function updateMotion(t){
       w.style.filter='none';
       w.style.zIndex='5';
       w.classList.add('pupuntahan-show');
+    });
+  }
+
+
+  if(scene==='footsteps'){
+    const route=el._footstepRoute || el.querySelector('.footstep-route');
+    if(route){
+      // The route exists only for this lyric and fades just before the line exits.
+      if(t>=item.end-.58){
+        route.classList.add('fade-out');
+      }else{
+        route.classList.remove('fade-out');
+      }
+    }
+
+    // Keep the words simple and let the walking trail carry the scene.
+    words.forEach((w,i)=>{
+      const cue=item.cues?.[i] ?? item.start;
+      const nextCue=item.cues?.[i+1] ?? item.end;
+      if(t<cue || t>=nextCue){
+        w.style.opacity='0';
+        return;
+      }
+      const enter=Math.min(1,(t-cue)/.16);
+      const leave=Math.min(1,(nextCue-t)/.16);
+      const easeIn=enter*enter*(3-2*enter);
+      const easeOut=leave*leave*(3-2*leave);
+      const alpha=Math.min(easeIn,easeOut);
+      const phase=t*4.8+i*.8;
+      const bobY=Math.sin(phase)*2.5;
+      const bobR=Math.sin(phase*.8+i)*.7;
+      w.style.opacity=String(alpha);
+      w.style.transform=`translateY(${bobY}px) rotate(${bobR}deg)`;
+      w.style.zIndex='2';
     });
   }
 
