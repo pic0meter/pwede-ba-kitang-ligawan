@@ -2833,7 +2833,13 @@ function activate(i){
       foot.alt='';
       foot.draggable=false;
 
-      const strideAngle=-10 + Math.sin(p*Math.PI)*17 + (isLeft ? -2.5 : 2.5);
+      // The source PNGs are drawn in opposite directions: Left.png points
+      // toward the upper-right while Right.png points toward the upper-left.
+      // Rotate each source so BOTH feet point toward the right (the walking
+      // direction), with only a small natural variation along the curved path.
+      const baseRightRotation=isLeft ? 60 : 120;
+      const pathTurn=Math.sin(p*Math.PI*2.15)*7;
+      const strideAngle=baseRightRotation + pathTurn + (isLeft ? -2 : 2);
       foot.style.setProperty('--x',x+'%');
       foot.style.setProperty('--y',y+'%');
       foot.style.setProperty('--rot',strideAngle.toFixed(2)+'deg');
