@@ -1020,7 +1020,7 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 /* WORD-BY-WORD BACKGROUND ECHO — "Pwede ba kitang ligawan?" */
 .line.word-echo-scene .word{
   position:relative;
-  isolation:isolate;
+  z-index:1;
 }
 .line.word-echo-scene .word::before{
   content:attr(data-echo);
@@ -1037,7 +1037,7 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   line-height:inherit;
   color:var(--echo-color,#ffb38a);
   opacity:0;
-  filter:blur(2px);
+  filter:blur(1.5px);
   pointer-events:none;
   transform:translate(-50%,-50%) translate(var(--echo-x,0px),var(--echo-y,0px)) scale(var(--echo-scale,1.75)) rotate(var(--echo-rot,0deg));
   transform-origin:center;
@@ -1050,16 +1050,16 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .line.word-echo-scene .word:nth-of-type(4)::before{--echo-scale:2.0;--echo-x:2px;--echo-y:-2px;--echo-rot:1.5deg;--echo-color:#ffb38a;--echo-delay:.32s;--echo-dur:2.9s}
 @keyframes wordEchoIn{
   0%{opacity:0;transform:translate(-50%,-50%) translate(var(--echo-x),calc(var(--echo-y) + 8px)) scale(.8) rotate(calc(var(--echo-rot) - 6deg))}
-  65%{opacity:.12;transform:translate(-50%,-50%) translate(var(--echo-x),var(--echo-y)) scale(calc(var(--echo-scale) * 1.06)) rotate(calc(var(--echo-rot) + 2deg))}
-  100%{opacity:.085;transform:translate(-50%,-50%) translate(var(--echo-x),var(--echo-y)) scale(var(--echo-scale)) rotate(var(--echo-rot))}
+  65%{opacity:.19;transform:translate(-50%,-50%) translate(var(--echo-x),var(--echo-y)) scale(calc(var(--echo-scale) * 1.06)) rotate(calc(var(--echo-rot) + 2deg))}
+  100%{opacity:.13;transform:translate(-50%,-50%) translate(var(--echo-x),var(--echo-y)) scale(var(--echo-scale)) rotate(var(--echo-rot))}
 }
 @keyframes wordEchoBob{
-  0%{opacity:.065;transform:translate(-50%,-50%) translate(var(--echo-x),calc(var(--echo-y) + 3px)) scale(var(--echo-scale)) rotate(var(--echo-rot))}
-  100%{opacity:.11;transform:translate(-50%,-50%) translate(calc(var(--echo-x) + 3px),calc(var(--echo-y) - 4px)) scale(calc(var(--echo-scale) * 1.025)) rotate(calc(var(--echo-rot) + 1deg))}
+  0%{opacity:.10;transform:translate(-50%,-50%) translate(var(--echo-x),calc(var(--echo-y) + 3px)) scale(var(--echo-scale)) rotate(var(--echo-rot))}
+  100%{opacity:.15;transform:translate(-50%,-50%) translate(calc(var(--echo-x) + 3px),calc(var(--echo-y) - 4px)) scale(calc(var(--echo-scale) * 1.025)) rotate(calc(var(--echo-rot) + 1deg))}
 }
 .line.word-echo-scene.out .word::before{animation:wordEchoOut .38s ease-in forwards!important}
 @keyframes wordEchoOut{
-  from{opacity:.09;transform:translate(-50%,-50%) translate(var(--echo-x),var(--echo-y)) scale(var(--echo-scale)) rotate(var(--echo-rot))}
+  from{opacity:.14;transform:translate(-50%,-50%) translate(var(--echo-x),var(--echo-y)) scale(var(--echo-scale)) rotate(var(--echo-rot))}
   to{opacity:0;transform:translate(-50%,-50%) translate(calc(var(--echo-x) + var(--exit-x,18px)),calc(var(--echo-y) - 12px)) scale(.72) rotate(calc(var(--echo-rot) + 8deg))}
 }
 
