@@ -161,7 +161,6 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   opacity:0;
 }
 #questionChaos.ready{opacity:1}
-#questionChaos.leaving{animation:qFieldOut .38s cubic-bezier(.18,.8,.2,1) forwards}
 #questionChaos .qmark{
   position:absolute;
   /* x positions beyond 100% / below 0% are intentionally clipped by the viewport */
@@ -256,38 +255,6 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   text-shadow:0 0 24px #ffb38a66;
 }
 
-/* Jitter ONLY while the word is actually highlighted/current. */
-.line.question-chaos .word.ligawan-chaos.current{
-  animation:ligawanJitter .105s steps(2,end) infinite;
-  will-change:transform;
-}
-@keyframes ligawanJitter{
-  0%{transform:translate(0,0) rotate(-1deg) scale(1)}
-  19%{transform:translate(-2px,1px) rotate(1.5deg) scale(1)}
-  37%{transform:translate(3px,-2px) rotate(-2.5deg) scale(1)}
-  54%{transform:translate(-1px,-3px) rotate(2deg) scale(1)}
-  72%{transform:translate(2px,2px) rotate(-1deg) scale(1)}
-  100%{transform:translate(0,0) rotate(1deg) scale(1)}
-}
-
-/* The old line doesn't simply disappear: the question marks collapse inward. */
-.line.question-chaos.out{
-  animation:qLineOut .72s cubic-bezier(.22,.72,.2,1) forwards !important;
-}
-.line.question-chaos.out #questionChaos{
-  animation:qFieldOut .72s cubic-bezier(.22,.72,.2,1) forwards;
-}
-@keyframes qLineOut{
-  0%{opacity:1;transform:translate3d(0,0,0) scale(1);filter:blur(0)}
-  38%{opacity:1;transform:translate3d(3px,-3px,0) scale(1.015);filter:blur(0)}
-  72%{opacity:.72;transform:translate3d(-4px,-10px,0) scale(.995);filter:blur(1.2px)}
-  100%{opacity:0;transform:translate3d(0,-24px,0) scale(.965);filter:blur(4px)}
-}
-@keyframes qFieldOut{
-  0%{opacity:1;transform:scale(1)}
-  42%{opacity:1;transform:scale(1.015)}
-  100%{opacity:0;transform:scale(.94)}
-}
 
 /* First-chorus transition beat: a musical pulse at 00:44, followed by a
    long soft fade so the next lyric can enter without a hard cut. */
@@ -619,20 +586,6 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .clock-tick.major{width:2px;height:10px;background:#ffffff48}
 @keyframes clockOrbit{to{transform:rotate(360deg)}}
 
-/* FIRST CHORUS — "ligawan?" becomes erratic only while highlighted. */
-.line.question-chaos .word.ligawan-chaos.current{
-  animation:ligawanJitter .105s steps(2,end) infinite;
-  will-change:transform;
-}
-@keyframes ligawanJitter{
-  0%{transform:translate(0,0) rotate(-1deg) scale(1.03)}
-  17%{transform:translate(-3px,2px) rotate(2deg) scale(1.07)}
-  33%{transform:translate(3px,-3px) rotate(-3deg) scale(1.02)}
-  51%{transform:translate(-2px,-4px) rotate(2.5deg) scale(1.10)}
-  69%{transform:translate(4px,2px) rotate(-2deg) scale(1.05)}
-  84%{transform:translate(-2px,1px) rotate(3deg) scale(1.08)}
-  100%{transform:translate(0,0) rotate(-1deg) scale(1.03)}
-}
 
 /* FIRST "Kahit 'di maganda ang mga linyahan" treatment.
    The six words are a deliberate vertical stack. They do not fly.
@@ -661,36 +614,7 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   will-change:transform,opacity;
   animation:none!important;
 }
-.line.first-linyahan-vertical .word.visible{
-  animation:verticalWordIn .34s cubic-bezier(.16,1.1,.25,1) both!important;
-}
-.line.first-linyahan-vertical .word.visible:not(.current){
-  animation:verticalWordShake .16s steps(2,end) .34s infinite!important;
-}
-.line.first-linyahan-vertical .word.current{
-  color:var(--accent);
-  text-shadow:0 0 28px #ffb38a66;
-  animation:verticalWordShakeStrong .10s steps(2,end) infinite!important;
-}
-@keyframes verticalWordIn{
-  0%{opacity:0;transform:translateY(16px) scale(.9)}
-  65%{opacity:1;transform:translateY(-2px) scale(1.02)}
-  100%{opacity:1;transform:none}
-}
-@keyframes verticalWordShake{
-  0%{transform:translate(-1.5px,0) rotate(-.35deg)}
-  25%{transform:translate(1.5px,-.5px) rotate(.4deg)}
-  50%{transform:translate(-1px,.5px) rotate(-.45deg)}
-  75%{transform:translate(1px,0) rotate(.35deg)}
-  100%{transform:translate(0,.2px) rotate(0)}
-}
-@keyframes verticalWordShakeStrong{
-  0%{transform:translate(-2px,0) rotate(-.8deg) scale(1.04)}
-  25%{transform:translate(2px,-1px) rotate(.9deg) scale(1.07)}
-  50%{transform:translate(-2px,1px) rotate(-1deg) scale(1.045)}
-  75%{transform:translate(2px,0) rotate(.8deg) scale(1.07)}
-  100%{transform:translate(0,0) rotate(0) scale(1.055)}
-}
+/* First-linyahan words use only the final bob animation below. */
 
 /* Dashed "slashes" cross the entire screen from different directions.
    The trail follows the dash front instead of appearing as a static X. */
@@ -780,25 +704,7 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   100%{opacity:0;transform:scale(1.08)}
 }
 
-/* FIRST-CHORUS — horizontal line behind the stacked words.
-   It draws once from left to right when the lyric enters, while the words
-   remain fully above it. */
-.line.first-linyahan-vertical .word.visible{
-  animation:verticalWordShake .16s steps(2,end) infinite!important;
-  opacity:1!important;
-  filter:none!important;
-  transform:none;
-  color:var(--ink)!important;
-  text-shadow:none!important;
-}
-.line.first-linyahan-vertical .word.current{
-  animation:verticalWordShakeStrong .10s steps(2,end) infinite!important;
-  opacity:1!important;
-  filter:none!important;
-  color:var(--ink)!important;
-  text-shadow:none!important;
-}
-
+/* FIRST-CHORUS — horizontal line behind the stacked words. */
 .first-linyahan-stroke{
   position:absolute;
   z-index:1;
@@ -1317,9 +1223,6 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .gusto-clean .particle,
 .gusto-clean .spark,
 .gusto-clean .trail{display:none!important}
-.subtle-kinetic .word.visible{animation:subtleKinetic 1.35s ease-in-out infinite}.subtle-kinetic .word.visible:last-child{animation:linyahanShake .18s steps(2,end) infinite;color:var(--accent)}
-@keyframes subtleKinetic{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-3px) rotate(.6deg)}}
-@keyframes linyahanShake{0%{transform:translate(-2px,0) rotate(-1.2deg)}25%{transform:translate(2px,-1px) rotate(1.4deg) scale(1.03)}50%{transform:translate(-2px,1px) rotate(-1.5deg) scale(1.01)}75%{transform:translate(2px,0) rotate(1.2deg) scale(1.03)}100%{transform:none}}
 .scene-clock.clock-exit{opacity:0!important;transform:scale(1.12) rotate(-2deg)!important;filter:blur(8px)!important;transition:opacity .55s ease,transform .65s cubic-bezier(.7,0,.9,.2),filter .45s ease!important}
 .clock-whimsy-time .clock-lyric .word.visible{animation:clockDanceIn .62s cubic-bezier(.12,1.3,.3,1) both,clockDance 1.35s ease-in-out .62s infinite;animation-delay:calc(var(--i)*.07s),calc(.72s + var(--i)*.05s)}
 .clock-whimsy-skill .clock-lyric .word.visible{animation:clockBounceIn .68s cubic-bezier(.12,1.35,.3,1) both,clockWiggle 1.7s ease-in-out .68s infinite;animation-delay:calc(var(--i)*.065s),calc(.78s + var(--i)*.06s)}
@@ -2292,6 +2195,25 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 }
 
 <style id="final-targeted-animation-fixes">
+/* 00:39.65 chorus: REBUILT as one object.
+   The lyric words do not jitter, bob, scale, rotate, or pulse independently.
+   The parent line owns the single pulse/fade. */
+.line.question-chaos .word,
+.line.question-chaos .word.visible,
+.line.question-chaos .word.current{
+  animation-name:qWord !important;
+  animation-duration:.48s !important;
+  animation-timing-function:cubic-bezier(.15,1.4,.3,1) !important;
+  animation-iteration-count:1 !important;
+  animation-fill-mode:both !important;
+  translate:0 0 !important;
+  rotate:0deg !important;
+  scale:1 !important;
+}
+.line.question-chaos .word.current{
+  animation-name:qWord !important;
+}
+
 /* 00:39.65 chorus: one whole-line pulse, never a word-by-word pulse. */
 .line.question-chaos.active .word,
 .line.question-chaos.active .word.current,
@@ -2304,12 +2226,21 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   text-shadow:none !important;
 }
 
-/* 00:46.80 linyahan: the words only bob vertically. No shake/side drift/rotation. */
+/* 00:46.80 linyahan: REBUILT MOTION — vertical bob only.
+   All previous shake/current-word animation paths were removed. */
 .line.first-linyahan-vertical .word,
 .line.first-linyahan-vertical .word.visible,
 .line.first-linyahan-vertical .word.current{
-  animation-timing-function:cubic-bezier(.45,.05,.55,.95) !important;
+  animation-name:initial !important;
+  animation-duration:initial !important;
+  animation-iteration-count:initial !important;
 }
+.line.first-linyahan-vertical .word:nth-child(1){animation:linyahanPureBob1 1.35s cubic-bezier(.45,.05,.55,.95) infinite alternate both !important}
+.line.first-linyahan-vertical .word:nth-child(2){animation:linyahanPureBob2 1.62s cubic-bezier(.45,.05,.55,.95) infinite alternate both !important}
+.line.first-linyahan-vertical .word:nth-child(3){animation:linyahanPureBob3 1.48s cubic-bezier(.45,.05,.55,.95) infinite alternate both !important}
+.line.first-linyahan-vertical .word:nth-child(4){animation:linyahanPureBob4 1.72s cubic-bezier(.45,.05,.55,.95) infinite alternate both !important}
+.line.first-linyahan-vertical .word:nth-child(5){animation:linyahanPureBob5 1.42s cubic-bezier(.45,.05,.55,.95) infinite alternate both !important}
+.line.first-linyahan-vertical .word:nth-child(6){animation:linyahanPureBob6 1.58s cubic-bezier(.45,.05,.55,.95) infinite alternate both !important}
 
 /* Clock number bursts: between the clock face and the lyric, larger but still faded. */
 .line.scene-clock .clock-number-burst-layer{z-index:1 !important;}
@@ -2623,10 +2554,19 @@ function activate(i){
   }
 
   if(old){
+    const oldIndex=Number(old.dataset.index);
     old.classList.remove('active');
     if(old.classList.contains('scene-clock')) old.classList.add('clock-exit');
-    old.classList.add('out');
-    setTimeout(()=>old.remove(),700);
+
+    // The first chorus has its own timed fade (45.75–46.75). Do NOT stack
+    // the generic .out animation on top of it when the next lyric enters.
+    if(oldIndex===4 && i===5){
+      old.classList.remove('question-chorus-pulse','question-chorus-fade');
+      setTimeout(()=>old.remove(),40);
+    }else{
+      old.classList.add('out');
+      setTimeout(()=>old.remove(),700);
+    }
   }
   current=i;
   heartCueShown=false;
@@ -3020,6 +2960,17 @@ function updateMotion(t){
     w.style.scale=`${1+0.012*Math.sin(t*5.4+i)}`;
   });
 
+  // First chorus owns its motion at the LINE level only. Clear all generic
+  // per-word idle transforms so no individual word can shake during the pulse.
+  if(current===4){
+    words.forEach(w=>{
+      if(!w.classList.contains('visible'))return;
+      w.style.translate='0 0';
+      w.style.rotate='0deg';
+      w.style.scale='1';
+    });
+  }
+
   // Make the 1:03 "Pwede..." line physically bob more than the normal idle motion.
   if(current===8){
     words.forEach((w,i)=>{
@@ -3190,8 +3141,8 @@ function updateLaserHeart(t){
     const qLine=L.querySelector('.line.active.question-chaos');
     const pulseStart=44.00;
     const pulseEnd=44.52;
-    const fadeStart=45.80;
-    const fadeEnd=46.80;
+    const fadeStart=45.75;
+    const fadeEnd=46.75;
     if(qLine && t>=pulseStart && t<pulseEnd){
       qLine.classList.remove('question-chorus-fade');
       qLine.classList.add('question-chorus-pulse');
@@ -3256,7 +3207,7 @@ function spawnClockNumberBackgroundBurst(wordIndex){
     e.textContent=String(1+Math.floor(Math.random()*12));
     e.style.left=cx+'px';
     e.style.top=cy+'px';
-    e.style.fontSize=(34+Math.random()*28)+'px';
+    e.style.fontSize=(58+Math.random()*24)+'px';
     const a=(Math.PI*2/count)*i+(Math.random()-.5)*.6;
     const distance=45+Math.random()*105;
     e.style.setProperty('--dx',(Math.cos(a)*distance)+'px');
@@ -3264,8 +3215,8 @@ function spawnClockNumberBackgroundBurst(wordIndex){
     e.style.setProperty('--scale',(0.72+Math.random()*0.7).toFixed(2));
     e.style.setProperty('--r',(-10+Math.random()*20)+'deg');
     e.style.setProperty('--r2',(-22+Math.random()*44)+'deg');
-    e.style.setProperty('--alpha',(0.24+Math.random()*0.12).toFixed(3));
-    e.style.setProperty('--life',(0.62+Math.random()*0.16)+'s');
+    e.style.setProperty('--alpha',(0.32+Math.random()*0.12).toFixed(3));
+    e.style.setProperty('--life',(0.68+Math.random()*0.14)+'s');
     field.appendChild(e);
   }
   setTimeout(()=>{field.querySelectorAll('.clock-number-bg-burst').forEach(e=>e.remove())},1300);
