@@ -289,6 +289,40 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   100%{opacity:0;transform:scale(.94)}
 }
 
+/* First-chorus transition beat: a musical pulse at 00:44, followed by a
+   long soft fade so the next lyric can enter without a hard cut. */
+.line.question-chaos.question-chorus-pulse{
+  animation:questionChorusPulse .52s cubic-bezier(.16,.9,.2,1) both !important;
+  z-index:7;
+}
+.line.question-chaos.question-chorus-pulse .word{
+  text-shadow:0 0 34px #ffb38a66;
+}
+@keyframes questionChorusPulse{
+  0%{opacity:1;transform:translate3d(0,0,0) scale(1);filter:blur(0)}
+  24%{transform:translate3d(-3px,2px,0) scale(1.045) rotate(-.35deg);filter:drop-shadow(0 0 16px #ffb38a55)}
+  52%{transform:translate3d(4px,-4px,0) scale(1.095) rotate(.45deg);filter:drop-shadow(0 0 30px #ffb38a88)}
+  78%{transform:translate3d(-2px,2px,0) scale(1.035) rotate(-.25deg);filter:drop-shadow(0 0 15px #ffb38a44)}
+  100%{transform:translate3d(0,0,0) scale(1) rotate(0);filter:none}
+}
+.line.question-chaos.question-chorus-fade{
+  animation:questionChorusFade 2.20s cubic-bezier(.22,.72,.2,1) both !important;
+}
+.line.question-chaos.question-chorus-fade #questionChaos{
+  animation:questionChorusFieldFade 2.20s cubic-bezier(.22,.72,.2,1) both !important;
+}
+@keyframes questionChorusFade{
+  0%{opacity:1;transform:translate3d(0,0,0) scale(1);filter:blur(0)}
+  42%{opacity:.92;transform:translate3d(0,-2px,0) scale(.995);filter:blur(.25px)}
+  72%{opacity:.48;transform:translate3d(0,-7px,0) scale(.985);filter:blur(1.6px)}
+  100%{opacity:0;transform:translate3d(0,-16px,0) scale(.97);filter:blur(4px)}
+}
+@keyframes questionChorusFieldFade{
+  0%{opacity:1;transform:scale(1)}
+  55%{opacity:.68;transform:scale(.99)}
+  100%{opacity:0;transform:scale(.95)}
+}
+
 /* Next lyric arrives through the space left by the question marks. */
 .line.question-next{
   animation:qNextIn .68s cubic-bezier(.16,.86,.2,1) both;
@@ -3027,6 +3061,24 @@ function updateLaserHeart(t){
     setTimeout(spawnBanatEcho,900);
   }
   if(!inBanatEcho) window._banatEchoStarted=false;
+
+  // First-chorus transition beat: pulse at 00:44, then dissolve into the next line.
+  if(current===4){
+    const qLine=L.querySelector('.line.active.question-chaos');
+    const pulseStart=44.00;
+    const pulseEnd=44.52;
+    const fadeStart=44.52;
+    const fadeEnd=46.72;
+    if(qLine && t>=pulseStart && t<pulseEnd){
+      qLine.classList.remove('question-chorus-fade');
+      qLine.classList.add('question-chorus-pulse');
+    }else if(qLine && t>=fadeStart && t<fadeEnd){
+      qLine.classList.remove('question-chorus-pulse');
+      qLine.classList.add('question-chorus-fade');
+    }else if(qLine && t< pulseStart){
+      qLine.classList.remove('question-chorus-pulse','question-chorus-fade');
+    }
+  }
 
   // Grand pulse immediately after "hindi" is spoken on the question line.
   if(current===9){
