@@ -2219,34 +2219,34 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 </style>
 
 <style id="first-linyahan-poppins-whimsy">
-/* First chorus linyahan: playful Poppins + independent whimsical bobbing. */
+/* First chorus linyahan: Poppins + PURE VERTICAL BOB. No shaking,
+   horizontal drift, or rotation. This is the only word motion for this line. */
 .line.first-linyahan-vertical .word,
 .line.first-linyahan-vertical .word.visible,
 .line.first-linyahan-vertical .word.current{
   font-family:"Poppins",sans-serif !important;
   font-weight:700 !important;
-  animation-duration:var(--whimsy-dur,1.55s) !important;
   animation-timing-function:cubic-bezier(.45,.05,.55,.95) !important;
   animation-iteration-count:infinite !important;
   animation-direction:alternate !important;
   animation-fill-mode:both !important;
   text-shadow:none !important;
+  transform-origin:50% 50% !important;
 }
-.line.first-linyahan-vertical .word:nth-child(1){--whimsy-dur:1.35s;animation-name:linyahanWhimsy1 !important}
-.line.first-linyahan-vertical .word:nth-child(2){--whimsy-dur:1.62s;animation-name:linyahanWhimsy2 !important}
-.line.first-linyahan-vertical .word:nth-child(3){--whimsy-dur:1.48s;animation-name:linyahanWhimsy3 !important}
-.line.first-linyahan-vertical .word:nth-child(4){--whimsy-dur:1.72s;animation-name:linyahanWhimsy4 !important}
-.line.first-linyahan-vertical .word:nth-child(5){--whimsy-dur:1.42s;animation-name:linyahanWhimsy5 !important}
-.line.first-linyahan-vertical .word:nth-child(6){--whimsy-dur:1.58s;animation-name:linyahanWhimsy6 !important}
-@keyframes linyahanWhimsy1{0%{transform:translate3d(-5px,4px,0) rotate(-1.4deg) scale(.99)}22%{transform:translate3d(3px,-8px,0) rotate(1.8deg) scale(1.035)}48%{transform:translate3d(-4px,6px,0) rotate(-1deg) scale(1.015)}73%{transform:translate3d(6px,-5px,0) rotate(1.5deg) scale(1.045)}100%{transform:translate3d(-2px,5px,0) rotate(-.7deg) scale(1.01)}}
-@keyframes linyahanWhimsy2{0%{transform:translate3d(4px,-5px,0) rotate(1deg) scale(1.01)}25%{transform:translate3d(-6px,7px,0) rotate(-1.8deg) scale(1.04)}51%{transform:translate3d(3px,-9px,0) rotate(1.4deg) scale(1.025)}77%{transform:translate3d(-4px,4px,0) rotate(-1.1deg) scale(1.045)}100%{transform:translate3d(5px,-3px,0) rotate(1.3deg) scale(1)}}
-@keyframes linyahanWhimsy3{0%{transform:translate3d(-4px,6px,0) rotate(-1deg) scale(1)}24%{transform:translate3d(6px,-6px,0) rotate(1.7deg) scale(1.04)}49%{transform:translate3d(-7px,4px,0) rotate(-1.6deg) scale(1.025)}74%{transform:translate3d(3px,-9px,0) rotate(1.2deg) scale(1.05)}100%{transform:translate3d(-5px,5px,0) rotate(-.8deg) scale(1.01)}}
-@keyframes linyahanWhimsy4{0%{transform:translate3d(5px,3px,0) rotate(1.4deg) scale(1)}23%{transform:translate3d(-5px,-8px,0) rotate(-1.8deg) scale(1.04)}47%{transform:translate3d(7px,5px,0) rotate(1.5deg) scale(1.02)}72%{transform:translate3d(-3px,-6px,0) rotate(-1.2deg) scale(1.045)}100%{transform:translate3d(4px,4px,0) rotate(1deg) scale(1.015)}}
-@keyframes linyahanWhimsy5{0%{transform:translate3d(-6px,-3px,0) rotate(-1.5deg) scale(1.015)}26%{transform:translate3d(4px,8px,0) rotate(1.8deg) scale(1.045)}52%{transform:translate3d(-5px,-7px,0) rotate(-1.4deg) scale(1.02)}78%{transform:translate3d(7px,4px,0) rotate(1.5deg) scale(1.05)}100%{transform:translate3d(-3px,-5px,0) rotate(-.9deg) scale(1)}}
-@keyframes linyahanWhimsy6{0%{transform:translate3d(3px,5px,0) rotate(.8deg) scale(1)}22%{transform:translate3d(-6px,-7px,0) rotate(-1.9deg) scale(1.045)}48%{transform:translate3d(5px,6px,0) rotate(1.6deg) scale(1.02)}75%{transform:translate3d(-4px,-8px,0) rotate(-1.4deg) scale(1.05)}100%{transform:translate3d(6px,3px,0) rotate(1.1deg) scale(1.015)}}
+.line.first-linyahan-vertical .word:nth-child(1){animation:linyahanPureBob1 1.35s cubic-bezier(.45,.05,.55,.95) infinite alternate both !important}
+.line.first-linyahan-vertical .word:nth-child(2){animation:linyahanPureBob2 1.62s cubic-bezier(.45,.05,.55,.95) infinite alternate both !important}
+.line.first-linyahan-vertical .word:nth-child(3){animation:linyahanPureBob3 1.48s cubic-bezier(.45,.05,.55,.95) infinite alternate both !important}
+.line.first-linyahan-vertical .word:nth-child(4){animation:linyahanPureBob4 1.72s cubic-bezier(.45,.05,.55,.95) infinite alternate both !important}
+.line.first-linyahan-vertical .word:nth-child(5){animation:linyahanPureBob5 1.42s cubic-bezier(.45,.05,.55,.95) infinite alternate both !important}
+.line.first-linyahan-vertical .word:nth-child(6){animation:linyahanPureBob6 1.58s cubic-bezier(.45,.05,.55,.95) infinite alternate both !important}
+@keyframes linyahanPureBob1{0%{transform:translate3d(0,5px,0) scale(1)}100%{transform:translate3d(0,-7px,0) scale(1.025)}}
+@keyframes linyahanPureBob2{0%{transform:translate3d(0,-4px,0) scale(1.015)}100%{transform:translate3d(0,8px,0) scale(1)}}
+@keyframes linyahanPureBob3{0%{transform:translate3d(0,6px,0) scale(1)}100%{transform:translate3d(0,-9px,0) scale(1.03)}}
+@keyframes linyahanPureBob4{0%{transform:translate3d(0,-6px,0) scale(1.02)}100%{transform:translate3d(0,7px,0) scale(1)}}
+@keyframes linyahanPureBob5{0%{transform:translate3d(0,7px,0) scale(1)}100%{transform:translate3d(0,-8px,0) scale(1.025)}}
+@keyframes linyahanPureBob6{0%{transform:translate3d(0,-5px,0) scale(1.01)}100%{transform:translate3d(0,9px,0) scale(1)}}
 
-/* Faded word echoes sit behind each linyahan word. They echo the same text
-   without competing with the main lyric or the dashed strokes. */
+/* Faded word echoes sit behind each linyahan word. */
 .line.first-linyahan-vertical .word{
   position:relative;
   z-index:2;
@@ -2290,31 +2290,34 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   from{opacity:.08;transform:translate(-50%,-50%) translate(var(--echo-x),var(--echo-y)) scale(1.42) rotate(var(--echo-rot))}
   to{opacity:0;transform:translate(-50%,-50%) translate(var(--echo-x),calc(var(--echo-y) - 10px)) scale(1.65) rotate(calc(var(--echo-rot) + 4deg))}
 }
-<style id="linyahan-pure-bob-final">
-/* Final linyahan motion: PURE VERTICAL BOB only. No shake, side drift, or rotation. */
+
+<style id="final-targeted-animation-fixes">
+/* 00:39.65 chorus: one whole-line pulse, never a word-by-word pulse. */
+.line.question-chaos.active .word,
+.line.question-chaos.active .word.current,
+.line.question-chaos.active .word.visible{
+  translate:0 0 !important;
+  rotate:0deg !important;
+  scale:1 !important;
+}
+.line.question-chaos.question-chorus-pulse .word{
+  text-shadow:none !important;
+}
+
+/* 00:46.80 linyahan: the words only bob vertically. No shake/side drift/rotation. */
 .line.first-linyahan-vertical .word,
 .line.first-linyahan-vertical .word.visible,
 .line.first-linyahan-vertical .word.current{
-  animation-duration:var(--pure-bob-dur,1.5s) !important;
   animation-timing-function:cubic-bezier(.45,.05,.55,.95) !important;
-  animation-iteration-count:infinite !important;
-  animation-direction:alternate !important;
-  animation-fill-mode:both !important;
-  transform-origin:50% 50% !important;
 }
-.line.first-linyahan-vertical .word:nth-child(1){--pure-bob-dur:1.35s;animation-name:linyahanPureBob1 !important}
-.line.first-linyahan-vertical .word:nth-child(2){--pure-bob-dur:1.62s;animation-name:linyahanPureBob2 !important}
-.line.first-linyahan-vertical .word:nth-child(3){--pure-bob-dur:1.48s;animation-name:linyahanPureBob3 !important}
-.line.first-linyahan-vertical .word:nth-child(4){--pure-bob-dur:1.72s;animation-name:linyahanPureBob4 !important}
-.line.first-linyahan-vertical .word:nth-child(5){--pure-bob-dur:1.42s;animation-name:linyahanPureBob5 !important}
-.line.first-linyahan-vertical .word:nth-child(6){--pure-bob-dur:1.58s;animation-name:linyahanPureBob6 !important}
-@keyframes linyahanPureBob1{0%{transform:translate3d(0,5px,0) scale(1)}100%{transform:translate3d(0,-7px,0) scale(1.025)}}
-@keyframes linyahanPureBob2{0%{transform:translate3d(0,-4px,0) scale(1.015)}100%{transform:translate3d(0,8px,0) scale(1)}}
-@keyframes linyahanPureBob3{0%{transform:translate3d(0,6px,0) scale(1)}100%{transform:translate3d(0,-9px,0) scale(1.03)}}
-@keyframes linyahanPureBob4{0%{transform:translate3d(0,-6px,0) scale(1.02)}100%{transform:translate3d(0,7px,0) scale(1)}}
-@keyframes linyahanPureBob5{0%{transform:translate3d(0,7px,0) scale(1)}100%{transform:translate3d(0,-8px,0) scale(1.025)}}
-@keyframes linyahanPureBob6{0%{transform:translate3d(0,-5px,0) scale(1.01)}100%{transform:translate3d(0,9px,0) scale(1)}}
-</style>
+
+/* Clock number bursts: between the clock face and the lyric, larger but still faded. */
+.line.scene-clock .clock-number-burst-layer{z-index:1 !important;}
+.clock-number-bg-burst{
+  font-weight:800 !important;
+  filter:blur(.35px) !important;
+  text-shadow:0 0 20px #ffb38a28 !important;
+}
 </style>
 </head>
 <body>
@@ -3005,21 +3008,6 @@ function updateMotion(t){
     const oo=words[0];
     if(oo) oo.style.transform=`translateY(${Math.sin(t*7)*3}px) scale(${1.02+.035*Math.max(0,Math.sin(t*4))})`;
   }
-  // First chorus: keep every visible word physically lively while the whole
-  // line bobs as one energetic phrase.
-  if(current===4){
-    words.forEach((w,i)=>{
-      if(!w.classList.contains('visible'))return;
-      const phase=t*(7.4+i*.48)+i*1.15;
-      const x=Math.sin(phase)*3.8+Math.cos(phase*1.73+i)*1.8;
-      const y=Math.cos(phase*1.09)*5.2+Math.sin(phase*2.05+i)*1.7;
-      const r=Math.sin(phase*.91+i)*1.7;
-      w.style.translate=`${x}px ${y}px`;
-      w.style.rotate=`${r}deg`;
-      w.style.scale=(1+.014*Math.sin(phase*1.3));
-    });
-  }
-
   // Extra idle heartbeat for every scene, layered through independent transform properties.
   words.forEach((w,i)=>{
     if(!w.classList.contains('visible'))return;
@@ -3202,8 +3190,8 @@ function updateLaserHeart(t){
     const qLine=L.querySelector('.line.active.question-chaos');
     const pulseStart=44.00;
     const pulseEnd=44.52;
-    const fadeStart=45.72;
-    const fadeEnd=46.72;
+    const fadeStart=45.80;
+    const fadeEnd=46.80;
     if(qLine && t>=pulseStart && t<pulseEnd){
       qLine.classList.remove('question-chorus-fade');
       qLine.classList.add('question-chorus-pulse');
@@ -3268,7 +3256,7 @@ function spawnClockNumberBackgroundBurst(wordIndex){
     e.textContent=String(1+Math.floor(Math.random()*12));
     e.style.left=cx+'px';
     e.style.top=cy+'px';
-    e.style.fontSize=(18+Math.random()*34)+'px';
+    e.style.fontSize=(34+Math.random()*28)+'px';
     const a=(Math.PI*2/count)*i+(Math.random()-.5)*.6;
     const distance=45+Math.random()*105;
     e.style.setProperty('--dx',(Math.cos(a)*distance)+'px');
@@ -3276,8 +3264,8 @@ function spawnClockNumberBackgroundBurst(wordIndex){
     e.style.setProperty('--scale',(0.72+Math.random()*0.7).toFixed(2));
     e.style.setProperty('--r',(-10+Math.random()*20)+'deg');
     e.style.setProperty('--r2',(-22+Math.random()*44)+'deg');
-    e.style.setProperty('--alpha',(0.12+Math.random()*0.08).toFixed(3));
-    e.style.setProperty('--life',(0.72+Math.random()*0.34)+'s');
+    e.style.setProperty('--alpha',(0.24+Math.random()*0.12).toFixed(3));
+    e.style.setProperty('--life',(0.62+Math.random()*0.16)+'s');
     field.appendChild(e);
   }
   setTimeout(()=>{field.querySelectorAll('.clock-number-bg-burst').forEach(e=>e.remove())},1300);
@@ -3560,7 +3548,7 @@ function render(){
     ];
     burstCues.forEach(([wordIndex,cue])=>{
       const key=String(wordIndex);
-      if(t>=cue && t<cue+0.28 && !clockNumberBackgroundBursts.includes(key)){
+      if(t>=cue && t<cue+0.07 && !clockNumberBackgroundBursts.includes(key)){
         clockNumberBackgroundBursts.push(key);
         spawnClockNumberBackgroundBurst(wordIndex);
       }
