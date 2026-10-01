@@ -2184,11 +2184,11 @@ function spawnLinyahanFootsteps(){
   // travelling from one side to the other. Angles alternate to make the
   // trails feel like directional marks rather than parallel UI lines.
   const paths=[
-    {y:'22%',angle:'-8deg',w:'38vw',d:'1.05s',delay:'0s',cls:'long'},
-    {y:'38%',angle:'5deg', w:'29vw',d:'0.92s',delay:'.16s',cls:'short'},
-    {y:'53%',angle:'-4deg',w:'44vw',d:'1.12s',delay:'.31s',cls:'long'},
-    {y:'68%',angle:'7deg', w:'31vw',d:'1.00s',delay:'.47s',cls:'short'},
-    {y:'81%',angle:'-6deg',w:'36vw',d:'1.08s',delay:'.64s',cls:'long'}
+    {y:'22%',angle:'-8deg',w:'38vw',d:'2.10s',delay:'0s',cls:'long'},
+    {y:'38%',angle:'5deg', w:'29vw',d:'1.90s',delay:'.28s',cls:'short'},
+    {y:'53%',angle:'-4deg',w:'44vw',d:'2.25s',delay:'.55s',cls:'long'},
+    {y:'68%',angle:'7deg', w:'31vw',d:'2.00s',delay:'.82s',cls:'short'},
+    {y:'81%',angle:'-6deg',w:'36vw',d:'2.15s',delay:'1.10s',cls:'long'}
   ];
 
   paths.forEach((p,i)=>{
@@ -2209,7 +2209,7 @@ function spawnLinyahanFootsteps(){
 
   linyahanFootstepsTimer=setTimeout(()=>{
     clearLinyahanFootsteps();
-  },2100);
+  },3600);
 }
 
 function updateSpecialVisuals(t){
