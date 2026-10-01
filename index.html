@@ -294,6 +294,10 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 
 
 
+#wordExplosionField{position:absolute;inset:0;z-index:3;overflow:hidden;pointer-events:none}
+.word-bg-burst{position:absolute;left:0;top:0;white-space:nowrap;font-family:inherit;font-weight:inherit;letter-spacing:inherit;line-height:inherit;color:#f8f0e6;opacity:0;transform:translate(-50%,-50%) scale(.18) rotate(var(--r));animation:wordBgBurst var(--life) cubic-bezier(.12,.8,.18,1) forwards;filter:blur(.35px);text-shadow:0 0 18px #ffb38a2e}
+@keyframes wordBgBurst{0%{opacity:0;transform:translate(-50%,-50%) scale(.18) rotate(var(--r))}12%{opacity:var(--alpha)}45%{opacity:calc(var(--alpha)*.72)}100%{opacity:0;transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(var(--scale)) rotate(var(--r2))}}
+
 #ooExplosion{position:absolute;inset:0;z-index:8;overflow:hidden;pointer-events:none}
 .oo-field{position:absolute;left:50%;top:50%;white-space:nowrap;font-weight:900;letter-spacing:-.08em;color:#f8f0e6;opacity:0;transform:translate(-50%,-50%) scale(.15) rotate(var(--r));animation:ooTakeover var(--life) cubic-bezier(.12,.8,.18,1) forwards;text-shadow:0 0 24px #ffb38a33}
 @keyframes ooTakeover{0%{opacity:0;transform:translate(-50%,-50%) scale(.15) rotate(var(--r))}12%{opacity:.92}48%{opacity:.82}78%{opacity:.88}100%{opacity:0;transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(var(--scale)) rotate(var(--r2))}}
@@ -2157,7 +2161,7 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   <div class="ambient"><div class="orb o1"></div><div class="orb o2"></div></div>
   <div id="grain"></div>
   <div id="backgroundBanat" aria-hidden="true"></div>
-  <div id="heartField" aria-hidden="true"></div><div id="ooExplosion" aria-hidden="true"></div><div id="siteSparkField" aria-hidden="true"></div>
+  <div id="heartField" aria-hidden="true"></div><div id="wordExplosionField" aria-hidden="true"></div><div id="ooExplosion" aria-hidden="true"></div><div id="siteSparkField" aria-hidden="true"></div>
   <div id="echoes"></div>
 <div id="top">
     <div class="title"><span class="dot"></span><span>Pwede Ba Kitang Ligawan</span></div>
@@ -3028,6 +3032,47 @@ function spawnOoTakeover(){const field=document.querySelector('#ooExplosion');if
 function explodeOoIntoHearts(){const field=document.querySelector('#ooExplosion');if(!field||ooHeartBurstActive)return;ooHeartBurstActive=true;for(let i=0;i<34;i++){const h=document.createElement('span');h.className='oo-heart';const a=(Math.PI*2/34)*i+(Math.random()-.5)*.4;const distance=100+Math.random()*330;h.style.setProperty('--size',(7+Math.random()*25)+'px');h.style.setProperty('--dx',(Math.cos(a)*distance)+'px');h.style.setProperty('--dy',(Math.sin(a)*distance)+'px');h.style.setProperty('--rot',(-35+Math.random()*70)+'deg');h.style.setProperty('--life',(0.65+Math.random()*.65)+'s');h.style.color=`hsl(${5+Math.random()*40},${65+Math.random()*25}%,${65+Math.random()*20}%)`;field.appendChild(h)}setTimeout(clearOoTakeover,1450)}
 
 
+let wordBackgroundBursts=[];
+function clearWordBackgroundBursts(){
+  const field=document.querySelector('#wordExplosionField');
+  if(field)field.replaceChildren();
+  wordBackgroundBursts=[];
+}
+function spawnWordBackgroundBurst(wordIndex){
+  const field=document.querySelector('#wordExplosionField');
+  const line=L.querySelector('.line.active[data-index="3"]');
+  const word=line?.querySelector('.word[data-word-index="'+wordIndex+'"]');
+  if(!field||!word)return;
+  const rect=word.getBoundingClientRect();
+  const base=field.getBoundingClientRect();
+  const cx=rect.left+rect.width/2-base.left;
+  const cy=rect.top+rect.height/2-base.top;
+  const computed=getComputedStyle(word);
+  const count=16;
+  for(let i=0;i<count;i++){
+    const e=document.createElement('span');
+    e.className='word-bg-burst';
+    e.textContent=word.textContent.trim();
+    e.style.left=cx+'px';
+    e.style.top=cy+'px';
+    e.style.fontFamily=computed.fontFamily;
+    e.style.fontSize=(parseFloat(computed.fontSize)*(0.78+Math.random()*0.72))+'px';
+    e.style.fontWeight=computed.fontWeight;
+    e.style.letterSpacing=computed.letterSpacing;
+    const a=(Math.PI*2/count)*i+(Math.random()-.5)*.45;
+    const distance=55+Math.random()*155;
+    e.style.setProperty('--dx',(Math.cos(a)*distance)+'px');
+    e.style.setProperty('--dy',(Math.sin(a)*distance)+'px');
+    e.style.setProperty('--scale',(0.72+Math.random()*1.25).toFixed(2));
+    e.style.setProperty('--r',(-10+Math.random()*20)+'deg');
+    e.style.setProperty('--r2',(-24+Math.random()*48)+'deg');
+    e.style.setProperty('--alpha',(0.075+Math.random()*0.10).toFixed(3));
+    e.style.setProperty('--life',(0.78+Math.random()*0.48)+'s');
+    field.appendChild(e);
+  }
+  setTimeout(()=>{field.querySelectorAll('.word-bg-burst').forEach(e=>e.remove())},1500);
+}
+
 let pusoBgActive=false;
 function clearPusoBackground(){const f=document.querySelector('#heartField');if(f)f.querySelectorAll('.puso-bg-heart').forEach(h=>h.remove());pusoBgActive=false}
 function spawnPusoBackground(){const f=document.querySelector('#heartField');if(!f||pusoBgActive)return;pusoBgActive=true;for(let i=0;i<24;i++){const h=document.createElement('span');h.className='puso-bg-heart';h.textContent='♥';h.style.setProperty('--size',(14+Math.random()*58)+'px');h.style.setProperty('--x',(2+Math.random()*96)+'%');h.style.setProperty('--y',(4+Math.random()*90)+'%');h.style.setProperty('--life',(1.1+Math.random()*1.8)+'s');h.style.color=`hsl(${5+Math.random()*35},60%,70%)`;f.appendChild(h)}}
@@ -3247,6 +3292,24 @@ function render(){
     if(pusoBgActive) clearPusoBackground();
   }
 
+
+  // The GUSTO line gets subtle background word explosions as each highlighted
+  // word arrives. They use the same expanding-copy language as the full-screen
+  // Oo effect, but stay behind the lyric and at much lower opacity.
+  if(i===3){
+    const burstCues=[
+      [1,32.18],[3,32.72],[5,33.15],[7,35.48]
+    ];
+    burstCues.forEach(([wordIndex,cue])=>{
+      const key=String(wordIndex);
+      if(t>=cue && t<cue+0.12 && !wordBackgroundBursts.includes(key)){
+        wordBackgroundBursts.push(key);
+        spawnWordBackgroundBurst(wordIndex);
+      }
+    });
+  }else if(wordBackgroundBursts.length){
+    clearWordBackgroundBursts();
+  }
 
   // GUSTO's final 'oo' gets ONE full-screen Oo-only burst at its cue.
   // No second wipe, hearts, diamonds, or confetti: the screen is filled only by 'Oo'.
