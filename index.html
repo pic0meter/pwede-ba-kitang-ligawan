@@ -1472,6 +1472,40 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 }
 
 </style>
+<style>
+/* Restore ONLY the spoken-word highlight for the first linyahan line.
+   The existing shake remains; no other visual effect is added. */
+.line.first-linyahan-vertical .word.current{
+  color:var(--accent) !important;
+  text-shadow:0 0 28px #ffb38a66 !important;
+}
+</style>
+<style>
+/* FIRST LINYAHAN — one background line crossing left to right for the full lyric duration. */
+.line.first-linyahan-vertical::before{
+  content:"";
+  position:absolute;
+  left:0;
+  top:50%;
+  width:100vw;
+  height:2px;
+  background:var(--accent);
+  opacity:.7;
+  z-index:0;
+  pointer-events:none;
+  transform:translateX(-100%);
+  animation:linyahanBackgroundLine 6.85s linear forwards;
+}
+@keyframes linyahanBackgroundLine{
+  0%{transform:translateX(-100%)}
+  100%{transform:translateX(100%)}
+}
+.line.first-linyahan-vertical .word,
+.line.first-linyahan-vertical .linyahan-dash-field{
+  position:relative;
+  z-index:5;
+}
+</style>
 </head>
 <body>
 <div id="app">
