@@ -307,7 +307,13 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 @keyframes lyricThrob{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-2px) scale(1.025)}}
 @keyframes lyricThrobCurrent{0%,100%{transform:translateY(-.055em) scale(1.06)}50%{transform:translateY(-.09em) scale(1.13)}}
 .puso-bg-heart{position:absolute;left:var(--x);top:var(--y);font-size:var(--size);line-height:1;color:currentColor;opacity:0;transform:scale(.88);animation:pusoBgPulse var(--life) ease-in-out infinite;filter:drop-shadow(0 0 10px #ffb38a22);pointer-events:none}
-@keyframes pusoBgPulse{0%,100%{opacity:.035;transform:scale(.88)}50%{opacity:.16;transform:scale(1.12)}}
+@keyframes pusoBgPulse{
+  0%{opacity:.025;transform:translate3d(0,8px,0) scale(.82) rotate(-5deg)}
+  24%{opacity:.11;transform:translate3d(-12px,-8px,0) scale(1.02) rotate(4deg)}
+  52%{opacity:.18;transform:translate3d(10px,3px,0) scale(1.16) rotate(-3deg)}
+  76%{opacity:.09;transform:translate3d(-7px,-12px,0) scale(.96) rotate(6deg)}
+  100%{opacity:.025;transform:translate3d(6px,8px,0) scale(.84) rotate(-4deg)}
+}
 
 /* PUSO heart burst — exists only while the PUSO cue is active */
 #heartField{
@@ -970,6 +976,21 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   transform:translate(-50%,-50%) scale(.2) rotate(var(--hr));
   animation:heartFloat var(--hd,2.8s) cubic-bezier(.2,.7,.2,1) forwards;
 }
+.line.scene-heart-split .puso-heart-pop{
+  animation-duration:1.55s;
+  filter:drop-shadow(0 0 14px #ffb38a88);
+}
+.line.scene-heart-split .mo-heart-pop{
+  animation:heartFloatMo 1.35s cubic-bezier(.12,.9,.2,1) forwards;
+  filter:drop-shadow(0 0 18px #ffb38aaa);
+}
+@keyframes heartFloatMo{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.2) rotate(var(--hr))}
+  12%{opacity:1;transform:translate(-50%,-50%) scale(1.28) rotate(var(--hr))}
+  34%{opacity:.95;transform:translate(calc(-50% + var(--dx)*.35),calc(-50% + var(--dy)*.25)) scale(1.05) rotate(calc(var(--hr) + 7deg))}
+  68%{opacity:.58;transform:translate(calc(-50% + var(--dx)*.72),calc(-50% + var(--dy)*.72)) scale(.76) rotate(calc(var(--hr) - 5deg))}
+  100%{opacity:0;transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(.38) rotate(calc(var(--hr) + 10deg))}
+}
 @keyframes heartFloat{
   0%{opacity:0;transform:translate(-50%,-35%) scale(.2) rotate(var(--hr))}
   12%{opacity:.95;transform:translate(calc(-50% + var(--hx0)),calc(-50% + 4px)) scale(1.05) rotate(var(--hr))}
@@ -1435,6 +1456,22 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 /* continuous camera movement keeps the screen alive */
 .line.motion.active{animation:cameraFloat 3.6s ease-in-out infinite alternate}
 @keyframes cameraFloat{0%{transform:translate3d(-3px,2px,0) rotate(-.25deg)}100%{transform:translate3d(3px,-3px,0) rotate(.25deg)}}
+/* Energetic first lyric: the whole line bobs more, while each word keeps its own life. */
+.line.scene-heart-split.active{
+  animation:heartSplitEnergetic 1.45s cubic-bezier(.36,.07,.19,.97) infinite alternate !important;
+}
+@keyframes heartSplitEnergetic{
+  0%{transform:translate3d(-8px,5px,0) rotate(-.55deg)}
+  18%{transform:translate3d(5px,-7px,0) rotate(.7deg)}
+  37%{transform:translate3d(-6px,8px,0) rotate(-.8deg)}
+  56%{transform:translate3d(8px,-4px,0) rotate(.6deg)}
+  78%{transform:translate3d(-4px,6px,0) rotate(-.5deg)}
+  100%{transform:translate3d(6px,-5px,0) rotate(.45deg)}
+}
+.line.scene-heart-split.active .word.visible{
+  will-change:transform;
+}
+
 .line.scene-zoom.active{animation:cameraFloatZoom 3s ease-in-out infinite alternate}
 @keyframes cameraFloatZoom{0%{transform:scale(.985) translate3d(-3px,2px,0)}100%{transform:scale(1.015) translate3d(3px,-3px,0)}}
 
@@ -2137,7 +2174,7 @@ const accentWords=new Set(['puso','mo','yo',"'oo'",'ligawan','oras','hindi','yan
   to 8.056s, matching the user's original cue.
 */
 const lines=[
-  {start:8.056,end:15.85,text:'Pwede ba akong tumambay dyan sa puso mo',style:'verse',section:'verse',cues:[8.056,9.261,9.589,10.186,10.555,11.305,11.680,12.430]},
+  {start:8.056,end:15.85,text:'Pwede ba akong tumambay dyan sa puso mo?',style:'verse',section:'verse',cues:[8.056,9.261,9.589,10.186,10.555,11.305,11.680,12.430]},
   {start:15.90,end:23.55,text:"Parang masyado na yatang gasgas ang banat na 'to",style:'soft',section:'verse',cues:[15.90,16.28,16.55,16.72,18.28,18.78,19.10,19.35,19.42]},
   {start:23.70,end:31.55,text:"Kailan kaya ako makakaisip ng linyang para sa'yo?",style:'verse',section:'verse',cues:[23.70,24.15,24.48,24.92,25.38,27.30,27.78,28.12,28.42]},
   {start:31.70,end:39.25,text:"Gusto ko lang naman ay makamit ang matamis mong 'oo'",style:'soft',section:'verse',cues:[31.70,32.18,32.48,32.72,32.88,33.15,34.85,35.48,35.92,36.42]},
@@ -2952,6 +2989,57 @@ function clearPusoBackground(){const f=document.querySelector('#heartField');if(
 function spawnPusoBackground(){const f=document.querySelector('#heartField');if(!f||pusoBgActive)return;pusoBgActive=true;for(let i=0;i<24;i++){const h=document.createElement('span');h.className='puso-bg-heart';h.textContent='♥';h.style.setProperty('--size',(14+Math.random()*58)+'px');h.style.setProperty('--x',(2+Math.random()*96)+'%');h.style.setProperty('--y',(4+Math.random()*90)+'%');h.style.setProperty('--life',(1.1+Math.random()*1.8)+'s');h.style.color=`hsl(${5+Math.random()*35},60%,70%)`;f.appendChild(h)}}
 
 let pusoBurstActive=false;
+let moBurstActive=false;
+
+function clearPusoHearts(){
+  const field=document.querySelector('#heartField');
+  if(field) field.querySelectorAll('.puso-heart').forEach(h=>h.remove());
+  pusoBurstActive=false;
+}
+function clearMoHearts(){
+  const field=document.querySelector('#heartField');
+  if(field) field.querySelectorAll('.mo-heart').forEach(h=>h.remove());
+  moBurstActive=false;
+}
+
+function spawnHeartPop(wordIndex, cls, count=20){
+  const field=document.querySelector('#heartField');
+  if(!field) return;
+  const anchor=document.querySelector('.line.scene-heart-split.active .word[data-word-index="'+wordIndex+'"]');
+  const fr=field.getBoundingClientRect();
+  const ar=anchor?.getBoundingClientRect();
+  const ox=ar ? ar.left+ar.width/2-fr.left : fr.width*.5;
+  const oy=ar ? ar.top+ar.height/2-fr.top : fr.height*.55;
+  for(let i=0;i<count;i++){
+    const h=document.createElement('span');
+    h.className='puso-heart '+cls;
+    h.textContent='♥';
+    const angle=(Math.PI*2/count)*i + (Math.random()-.5)*.55;
+    const distance=55 + Math.random()*190;
+    const size=8 + Math.random()*24;
+    h.style.setProperty('--size',size+'px');
+    h.style.setProperty('--dx',(Math.cos(angle)*distance)+'px');
+    h.style.setProperty('--dy',(Math.sin(angle)*distance - 25 - Math.random()*75)+'px');
+    h.style.setProperty('--rot',(-35+Math.random()*70)+'deg');
+    h.style.setProperty('--life',(1.05+Math.random()*.65)+'s');
+    h.style.left=ox+'px';
+    h.style.top=oy+'px';
+    h.style.animationDelay=(Math.random()*.08)+'s';
+    h.style.color=`hsl(${5+Math.random()*35}, ${65+Math.random()*25}%, ${65+Math.random()*20}%)`;
+    field.appendChild(h);
+  }
+}
+
+function spawnPusoHearts(){
+  if(pusoBurstActive) return;
+  pusoBurstActive=true;
+  spawnHeartPop(6,'puso-heart-pop',22);
+}
+function spawnMoHearts(){
+  if(moBurstActive) return;
+  moBurstActive=true;
+  spawnHeartPop(7,'mo-heart-pop',26);
+}
 let banatEchoActive=false;
 
 function clearPusoHearts(){
@@ -3071,13 +3159,15 @@ function render(){
   // Time-locked visual effects:
   // PUSO burst only during the PUSO cue (11.680s–12.430s).
   if(t>=11.680 && t<15.85){
-    // Keep the soft background hearts alive for the remainder of the lyric line.
+    // Keep the soft background hearts alive and moving through the whole line.
     spawnPusoBackground();
-    // The foreground bubble burst remains tied only to the exact "puso" cue.
+    // The "puso" hearts stay visible until the "mo?" cue.
     if(t<12.430 && !pusoBurstActive) spawnPusoHearts();
-    if(t>=12.430 && pusoBurstActive) clearPusoHearts();
+    // A second, immediate heart pop comes from "mo?" itself.
+    if(t>=12.430 && !moBurstActive) spawnMoHearts();
   }else{
     if(pusoBurstActive) clearPusoHearts();
+    if(moBurstActive) clearMoHearts();
     if(pusoBgActive) clearPusoBackground();
   }
 
