@@ -2420,9 +2420,9 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 
 /* 00:56 — three centered rows with a clean, non-rounded type treatment. */
 .line.scene-clock.structured-bigay-lyric .clock-lyric{
-  font-family:"Poppins",sans-serif !important;
+  font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif !important;
   font-weight:800 !important;
-  letter-spacing:-.055em !important;
+  letter-spacing:-.045em !important;
   line-height:.88 !important;
   width:min(92vw,760px) !important;
   max-width:92vw !important;
@@ -2442,7 +2442,7 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   line-height:.88;
 }
 .line.scene-clock.structured-bigay-lyric .clock-lyric .word{
-  font-family:"Poppins",sans-serif !important;
+  font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif !important;
   font-size:clamp(40px,8.5vw,92px) !important;
   font-weight:800 !important;
   letter-spacing:-.055em !important;
@@ -2461,6 +2461,24 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   }
 }
 
+/* 00:56 FINAL OVERRIDE — this replaces the old rounded/whimsical lyric effects. */
+.line.scene-clock.structured-bigay-lyric .clock-lyric,
+.line.scene-clock.structured-bigay-lyric .clock-lyric .word{
+  font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif !important;
+}
+.line.scene-clock.structured-bigay-lyric .clock-lyric .word.visible{
+  animation:none !important;
+  transform:none !important;
+  filter:none !important;
+}
+.line.scene-clock.structured-bigay-lyric .clock-lyric::before,
+.line.scene-clock.structured-bigay-lyric .clock-lyric::after,
+.line.scene-clock.structured-bigay-lyric .clock-number-bg-burst,
+.line.scene-clock.structured-bigay-lyric .confetti,
+.line.scene-clock.structured-bigay-lyric .particle,
+.line.scene-clock.structured-bigay-lyric .spark{
+  display:none !important;
+}
 </style>
 </head>
 <body>
@@ -2812,14 +2830,18 @@ function activate(i){
   L.appendChild(el);
   if(scene==='clock') el.dataset.clockOriginIndex=String(i);
   if(i===6){
-    // 00:56 — keep the clock scene, but restructure the lyric into three
-    // centered rows without changing the individual word timing/cues.
+    // 00:56 — replace the old clock-lyric treatment completely.
+    // The lyric is rebuilt into exactly three centered rows:
+    //   Bibigay ko nang
+    //   buo ang
+    //   oras ko
     const lyric=el.querySelector('.clock-lyric');
     if(lyric){
       lyric.classList.add('structured-bigay-lyric');
+      lyric.classList.remove('cursive-clock-lyric','clock-whimsy-time','playful-clock-lyric','clock-whimsy-skill');
       const words=[...lyric.querySelectorAll('.word')];
-      const rows=[[0,1,2],[3,4],[5,6]];
-      rows.forEach(indices=>{
+      lyric.replaceChildren();
+      [[0,1,2],[3,4],[5,6]].forEach(indices=>{
         const row=document.createElement('div');
         row.className='bigay-row';
         indices.forEach(idx=>{ if(words[idx]) row.appendChild(words[idx]); });
@@ -3019,7 +3041,6 @@ function activate(i){
     el.querySelectorAll('.word[data-word-index="6"], .word[data-word-index="7"], .word[data-word-index="8"]').forEach(w=>w.classList.add('scratch-word'));
   }
   if(i===3) el.classList.add('gusto-shiver');
-  if(i===6) el.classList.add('cursive-clock-lyric','clock-whimsy-time');
   if(i===7) el.classList.add('playful-clock-lyric','clock-whimsy-skill');
   SEC.textContent=item.section;
   requestAnimationFrame(()=>{el.classList.add('active'); if(scene==='clock') layoutClock();});
@@ -3892,24 +3913,10 @@ function render(){
       }
     });
   }else if(i===6){
-    // One second after the spoken word. Three small, thin numbers per burst.
-    // Both "ko" words are explicitly included.
-    const burstCues=[
-      [0,54.80,false], // Bibigay
-      [1,55.18,false], // ko
-      [2,55.55,false], // nang
-      [3,55.90,false], // buo
-      [4,56.12,false], // ang
-      [5,56.42,false], // oras
-      [6,56.78,false]  // ko
-    ];
-    burstCues.forEach(([wordIndex,cue,elevated])=>{
-      const key='6-'+wordIndex;
-      if(t>=cue && t<cue+0.07 && !clockNumberBackgroundBursts.includes(key)){
-        clockNumberBackgroundBursts.push(key);
-        spawnClockNumberBackgroundBurst(wordIndex,{elevated});
-      }
-    });
+    // The old clock-number background bursts are intentionally removed for
+    // the redesigned 00:56 lyric. Clear any stale bursts if the user seeks.
+    clearClockNumberBackgroundBursts();
+    clockNumberBackgroundBursts=[];
   }else if(i===7){
     // Same one-second delay for the next line. Magaling/ako burst around
     // the word in all directions, with the same three-number limit.
