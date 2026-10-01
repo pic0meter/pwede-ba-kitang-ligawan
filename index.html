@@ -3024,7 +3024,7 @@ function updateLaserHeart(t){
 let ooTakeoverActive=false;
 let ooHeartBurstActive=false;
 function clearOoTakeover(){const field=document.querySelector('#ooExplosion');if(field)field.replaceChildren();ooTakeoverActive=false;ooHeartBurstActive=false}
-function spawnOoTakeover(){const field=document.querySelector('#ooExplosion');if(!field||ooTakeoverActive)return;ooTakeoverActive=true;const fonts=['Arial Black, Impact, sans-serif','Georgia, serif','Times New Roman, serif','Courier New, monospace','Trebuchet MS, sans-serif','Verdana, sans-serif','Palatino Linotype, serif','Impact, sans-serif'];for(let i=0;i<30;i++){const e=document.createElement('div');e.className='oo-field';e.textContent='Oo';e.style.fontFamily=fonts[Math.floor(Math.random()*fonts.length)];e.style.fontSize=(26+Math.random()*150)+'px';e.style.setProperty('--r',(-16+Math.random()*32)+'deg');e.style.setProperty('--r2',(-30+Math.random()*60)+'deg');e.style.setProperty('--dx',(-55+Math.random()*110)+'vw');e.style.setProperty('--dy',(-55+Math.random()*110)+'vh');e.style.setProperty('--scale',(0.8+Math.random()*2.4).toFixed(2));e.style.setProperty('--life',(1.05+Math.random()*.55)+'s');const a=(i/30)*Math.PI*2;const radius=20+Math.random()*42;e.style.left=(50+Math.cos(a)*radius)+'%';e.style.top=(50+Math.sin(a)*radius)+'%';field.appendChild(e)}const wipe=document.createElement('div');wipe.className='oo-field wipe';wipe.textContent='Oo';wipe.style.fontFamily=fonts[Math.floor(Math.random()*fonts.length)];wipe.style.fontSize='clamp(90px,28vw,420px)';wipe.style.setProperty('--r','0deg');wipe.style.setProperty('--life','1.15s');field.appendChild(wipe)}
+function spawnOoTakeover(){const field=document.querySelector('#ooExplosion');if(!field||ooTakeoverActive)return;ooTakeoverActive=true;const fonts=['Arial Black, Impact, sans-serif','Georgia, serif','Times New Roman, serif','Courier New, monospace','Trebuchet MS, sans-serif','Verdana, sans-serif','Palatino Linotype, serif','Impact, sans-serif'];for(let i=0;i<30;i++){const e=document.createElement('div');e.className='oo-field';e.textContent='Oo';e.style.fontFamily=fonts[Math.floor(Math.random()*fonts.length)];e.style.fontSize=(26+Math.random()*150)+'px';e.style.setProperty('--r',(-16+Math.random()*32)+'deg');e.style.setProperty('--r2',(-30+Math.random()*60)+'deg');e.style.setProperty('--dx',(-55+Math.random()*110)+'vw');e.style.setProperty('--dy',(-55+Math.random()*110)+'vh');e.style.setProperty('--scale',(0.8+Math.random()*2.4).toFixed(2));e.style.setProperty('--life',(1.05+Math.random()*.55)+'s');const a=(i/30)*Math.PI*2;const radius=20+Math.random()*42;e.style.left=(50+Math.cos(a)*radius)+'%';e.style.top=(50+Math.sin(a)*radius)+'%';field.appendChild(e)}setTimeout(()=>{if(ooTakeoverActive)clearOoTakeover()},1550)}
 function explodeOoIntoHearts(){const field=document.querySelector('#ooExplosion');if(!field||ooHeartBurstActive)return;ooHeartBurstActive=true;for(let i=0;i<34;i++){const h=document.createElement('span');h.className='oo-heart';const a=(Math.PI*2/34)*i+(Math.random()-.5)*.4;const distance=100+Math.random()*330;h.style.setProperty('--size',(7+Math.random()*25)+'px');h.style.setProperty('--dx',(Math.cos(a)*distance)+'px');h.style.setProperty('--dy',(Math.sin(a)*distance)+'px');h.style.setProperty('--rot',(-35+Math.random()*70)+'deg');h.style.setProperty('--life',(0.65+Math.random()*.65)+'s');h.style.color=`hsl(${5+Math.random()*40},${65+Math.random()*25}%,${65+Math.random()*20}%)`;field.appendChild(h)}setTimeout(clearOoTakeover,1450)}
 
 
@@ -3248,14 +3248,10 @@ function render(){
   }
 
 
-  // GUSTO's final 'oo' gets the full-screen Oo burst again at its cue.
+  // GUSTO's final 'oo' gets ONE full-screen Oo-only burst at its cue.
+  // No second wipe, hearts, diamonds, or confetti: the screen is filled only by 'Oo'.
   if(i===3 && t>=36.42 && t<39.25){
-    if(!ooTakeoverActive && !ooHeartBurstActive){
-      spawnOoTakeover();
-      setTimeout(()=>{
-        if(current===3 && A.currentTime>=36.42 && A.currentTime<39.25) explodeOoIntoHearts();
-      },520);
-    }
+    if(!ooTakeoverActive) spawnOoTakeover();
   }else if(i!==3 && (ooTakeoverActive||ooHeartBurstActive)){
     clearOoTakeover();
   }
