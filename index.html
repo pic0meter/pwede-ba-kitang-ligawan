@@ -1099,68 +1099,20 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   filter:blur(1px);
 }
 
-/* After "hindi", make the entire question visibly punch forward once. */
-.line.scene-question.grand-question-pulse{
-  animation:grandQuestionPulse 1.05s cubic-bezier(.12,.9,.18,1) both !important;
-  z-index:8;
+/* 01:08 "Oo o hindi?": only the actual "Oo" word pulses after "hindi".
+   The rest of the line keeps its normal motion and disappears normally. */
+.line.scene-question.oo-final-pulse .word:first-child{
+  animation:ooFinalWordPulse .38s cubic-bezier(.35,.05,.25,1) infinite !important;
+  transform-origin:center center !important;
+  filter:drop-shadow(0 0 18px #ffb38a88);
+  text-shadow:0 0 24px #ffb38a88 !important;
 }
-.line.scene-question.grand-question-pulse .word{
-  animation:grandQuestionWordPulse 1.05s cubic-bezier(.12,.9,.18,1) both !important;
+@keyframes ooFinalWordPulse{
+  0%,100%{transform:scale(1);filter:drop-shadow(0 0 10px #ffb38a55);text-shadow:0 0 14px #ffb38a55}
+  45%{transform:scale(1.16);filter:drop-shadow(0 0 26px #ffb38aaa);text-shadow:0 0 30px #ffb38aaa}
+  70%{transform:scale(.98);filter:drop-shadow(0 0 12px #ffb38a66);text-shadow:0 0 16px #ffb38a66}
 }
-.line.scene-question.grand-question-pulse::before{
-  content:"";
-  position:absolute;
-  left:50%; top:50%;
-  width:28%; height:28%;
-  border:3px solid #ffb38acc;
-  border-radius:50%;
-  pointer-events:none;
-  transform:translate(-50%,-50%) scale(.25);
-  opacity:0;
-  box-shadow:0 0 24px #ffb38a66, inset 0 0 18px #ffb38a33;
-  animation:grandQuestionRing 1.05s cubic-bezier(.1,.85,.2,1) both;
-}
-.line.scene-question.grand-question-pulse::after{
-  content:"";
-  position:absolute;
-  left:50%; top:50%;
-  width:48%; height:48%;
-  border:1px solid #f8f0e688;
-  border-radius:50%;
-  pointer-events:none;
-  transform:translate(-50%,-50%) scale(.2);
-  opacity:0;
-  animation:grandQuestionRing2 1.05s cubic-bezier(.1,.85,.2,1) .08s both;
-}
-@keyframes grandQuestionPulse{
-  0%{transform:translate3d(0,0,0) scale(1.18) rotate(0);filter:drop-shadow(0 0 30px #ffb38aaa)}
-  9%{transform:translate3d(3px,-5px,0) scale(1.08) rotate(-1.2deg);filter:drop-shadow(0 0 22px #ffb38a88)}
-  27%{transform:translate3d(-4px,3px,0) scale(.94) rotate(1.4deg)}
-  46%{transform:translate3d(4px,-3px,0) scale(1.19) rotate(-1deg);filter:drop-shadow(0 0 42px #ffb38aaa)}
-  68%{transform:translate3d(-3px,2px,0) scale(1.07) rotate(.6deg);filter:drop-shadow(0 0 24px #ffb38a66)}
-  84%{transform:translate3d(2px,-1px,0) scale(.98)}
-  100%{transform:translate3d(0,0,0) scale(1) rotate(0);filter:none}
-}
-@keyframes grandQuestionWordPulse{
-  0%{filter:drop-shadow(0 0 22px #ffb38aaa);text-shadow:0 0 28px #ffb38aaa}
-  9%{filter:drop-shadow(0 0 10px #ffb38a88);text-shadow:0 0 18px #ffb38a88}
-  28%{filter:none}
-  46%{filter:drop-shadow(0 0 24px #ffb38aaa);text-shadow:0 0 32px #ffb38aaa}
-  68%{filter:drop-shadow(0 0 12px #ffb38a66);text-shadow:0 0 18px #ffb38a66}
-  100%{filter:none;text-shadow:none}
-}
-@keyframes grandQuestionRing{
-  0%{opacity:1;transform:translate(-50%,-50%) scale(.65)}
-  10%{opacity:.95}
-  42%{opacity:.72;transform:translate(-50%,-50%) scale(1.65)}
-  100%{opacity:0;transform:translate(-50%,-50%) scale(4.8)}
-}
-@keyframes grandQuestionRing2{
-  0%{opacity:.8;transform:translate(-50%,-50%) scale(.45)}
-  18%{opacity:.7}
-  55%{opacity:.35;transform:translate(-50%,-50%) scale(2.3)}
-  100%{opacity:0;transform:translate(-50%,-50%) scale(4.2)}
-}
+
 @keyframes wordEchoOut{
   from{opacity:.14;transform:translate(-50%,-50%) translate(var(--echo-x),var(--echo-y)) scale(var(--echo-scale)) rotate(var(--echo-rot))}
   to{opacity:0;transform:translate(-50%,-50%) translate(calc(var(--echo-x) + var(--exit-x,18px)),calc(var(--echo-y) - 12px)) scale(.72) rotate(calc(var(--echo-rot) + 8deg))}
@@ -3154,17 +3106,18 @@ function updateLaserHeart(t){
     }
   }
 
-  // Grand pulse immediately after "hindi" is spoken on the question line.
+  // 01:08 "Oo o hindi?": begin pulsing ONLY the actual "Oo" word
+  // immediately after "hindi" and keep it pulsing until this lyric disappears.
   if(current===9){
     const qLine=L.querySelector('.line.active.scene-question');
-    const pulseStart=69.36;
-    const pulseEnd=70.41;
-    if(qLine && t>=pulseStart && t<pulseEnd){
-      if(!qLine.classList.contains('grand-question-pulse')){
-        qLine.classList.add('grand-question-pulse');
-      }
-    }else if(qLine && t>=pulseEnd){
-      qLine.classList.remove('grand-question-pulse');
+    const pulseStart=68.56;
+    const lineEnd=71.00;
+    if(qLine && t>=pulseStart && t<lineEnd){
+      qLine.classList.add('oo-final-pulse');
+    }else if(qLine && t< pulseStart){
+      qLine.classList.remove('oo-final-pulse');
+    }else if(qLine && t>=lineEnd){
+      qLine.classList.remove('oo-final-pulse');
     }
   }
 }
