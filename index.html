@@ -711,73 +711,91 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   will-change:transform,opacity;
   border:0;
   background:repeating-linear-gradient(90deg,#ffb38a 0 12px,transparent 12px 23px);
-  box-shadow:0 0 9px #ffb38a66;
+  box-shadow:0 0 9px #ffb38a55;
 }
 .first-linyahan-vertical.active .first-linyahan-stroke{
   animation-timing-function:cubic-bezier(.18,.8,.18,1);
   animation-fill-mode:forwards;
 }
-/* Each stroke enters from a different edge; none is restricted to horizontal motion. */
-.first-linyahan-stroke-top{
-  left:-35vw; top:-4vh; width:170vw; height:2px;
-  opacity:.48;
-  background:repeating-linear-gradient(90deg,#ffb38a 0 9px,transparent 9px 19px);
-  animation:firstLinyahanFromTop 3.9s .08s both;
+
+/* Many independent edge-to-edge strokes. Every stroke still travels from one
+   side of the viewport to the opposite side; only its entry edge, angle,
+   speed, thickness and opacity vary. */
+.first-linyahan-stroke-h{
+  left:-125vw; width:150vw; height:var(--thick,2px);
+  top:var(--y,50%);
+  background:repeating-linear-gradient(90deg,#ffb38a 0 var(--dash,12px),transparent var(--dash,12px) calc(var(--dash,12px) + var(--gap,11px)));
+  animation-name:firstLinyahanTravelH;
+  animation-duration:var(--dur,3.2s);
+  animation-delay:var(--delay,0s);
+  animation-timing-function:linear!important;
 }
-.first-linyahan-stroke-right{
-  right:-4vw; top:-30vh; width:3px; height:160vh;
-  opacity:.68;
-  background:repeating-linear-gradient(0deg,#ffb38a 0 14px,transparent 14px 28px);
-  animation:firstLinyahanFromRight 3.05s .32s both;
+.first-linyahan-stroke-h.reverse{
+  left:auto; right:-125vw;
+  animation-name:firstLinyahanTravelHReverse;
 }
-.first-linyahan-stroke-bottom{
-  left:-25vw; bottom:-4vh; width:150vw; height:4px;
-  opacity:.36;
-  background:repeating-linear-gradient(90deg,#ffb38a 0 18px,transparent 18px 35px);
-  animation:firstLinyahanFromBottom 4.35s .16s both;
+.first-linyahan-stroke-v{
+  top:-125vh; left:var(--x,50%); width:var(--thick,2px); height:150vh;
+  background:repeating-linear-gradient(0deg,#ffb38a 0 var(--dash,12px),transparent var(--dash,12px) calc(var(--dash,12px) + var(--gap,11px)));
+  animation-name:firstLinyahanTravelV;
+  animation-duration:var(--dur,3.2s);
+  animation-delay:var(--delay,0s);
+  animation-timing-function:linear!important;
 }
-.first-linyahan-stroke-left{
-  left:-4vw; top:-25vh; width:1px; height:150vh;
-  opacity:.78;
-  background:repeating-linear-gradient(0deg,#ffb38a 0 8px,transparent 8px 18px);
-  animation:firstLinyahanFromLeft 2.7s .02s both;
+.first-linyahan-stroke-v.reverse{
+  top:auto; bottom:-125vh;
+  animation-name:firstLinyahanTravelVReverse;
 }
-.first-linyahan-stroke-diagonal{
-  left:-45vw; top:108%; width:190vw; height:2px;
-  opacity:.55;
-  transform-origin:left center;
-  background:repeating-linear-gradient(90deg,#ffb38a 0 11px,transparent 11px 25px);
-  animation:firstLinyahanDiagonal 3.65s .24s both;
+.first-linyahan-stroke-d{
+  width:155vw; height:var(--thick,2px);
+  left:-130vw; top:var(--y,50%);
+  transform:rotate(var(--angle,25deg));
+  transform-origin:center center;
+  background:repeating-linear-gradient(90deg,#ffb38a 0 var(--dash,11px),transparent var(--dash,11px) calc(var(--dash,11px) + var(--gap,14px)));
+  animation-name:firstLinyahanTravelD;
+  animation-duration:var(--dur,3.4s);
+  animation-delay:var(--delay,0s);
+  animation-timing-function:linear!important;
 }
-@keyframes firstLinyahanFromTop{
-  0%{opacity:0;transform:translate3d(0,-45vh,0)}
-  15%{opacity:.48}
-  58%{opacity:.48;transform:translate3d(0,48vh,0)}
-  100%{opacity:0;transform:translate3d(0,115vh,0)}
+.first-linyahan-stroke-d.reverse{
+  left:auto; right:-130vw;
+  animation-name:firstLinyahanTravelDReverse;
 }
-@keyframes firstLinyahanFromRight{
-  0%{opacity:0;transform:translate3d(45vw,0,0)}
-  14%{opacity:.68}
-  58%{opacity:.68;transform:translate3d(-48vw,0,0)}
-  100%{opacity:0;transform:translate3d(-120vw,0,0)}
+@keyframes firstLinyahanTravelH{
+  0%{opacity:0;transform:translateX(-18vw)}
+  8%{opacity:var(--op,.5)}
+  88%{opacity:var(--op,.5);transform:translateX(150vw)}
+  100%{opacity:0;transform:translateX(175vw)}
 }
-@keyframes firstLinyahanFromBottom{
-  0%{opacity:0;transform:translate3d(0,45vh,0)}
-  18%{opacity:.36}
-  62%{opacity:.36;transform:translate3d(0,-48vh,0)}
-  100%{opacity:0;transform:translate3d(0,-115vh,0)}
+@keyframes firstLinyahanTravelHReverse{
+  0%{opacity:0;transform:translateX(18vw)}
+  8%{opacity:var(--op,.5)}
+  88%{opacity:var(--op,.5);transform:translateX(-150vw)}
+  100%{opacity:0;transform:translateX(-175vw)}
 }
-@keyframes firstLinyahanFromLeft{
-  0%{opacity:0;transform:translate3d(-42vw,0,0)}
-  12%{opacity:.78}
-  55%{opacity:.78;transform:translate3d(48vw,0,0)}
-  100%{opacity:0;transform:translate3d(120vw,0,0)}
+@keyframes firstLinyahanTravelV{
+  0%{opacity:0;transform:translateY(-18vh)}
+  8%{opacity:var(--op,.5)}
+  88%{opacity:var(--op,.5);transform:translateY(150vh)}
+  100%{opacity:0;transform:translateY(175vh)}
 }
-@keyframes firstLinyahanDiagonal{
-  0%{opacity:0;transform:translate3d(-25vw,35vh,0) rotate(-25deg) scaleX(.65)}
-  16%{opacity:.55}
-  62%{opacity:.55;transform:translate3d(28vw,-38vh,0) rotate(-25deg) scaleX(1)}
-  100%{opacity:0;transform:translate3d(80vw,-105vh,0) rotate(-25deg) scaleX(1.15)}
+@keyframes firstLinyahanTravelVReverse{
+  0%{opacity:0;transform:translateY(18vh)}
+  8%{opacity:var(--op,.5)}
+  88%{opacity:var(--op,.5);transform:translateY(-150vh)}
+  100%{opacity:0;transform:translateY(-175vh)}
+}
+@keyframes firstLinyahanTravelD{
+  0%{opacity:0;transform:translate(-18vw,18vh) rotate(var(--angle,25deg))}
+  8%{opacity:var(--op,.5)}
+  88%{opacity:var(--op,.5);transform:translate(150vw,-80vh) rotate(var(--angle,25deg))}
+  100%{opacity:0;transform:translate(175vw,-95vh) rotate(var(--angle,25deg))}
+}
+@keyframes firstLinyahanTravelDReverse{
+  0%{opacity:0;transform:translate(18vw,-18vh) rotate(var(--angle,-25deg))}
+  8%{opacity:var(--op,.5)}
+  88%{opacity:var(--op,.5);transform:translate(-150vw,80vh) rotate(var(--angle,-25deg))}
+  100%{opacity:0;transform:translate(-175vw,95vh) rotate(var(--angle,-25deg))}
 }
 .line.first-linyahan-vertical.out{animation:none!important;}
 .line.first-linyahan-vertical.out .first-linyahan-stroke{animation:firstLinyahanStrokeOut .28s ease-in forwards!important;}
@@ -1928,11 +1946,29 @@ function activate(i){
   }
   if(i===5){
     el.classList.add('first-linyahan-vertical');
-    const strokeDirections=['top','right','bottom','left','diagonal'];
-    strokeDirections.forEach(direction=>{
+    const strokeSpecs=[
+      ['h',false,18,2,.42,3.4,0.02,10,12],['h',true,30,3,.30,4.1,.18,16,17],
+      ['h',false,42,1,.62,2.7,.34,8,13],['h',true,55,2,.48,3.6,.52,12,10],
+      ['h',false,68,4,.25,4.4,.70,20,18],['h',true,80,2,.55,3.0,.88,9,14],
+      ['v',false,16,2,.38,3.8,.12,10,12],['v',true,29,3,.52,3.2,.30,15,15],
+      ['v',false,43,1,.66,2.8,.46,7,11],['v',true,57,2,.32,4.0,.64,18,16],
+      ['v',false,71,3,.50,3.5,.82,12,12],['v',true,84,1,.44,4.2,.96,9,18],
+      ['d',false,24,2,.40,3.7,.06,10,14],['d',true,37,3,.28,4.3,.24,17,16],
+      ['d',false,50,2,.58,3.1,.42,8,12],['d',true,63,1,.46,3.9,.60,13,17],
+      ['d',false,76,4,.24,4.5,.78,21,19],['d',true,88,2,.52,3.3,.92,11,13]
+    ];
+    strokeSpecs.forEach(([type,reverse,pos,thick,op,dur,delay,dash,gap])=>{
       const stroke=document.createElement('div');
-      stroke.className='first-linyahan-horizontal-line first-linyahan-stroke first-linyahan-stroke-'+direction;
+      stroke.className='first-linyahan-stroke first-linyahan-stroke-'+type+(reverse?' reverse':'');
       stroke.setAttribute('aria-hidden','true');
+      stroke.style.setProperty('--'+(type==='h'?'y':type==='v'?'x':'y'),pos+'%');
+      stroke.style.setProperty('--thick',thick+'px');
+      stroke.style.setProperty('--op',op);
+      stroke.style.setProperty('--dur',dur+'s');
+      stroke.style.setProperty('--delay',delay+'s');
+      stroke.style.setProperty('--dash',dash+'px');
+      stroke.style.setProperty('--gap',gap+'px');
+      if(type==='d') stroke.style.setProperty('--angle',(reverse?-24:24)+'deg');
       el.appendChild(stroke);
     });
   }
