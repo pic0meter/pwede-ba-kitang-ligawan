@@ -1853,18 +1853,22 @@ function activate(i){
   if(i===current)return;
   const old=L.querySelector('.line.active');
 
-  // The two clock lyrics share one continuous clock background. Only the lyric
-  // layer is swapped, so the clock face/hands never reset between the lines.
-  if(old && old.classList.contains('scene-clock') && i===7 && current===6){
+  // ONE persistent clock scene for the two consecutive lyrics.
+  // Do not remove/recreate the line, face, ticks, numbers, or hands.
+  // Only replace the lyric layer; the clock timeline keeps running from line 6.
+  if(old && old.classList.contains('scene-clock') && current===6 && i===7){
     const item=lines[i];
     const lyric=old.querySelector('.clock-lyric');
     if(lyric){
       lyric.innerHTML=buildWords(item.text);
-      lyric.className='clock-lyric';
+      lyric.classList.add('clock-whimsy-skill');
+      lyric.classList.remove('clock-whimsy-time');
     }
-    old.classList.remove('clock-whimsy-time','cursive-clock-lyric','out','clock-exit');
-    old.classList.add('clock-whimsy-skill','cursive-clock-lyric','active');
-    old.dataset.index=i;
+    // Keep the original clock origin. This is deliberately NOT changed to 7.
+    old.dataset.index='7';
+    old.dataset.clockOriginIndex='6';
+    old.classList.remove('out','clock-exit');
+    old.classList.add('active');
     current=i;
     SEC.textContent=item.section;
     return;
