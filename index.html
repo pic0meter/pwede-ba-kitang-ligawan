@@ -1022,6 +1022,16 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   position:relative;
   z-index:1;
 }
+/* Keep the 1:03 "ligawan?" word in the exact same type as the rest of the chorus.
+   The generic 4th-word sizing rule was shrinking it, which made the highlighted
+   word look like it switched fonts. */
+.line.word-echo-scene .word[data-word-index="3"]{
+  font-family:inherit !important;
+  font-size:1em !important;
+  font-weight:inherit !important;
+  letter-spacing:inherit !important;
+  line-height:inherit !important;
+}
 .line.word-echo-scene .word::before{
   content:attr(data-echo);
   position:absolute;
