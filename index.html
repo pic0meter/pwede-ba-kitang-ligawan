@@ -2233,7 +2233,7 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   position:absolute;
   left:var(--x);
   top:var(--y);
-  width:clamp(34px,5.4vw,72px);
+  width:clamp(42px,6.2vw,82px);
   height:auto;
   display:block;
   opacity:0;
@@ -2281,7 +2281,7 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 
 @media(max-width:600px){
   .line.scene-footsteps .footstep-img{
-    width:clamp(28px,10vw,52px);
+    width:clamp(34px,11vw,58px);
   }
 }
 </style>
@@ -2819,33 +2819,36 @@ function activate(i){
 
     for(let j=0;j<steps;j++){
       const p=j/(steps-1);
-
-      // A gentle walking path that travels across the entire background.
-      const x=4.5 + p*91;
-      const y=67 - Math.sin(p*Math.PI)*25 + Math.sin(p*Math.PI*2.15)*2.5;
-
-      // Alternate feet. Each image is rotated to follow the direction of travel,
-      // with a small alternating angle so it reads as an actual person's stride.
       const isLeft=(j%2===0);
+
+      // Build a real-looking diagonal walking trail: the person travels
+      // from the lower-left toward the upper-right, while each foot lands
+      // on alternating sides of the walking line.
+      const x=7 + p*86;
+      const centerY=82 - p*57;
+      const lateral=isLeft ? -4.8 : 4.8;
+      const gentleCurve=Math.sin(p*Math.PI)*2.2;
+      const y=centerY + lateral + gentleCurve;
+
       const foot=document.createElement('img');
       foot.className='footstep-img';
       foot.src=isLeft ? leftFoot : rightFoot;
       foot.alt='';
       foot.draggable=false;
 
-      // The source PNGs are drawn in opposite directions: Left.png points
-      // toward the upper-right while Right.png points toward the upper-left.
-      // Rotate each source so BOTH feet point toward the right (the walking
-      // direction), with only a small natural variation along the curved path.
-      const baseRightRotation=isLeft ? 60 : 120;
-      const pathTurn=Math.sin(p*Math.PI*2.15)*7;
-      const strideAngle=baseRightRotation + pathTurn + (isLeft ? -2 : 2);
+      // The uploaded PNGs have opposite native orientations.  These rotations
+      // turn both feet toward the upper-right, matching a left-to-right walk
+      // that is also moving upward across the screen.
+      const baseRotation=isLeft ? 25 : 85;
+      const pathAngle=-34 + Math.cos(p*Math.PI)*2.5;
+      const strideAngle=baseRotation + (pathAngle + 34) + (isLeft ? -2 : 2);
+
       foot.style.setProperty('--x',x+'%');
       foot.style.setProperty('--y',y+'%');
       foot.style.setProperty('--rot',strideAngle.toFixed(2)+'deg');
 
-      // Footsteps appear in sequence, with a slight pause between each step.
-      foot.style.setProperty('--delay',(j*0.16).toFixed(2)+'s');
+      // One step lands after another, like an actual walking sequence.
+      foot.style.setProperty('--delay',(j*0.17).toFixed(2)+'s');
       route.appendChild(foot);
     }
 
