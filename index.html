@@ -1062,6 +1062,72 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 @keyframes clockBob{0%,100%{transform:translateY(0) rotate(-.4deg) scale(1)}50%{transform:translateY(-4px) rotate(.5deg) scale(1.01)}}
 @keyframes clockBobReverse{0%,100%{transform:translateY(0) rotate(.4deg) scale(1)}50%{transform:translateY(4px) rotate(-.5deg) scale(1.01)}}
 .clock-whimsy-time .confetti,.clock-whimsy-time .particle,.clock-whimsy-time .spark,.clock-whimsy-skill .confetti,.clock-whimsy-skill .particle,.clock-whimsy-skill .spark{display:none!important}
+/* EXTRA WHIMSY — elastic, buoyant lyric motion. Keep the clock itself untouched. */
+.line.scene-clock.clock-whimsy-time .clock-lyric .word,
+.line.scene-clock.clock-whimsy-skill .clock-lyric .word{
+  position:relative;
+  display:inline-block;
+  transform-origin:50% 85%;
+  will-change:transform,filter;
+}
+.line.scene-clock.clock-whimsy-time .clock-lyric .word.visible{
+  animation:
+    timeWordPop .62s cubic-bezier(.18,1.65,.25,1) both,
+    timeWordFloat 1.05s ease-in-out .62s infinite;
+  animation-delay:calc(var(--i)*.065s),calc(.72s + var(--i)*.075s);
+}
+.line.scene-clock.clock-whimsy-skill .clock-lyric .word.visible{
+  animation:
+    skillWordPop .68s cubic-bezier(.16,1.8,.24,1) both,
+    skillWordJelly 1.18s ease-in-out .68s infinite;
+  animation-delay:calc(var(--i)*.075s),calc(.82s + var(--i)*.085s);
+}
+@keyframes timeWordPop{
+  0%{opacity:0;transform:translate3d(-14px,42px,0) rotate(-14deg) scale(.35,.55)}
+  32%{opacity:1;transform:translate3d(9px,-15px,0) rotate(9deg) scale(1.18,.88)}
+  54%{transform:translate3d(-5px,5px,0) rotate(-6deg) scale(.94,1.08)}
+  72%{transform:translate3d(3px,-3px,0) rotate(3deg) scale(1.05,.97)}
+  100%{opacity:1;transform:none}
+}
+@keyframes timeWordFloat{
+  0%,100%{transform:translate3d(0,0,0) rotate(-1deg) scale(1)}
+  22%{transform:translate3d(-2px,-7px,0) rotate(3deg) scale(1.04, .98)}
+  46%{transform:translate3d(4px,2px,0) rotate(-2deg) scale(.98,1.03)}
+  70%{transform:translate3d(-3px,-4px,0) rotate(2deg) scale(1.025,.99)}
+}
+@keyframes skillWordPop{
+  0%{opacity:0;transform:translate3d(18px,-40px,0) rotate(16deg) scale(.38,.5)}
+  28%{opacity:1;transform:translate3d(-10px,12px,0) rotate(-12deg) scale(1.22,.86)}
+  50%{transform:translate3d(6px,-7px,0) rotate(8deg) scale(.9,1.1)}
+  70%{transform:translate3d(-3px,3px,0) rotate(-4deg) scale(1.06,.96)}
+  100%{opacity:1;transform:none}
+}
+@keyframes skillWordJelly{
+  0%,100%{transform:translate3d(0,0,0) rotate(1deg) skewX(0) scale(1)}
+  18%{transform:translate3d(2px,-8px,0) rotate(-4deg) skewX(-2deg) scale(1.06,.96)}
+  38%{transform:translate3d(-4px,3px,0) rotate(3deg) skewX(2deg) scale(.97,1.06)}
+  58%{transform:translate3d(3px,-5px,0) rotate(-2deg) skewX(-1deg) scale(1.04,.98)}
+  78%{transform:translate3d(-2px,1px,0) rotate(2deg) skewX(1deg) scale(.99,1.02)}
+}
+/* tiny floating doodle-like marks, generated without changing the clock DOM */
+.line.scene-clock.clock-whimsy-time .clock-lyric::before,
+.line.scene-clock.clock-whimsy-time .clock-lyric::after,
+.line.scene-clock.clock-whimsy-skill .clock-lyric::before,
+.line.scene-clock.clock-whimsy-skill .clock-lyric::after{
+  content:"✦";
+  position:absolute;
+  pointer-events:none;
+  font-family:ui-rounded,sans-serif;
+  color:var(--accent);
+  opacity:.72;
+  z-index:-1;
+}
+.line.scene-clock.clock-whimsy-time .clock-lyric::before{left:4%;top:12%;font-size:18px;animation:doodleFloatA 1.7s ease-in-out infinite}
+.line.scene-clock.clock-whimsy-time .clock-lyric::after{right:3%;bottom:9%;font-size:13px;animation:doodleFloatB 1.35s ease-in-out .2s infinite}
+.line.scene-clock.clock-whimsy-skill .clock-lyric::before{left:2%;bottom:12%;font-size:15px;animation:doodleFloatB 1.15s ease-in-out infinite}
+.line.scene-clock.clock-whimsy-skill .clock-lyric::after{right:2%;top:8%;font-size:21px;animation:doodleFloatA 1.45s ease-in-out .15s infinite}
+@keyframes doodleFloatA{0%,100%{transform:translate(0,3px) rotate(-12deg) scale(.8);opacity:.35}50%{transform:translate(5px,-7px) rotate(18deg) scale(1.25);opacity:.9}}
+@keyframes doodleFloatB{0%,100%{transform:translate(0,0) rotate(10deg) scale(.75);opacity:.3}50%{transform:translate(-5px,-5px) rotate(-15deg) scale(1.15);opacity:.85}}
 .standup-exit .word.current{animation:standUpHighlighted .32s cubic-bezier(.15,1.4,.3,1) both;transform-origin:50% 100%;z-index:5}
 @keyframes standUpHighlighted{0%{transform:translateY(12px) rotate(-18deg) scale(.92)}70%{transform:translateY(-5px) rotate(4deg) scale(1.08)}100%{transform:translateY(0) rotate(0) scale(1.06)}}
 .standup-exit{animation:kasiExit .72s cubic-bezier(.7,0,.9,.2) forwards;transform-origin:50% 50%}
