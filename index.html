@@ -2227,8 +2227,8 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   margin:0;
   white-space:nowrap;
   font-family:inherit !important;
-  font-size:clamp(28px,4.4vw,68px) !important;
-  font-weight:600 !important;
+  font-size:clamp(30px,4.9vw,74px) !important;
+  font-weight:700 !important;
   letter-spacing:-.045em !important;
   line-height:1.05 !important;
   transform-origin:center;
@@ -2287,7 +2287,7 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   .line.pupuntahan-scene .word,
   .line.pupuntahan-scene .word.visible,
   .line.pupuntahan-scene .word.current{
-    font-size:clamp(27px,8.5vw,42px) !important;
+    font-size:clamp(29px,9vw,46px) !important;
   }
 }
 </style>
@@ -2726,7 +2726,7 @@ function activate(i){
   if(i===10){
     el.classList.add('pupuntahan-scene');
     el.querySelectorAll('.word').forEach((w,idx)=>{
-      w.setAttribute('data-pupuntahan-echo', (el.querySelectorAll('.word')[idx+1]?.textContent || '').trim());
+      w.setAttribute('data-pupuntahan-echo', w.textContent.trim());
       w.style.setProperty('--p-orbit',(idx%2===0?'-1':'1'));
       w.style.setProperty('--p-delay',(idx*0.10)+'s');
       w.style.setProperty('--echo-x',(idx%2===0?'-5px':'5px'));
