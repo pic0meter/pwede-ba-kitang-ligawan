@@ -1032,6 +1032,12 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   letter-spacing:inherit !important;
   line-height:inherit !important;
 }
+/* Keep 1:03 "ligawan?" exactly the same physical size when highlighted.
+   The global .word.current rule scales highlighted words to 1.06. */
+.line.word-echo-scene .word[data-word-index="3"].current{
+  transform:translateY(-.055em) scale(1) !important;
+  scale:1 !important;
+}
 .line.word-echo-scene .word::before{
   content:attr(data-echo);
   position:absolute;
@@ -2715,7 +2721,7 @@ function updateMotion(t){
       const phase=t*7.2+i*.85;
       w.style.translate=`${Math.sin(phase)*4.2}px ${Math.cos(phase*1.08)*5.5}px`;
       w.style.rotate=`${Math.sin(phase*.92)*2.4}deg`;
-      w.style.scale=`${1+0.025*Math.sin(phase*1.15)}`;
+      w.style.scale=(i===3 ? '1' : `${1+0.025*Math.sin(phase*1.15)}`);
     });
   }
 }
