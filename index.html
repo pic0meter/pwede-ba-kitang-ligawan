@@ -2226,9 +2226,30 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .line.malayo-echo-scene.active{
   animation:malayoMainBob 1.02s cubic-bezier(.36,.07,.19,.97) infinite alternate !important;
 }
-.line.malayo-echo-scene .word{
+.line.malayo-echo-scene .malayo-foreground{
   position:relative;
   z-index:4;
+  width:min(88vw,620px);
+  height:min(62vh,500px);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:0;
+}
+.line.malayo-echo-scene .malayo-foreground .word{
+  position:relative;
+  display:block;
+  width:100%;
+  margin:0;
+  text-align:center;
+  white-space:nowrap;
+  line-height:.9;
+  font-size:clamp(48px,13vw,112px) !important;
+  font-weight:800 !important;
+  letter-spacing:-.055em !important;
+  z-index:4;
+  will-change:transform,opacity;
 }
 .line.malayo-echo-field{
   position:absolute;
@@ -2306,6 +2327,13 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 }
 @media(max-width:600px){
   .line.malayo-echo-field{inset:-12vh -28vw}
+  .line.malayo-echo-scene .malayo-foreground{
+    width:88vw;
+    height:56vh;
+  }
+  .line.malayo-echo-scene .malayo-foreground .word{
+    font-size:clamp(42px,14vw,72px) !important;
+  }
   .malayo-echo{
     font-size:var(--ms-mobile,var(--ms));
     letter-spacing:-.055em;
@@ -2837,6 +2865,14 @@ function activate(i){
   if(i===11){
     el.classList.add('malayo-echo-scene');
 
+    // Centered three-line foreground: KAHIT / MALAYO / PA YAN.
+    el.innerHTML='';
+    const foreground=buildWords('Kahit malayo pa yan');
+    const holder=document.createElement('div');
+    holder.className='malayo-foreground';
+    holder.innerHTML=foreground;
+    el.appendChild(holder);
+
     const field=document.createElement('div');
     field.className='malayo-echo-field';
     field.setAttribute('aria-hidden','true');
@@ -2866,7 +2902,7 @@ function activate(i){
     echoSpecs.forEach(([x,y,size,alpha,rot,delay,ex,ey,speed,color])=>{
       const e=document.createElement('span');
       e.className='malayo-echo';
-      e.textContent="Kahit malayo pa 'yan";
+      e.textContent="Kahit malayo pa yan";
       e.style.setProperty('--mx',x);
       e.style.setProperty('--my',y);
       e.style.setProperty('--ms',size);
@@ -3151,6 +3187,43 @@ function updateMotion(t){
     const oo=words[0];
     if(oo) oo.style.transform=`translateY(${Math.sin(t*7)*3}px) scale(${1.02+.035*Math.max(0,Math.sin(t*4))})`;
   }
+
+  /* 01:16 — KAHIT / MALAYO / PA YAN.
+     Each foreground word gets its own energetic bob. */
+  if(scene==='malayo-echo'){
+    const cues=item.cues||[];
+    words.forEach((w,i)=>{
+      const cue=cues[i] ?? item.start;
+      const nextCue=cues[i+1] ?? item.end;
+      const fadeIn=.16;
+      const fadeOut=.18;
+
+      if(t<cue){
+        w.style.opacity='0';
+        w.style.transform='translate3d(0,18px,0) scale(.94)';
+        w.style.filter='none';
+        return;
+      }
+
+      const inP=Math.min(1,(t-cue)/fadeIn);
+      const outP=Math.min(1,(nextCue-t)/fadeOut);
+      const easeIn=inP*inP*(3-2*inP);
+      const easeOut=outP*outP*(3-2*outP);
+      const alpha=Math.min(easeIn,easeOut);
+
+      const phase=t*(7.8+i*.72)+i*1.65;
+      const x=Math.sin(phase)*4.5;
+      const y=Math.cos(phase*1.12)*7.5;
+      const r=Math.sin(phase*.86+i)*1.7;
+      const scale=1+.028*Math.sin(phase*1.18);
+
+      w.style.opacity=String(alpha);
+      w.style.transform=`translate3d(${x}px,${y}px,0) rotate(${r}deg) scale(${scale})`;
+      w.style.filter='none';
+      w.style.zIndex='5';
+    });
+  }
+
   // Extra idle heartbeat for every scene, layered through independent transform properties.
   words.forEach((w,i)=>{
     if(!w.classList.contains('visible'))return;
