@@ -703,16 +703,85 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   text-shadow:none!important;
 }
 
-.first-linyahan-horizontal-line{position:absolute;left:-50vw;top:50%;width:200vw;height:2px;z-index:1;pointer-events:none;background:repeating-linear-gradient(90deg,#ffb38a 0 12px,transparent 12px 22px);box-shadow:0 0 9px #ffb38a66;transform:scaleX(0);transform-origin:left center;opacity:0;}
-.first-linyahan-vertical.active .first-linyahan-horizontal-line{animation-name:firstLinyahanLineIn;animation-timing-function:cubic-bezier(.18,.8,.18,1);animation-fill-mode:forwards;}
-.first-linyahan-horizontal-line:nth-last-child(1){top:35%;height:1px;opacity:.38;background:repeating-linear-gradient(90deg,#ffb38a 0 8px,transparent 8px 19px);animation-duration:2.55s;animation-delay:.02s;}
-.first-linyahan-horizontal-line:nth-last-child(2){top:43%;height:3px;opacity:.62;background:repeating-linear-gradient(90deg,#ffb38a 0 15px,transparent 15px 28px);animation-duration:3.7s;animation-delay:.18s;}
-.first-linyahan-horizontal-line:nth-last-child(3){top:50%;height:2px;opacity:.82;background:repeating-linear-gradient(90deg,#ffb38a 0 10px,transparent 10px 21px);animation-duration:3.15s;animation-delay:.04s;}
-.first-linyahan-horizontal-line:nth-last-child(4){top:57%;height:4px;opacity:.46;background:repeating-linear-gradient(90deg,#ffb38a 0 18px,transparent 18px 34px);animation-duration:4.1s;animation-delay:.3s;}
-.first-linyahan-horizontal-line:nth-last-child(5){top:65%;height:1px;opacity:.7;background:repeating-linear-gradient(90deg,#ffb38a 0 7px,transparent 7px 17px);animation-duration:2.9s;animation-delay:.12s;}
-.first-linyahan-horizontal-line:nth-last-child(even){left:auto;right:-50vw;transform-origin:right center;}
-@keyframes firstLinyahanLineIn{0%{opacity:0;transform:scaleX(0)}12%{opacity:.72}100%{opacity:1;transform:scaleX(1)}}
-.line.first-linyahan-vertical.out{animation:none!important;}.line.first-linyahan-vertical.out .first-linyahan-horizontal-line{animation:firstLinyahanLineOut .28s ease-in forwards!important;}@keyframes firstLinyahanLineOut{from{opacity:.72;transform:scaleX(1)}to{opacity:0;transform:scaleX(1)}}
+.first-linyahan-stroke{
+  position:absolute;
+  z-index:1;
+  pointer-events:none;
+  opacity:0;
+  will-change:transform,opacity;
+  border:0;
+  background:repeating-linear-gradient(90deg,#ffb38a 0 12px,transparent 12px 23px);
+  box-shadow:0 0 9px #ffb38a66;
+}
+.first-linyahan-vertical.active .first-linyahan-stroke{
+  animation-timing-function:cubic-bezier(.18,.8,.18,1);
+  animation-fill-mode:forwards;
+}
+/* Each stroke enters from a different edge; none is restricted to horizontal motion. */
+.first-linyahan-stroke-top{
+  left:-35vw; top:-4vh; width:170vw; height:2px;
+  opacity:.48;
+  background:repeating-linear-gradient(90deg,#ffb38a 0 9px,transparent 9px 19px);
+  animation:firstLinyahanFromTop 3.9s .08s both;
+}
+.first-linyahan-stroke-right{
+  right:-4vw; top:-30vh; width:3px; height:160vh;
+  opacity:.68;
+  background:repeating-linear-gradient(0deg,#ffb38a 0 14px,transparent 14px 28px);
+  animation:firstLinyahanFromRight 3.05s .32s both;
+}
+.first-linyahan-stroke-bottom{
+  left:-25vw; bottom:-4vh; width:150vw; height:4px;
+  opacity:.36;
+  background:repeating-linear-gradient(90deg,#ffb38a 0 18px,transparent 18px 35px);
+  animation:firstLinyahanFromBottom 4.35s .16s both;
+}
+.first-linyahan-stroke-left{
+  left:-4vw; top:-25vh; width:1px; height:150vh;
+  opacity:.78;
+  background:repeating-linear-gradient(0deg,#ffb38a 0 8px,transparent 8px 18px);
+  animation:firstLinyahanFromLeft 2.7s .02s both;
+}
+.first-linyahan-stroke-diagonal{
+  left:-45vw; top:108%; width:190vw; height:2px;
+  opacity:.55;
+  transform-origin:left center;
+  background:repeating-linear-gradient(90deg,#ffb38a 0 11px,transparent 11px 25px);
+  animation:firstLinyahanDiagonal 3.65s .24s both;
+}
+@keyframes firstLinyahanFromTop{
+  0%{opacity:0;transform:translate3d(0,-45vh,0)}
+  15%{opacity:.48}
+  58%{opacity:.48;transform:translate3d(0,48vh,0)}
+  100%{opacity:0;transform:translate3d(0,115vh,0)}
+}
+@keyframes firstLinyahanFromRight{
+  0%{opacity:0;transform:translate3d(45vw,0,0)}
+  14%{opacity:.68}
+  58%{opacity:.68;transform:translate3d(-48vw,0,0)}
+  100%{opacity:0;transform:translate3d(-120vw,0,0)}
+}
+@keyframes firstLinyahanFromBottom{
+  0%{opacity:0;transform:translate3d(0,45vh,0)}
+  18%{opacity:.36}
+  62%{opacity:.36;transform:translate3d(0,-48vh,0)}
+  100%{opacity:0;transform:translate3d(0,-115vh,0)}
+}
+@keyframes firstLinyahanFromLeft{
+  0%{opacity:0;transform:translate3d(-42vw,0,0)}
+  12%{opacity:.78}
+  55%{opacity:.78;transform:translate3d(48vw,0,0)}
+  100%{opacity:0;transform:translate3d(120vw,0,0)}
+}
+@keyframes firstLinyahanDiagonal{
+  0%{opacity:0;transform:translate3d(-25vw,35vh,0) rotate(-25deg) scaleX(.65)}
+  16%{opacity:.55}
+  62%{opacity:.55;transform:translate3d(28vw,-38vh,0) rotate(-25deg) scaleX(1)}
+  100%{opacity:0;transform:translate3d(80vw,-105vh,0) rotate(-25deg) scaleX(1.15)}
+}
+.line.first-linyahan-vertical.out{animation:none!important;}
+.line.first-linyahan-vertical.out .first-linyahan-stroke{animation:firstLinyahanStrokeOut .28s ease-in forwards!important;}
+@keyframes firstLinyahanStrokeOut{from{opacity:inherit}to{opacity:0}}
 
 /* Keep the older dashed-line machinery inactive for this treatment. */
 .first-linyahan-vertical .linyahan-dash-field{
@@ -1859,12 +1928,13 @@ function activate(i){
   }
   if(i===5){
     el.classList.add('first-linyahan-vertical');
-    for(let lineIndex=0; lineIndex<5; lineIndex++){
-      const horizontalLine=document.createElement('div');
-      horizontalLine.className='first-linyahan-horizontal-line';
-      horizontalLine.setAttribute('aria-hidden','true');
-      el.appendChild(horizontalLine);
-    }
+    const strokeDirections=['top','right','bottom','left','diagonal'];
+    strokeDirections.forEach(direction=>{
+      const stroke=document.createElement('div');
+      stroke.className='first-linyahan-horizontal-line first-linyahan-stroke first-linyahan-stroke-'+direction;
+      stroke.setAttribute('aria-hidden','true');
+      el.appendChild(stroke);
+    });
   }
   if(i===1){
     el.classList.add('banat-scratch');
