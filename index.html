@@ -539,10 +539,9 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 }
 
 /* FIRST "Kahit 'di maganda ang mga linyahan" treatment.
-   The six words are a deliberate vertical stack. They do not fly.
-   Each word has a restrained physical shake; "linyahan" gets the
-   directional dashed-line hit, then the whole stack folds away into
-   the next lyric. */
+   The lyric stays as a vertical stack. When "linyahan" lands, the visual
+   becomes a field of small curved yellow footsteps — short marks that
+   appear one after another and gradually build across the lower screen. */
 .line.first-linyahan-vertical{
   width:min(92vw,560px);
   height:min(58vh,520px);
@@ -552,7 +551,6 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   flex-wrap:nowrap;
   align-items:center;
   justify-content:center;
-  align-content:center;
   gap:0;
   overflow:visible;
   z-index:5;
@@ -596,92 +594,149 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   100%{transform:translate(0,0) rotate(0) scale(1.055)}
 }
 
-/* Dashed "slashes" cross the entire screen from different directions.
-   The trail follows the dash front instead of appearing as a static X. */
-.linyahan-dash-field{
-  position:absolute;
-  inset:-20vh -20vw;
-  z-index:12;
+/* LINYAHAN — follow the user's drawn path as animation.
+   Long warm-peach dashed strokes enter from one edge, cross the screen,
+   and exit the opposite edge. The drawing determines the path/angle;
+   the line itself is animated, not turned into literal footprints. */
+.linyahan-footsteps{
+  position:fixed;
+  inset:0;
+  z-index:24;
   pointer-events:none;
-  overflow:visible;
-  opacity:0;
+  overflow:hidden;
 }
-.first-linyahan-vertical.linyahan-hit .linyahan-dash-field{
-  opacity:1;
-}
-.linyahan-dash{
+
+.linyahan-footstep{
   position:absolute;
-  left:50%;
-  top:50%;
-  width:145vw;
-  height:0;
-  border-top:2px dashed #ffb38a;
-  filter:drop-shadow(0 0 5px #ffb38a99);
+  left:0;
+  top:var(--start-y);
+  width:clamp(250px,52vw,520px);
+  height:3px;
   opacity:0;
-  transform-origin:center;
-  will-change:transform,opacity;
+  transform-origin:left center;
+  transform:rotate(var(--angle)) translateX(-70vw);
+  will-change:transform,opacity,background-position;
+  border-radius:999px;
+
+  background:
+    repeating-linear-gradient(
+      90deg,
+      #ffb38a 0 11px,
+      transparent 11px 22px
+    );
+  box-shadow:
+    0 0 5px #ffb38a55,
+    0 0 12px #ffb38a20;
+
+  animation:
+    linyahanTrailAcross var(--duration)
+    cubic-bezier(.16,.72,.16,1)
+    var(--delay) both;
 }
-.first-linyahan-vertical.linyahan-hit .linyahan-dash{
-  animation:linyahanDashSweep var(--dash-life) cubic-bezier(.18,.75,.18,1) var(--dash-delay) both;
+
+/* The leading edge makes the stroke feel like it is being drawn. */
+.linyahan-footstep::before{
+  content:"";
+  position:absolute;
+  left:-3px;
+  top:50%;
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  transform:translateY(-50%);
+  background:#ffd0b7;
+  box-shadow:
+    0 0 5px #ffb38a,
+    0 0 13px #ffb38a88;
 }
-.linyahan-dash::after{
+
+.linyahan-footstep::after{
   content:"";
   position:absolute;
   left:0;
-  top:-3px;
-  width:34%;
-  height:5px;
-  background:linear-gradient(90deg,transparent,#fff2e8,#ffb38a,transparent);
-  filter:blur(1px);
-  opacity:.8;
-  transform:translateX(-100%);
-}
-.first-linyahan-vertical.linyahan-hit .linyahan-dash::after{
-  animation:dashTrail var(--dash-life) cubic-bezier(.18,.75,.18,1) var(--dash-delay) both;
-}
-@keyframes linyahanDashSweep{
-  0%{
-    opacity:0;
-    transform:translate3d(var(--dash-x),var(--dash-y),0) rotate(var(--dash-r)) scaleX(.72);
-  }
-  16%{opacity:.95}
-  42%{
-    opacity:.9;
-    transform:translate3d(0,0,0) rotate(var(--dash-r)) scaleX(1);
-  }
-  70%{
-    opacity:.58;
-    transform:translate3d(calc(var(--dash-x)*-.34),calc(var(--dash-y)*-.34),0) rotate(var(--dash-r)) scaleX(1.08);
-  }
-  100%{
-    opacity:0;
-    transform:translate3d(calc(var(--dash-x)*-.9),calc(var(--dash-y)*-.9),0) rotate(var(--dash-r)) scaleX(1.22);
-  }
-}
-@keyframes dashTrail{
-  0%{opacity:0;transform:translateX(-100%)}
-  18%{opacity:.9}
-  55%{opacity:.62;transform:translateX(95%)}
-  100%{opacity:0;transform:translateX(330%)}
+  top:50%;
+  width:100%;
+  height:9px;
+  transform:translateY(-50%);
+  background:linear-gradient(
+    90deg,
+    transparent,
+    #ffb38a1c 22%,
+    #ffb38a2b 70%,
+    transparent
+  );
+  filter:blur(4px);
 }
 
-/* After the final dash passes, the stack gets pulled upward into the
-   following line rather than simply blinking away. */
+@keyframes linyahanTrailAcross{
+  0%{
+    opacity:0;
+    transform:rotate(var(--angle)) translateX(-70vw);
+  }
+  8%{opacity:.86}
+  18%{opacity:.72}
+  68%{opacity:.62}
+  88%{opacity:.34}
+  100%{
+    opacity:0;
+    transform:rotate(var(--angle)) translateX(145vw);
+  }
+}
+
+.linyahan-footstep.reverse{
+  animation-name:linyahanTrailAcrossReverse;
+}
+@keyframes linyahanTrailAcrossReverse{
+  0%{
+    opacity:0;
+    transform:rotate(var(--angle)) translateX(145vw);
+  }
+  8%{opacity:.86}
+  18%{opacity:.72}
+  68%{opacity:.62}
+  88%{opacity:.34}
+  100%{
+    opacity:0;
+    transform:rotate(var(--angle)) translateX(-145vw);
+  }
+}
+
+@media(max-width:600px){
+  .linyahan-footstep{
+    width:clamp(210px,58vw,370px);
+    height:2.5px;
+    background:
+      repeating-linear-gradient(
+        90deg,
+        #ffb38a 0 8px,
+        transparent 8px 18px
+      );
+  }
+  .linyahan-footstep::before{
+    width:7px;
+    height:7px;
+  }
+}
+
+/* The vertical lyric itself exits upward, independently of the footsteps. */
 .line.first-linyahan-vertical.out{
-  animation:linyahanStackExit .58s cubic-bezier(.18,.8,.2,1) forwards!important;
+  animation:linyahanStackExit .72s cubic-bezier(.18,.8,.2,1) forwards!important;
+  pointer-events:none;
 }
 @keyframes linyahanStackExit{
   0%{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}
-  45%{opacity:1;transform:translateY(-4px) scale(1.015);filter:blur(0)}
-  100%{opacity:0;transform:translateY(-48px) scale(.91);filter:blur(7px)}
+  45%{opacity:1;transform:translateY(-7px) scale(1.015);filter:blur(0)}
+  100%{opacity:0;transform:translateY(-70px) scale(.93);filter:blur(8px)}
 }
-.first-linyahan-vertical.out .linyahan-dash-field{
-  opacity:1;
-  animation:dashFieldExit .55s ease-out forwards;
-}
-@keyframes dashFieldExit{
-  0%{opacity:.55;transform:scale(1)}
-  100%{opacity:0;transform:scale(1.08)}
+
+@media(max-width:600px){
+  .line.first-linyahan-vertical{
+    width:94vw;
+    height:54vh;
+  }
+  .line.first-linyahan-vertical .word{
+    line-height:.90;
+  }
 }
 
 /* THIRD CHORUS LINE — unified cursive treatment; no mismatched word sizing. */
@@ -1427,22 +1482,6 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .line.scene-kailan-flight .word.accent{color:var(--accent)}
 
 
-@keyframes linyahanFootstepReverse{
-  0%{
-    opacity:0;
-    transform:rotate(var(--angle)) translateX(18vw);
-    background-position:0 0;
-  }
-  8%{opacity:.9}
-  22%{opacity:.72;background-position:14px 0}
-  50%{opacity:.48;background-position:34px 0}
-  78%{opacity:.22;background-position:58px 0}
-  100%{
-    opacity:0;
-    transform:rotate(var(--angle)) translateX(-125vw);
-    background-position:90px 0;
-  }
-}
 
 </style>
 </head>
@@ -1816,30 +1855,6 @@ function activate(i){
   }
   if(i===5){
     el.classList.add('first-linyahan-vertical');
-    const dashField=document.createElement('div');
-    dashField.className='linyahan-dash-field';
-    dashField.setAttribute('aria-hidden','true');
-
-    const dashStyles=[
-      ['-86vw','-44vh','-18deg','.00s','1.05s'],
-      ['92vw','-18vh','17deg','.10s','1.12s'],
-      ['-78vw','14vh','-11deg','.20s','.98s'],
-      ['86vw','34vh','13deg','.31s','1.08s'],
-      ['-72vw','-2vh','-4deg','.43s','.92s'],
-      ['78vw','-36vh','7deg','.55s','1.04s'],
-      ['-88vw','42vh','-21deg','.67s','1.00s']
-    ];
-    dashStyles.forEach(([x,y,r,delay,life])=>{
-      const d=document.createElement('span');
-      d.className='linyahan-dash';
-      d.style.setProperty('--dash-x',x);
-      d.style.setProperty('--dash-y',y);
-      d.style.setProperty('--dash-r',r);
-      d.style.setProperty('--dash-delay',delay);
-      d.style.setProperty('--dash-life',life);
-      dashField.appendChild(d);
-    });
-    el.appendChild(dashField);
   }
   if(i===1){
     el.classList.add('banat-scratch');
@@ -2119,7 +2134,10 @@ let linyahanFootstepsTimer=null;
 
 function clearLinyahanFootsteps(){
   const field=document.querySelector('.linyahan-footsteps');
-  if(field) field.remove();
+  if(field){
+    field.classList.add('fade');
+    setTimeout(()=>field.remove(),520);
+  }
   if(linyahanFootstepsTimer) clearTimeout(linyahanFootstepsTimer);
   linyahanFootstepsTimer=null;
   linyahanFootstepsActive=false;
@@ -2135,38 +2153,37 @@ function spawnLinyahanFootsteps(){
   const field=document.createElement('div');
   field.className='linyahan-footsteps';
   field.setAttribute('aria-hidden','true');
-  el.appendChild(field);
+  document.querySelector('#app').appendChild(field);
 
-  // Each stroke crosses the whole viewport, like a sequence of footsteps
-  // travelling from one side to the other. Angles alternate to make the
-  // trails feel like directional marks rather than parallel UI lines.
+  /*
+    This follows the uploaded reference: tiny curved yellow strokes build
+    gradually from left/right, in loose rows, rather than forming continuous
+    lines across the screen.
+  */
   const paths=[
-    {y:'22%',angle:'-8deg',w:'38vw',d:'1.05s',delay:'0s',cls:'long'},
-    {y:'38%',angle:'5deg', w:'29vw',d:'0.92s',delay:'.16s',cls:'short'},
-    {y:'53%',angle:'-4deg',w:'44vw',d:'1.12s',delay:'.31s',cls:'long'},
-    {y:'68%',angle:'7deg', w:'31vw',d:'1.00s',delay:'.47s',cls:'short'},
-    {y:'81%',angle:'-6deg',w:'36vw',d:'1.08s',delay:'.64s',cls:'long'}
-  ];
+    {y:'51%',a:'9deg', d:'1.22s',delay:'0s',dir:'forward'},
+    {y:'57%',a:'-6deg',d:'1.08s',delay:'.18s',dir:'reverse'},
+    {y:'63%',a:'7deg', d:'1.18s',delay:'.38s',dir:'forward'},
+    {y:'68%',a:'-5deg',d:'1.10s',delay:'.60s',dir:'reverse'},
+    {y:'73%',a:'6deg', d:'1.20s',delay:'.82s',dir:'forward'},
+    {y:'78%',a:'-7deg',d:'1.10s',delay:'1.04s',dir:'reverse'},
+    {y:'83%',a:'4deg', d:'1.18s',delay:'1.25s',dir:'forward'}
+  ];;
 
-  paths.forEach((p,i)=>{
+  paths.forEach(p=>{
     const dash=document.createElement('i');
-    dash.className='linyahan-footstep '+p.cls;
-    dash.style.setProperty('--start-x', i%2 ? '108vw' : '-46vw');
+    dash.className='linyahan-footstep'+(p.dir==='reverse'?' reverse':'');
     dash.style.setProperty('--start-y',p.y);
-    dash.style.setProperty('--angle',p.angle);
-    dash.style.setProperty('--trail-w',p.w);
+    dash.style.setProperty('--angle',p.a);
     dash.style.setProperty('--duration',p.d);
     dash.style.setProperty('--delay',p.delay);
-    // Reverse the travel direction for alternating strokes.
-    if(i%2){
-      dash.style.animationName='linyahanFootstepReverse';
-    }
     field.appendChild(dash);
   });
 
   linyahanFootstepsTimer=setTimeout(()=>{
-    clearLinyahanFootsteps();
-  },2100);
+    const f=document.querySelector('.linyahan-footsteps');
+    if(f) f.classList.add('fade');
+  },3000);
 }
 
 function updateSpecialVisuals(t){
@@ -2200,11 +2217,17 @@ function updateLaserHeart(t){
   svg.style.opacity=String(1-fadeP);
 }
 
-  // "linyahan" cue: crossing dashed trails, like fast footsteps.
-  if(current===5 && t>=49.50 && t<51.35){
+  // "linyahan" cue: small curved yellow footsteps build across the screen.
+  if(current===5 && t>=49.50 && t<52.95){
     if(!linyahanFootstepsActive) spawnLinyahanFootsteps();
   }else if(linyahanFootstepsActive){
     clearLinyahanFootsteps();
+  }
+
+  // Let the vertical stack leave on its own motion before the next lyric.
+  if(current===5){
+    const l=L.querySelector('.line.active');
+    if(l) l.classList.toggle('out',t>=52.72);
   }
 
   const firstWasActive = current===0;
