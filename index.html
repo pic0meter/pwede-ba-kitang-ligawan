@@ -210,6 +210,13 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 
 /* "ligawan?" itself gets the same nervous, unpredictable energy. */
 .line.question-chaos .word.ligawan-chaos{
+  /* Keep "ligawan?" typographically identical to the other lyric words.
+     Its personality comes from motion/color, not a different typeface or scale. */
+  font-family:inherit !important;
+  font-size:inherit !important;
+  font-weight:inherit !important;
+  letter-spacing:inherit !important;
+  line-height:inherit !important;
   color:var(--accent);
   text-shadow:0 0 24px #ffb38a66;
 }
@@ -220,12 +227,12 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   will-change:transform;
 }
 @keyframes ligawanJitter{
-  0%{transform:translate(0,0) rotate(-1deg) scale(1.03)}
-  19%{transform:translate(-2px,1px) rotate(1.5deg) scale(1.08)}
-  37%{transform:translate(3px,-2px) rotate(-2.5deg) scale(1.02)}
-  54%{transform:translate(-1px,-3px) rotate(2deg) scale(1.10)}
-  72%{transform:translate(2px,2px) rotate(-1deg) scale(1.05)}
-  100%{transform:translate(0,0) rotate(1deg) scale(1.03)}
+  0%{transform:translate(0,0) rotate(-1deg) scale(1.06)}
+  19%{transform:translate(-2px,1px) rotate(1.5deg) scale(1.06)}
+  37%{transform:translate(3px,-2px) rotate(-2.5deg) scale(1.06)}
+  54%{transform:translate(-1px,-3px) rotate(2deg) scale(1.06)}
+  72%{transform:translate(2px,2px) rotate(-1deg) scale(1.06)}
+  100%{transform:translate(0,0) rotate(1deg) scale(1.06)}
 }
 
 /* The old line doesn't simply disappear: the question marks collapse inward. */
@@ -1009,6 +1016,53 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .line.motion.big.active .word.visible,
 .line.motion.active .word.stretch.visible{animation:none}
 
+
+/* WORD-BY-WORD BACKGROUND ECHO — "Pwede ba kitang ligawan?" */
+.line.word-echo-scene .word{
+  position:relative;
+  isolation:isolate;
+}
+.line.word-echo-scene .word::before{
+  content:attr(data-echo);
+  position:absolute;
+  left:50%;
+  top:50%;
+  z-index:-1;
+  display:block;
+  white-space:nowrap;
+  font-family:inherit;
+  font-size:1em;
+  font-weight:inherit;
+  letter-spacing:inherit;
+  line-height:inherit;
+  color:var(--echo-color,#ffb38a);
+  opacity:0;
+  filter:blur(2px);
+  pointer-events:none;
+  transform:translate(-50%,-50%) translate(var(--echo-x,0px),var(--echo-y,0px)) scale(var(--echo-scale,1.75)) rotate(var(--echo-rot,0deg));
+  transform-origin:center;
+  animation:wordEchoIn .72s cubic-bezier(.16,1.15,.25,1) forwards,
+            wordEchoBob var(--echo-dur,2.8s) ease-in-out var(--echo-delay,.2s) infinite alternate;
+}
+.line.word-echo-scene .word:nth-of-type(1)::before{--echo-scale:1.9;--echo-x:-2px;--echo-y:2px;--echo-rot:-2deg;--echo-color:#f8f0e6;--echo-delay:.05s;--echo-dur:3.1s}
+.line.word-echo-scene .word:nth-of-type(2)::before{--echo-scale:2.2;--echo-x:3px;--echo-y:-1px;--echo-rot:2deg;--echo-color:#ffb38a;--echo-delay:.14s;--echo-dur:2.6s}
+.line.word-echo-scene .word:nth-of-type(3)::before{--echo-scale:1.65;--echo-x:-3px;--echo-y:3px;--echo-rot:-1deg;--echo-color:#f8f0e6;--echo-delay:.23s;--echo-dur:3.4s}
+.line.word-echo-scene .word:nth-of-type(4)::before{--echo-scale:2.0;--echo-x:2px;--echo-y:-2px;--echo-rot:1.5deg;--echo-color:#ffb38a;--echo-delay:.32s;--echo-dur:2.9s}
+@keyframes wordEchoIn{
+  0%{opacity:0;transform:translate(-50%,-50%) translate(var(--echo-x),calc(var(--echo-y) + 8px)) scale(.8) rotate(calc(var(--echo-rot) - 6deg))}
+  65%{opacity:.12;transform:translate(-50%,-50%) translate(var(--echo-x),var(--echo-y)) scale(calc(var(--echo-scale) * 1.06)) rotate(calc(var(--echo-rot) + 2deg))}
+  100%{opacity:.085;transform:translate(-50%,-50%) translate(var(--echo-x),var(--echo-y)) scale(var(--echo-scale)) rotate(var(--echo-rot))}
+}
+@keyframes wordEchoBob{
+  0%{opacity:.065;transform:translate(-50%,-50%) translate(var(--echo-x),calc(var(--echo-y) + 3px)) scale(var(--echo-scale)) rotate(var(--echo-rot))}
+  100%{opacity:.11;transform:translate(-50%,-50%) translate(calc(var(--echo-x) + 3px),calc(var(--echo-y) - 4px)) scale(calc(var(--echo-scale) * 1.025)) rotate(calc(var(--echo-rot) + 1deg))}
+}
+.line.word-echo-scene.out .word::before{animation:wordEchoOut .38s ease-in forwards!important}
+@keyframes wordEchoOut{
+  from{opacity:.09;transform:translate(-50%,-50%) translate(var(--echo-x),var(--echo-y)) scale(var(--echo-scale)) rotate(var(--echo-rot))}
+  to{opacity:0;transform:translate(-50%,-50%) translate(calc(var(--echo-x) + var(--exit-x,18px)),calc(var(--echo-y) - 12px)) scale(.72) rotate(calc(var(--echo-rot) + 8deg))}
+}
+
 /* 1 — words chase one another along a little elastic path */
 .line.scene-chase{gap:.02em .13em}
 .line.scene-chase .word.visible{animation:chaseIn .48s cubic-bezier(.16,1.25,.28,1) both, chaseFloat 1.8s ease-in-out .48s infinite alternate}
@@ -1167,7 +1221,7 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   42%{transform:translate3d(3px,2px,0) rotate(-1.5deg) scale(.985,1.025)}
   68%{transform:translate3d(-2px,-4px,0) rotate(1.5deg) scale(1.02,.99)}
 }
-.line.scene-clock.playful-clock-lyric .clock-lyric::before{content:"✦  •  ✦";font-family:ui-rounded,sans-serif;letter-spacing:.45em;position:absolute;left:50%;top:-20%;transform:translateX(-50%);font-size:clamp(11px,2vw,17px);color:var(--accent);opacity:.62;animation:skillSparkBounce 1.25s ease-in-out infinite;pointer-events:none}
+.line.scene-clock.playful-clock-lyric .clock-lyric::before{content:none!important;display:none!important}
 @keyframes skillSparkBounce{0%,100%{opacity:.25;transform:translate(-50%,4px) scale(.8) rotate(-3deg)}50%{opacity:.9;transform:translate(-50%,-5px) scale(1.12) rotate(3deg)}}
 
 .standup-exit .word.current{animation:standUpHighlighted .32s cubic-bezier(.15,1.4,.3,1) both;transform-origin:50% 100%;z-index:5}
@@ -2244,7 +2298,11 @@ function activate(i){
   if(scene==='clock') el.dataset.clockOriginIndex=String(i);
   if(i===0) el.classList.add('puso-throb');
   if(i===4){
-    el.classList.add('question-chaos');
+    el.classList.add('question-chaos','word-echo-scene');
+    el.querySelectorAll('.word').forEach((w,idx)=>{
+      w.setAttribute('data-echo',w.textContent.trim());
+      w.style.setProperty('--exit-x', (idx%2===0 ? '-16px' : '16px'));
+    });
 
     const field=document.createElement('div');
     field.id='questionChaos';
