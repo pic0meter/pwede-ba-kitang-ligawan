@@ -2216,6 +2216,12 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   text-align:center;
 }
 
+/* Final musical energy: bob the whole lyric container, while each word keeps
+   its own orbit and "pupuntahan" remains locked in place. */
+.line.pupuntahan-scene.active{
+  animation:firstChorusBob 1.18s cubic-bezier(.36,.07,.19,.97) infinite alternate !important;
+}
+
 /* This scene owns every word transform. Do not let the global idle/chorus
    animations, nth-child sizing, or the base word animation touch it. */
 .line.pupuntahan-scene .word,
