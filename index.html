@@ -1456,6 +1456,18 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 /* continuous camera movement keeps the screen alive */
 .line.motion.active{animation:cameraFloat 3.6s ease-in-out infinite alternate}
 @keyframes cameraFloat{0%{transform:translate3d(-3px,2px,0) rotate(-.25deg)}100%{transform:translate3d(3px,-3px,0) rotate(.25deg)}}
+/* More energetic bob for the 'Parang masyado...' line. */
+.line.scene-slit[data-index="1"].active{
+  animation:banatLineBob 1.35s cubic-bezier(.36,.07,.19,.97) infinite alternate !important;
+}
+@keyframes banatLineBob{
+  0%{transform:translate3d(-7px,6px,0) rotate(-.55deg)}
+  20%{transform:translate3d(5px,-8px,0) rotate(.65deg)}
+  42%{transform:translate3d(-4px,7px,0) rotate(-.7deg)}
+  64%{transform:translate3d(7px,-5px,0) rotate(.55deg)}
+  82%{transform:translate3d(-5px,3px,0) rotate(-.4deg)}
+  100%{transform:translate3d(4px,-6px,0) rotate(.45deg)}
+}
 /* Energetic first lyric: the whole line bobs more, while each word keeps its own life. */
 .line.scene-heart-split.active{
   animation:heartSplitEnergetic 1.45s cubic-bezier(.36,.07,.19,.97) infinite alternate !important;
@@ -2176,7 +2188,7 @@ const accentWords=new Set(['puso','mo','yo',"'oo'",'ligawan','oras','hindi','yan
 const lines=[
   {start:8.056,end:15.85,text:'Pwede ba akong tumambay dyan sa puso mo?',style:'verse',section:'verse',cues:[8.056,9.261,9.589,10.186,10.555,11.305,11.680,12.430]},
   {start:15.90,end:23.55,text:"Parang masyado na yatang gasgas ang banat na 'to",style:'soft',section:'verse',cues:[15.90,16.28,16.55,16.72,18.28,18.78,19.10,19.35,19.42]},
-  {start:23.70,end:31.55,text:"Kailan kaya ako makakaisip ng linyang para sa'yo?",style:'verse',section:'verse',cues:[23.70,24.15,24.48,24.92,25.38,27.30,27.78,28.12,28.42]},
+  {start:23.70,end:31.55,text:"Kailan kaya ako makakaisip ng linyang para sa'yo?",style:'verse',section:'verse',cues:[23.70,24.15,24.48,24.92,26.95,27.30,27.78,28.12,28.42]},
   {start:31.70,end:39.25,text:"Gusto ko lang naman ay makamit ang matamis mong 'oo'",style:'soft',section:'verse',cues:[31.70,32.18,32.48,32.72,32.88,33.15,34.85,35.48,35.92,36.42]},
   {start:39.65,end:46.75,text:'Pwede ba kitang ligawan?',style:'chorus',section:'chorus',cues:[39.65,40.25,40.75,42.65]},
   {start:46.80,end:53.65,text:"Kahit 'di maganda ang mga linyahan",style:'soft',section:'chorus',cues:[46.82,47.12,48.32,48.82,49.25,49.50]},
@@ -2725,11 +2737,20 @@ function updateMotion(t){
       }
 
       // Hold the current word in the center until the next cue.
+      // The center hold is deliberately lively: each word bobs, jitters and
+      // glows while it owns the stage, instead of sitting statically.
       if(t<nextCue){
         const enter=clamp((t-cue)/.16,0,1);
+        const elapsed=Math.max(0,t-cue);
+        const chaos=t*8.6+i*1.37;
+        const bobX=Math.sin(chaos)*5.5 + Math.sin(chaos*1.83+i)*2.4;
+        const bobY=Math.cos(chaos*1.12)*7.5 + Math.sin(chaos*2.07+i*.7)*2.8;
+        const bobR=Math.sin(chaos*.91+i)*3.1 + Math.cos(chaos*1.67)*1.25;
+        const pulse=1 + .018*Math.sin(chaos*1.31) + .012*Math.sin(chaos*2.43);
+        const glow=18 + 16*(.5+.5*Math.sin(chaos*1.17));
         w.style.opacity=String(enter);
-        w.style.filter='none';
-        w.style.transform=`translate3d(-50%,-50%,0) scale(${.94+.06*enter})`;
+        w.style.filter=`drop-shadow(0 0 ${glow}px #ffb38a99) drop-shadow(0 0 ${glow*.42}px #f8f0e688)`;
+        w.style.transform=`translate3d(calc(-50% + ${bobX}px),calc(-50% + ${bobY}px),0) rotate(${bobR}deg) scale(${(.94+.06*enter)*pulse})`;
         w.style.zIndex='5';
         return;
       }
