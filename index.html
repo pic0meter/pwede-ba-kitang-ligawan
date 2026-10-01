@@ -3097,17 +3097,15 @@ function updateLaserHeart(t){
   svg.style.opacity=String(1-fadeP);
 }
 
-  // 00:53 transition beat: quick pulse, then a soft fade into the next lyric.
+  // 00:46.80 linyahan: clean one-second fade ending exactly as the next line enters.
+  // No separate pulse is allowed to overlap this fade.
   if(current===5){
     const linyahanLine=L.querySelector('.line.active.first-linyahan-vertical');
-    const pulseStart=53.00, pulseEnd=53.34, fadeEnd=53.78;
-    if(linyahanLine && t>=pulseStart && t<pulseEnd){
-      linyahanLine.classList.remove('linyahan-transition-fade');
-      linyahanLine.classList.add('linyahan-transition-pulse');
-    }else if(linyahanLine && t>=pulseEnd && t<fadeEnd){
+    const fadeStart=52.80, fadeEnd=53.80;
+    if(linyahanLine && t>=fadeStart && t<fadeEnd){
       linyahanLine.classList.remove('linyahan-transition-pulse');
       linyahanLine.classList.add('linyahan-transition-fade');
-    }else if(linyahanLine && t<pulseStart){
+    }else if(linyahanLine && t<fadeStart){
       linyahanLine.classList.remove('linyahan-transition-pulse','linyahan-transition-fade');
     }
   }
@@ -3141,8 +3139,8 @@ function updateLaserHeart(t){
     const qLine=L.querySelector('.line.active.question-chaos');
     const pulseStart=44.00;
     const pulseEnd=44.52;
-    const fadeStart=45.75;
-    const fadeEnd=46.75;
+    const fadeStart=45.80;
+    const fadeEnd=46.80;
     if(qLine && t>=pulseStart && t<pulseEnd){
       qLine.classList.remove('question-chorus-fade');
       qLine.classList.add('question-chorus-pulse');
@@ -3492,10 +3490,10 @@ function render(){
       }
     });
   }else if(i===6){
-    // Clock-line treatment: only the highlighted words get a subtle burst
-    // of random clock numbers behind them. Maximum five numbers per word.
+    // Clock-line treatment: the random clock-number burst lands about one second
+    // after the corresponding word is highlighted. Maximum five numbers per word.
     const burstCues=[
-      [0,53.80],[2,54.55],[3,54.90],[5,55.42]
+      [0,54.80],[2,55.55],[3,55.90],[5,56.42]
     ];
     burstCues.forEach(([wordIndex,cue])=>{
       const key=String(wordIndex);
