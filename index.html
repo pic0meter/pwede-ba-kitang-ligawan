@@ -4223,32 +4223,19 @@ render();
   text-shadow:0 0 28px #ffb38a55;
 }
 
-/* Keep ORAS animated even while it is the currently highlighted word.
-   The highlight may change its color/glow, but must never cancel its jump. */
-.line.scene-clock .clock-lyric.bibigay-static .word[data-word-index="5"].current{
-  animation:orasJumpAndBob 1.15s cubic-bezier(.45,.05,.55,.95) infinite!important;
-  transform-origin:50% 90%!important;
-  will-change:transform!important;
+/* FINAL: the entire Bibigay lyric stack is completely stationary. */
+.line.scene-clock .clock-lyric.bibigay-static .word,
+.line.scene-clock .clock-lyric.bibigay-static .word.visible,
+.line.scene-clock .clock-lyric.bibigay-static .word.current{
+  animation:none!important;
+  transform:none!important;
+  translate:none!important;
+  transition:none!important;
+  will-change:auto!important;
 }
 
-/* ONLY "oras" moves in the Bibigay stack.
-   It gets a punchy, energetic jump + playful bob, while every other word
-   in the four-row stack remains completely still. */
-.line.scene-clock .clock-lyric.bibigay-static .word[data-word-index="5"]{
-  animation:orasJumpAndBob .86s cubic-bezier(.22,.9,.28,1) infinite!important;
-  transform-origin:50% 92%!important;
-  will-change:transform!important;
-}
-@keyframes orasJumpAndBob{
-  0%,100%{transform:translate3d(0,0,0) scale(1) rotate(0deg)}
-  10%{transform:translate3d(-4px,-18px,0) scale(1.08) rotate(-1.6deg)}
-  22%{transform:translate3d(4px,4px,0) scale(.94,1.03) rotate(1.4deg)}
-  34%{transform:translate3d(-3px,-13px,0) scale(1.055) rotate(-1.1deg)}
-  48%{transform:translate3d(3px,3px,0) scale(.97,1.02) rotate(.9deg)}
-  62%{transform:translate3d(-3px,-9px,0) scale(1.035) rotate(-.7deg)}
-  76%{transform:translate3d(2px,2px,0) scale(.985,1.01) rotate(.55deg)}
-  88%{transform:translate3d(-1px,-4px,0) scale(1.012) rotate(-.25deg)}
-}
+/* Keep ORAS animated even while it is the currently highlighted word.
+   The highlight may change its color/glow, but must never cancel its jump. */
 
 @keyframes clockSmoothIn{
   0%{opacity:0;transform:translate3d(0,18px,0) scale(.86)}
