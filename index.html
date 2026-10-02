@@ -1487,50 +1487,6 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   transform:translateY(-.035em) scale(1.035) !important;
   text-shadow:0 0 28px #ffb38a55;
 }
-
-/* KASI DO'N — three-row Poppins stack with deliberately huge size jumps. */
-.line.scene-clock .clock-lyric .kasi-stack{
-  font-family:"Poppins",sans-serif !important;
-  font-weight:800 !important;
-  font-size:clamp(40px,4.8vw,60px) !important;
-  line-height:.84 !important;
-  letter-spacing:-.055em !important;
-  gap:.02em !important;
-}
-.line.scene-clock .clock-lyric .kasi-stack .word{
-  font-family:"Poppins",sans-serif !important;
-  font-weight:800 !important;
-}
-.line.scene-clock .clock-lyric .kasi-stack .kasi-row-1{font-size:1em !important;}
-.line.scene-clock .clock-lyric .kasi-stack .kasi-row-2{font-size:1.6em !important;}
-.line.scene-clock .clock-lyric .kasi-stack .kasi-row-3{font-size:2.25em !important;}
-.line.scene-clock .clock-lyric .kasi-stack .kasi-row-1,
-.line.scene-clock .clock-lyric .kasi-stack .kasi-row-2,
-.line.scene-clock .clock-lyric .kasi-stack .kasi-row-3{
-  font-family:"Poppins",sans-serif !important;
-  font-weight:800 !important;
-  width:max-content;
-}
-@media(max-width:600px){
-  .line.scene-clock .clock-lyric .kasi-stack{
-    font-size:clamp(30px,7.5vw,48px) !important;
-  }
-}
-
-/* KASI STACK — remove the previous per-word clock/magaling animation.
-   The stack should use only its new three-size typography treatment. */
-.line.scene-clock .clock-lyric .kasi-stack .word,
-.line.scene-clock .clock-lyric .kasi-stack .word.visible,
-.line.scene-clock .clock-lyric .kasi-stack .word.magaling-word,
-.line.scene-clock .clock-lyric .kasi-stack .word.magaling-word.visible{
-  animation:none !important;
-  transform:none !important;
-  filter:none !important;
-  opacity:1 !important;
-  text-shadow:none !important;
-  color:var(--ink) !important;
-  will-change:auto !important;
-}
 @media(max-width:600px){
   .line.scene-clock .clock-lyric .bibigay-stack{
     font-size:clamp(39px,12.8vw,68px) !important;
@@ -2154,7 +2110,37 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   color:var(--accent) !important;
   text-shadow:0 0 28px #ffb38a66 !important;
 }
-  
+
+
+/* MAGALING — make the payoff word visibly bigger without breaking the centered line. */
+.line.scene-clock.playful-clock-lyric .clock-lyric .word.magaling-word{
+  font-size:1.32em !important;
+  line-height:.86 !important;
+  position:relative;
+  z-index:6;
+  color:var(--accent);
+  text-shadow:0 3px 0 #0002,0 0 28px #ffb38a55;
+  transform-origin:50% 90%;
+}
+.line.scene-clock.playful-clock-lyric .clock-lyric .word.magaling-word.visible{
+  animation:magalingPop .78s cubic-bezier(.12,1.65,.2,1) both,
+             magalingBounce 1.15s ease-in-out .82s infinite;
+  animation-delay:calc(var(--i)*.075s),calc(.82s + var(--i)*.08s);
+}
+@keyframes magalingPop{
+  0%{opacity:0;transform:translate3d(0,110px,0) rotate(-8deg) scale(.42,.62)}
+  32%{opacity:1;transform:translate3d(-8px,-18px,0) rotate(5deg) scale(1.22,.9)}
+  54%{transform:translate3d(5px,7px,0) rotate(-3deg) scale(.96,1.08)}
+  74%{transform:translate3d(-2px,-3px,0) rotate(2deg) scale(1.08,.96)}
+  100%{opacity:1;transform:none}
+}
+@keyframes magalingBounce{
+  0%,100%{transform:translate3d(0,0,0) rotate(-1deg) scale(1)}
+  25%{transform:translate3d(-3px,-8px,0) rotate(3deg) scale(1.045,.97)}
+  50%{transform:translate3d(4px,2px,0) rotate(-2deg) scale(.98,1.04)}
+  75%{transform:translate3d(-2px,-5px,0) rotate(1.5deg) scale(1.025,.985)}
+}
+
 /* SITE-WIDE WHIMSY — scattered ✦ at varied sizes, positions, and rhythms. */
 #siteSparkField{
   display:none!important;
@@ -2930,25 +2916,21 @@ function buildBibigayStack(text){
   const temp=document.createElement('div');
   temp.innerHTML=words;
 
-  const isGusto = text === 'Gusto ko lang naman ay makamit ang matamis mong oo';
-  const isKasi = text === "Kasi do'n alam kong magaling ako";
-  const rowSpecs = isGusto
+  const rowSpecs = text === 'Gusto ko lang naman ay makamit ang matamis mong oo'
     ? [[0,1,2,3,4],[5,6,7],[8,9]]
-    : isKasi
-      ? [[0,1],[2,3],[4,5]]
-      : [
-          [0,1],
-          [2,3],
-          [4],
-          [5,6]
-        ];
+    : [
+        [0,1],
+        [2,3],
+        [4],
+        [5,6]
+      ];
 
   const stack=document.createElement('div');
-  stack.className='bibigay-stack' + (isKasi ? ' kasi-stack' : '');
+  stack.className='bibigay-stack';
 
   rowSpecs.forEach((indices,rowIndex)=>{
     const row=document.createElement('div');
-    row.className='bibigay-row' + (isKasi ? ` kasi-row-${rowIndex+1}` : '');
+    row.className='bibigay-row';
     row.dataset.row=rowIndex;
 
     indices.forEach(idx=>{
@@ -3071,9 +3053,8 @@ function activate(i){
       // ONLY replace the lyric contents. The clock DOM, its animations,
       // and its hand phase remain untouched.
       lyric.innerHTML=buildBibigayStack(item.text);
-      lyric.classList.remove('clock-whimsy-skill','clock-whimsy-time','playful-clock-lyric','bibigay-static');
-      old.classList.remove('clock-whimsy-skill','playful-clock-lyric');
-      old.classList.add('kasi-stack-scene');
+      lyric.classList.add('clock-whimsy-skill');
+      lyric.classList.remove('clock-whimsy-time');
     }
     // Keep the host line permanently anchored to the first clock lyric.
     // The audio lyric index may advance to 7, but the visual clock never does.
@@ -4224,8 +4205,21 @@ function render(){
       spawnClockNumberBackgroundBurst(5,{elevated:true});
     }
   }else if(i===7){
-    // Kasi stack uses clean typography only; no previous word/number burst effect.
-    clockNumberBackgroundBursts=[];
+    // Same one-second delay for the next line. Magaling/ako burst around
+    // the word in all directions, with the same three-number limit.
+    const burstCues=[
+      [0,59.78,false],   // Kasi — +80ms
+      [2,60.56,false],   // alam — +80ms
+      [4,61.38,true],    // magaling — +80ms
+      [5,61.80,true]     // ako — +80ms
+    ];
+    burstCues.forEach(([wordIndex,cue,elevated])=>{
+      const key='7-'+wordIndex;
+      if(t>=cue && t<cue+0.07 && !clockNumberBackgroundBursts.includes(key)){
+        clockNumberBackgroundBursts.push(key);
+        spawnClockNumberBackgroundBurst(wordIndex,{elevated});
+      }
+    });
   }else{ 
     if(wordBackgroundBursts.length)clearWordBackgroundBursts();
     clockNumberBackgroundBursts=[];
