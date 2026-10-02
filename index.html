@@ -2754,7 +2754,7 @@ const lines=[
   {start:68.48,end:71.00,text:'Oo o hindi?',style:'big',section:'chorus',cues:[68.48,68.92,69.35]},
   {start:71.35,end:74.15,text:'Ikaw ay lagi kong pupuntahan',style:'verse',section:'verse 2',cues:[71.35,71.72,72.05,72.48,72.90]},
   {start:74.18,end:78.00,text:"Kahit malayo pa 'yan",style:'soft',section:'verse 2',cues:[74.18,74.58,74.98,75.30,75.62]},
-  {start:78.75,end:81.95,text:"Pati ang nanay mo'y aking dadalhan",style:'verse',section:'verse 2',cues:[78.75,79.05,79.42,79.78,80.05,80.35,80.70]},
+  {start:78.75,end:81.95,text:"Pati ang nanay mo'y aking dadalhan",style:'verse',scene:'pati-kinetic',section:'verse 2',cues:[78.75,79.05,79.42,79.78,80.05,80.35,80.70]},
   {start:81.98,end:86.55,text:'Ng paborito niyang ulam',style:'soft',section:'verse 2',cues:[81.98,82.38,82.78,83.22]},
   {start:86.78,end:90.20,text:'At kahit pahirapan pa',style:'verse',section:'verse 2',cues:[86.78,87.15,87.62,88.02,88.42]},
   {start:90.28,end:94.20,text:'Ako ng tatay mo hindi aatras',style:'soft',section:'verse 2',cues:[90.28,90.72,91.05,91.42,91.78,92.15,92.55]},
@@ -3576,6 +3576,27 @@ function updateMotion(t){
     });
   }
 
+  if(scene==='pati-kinetic') {
+    // Clean, standalone kinetic typography for 01:19 — no inherited effects.
+    words.forEach((w,idx)=>{
+      const cue=item.cues?.[idx] ?? item.start;
+      const nextCue=item.cues?.[idx+1] ?? item.end;
+      const appear=Math.max(0,Math.min(1,(t-cue)/0.24));
+      const ease=appear*appear*(3-2*appear);
+      const active=t>=cue && t<nextCue;
+      const bob=active ? Math.sin((t-cue)*8.5)*2.5 : 0;
+      const lift=(1-ease)*18;
+      const scale=0.94+0.06*ease;
+      w.style.opacity=String(ease);
+      w.style.transform=`translate3d(0,${-lift+bob}px,0) scale(${scale})`;
+      w.style.rotate='0deg';
+      w.style.filter='none';
+      w.style.textShadow=active ? '0 0 22px #ffb38a35' : 'none';
+      w.style.color=active ? 'var(--accent)' : '';
+      w.style.zIndex='5';
+    });
+  }
+
   // Extra idle heartbeat for every scene, layered through independent transform properties.
   words.forEach((w,i)=>{
     if(!w.classList.contains('visible'))return;
@@ -4142,6 +4163,18 @@ function render(){
   const i=lines.findIndex(x=>t>=x.start&&t<x.end);
   activate(i);
 
+  // 01:18.75 — Pati ang nanay... starts completely clean. Clear every global/field effect.
+  if(i===12){
+    ['heartField','backgroundBanat','echoes','siteSparkField','wordExplosionField','huge57Explosion','ooExplosion'].forEach(id=>{
+      const field=document.getElementById(id);
+      if(field) field.replaceChildren();
+    });
+    APP.classList.remove('beat','gusto-clean');
+    document.querySelectorAll('.line').forEach(line=>{
+      if(line!==document.querySelector('.line[data-index="12"]')) line.classList.remove('active');
+    });
+  }
+
   // Keep the GUSTO line completely clean of the old square/confetti decoration.
   APP.classList.toggle('gusto-clean', i===3);
   if(i===3){
@@ -4506,6 +4539,48 @@ render();
   });
 })();
 </script>
+
+
+<style id="pati-kinetic-clean">
+/* 01:19 — PATI ANG NANAY MO'Y AKING DADALHAN
+   Simple sequential kinetic typography. No inherited scene effects. */
+.line.scene-pati-kinetic{
+  width:min(1080px,92vw);
+  min-height:48vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  align-content:center;
+  flex-wrap:wrap;
+  gap:.08em .16em;
+  text-align:center;
+}
+.line.scene-pati-kinetic .word{
+  display:inline-block !important;
+  margin:0 .025em !important;
+  font-family:inherit !important;
+  font-size:clamp(30px,6.4vw,72px) !important;
+  font-weight:800 !important;
+  letter-spacing:-.045em !important;
+  line-height:.92 !important;
+  animation:none !important;
+  transition:none !important;
+  will-change:transform,opacity;
+}
+.line.scene-pati-kinetic .word.current{
+  color:var(--accent) !important;
+}
+@media(max-width:600px){
+  .line.scene-pati-kinetic{
+    width:88vw;
+    min-height:44vh;
+    gap:.08em .13em;
+  }
+  .line.scene-pati-kinetic .word{
+    font-size:clamp(27px,7.4vw,44px) !important;
+  }
+}
+</style>
 
 </body>
 </html>
