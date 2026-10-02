@@ -2587,13 +2587,54 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 }
 .line.pupuntahan-scene.active .word::before{pointer-events:none !important;}
 </style>
+
+<style id="huge-57-number-explosion">
+#huge57Explosion{
+  position:absolute;inset:-35%;z-index:2;pointer-events:none;overflow:visible;
+  opacity:0;
+}
+#huge57Explosion.active{opacity:1}
+.huge57-number{
+  position:absolute;left:50%;top:50%;white-space:nowrap;
+  font-family:"Poppins",sans-serif;font-weight:800;line-height:1;
+  letter-spacing:-.07em;color:#ffb38a;
+  text-shadow:0 0 22px #ffb38a88,0 0 60px #ffb38a44;
+  opacity:0;
+  transform:translate(-50%,-50%) scale(.03) rotate(var(--r));
+  animation:huge57Burst var(--life) cubic-bezier(.08,.72,.14,1) forwards;
+  will-change:transform,opacity;
+}
+@keyframes huge57Burst{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.03) rotate(var(--r))}
+  7%{opacity:1;transform:translate(-50%,-50%) scale(.30) rotate(calc(var(--r)*.65))}
+  18%{opacity:.98;transform:translate(calc(-50% + var(--dx1)),calc(-50% + var(--dy1))) scale(1.35) rotate(var(--r2))}
+  42%{opacity:.82;transform:translate(calc(-50% + var(--dx2)),calc(-50% + var(--dy2))) scale(1.05) rotate(var(--r2))}
+  72%{opacity:.38;transform:translate(calc(-50% + var(--dx3)),calc(-50% + var(--dy3))) scale(.82) rotate(var(--r3))}
+  100%{opacity:0;transform:translate(calc(-50% + var(--dx4)),calc(-50% + var(--dy4))) scale(.55) rotate(var(--r3))}
+}
+.huge57-flash{
+  position:absolute;left:50%;top:50%;width:5vw;height:5vw;min-width:28px;min-height:28px;
+  border-radius:50%;background:#fff2e8;
+  box-shadow:0 0 35px #fff2e8,0 0 100px #ffb38a,0 0 180px #ffb38a66;
+  opacity:0;transform:translate(-50%,-50%) scale(.05);
+  animation:huge57Flash .72s cubic-bezier(.12,.75,.15,1) forwards;
+}
+@keyframes huge57Flash{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.05)}
+  10%{opacity:.9}
+  30%{opacity:.55;transform:translate(-50%,-50%) scale(8)}
+  65%{opacity:.18;transform:translate(-50%,-50%) scale(22)}
+  100%{opacity:0;transform:translate(-50%,-50%) scale(38)}
+}
+</style>
+
 </head>
 <body>
 <div id="app">
   <div class="ambient"><div class="orb o1"></div><div class="orb o2"></div></div>
   <div id="grain"></div>
   <div id="backgroundBanat" aria-hidden="true"></div>
-  <div id="heartField" aria-hidden="true"></div><div id="wordExplosionField" aria-hidden="true"></div><div id="ooExplosion" aria-hidden="true"></div><div id="siteSparkField" aria-hidden="true"></div>
+  <div id="heartField" aria-hidden="true"></div><div id="wordExplosionField" aria-hidden="true"></div><div id="huge57Explosion" aria-hidden="true"></div><div id="ooExplosion" aria-hidden="true"></div><div id="siteSparkField" aria-hidden="true"></div>
   <div id="echoes"></div>
 <div id="top">
     <div class="title"><span class="dot"></span><span>Pwede Ba Kitang Ligawan</span></div>
@@ -4301,5 +4342,64 @@ render();
   text-shadow:0 0 28px #ffb38a55;
 }
 </style>
+
+<script id="huge-57-number-explosion-js">
+(function(){
+  const field=document.getElementById("huge57Explosion");
+  const audio=document.getElementById("audio");
+  if(!field || !audio) return;
+  let fired=false;
+
+  function trigger(){
+    if(fired) return;
+    fired=true;
+    field.classList.add("active");
+
+    const flash=document.createElement("div");
+    flash.className="huge57-flash";
+    field.appendChild(flash);
+
+    const values=["57","57","57","00:57","57","57","57","57","57","57","57","57","57","57","57","57","57","57","57","57"];
+    values.forEach((value,i)=>{
+      const el=document.createElement("span");
+      el.className="huge57-number";
+      el.textContent=value;
+
+      const angle=(Math.PI*2*i/values.length)+(Math.random()-.5)*.22;
+      const radius=300+Math.random()*700;
+      const d=(m)=>Math.cos(angle)*radius*m;
+      const e=(m)=>Math.sin(angle)*radius*m;
+
+      el.style.setProperty("--dx1",d(.18)+"px");
+      el.style.setProperty("--dy1",e(.18)+"px");
+      el.style.setProperty("--dx2",d(.58)+"px");
+      el.style.setProperty("--dy2",e(.58)+"px");
+      el.style.setProperty("--dx3",d(.86)+"px");
+      el.style.setProperty("--dy3",e(.86)+"px");
+      el.style.setProperty("--dx4",d(1.08)+"px");
+      el.style.setProperty("--dy4",e(1.08)+"px");
+      el.style.setProperty("--r",((Math.random()-.5)*28)+"deg");
+      el.style.setProperty("--r2",((Math.random()-.5)*16)+"deg");
+      el.style.setProperty("--r3",((Math.random()-.5)*22)+"deg");
+      el.style.setProperty("--life",(1.15+Math.random()*.65)+"s");
+      el.style.fontSize=(9+Math.random()*17)+"vw";
+      el.style.animationDelay=(Math.random()*.11)+"s";
+      field.appendChild(el);
+    });
+
+    setTimeout(()=>{
+      field.classList.remove("active");
+      field.replaceChildren();
+      fired=false;
+    },2100);
+  }
+
+  audio.addEventListener("timeupdate",()=>{
+    if(audio.currentTime>=57 && audio.currentTime<57.20 && !fired) trigger();
+    if(audio.currentTime<56.5) fired=false;
+  });
+})();
+</script>
+
 </body>
 </html>
