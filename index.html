@@ -3462,6 +3462,14 @@ function updateMotion(t){
   // Extra idle heartbeat for every scene, layered through independent transform properties.
   words.forEach((w,i)=>{
     if(!w.classList.contains('visible'))return;
+    // The Bibigay stack has its own motion rules: keep the generic idle
+    // heartbeat from adding movement to every word. Only "oras" is animated.
+    if(el.querySelector('.clock-lyric.bibigay-static')){
+      w.style.translate='0 0';
+      w.style.rotate='0deg';
+      w.style.scale='1';
+      return;
+    }
     if(scene==='fly' || scene==='flip' || scene==='orbit' || scene==='pupuntahan' || scene==='malayo-echo')return; // scene owns its transform
     const idleX=Math.sin(t*5.4+i*.9)*1.8;
     const idleY=Math.cos(t*5.4+i*1.1)*1.4;
