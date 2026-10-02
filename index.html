@@ -2787,25 +2787,23 @@ function buildBibigayStack(text){
 }
 
 function buildClock(text){
-  const nums=Array.from({length:12},(_,j)=>`<span class="clock-number" style="--n:${j}">${j===0?12:j}</span>`).join('');
-  const ticks=Array.from({length:60},(_,j)=>`<i class="clock-tick ${j%5===0?'major':''}" data-tick="${j}"></i>`).join('');
   const lyric=(text==='Bibigay ko nang buo ang oras ko') ? buildBibigayStack(text) : buildWords(text);
   const sparks=Array.from({length:42},(_,i)=>{
     const angle=i*2.399963;
-    const radius=34+(i%7)*7;
+    const radius=58+(i%7)*4.5;
     const x=50+Math.cos(angle)*radius;
     const y=50+Math.sin(angle)*radius;
-    const size=7+(i%9)*2.8;
-    const opacity=(.18+(i%6)*.07).toFixed(2);
-    const dx=Math.cos(angle+1.1)*(4+(i%5)*2);
-    const dy=Math.sin(angle+1.1)*(5+(i%6)*2);
+    const size=6+(i%8)*2.2;
+    const opacity=(.16+(i%6)*.055).toFixed(2);
+    const dx=Math.cos(angle+1.1)*(3+(i%5)*1.5);
+    const dy=Math.sin(angle+1.1)*(4+(i%6)*1.5);
     const dur=(1.8+(i%8)*.38).toFixed(2);
-    const delay=(0.06+(i%9)*0.075).toFixed(2);
+    const delay=(0.06+(i%9)*.075).toFixed(2);
     const rot=(-30+(i%13)*5);
     const color=i%7===0?'#f8f0e6':'#ffb38a';
     return `<span class="clock-spark" style="--sx:${x}%;--sy:${y}%;--ss:${size}px;--so:${opacity};--dx:${dx}px;--dy:${dy}px;--sd:${dur}s;--sdelay:${delay}s;--sr:${rot}deg;--sc:${color}">✦</span>`;
   }).join('');
-  return `<div class="clock-wrap"><div class="clock-face"><div class="clock-hands"><i class="clock-hand hour"></i><i class="clock-hand minute"></i><i class="clock-hand second"></i><i class="clock-center"></i></div></div><div class="clock-number-burst-layer" aria-hidden="true"></div><div class="clock-lyric">${lyric}</div></div>`;
+  return `<div class="clock-wrap"><div class="clock-face"><div class="clock-hands"><i class="clock-hand hour"></i><i class="clock-hand minute"></i><i class="clock-hand second"></i><i class="clock-center"></i></div></div><div id="clockSparkField" aria-hidden="true">${sparks}</div><div class="clock-number-burst-layer" aria-hidden="true"></div><div class="clock-lyric">${lyric}</div></div>`;
 }
 
 function layoutClock(){
@@ -3692,25 +3690,19 @@ function clearWordBackgroundBursts(){
   wordBackgroundBursts=[];
   clockNumberBackgroundBursts=[];
 }
-function spawnClockNumberBackgroundBurst(wordIndex, opts={}){
-  // Single clock-number burst system. Numbers are anchored to the spoken word,
-  // layered between the clock and lyric, small, thin, quick, and immediately fading.
+function spawnClockNumberBackgroundBurst(wordIndex){
   const line=L.querySelector('.line.active.scene-clock');
   const word=line?.querySelector('.clock-lyric .word[data-word-index="'+wordIndex+'"]');
   const wrap=line?.querySelector('.clock-wrap');
   if(!line||!word||!wrap)return;
-
   const field=wrap.querySelector('.clock-number-burst-layer');
   if(!field)return;
-
   const rect=word.getBoundingClientRect();
   const base=field.getBoundingClientRect();
   const cx=rect.left+rect.width/2-base.left;
   const cy=rect.top+rect.height/2-base.top;
-  const elevated=!!opts.elevated;
   const count=5;
   const group=String(Date.now())+'-'+Math.random();
-
   for(let n=0;n<count;n++){
     const e=document.createElement('span');
     e.className='clock-number-bg-burst';
@@ -3718,38 +3710,21 @@ function spawnClockNumberBackgroundBurst(wordIndex, opts={}){
     e.textContent=String(1+Math.floor(Math.random()*12));
     e.style.left=cx+'px';
     e.style.top=cy+'px';
-
-    // Keep every burst small. Elevated words are only slightly larger.
-    e.style.fontSize=(elevated ? 58+Math.random()*24 : 48+Math.random()*22)+'px';
+    e.style.fontSize=(48+Math.random()*22)+'px';
     e.style.fontWeight='500';
-    e.style.color=(n%2===0 ? '#ffb38a' : '#f8f0e6');
-    e.style.setProperty('--alpha',(0.48+Math.random()*0.18).toFixed(3));
-    e.style.setProperty('--life',(1.05+Math.random()*0.25).toFixed(2)+'s');
-    e.style.setProperty('--scale',(1.05+Math.random()*0.42).toFixed(2));
+    e.style.color=(n%2===0?'#ffb38a':'#f8f0e6');
+    e.style.setProperty('--alpha',(0.46+Math.random()*0.16).toFixed(3));
+    e.style.setProperty('--life',(0.95+Math.random()*0.18).toFixed(2)+'s');
+    e.style.setProperty('--scale',(1.02+Math.random()*0.36).toFixed(2));
     e.style.setProperty('--r',(-8+Math.random()*16)+'deg');
     e.style.setProperty('--r2',(-14+Math.random()*28)+'deg');
-
-    if(elevated){
-      // Magaling / ako: burst around the word in all directions, not upward.
-      const angle=(Math.PI*2/count)*n+(Math.random()-.5)*.5;
-      const distance=105+Math.random()*75;
-      e.style.setProperty('--dx',(Math.cos(angle)*distance)+'px');
-      e.style.setProperty('--dy',(Math.sin(angle)*distance)+'px');
-    }else{
-      // Other clock words: compact radial burst.
-      const angle=(Math.PI*2/count)*n+(Math.random()-.5)*.45;
-      const distance=85+Math.random()*65;
-      e.style.setProperty('--dx',(Math.cos(angle)*distance)+'px');
-      e.style.setProperty('--dy',(Math.sin(angle)*distance)+'px');
-    }
+    const angle=(Math.PI*2/count)*n+(Math.random()-.5)*.45;
+    const distance=82+Math.random()*62;
+    e.style.setProperty('--dx',(Math.cos(angle)*distance)+'px');
+    e.style.setProperty('--dy',(Math.sin(angle)*distance)+'px');
     field.appendChild(e);
   }
-
-  setTimeout(()=>{
-    field.querySelectorAll('.clock-number-bg-burst').forEach(e=>{
-      if(e.dataset.burstGroup===group)e.remove();
-    });
-  },1100);
+  setTimeout(()=>field.querySelectorAll('.clock-number-bg-burst').forEach(e=>{if(e.dataset.burstGroup===group)e.remove()}),1150);
 }
 
 function spawnWordBackgroundBurst(wordIndex){
@@ -4021,42 +3996,27 @@ function render(){
         spawnWordBackgroundBurst(wordIndex);
       }
     });
-  }else if(i===6){
-    // One second after the spoken word. Three small, thin numbers per burst.
-    // Both "ko" words are explicitly included.
-    const burstCues=[
-      [0,54.88,false], // Bibigay — +80ms
-      [1,55.26,false], // ko — +80ms
-      [2,55.63,false], // nang — +80ms
-      [3,55.98,false], // buo — +80ms
-      [4,56.20,false], // ang — +80ms
-      [5,56.50,false], // oras — +80ms
-      [6,56.86,false]  // ko — +80ms
+  }else if(i===6 || i===18){
+    // Number bursts happen exactly with the selected word entrances — no added delay.
+    // Only Bibigay, buo, and the final "oras ko" row receive number bursts.
+    const base=i===6 ? 0 : 116.70;
+    const burstCues=i===6 ? [
+      [0,53.80], // Bibigay
+      [3,54.90], // buo
+      [5,55.42]  // oras ko row begins
+    ] : [
+      [0,116.70], // Bibigay
+      [3,117.78], // buo
+      [5,118.42]  // oras ko row begins
     ];
-    burstCues.forEach(([wordIndex,cue,elevated])=>{
-      const key='6-'+wordIndex;
+    burstCues.forEach(([wordIndex,cue])=>{
+      const key=i+'-'+wordIndex;
       if(t>=cue && t<cue+0.07 && !clockNumberBackgroundBursts.includes(key)){
         clockNumberBackgroundBursts.push(key);
-        spawnClockNumberBackgroundBurst(wordIndex,{elevated});
+        spawnClockNumberBackgroundBurst(wordIndex);
       }
     });
-  }else if(i===7){
-    // Same one-second delay for the next line. Magaling/ako burst around
-    // the word in all directions, with the same three-number limit.
-    const burstCues=[
-      [0,59.78,false],   // Kasi — +80ms
-      [2,60.56,false],   // alam — +80ms
-      [4,61.38,true],    // magaling — +80ms
-      [5,61.80,true]     // ako — +80ms
-    ];
-    burstCues.forEach(([wordIndex,cue,elevated])=>{
-      const key='7-'+wordIndex;
-      if(t>=cue && t<cue+0.07 && !clockNumberBackgroundBursts.includes(key)){
-        clockNumberBackgroundBursts.push(key);
-        spawnClockNumberBackgroundBurst(wordIndex,{elevated});
-      }
-    });
-  }else{ 
+  }}else{ 
     if(wordBackgroundBursts.length)clearWordBackgroundBursts();
     clockNumberBackgroundBursts=[];
   }
@@ -4211,5 +4171,54 @@ render();
 }
 </style>
 
+
+<style id="bibigay-clock-clean-final">
+/* CLEAN BIBIGAY CLOCK — single source of truth. */
+.line.scene-clock .clock-face{
+  width:min(88vw,440px) !important;
+  height:min(88vw,440px) !important;
+  border:1px solid #ffffff35 !important;
+  background:transparent !important;
+  box-shadow:0 0 32px #ffb38a10 inset,0 0 26px #ffb38a10 !important;
+  z-index:1 !important;
+}
+.line.scene-clock .clock-face::before,
+.line.scene-clock .clock-face::after{display:none !important;content:none !important}
+.line.scene-clock .clock-number,
+.line.scene-clock .clock-tick{display:none !important}
+.line.scene-clock #clockSparkField{
+  position:absolute !important;
+  inset:-24% !important;
+  z-index:2 !important;
+  pointer-events:none !important;
+  overflow:visible !important;
+}
+.line.scene-clock .clock-number-burst-layer{
+  position:absolute !important;
+  inset:0 !important;
+  z-index:3 !important;
+  pointer-events:none !important;
+  overflow:visible !important;
+}
+.line.scene-clock .clock-lyric{z-index:5 !important}
+.line.scene-clock .clock-lyric .word.visible{
+  animation:builderClockEnergeticIn .48s cubic-bezier(.12,1.55,.22,1) both, builderClockBob .92s ease-in-out .48s infinite !important;
+  animation-delay:calc(var(--i)*.045s),calc(.48s + var(--i)*.035s) !important;
+}
+@keyframes builderClockEnergeticIn{
+  0%{opacity:0;transform:translate3d(0,34px,0) scale(.52) rotate(-7deg)}
+  42%{opacity:1;transform:translate3d(0,-10px,0) scale(1.16) rotate(4deg)}
+  68%{transform:translate3d(0,4px,0) scale(.96) rotate(-2deg)}
+  86%{transform:translate3d(0,-2px,0) scale(1.03) rotate(1deg)}
+  100%{opacity:1;transform:translate3d(0,0,0) scale(1) rotate(0)}
+}
+@keyframes builderClockBob{
+  0%,100%{transform:translate3d(0,0,0) rotate(-1deg) scale(1)}
+  25%{transform:translate3d(-2px,-7px,0) rotate(1.5deg) scale(1.025)}
+  50%{transform:translate3d(2px,2px,0) rotate(-1deg) scale(.985)}
+  75%{transform:translate3d(-1px,-5px,0) rotate(.8deg) scale(1.018)}
+}
+.clock-spark{z-index:1 !important}
+</style>
 </body>
 </html>
