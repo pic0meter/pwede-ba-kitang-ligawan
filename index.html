@@ -3043,7 +3043,10 @@ function activate(i){
   // Do not skip activation merely because the index is unchanged.
   // Scrubbing backwards can leave the state pointing at a lyric whose DOM node
   // was already removed by a delayed transition cleanup.
-  const currentEl=L.querySelector(`.line[data-index="${i}"]`);
+  // Only skip activation when the CURRENT INDEX has a live ACTIVE DOM node.
+  // Repeated playback/scrubbing can leave an older inactive copy with the
+  // same data-index; that copy must never block the real lyric from returning.
+  const currentEl=L.querySelector(`.line.active[data-index="${i}"]`);
   if(i===current && currentEl){
     return;
   }
@@ -4179,8 +4182,12 @@ function render(){
       if(field) field.replaceChildren();
     });
     APP.classList.remove('beat','gusto-clean');
+    // There may be a stale, inactive copy of index 12 during a transition.
+    // Target the ACTIVE PATI line specifically; never let an older copy cause
+    // the newly-created lyric to lose its active class.
+    const patiLine=L.querySelector('.line.active[data-index="12"]');
     document.querySelectorAll('.line').forEach(line=>{
-      if(line!==document.querySelector('.line[data-index="12"]')) line.classList.remove('active');
+      if(line!==patiLine) line.classList.remove('active');
     });
   }
 
