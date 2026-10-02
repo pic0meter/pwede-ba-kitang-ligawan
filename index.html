@@ -3710,16 +3710,16 @@ function spawnClockNumberBackgroundBurst(wordIndex){
     e.textContent=String(1+Math.floor(Math.random()*12));
     e.style.left=cx+'px';
     e.style.top=cy+'px';
-    e.style.fontSize=(48+Math.random()*22)+'px';
+    e.style.fontSize=(28+Math.random()*10)+'px';
     e.style.fontWeight='500';
     e.style.color=(n%2===0?'#ffb38a':'#f8f0e6');
-    e.style.setProperty('--alpha',(0.46+Math.random()*0.16).toFixed(3));
-    e.style.setProperty('--life',(0.95+Math.random()*0.18).toFixed(2)+'s');
+    e.style.setProperty('--alpha',(0.34+Math.random()*0.12).toFixed(3));
+    e.style.setProperty('--life',(0.82+Math.random()*0.14).toFixed(2)+'s');
     e.style.setProperty('--scale',(1.02+Math.random()*0.36).toFixed(2));
     e.style.setProperty('--r',(-8+Math.random()*16)+'deg');
     e.style.setProperty('--r2',(-14+Math.random()*28)+'deg');
     const angle=(Math.PI*2/count)*n+(Math.random()-.5)*.45;
-    const distance=82+Math.random()*62;
+    const distance=58+Math.random()*38;
     e.style.setProperty('--dx',(Math.cos(angle)*distance)+'px');
     e.style.setProperty('--dy',(Math.sin(angle)*distance)+'px');
     field.appendChild(e);
@@ -3998,16 +3998,17 @@ function render(){
     });
   }else if(i===6 || i===18){
     // Number bursts happen exactly with the selected word entrances — no added delay.
-    // Only Bibigay, buo, and the final "oras ko" row receive number bursts.
-    const base=i===6 ? 0 : 116.70;
+    // Only Bibigay, buo, oras, and the final "ko" receive number bursts.
     const burstCues=i===6 ? [
       [0,53.80], // Bibigay
       [3,54.90], // buo
-      [5,55.42]  // oras ko row begins
+      [5,55.42], // oras
+      [6,55.78]  // final ko
     ] : [
       [0,116.70], // Bibigay
       [3,117.78], // buo
-      [5,118.42]  // oras ko row begins
+      [5,118.42], // oras
+      [6,118.78]  // final ko
     ];
     burstCues.forEach(([wordIndex,cue])=>{
       const key=i+'-'+wordIndex;
@@ -4139,36 +4140,62 @@ render();
 
 
 <style id="bibigay-clock-clean-final">
-/* CLEAN BIBIGAY CLOCK — only the inner ring + hands remain. */
+/* FINAL BIBIGAY CLOCK — one authoritative layer for the requested scene. */
 .line.scene-clock .clock-face{
-  width:min(78vw,360px)!important;
-  height:min(78vw,360px)!important;
-  border:none!important;
+  width:min(96vw,500px)!important;
+  height:min(96vw,500px)!important;
+  border:1px solid #ffffff35!important;
   background:transparent!important;
-  box-shadow:none!important;
-  opacity:1!important;
+  box-shadow:0 0 28px #ffb38a0d inset,0 0 22px #ffb38a0c!important;
+  z-index:1!important;
 }
-.line.scene-clock .clock-face::before{
-  content:""!important;
+.line.scene-clock .clock-face::before,.line.scene-clock .clock-face::after{display:none!important;content:none!important}
+.line.scene-clock .clock-number,.line.scene-clock .clock-tick{display:none!important}
+.line.scene-clock #clockSparkField{
   position:absolute!important;
-  inset:7%!important;
-  border:1px solid #ffffff32!important;
-  border-radius:50%!important;
+  inset:-30%!important;
+  display:block!important;
+  z-index:2!important;
+  pointer-events:none!important;
+  overflow:visible!important;
 }
-.line.scene-clock .clock-face::after{display:none!important}
-.line.scene-clock .clock-face > .clock-number,
-.line.scene-clock .clock-face > .clock-tick{display:none!important}
-.line.scene-clock #clockSparkField{display:none!important}
-.line.scene-clock .clock-number-burst-layer{z-index:3!important}
+.line.scene-clock .clock-number-burst-layer{
+  position:absolute!important;inset:0!important;z-index:3!important;
+  pointer-events:none!important;overflow:visible!important;
+}
 .line.scene-clock .clock-lyric{z-index:5!important}
-.line.scene-clock .clock-hand{opacity:.88!important}
-
-/* Burst numbers: just after the lyric cue, with a mixed orange/white palette. */
+.line.scene-clock .clock-lyric .word{
+  animation:none!important;
+  transform-origin:50% 85%!important;
+}
+.line.scene-clock .clock-lyric .word.visible{
+  animation:builderClockSmoothIn .56s cubic-bezier(.22,.9,.28,1) both, builderClockSmoothBob 1.18s ease-in-out .56s infinite!important;
+  animation-delay:calc(var(--i)*.045s),calc(.56s + var(--i)*.055s)!important;
+}
+/* The current-word highlight must not replace the bob transform. */
+.line.scene-clock .clock-lyric .word.current{
+  color:var(--accent)!important;
+  text-shadow:0 0 24px #ffb38a55!important;
+  transform:none!important;
+}
+@keyframes builderClockSmoothIn{
+  0%{opacity:0;transform:translate3d(0,18px,0) scale(.82) rotate(-2deg)}
+  55%{opacity:1;transform:translate3d(0,-5px,0) scale(1.035) rotate(.8deg)}
+  78%{transform:translate3d(0,2px,0) scale(.992) rotate(-.35deg)}
+  100%{opacity:1;transform:translate3d(0,0,0) scale(1) rotate(0)}
+}
+@keyframes builderClockSmoothBob{
+  0%,100%{transform:translate3d(0,0,0) rotate(-.35deg) scale(1)}
+  25%{transform:translate3d(-1px,-4px,0) rotate(.45deg) scale(1.012)}
+  50%{transform:translate3d(1px,1px,0) rotate(-.3deg) scale(.998)}
+  75%{transform:translate3d(-1px,-3px,0) rotate(.3deg) scale(1.008)}
+}
 .line.scene-clock .clock-number-bg-burst{
   font-family:"Poppins",sans-serif!important;
   font-weight:500!important;
-  text-shadow:0 0 14px #ffb38a40!important;
+  text-shadow:0 0 10px #ffb38a30!important;
 }
+.clock-spark{z-index:1!important}
 </style>
 
 
