@@ -2628,6 +2628,33 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 }
 </style>
 
+
+<style id="pwede-stack-poppins-only">
+/* FIRST LYRIC — typography/layout only. Existing effects remain untouched. */
+.line.scene-heart-split .pwede-stack{
+  width:min(92vw,900px);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:.035em;
+  text-align:center;
+  font-family:"Poppins",sans-serif !important;
+}
+.line.scene-heart-split .pwede-stack-row{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-wrap:nowrap;
+  white-space:nowrap;
+  width:max-content;
+  font-family:"Poppins",sans-serif !important;
+}
+.line.scene-heart-split .pwede-stack .word{
+  font-family:"Poppins",sans-serif !important;
+}
+</style>
+
 </head>
 <body>
 <div id="app">
@@ -2764,38 +2791,51 @@ function buildWords(text){
 function buildHeartSplitLine(text){
   const temp=document.createElement('div');
   temp.innerHTML=buildWords(text);
-  const top=document.createElement('div');
-  top.className='lyric-part top';
-  const bottom=document.createElement('div');
-  bottom.className='lyric-part heart-line';
-  const field=document.createElement('div');
-  field.className='heart-field';
-  field.setAttribute('aria-hidden','true');
-  bottom.appendChild(field);
 
-  [...temp.childNodes].forEach(node=>{
-    const word=node.nodeType===1 && node.classList.contains('word');
-    const idx=word ? Number(node.dataset.wordIndex) : null;
-    if(word && idx>=5){
-      // Keep "sa puso mo" together while preserving their original cue indices.
-      bottom.appendChild(node);
-    }else{
-      top.appendChild(node);
-    }
+  // ONLY change the lyric arrangement:
+  // Pwede ba akong
+  // tumambay dyan
+  // sa puso mo?
+  const rows=[
+    {className:'pwede-stack-row row-1',min:0,max:2},
+    {className:'pwede-stack-row row-2',min:3,max:4},
+    {className:'pwede-stack-row row-3',min:5,max:7}
+  ];
+
+  const stack=document.createElement('div');
+  stack.className='pwede-stack';
+
+  const nodes=[...temp.childNodes];
+  rows.forEach(spec=>{
+    const row=document.createElement('div');
+    row.className=spec.className;
+    nodes.forEach(node=>{
+      const word=node.nodeType===1 && node.classList.contains('word');
+      const idx=word ? Number(node.dataset.wordIndex) : null;
+      if(word && idx>=spec.min && idx<=spec.max){
+        row.appendChild(node);
+      }else if(!word && idx===null){
+        // Whitespace is handled naturally by the row's flex gap.
+      }
+    });
+    stack.appendChild(row);
   });
 
-  // Put the heart emitter around the exact visual anchor for "puso".
-  const puso=bottom.querySelector('.word[data-word-index="6"]');
+  // Preserve the existing heart emitter around "puso" exactly as before.
+  const puso=stack.querySelector('.word[data-word-index="6"]');
   if(puso){
     const anchor=document.createElement('span');
     anchor.className='heart-anchor';
     puso.replaceWith(anchor);
     anchor.appendChild(puso);
   }
-  const wrap=document.createDocumentFragment();
-  wrap.appendChild(top);
-  wrap.appendChild(bottom);
-  return wrap;
+
+  const field=document.createElement('div');
+  field.className='heart-field';
+  field.setAttribute('aria-hidden','true');
+  stack.querySelector('.row-3').prepend(field);
+
+  return stack;
 }
 
 
