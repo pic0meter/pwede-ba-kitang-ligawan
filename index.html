@@ -2104,9 +2104,9 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 }
 
 /* FINAL OVERRIDE: Bibigay line is completely still except for "oras". */
-.line.scene-clock .clock-lyric.bibigay-static .word,
-.line.scene-clock .clock-lyric.bibigay-static .word.visible,
-.line.scene-clock .clock-lyric.bibigay-static .word.current{
+.line.scene-clock .clock-lyric.bibigay-static .word:not([data-word-index="5"]),
+.line.scene-clock .clock-lyric.bibigay-static .word:not([data-word-index="5"]).visible,
+.line.scene-clock .clock-lyric.bibigay-static .word:not([data-word-index="5"]).current{
   animation:none!important;
   transform:none!important;
   translate:none!important;
