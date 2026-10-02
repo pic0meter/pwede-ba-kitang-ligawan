@@ -2154,37 +2154,7 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   color:var(--accent) !important;
   text-shadow:0 0 28px #ffb38a66 !important;
 }
-
-
-/* MAGALING — make the payoff word visibly bigger without breaking the centered line. */
-.line.scene-clock.playful-clock-lyric .clock-lyric .word.magaling-word{
-  font-size:1.32em !important;
-  line-height:.86 !important;
-  position:relative;
-  z-index:6;
-  color:var(--accent);
-  text-shadow:0 3px 0 #0002,0 0 28px #ffb38a55;
-  transform-origin:50% 90%;
-}
-.line.scene-clock.playful-clock-lyric .clock-lyric .word.magaling-word.visible{
-  animation:magalingPop .78s cubic-bezier(.12,1.65,.2,1) both,
-             magalingBounce 1.15s ease-in-out .82s infinite;
-  animation-delay:calc(var(--i)*.075s),calc(.82s + var(--i)*.08s);
-}
-@keyframes magalingPop{
-  0%{opacity:0;transform:translate3d(0,110px,0) rotate(-8deg) scale(.42,.62)}
-  32%{opacity:1;transform:translate3d(-8px,-18px,0) rotate(5deg) scale(1.22,.9)}
-  54%{transform:translate3d(5px,7px,0) rotate(-3deg) scale(.96,1.08)}
-  74%{transform:translate3d(-2px,-3px,0) rotate(2deg) scale(1.08,.96)}
-  100%{opacity:1;transform:none}
-}
-@keyframes magalingBounce{
-  0%,100%{transform:translate3d(0,0,0) rotate(-1deg) scale(1)}
-  25%{transform:translate3d(-3px,-8px,0) rotate(3deg) scale(1.045,.97)}
-  50%{transform:translate3d(4px,2px,0) rotate(-2deg) scale(.98,1.04)}
-  75%{transform:translate3d(-2px,-5px,0) rotate(1.5deg) scale(1.025,.985)}
-}
-
+  
 /* SITE-WIDE WHIMSY — scattered ✦ at varied sizes, positions, and rhythms. */
 #siteSparkField{
   display:none!important;
