@@ -3040,7 +3040,16 @@ function buildLaserHeart(){
 }
 
 function activate(i){
-  if(i===current)return;
+  // Do not skip activation merely because the index is unchanged.
+  // Scrubbing backwards can leave the state pointing at a lyric whose DOM node
+  // was already removed by a delayed transition cleanup.
+  const currentEl=L.querySelector(`.line[data-index="${i}"]`);
+  if(i===current && currentEl){
+    return;
+  }
+  if(i===current && !currentEl){
+    current=-1;
+  }
   const old=L.querySelector('.line.active');
 
   // ONE persistent clock scene for the two consecutive lyrics.
