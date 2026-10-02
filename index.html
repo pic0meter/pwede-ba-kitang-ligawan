@@ -2685,6 +2685,54 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 }
 </style>
 
+<style id="sabi-mama-echo">
+/* 01:20.357 — "Sabi ng mama mo, tita nalang ang tawag ko sayo"
+   Huge background echo: each word arrives independently, one by one. */
+#sabiMamaEchoField{
+  position:fixed;
+  inset:0;
+  z-index:1;
+  overflow:hidden;
+  pointer-events:none;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.sabi-mama-echo-word{
+  position:absolute;
+  left:50%;
+  top:50%;
+  white-space:nowrap;
+  font-family:inherit;
+  font-size:clamp(58px,15vw,190px);
+  font-weight:900;
+  letter-spacing:-.075em;
+  line-height:.78;
+  color:#ffb38a;
+  opacity:0;
+  filter:blur(.7px);
+  text-shadow:0 0 34px #ffb38a30, 0 0 90px #ffb38a18;
+  transform:translate(-50%,-50%) scale(.72) rotate(var(--r));
+  transform-origin:center;
+  will-change:transform,opacity;
+  animation:sabiMamaEchoIn .62s cubic-bezier(.16,1.05,.24,1) var(--delay) both;
+}
+.sabi-mama-echo-word::after{
+  content:attr(data-word);
+  position:absolute;
+  inset:0;
+  color:#f8f0e6;
+  opacity:.18;
+  filter:blur(8px);
+  transform:translate(14px,10px) scale(1.04);
+  z-index:-1;
+}
+@keyframes sabiMamaEchoIn{
+  0%{opacity:0;transform:translate(calc(-50% + var(--from-x)),calc(-50% + 22px)) scale(.62) rotate(calc(var(--r) - 5deg));}
+  42%{opacity:var(--opacity);transform:translate(calc(-50% + var(--x)),calc(-50% + var(--y))) scale(1.07) rotate(calc(var(--r) + 1.5deg));}
+  100%{opacity:var(--opacity);transform:translate(calc(-50% + var(--x)),calc(-50% + var(--y))) scale(1) rotate(var(--r));}
+}
+</style>
 </head>
 <body>
 <div id="app">
@@ -3806,7 +3854,41 @@ function spawnLinyahanFootsteps(){
   },3600);
 }
 
+\nlet sabiMamaEchoActive=false;
+function clearSabiMamaEcho(){
+  const field=document.getElementById('sabiMamaEchoField');
+  if(field) field.replaceChildren();
+  sabiMamaEchoActive=false;
+}
+function spawnSabiMamaEcho(){
+  const field=document.getElementById('sabiMamaEchoField');
+  if(!field || sabiMamaEchoActive)return;
+  sabiMamaEchoActive=true;
+  const words=['Sabi','ng','mama','mo,','tita','nalang','ang','tawag','ko','sayo'];
+  const positions=[
+    [-20,-28,-7], [20,-20,5], [-12,-8,-4], [16,2,6],
+    [-18,16,-5], [18,23,5], [-22,34,-4], [19,39,4],
+    [-12,51,-3], [14,57,4]
+  ];
+  words.forEach((word,i)=>{
+    const e=document.createElement('div');
+    e.className='sabi-mama-echo-word';
+    e.textContent=word;
+    e.dataset.word=word;
+    e.style.setProperty('--delay',(i*.30)+'s');
+    e.style.setProperty('--x',positions[i][0]+'vw');
+    e.style.setProperty('--y',positions[i][1]+'vh');
+    e.style.setProperty('--from-x',(positions[i][0]*1.35)+'vw');
+    e.style.setProperty('--r',positions[i][2]+'deg');
+    e.style.setProperty('--opacity',(i%2?.115:.14));
+    field.appendChild(e);
+  });
+}
 function updateSpecialVisuals(t){
+  // 01:20.357–01:23.942 — giant background echo, deterministic for seeking.
+  const inSabiMamaEcho=(t>=80.357 && t<83.942);
+  if(inSabiMamaEcho){ if(!sabiMamaEchoActive) spawnSabiMamaEcho(); }
+  else if(sabiMamaEchoActive) clearSabiMamaEcho();
   updateLaserHeart(t);
 function updateLaserHeart(t){
   const el=L.querySelector('.line.active');
@@ -4681,5 +4763,6 @@ render();
   }
 }
 </style>
+<div id="sabiMamaEchoField" aria-hidden="true"></div>
 </body>
 </html>
