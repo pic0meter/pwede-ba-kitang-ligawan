@@ -3866,10 +3866,12 @@ function spawnSabiMamaEcho(){
   if(!field || sabiMamaEchoActive)return;
   sabiMamaEchoActive=true;
   const words=['Sabi','ng','mama','mo,','tita','nalang','ang','tawag','ko','sayo'];
+  // Keep the echo words in a compact cluster so the phrase reads as one
+  // soft, oversized background thought instead of being scattered across the screen.
   const positions=[
-    [-20,-28,-7], [20,-20,5], [-12,-8,-4], [16,2,6],
-    [-18,16,-5], [18,23,5], [-22,34,-4], [19,39,4],
-    [-12,51,-3], [14,57,4]
+    [-18,-12,-4], [-7,-12,2], [4,-12,-2], [15,-12,3],
+    [-16,0,-3], [-5,0,2], [6,0,-2], [16,0,3],
+    [-7,12,-2], [6,12,2]
   ];
   words.forEach((word,i)=>{
     const e=document.createElement('div');
