@@ -310,9 +310,9 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 
 
 #wordExplosionField{position:absolute;inset:0;z-index:1;overflow:hidden;pointer-events:none}
-.clock-number-burst-layer{position:absolute;inset:0;z-index:1;overflow:visible;pointer-events:none}
+.clock-number-burst-layer{position:absolute;inset:-18%;z-index:3;overflow:visible;pointer-events:none}
 .word-bg-burst{position:absolute;left:0;top:0;white-space:nowrap;font-family:inherit;font-weight:inherit;letter-spacing:inherit;line-height:inherit;color:#f8f0e6;opacity:0;transform:translate(-50%,-50%) scale(.18) rotate(var(--r));animation:wordBgBurst var(--life) cubic-bezier(.12,.8,.18,1) forwards;filter:blur(.35px);text-shadow:0 0 18px #ffb38a2e}
-.clock-number-bg-burst{position:absolute;left:0;top:0;white-space:nowrap;font-family:"Helvetica Neue",Arial,sans-serif;font-weight:300;letter-spacing:-.02em;color:var(--accent);opacity:0;transform:translate(-50%,-50%) scale(.35) rotate(var(--r));animation:clockNumberBgBurst var(--life) cubic-bezier(.2,.8,.25,1) forwards;filter:blur(.15px);text-shadow:0 0 10px #ffb38a22;z-index:1;pointer-events:none}
+.clock-number-bg-burst{position:absolute;left:0;top:0;white-space:nowrap;font-family:"Poppins",sans-serif;font-weight:500;letter-spacing:-.02em;color:var(--accent);opacity:0;transform:translate(-50%,-50%) scale(.22) rotate(var(--r));animation:clockNumberBgBurst var(--life) cubic-bezier(.2,.8,.25,1) forwards;filter:blur(.15px);text-shadow:0 0 18px #ffb38a55;z-index:3;pointer-events:none}
 @keyframes clockNumberBgBurst{0%{opacity:0;transform:translate(-50%,-50%) scale(.35) rotate(var(--r))}8%{opacity:var(--alpha);transform:translate(-50%,-50%) scale(.9) rotate(var(--r))}24%{opacity:calc(var(--alpha)*.72);transform:translate(calc(-50% + var(--dx)*.45),calc(-50% + var(--dy)*.45)) scale(1) rotate(var(--r2))}100%{opacity:0;transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(var(--scale)) rotate(var(--r2))}}
 @keyframes wordBgBurst{0%{opacity:0;transform:translate(-50%,-50%) scale(.18) rotate(var(--r))}12%{opacity:var(--alpha)}45%{opacity:calc(var(--alpha)*.72)}100%{opacity:0;transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(var(--scale)) rotate(var(--r2))}}
 
@@ -574,16 +574,16 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .line.motion .word:nth-child(7n+1){font-size:1.12em}
 
 .clock-wrap{position:relative;width:min(94vw,760px);height:min(52vh,450px);display:grid;place-items:center}
-.clock-face{position:absolute;width:min(78vw,360px);height:min(78vw,360px);border:2px solid #ffffff28;border-radius:50%;opacity:.9;background:radial-gradient(circle,#ffb38a08 0 55%,transparent 72%);box-shadow:0 0 55px #ffb38a10 inset,0 0 34px #ffb38a10}
+.clock-face{position:absolute;width:min(70vw,320px);height:min(70vw,320px);border:1px solid #ffffff30;border-radius:50%;opacity:.9;background:radial-gradient(circle,#ffb38a08 0 55%,transparent 72%);box-shadow:0 0 45px #ffb38a0c inset,0 0 24px #ffb38a12}
 /* Clock-number bursts sit above the clock face but below the lyric words. */
-.line.scene-clock .clock-face{z-index:0}
-.line.scene-clock .clock-lyric{z-index:2}
+.line.scene-clock .clock-face{z-index:1}
+.line.scene-clock .clock-lyric{z-index:5}
 .clock-face::before{content:"";position:absolute;inset:7%;border:1px solid #ffffff14;border-radius:50%}
 .clock-face::after{content:"";position:absolute;inset:1.8%;border:1px dotted #ffb38a18;border-radius:50%;animation:clockOrbit 14s linear infinite}
-.clock-number{position:absolute;left:50%;top:50%;font:700 clamp(10px,2.4vw,15px) ui-monospace,SFMono-Regular,Menlo,monospace;color:#b7aaa0;transform:translate(-50%,-50%);opacity:0;animation:clockNumberIn .48s cubic-bezier(.15,1.35,.3,1) forwards;animation-delay:calc(var(--n)*28ms)}
+.clock-number{position:absolute;left:50%;top:50%;font:600 clamp(9px,1.9vw,13px) ui-monospace,SFMono-Regular,Menlo,monospace;color:#c7bbb0;transform:translate(-50%,-50%);opacity:0;animation:clockNumberIn .48s cubic-bezier(.15,1.35,.3,1) forwards;animation-delay:calc(var(--n)*28ms)}
 @keyframes clockNumberIn{0%{opacity:0}70%{opacity:1}100%{opacity:.9}}
-.clock-tick{position:absolute;left:50%;top:50%;width:1px;height:5px;background:#ffffff28;transform-origin:center center;border-radius:2px}
-.clock-tick.major{width:2px;height:10px;background:#ffffff48}
+.clock-tick{position:absolute;left:50%;top:50%;width:1px;height:4px;background:#ffffff20;transform-origin:center center;border-radius:2px}
+.clock-tick.major{width:1px;height:8px;background:#ffffff38}
 @keyframes clockOrbit{to{transform:rotate(360deg)}}
 
 
@@ -2216,6 +2216,16 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 }
 </style>
 
+<style id="bibigay-clock-final">
+/* BIBIGAY CLOCK: sleek face + prominent radial number bursts. */
+.line.scene-clock .clock-face{z-index:1!important}
+.line.scene-clock #clockSparkField{z-index:2!important}
+.line.scene-clock .clock-number-burst-layer{z-index:3!important}
+.line.scene-clock .clock-lyric{z-index:5!important}
+.line.scene-clock .clock-number-bg-burst{font-family:"Poppins",sans-serif!important;font-weight:500!important}
+.line.scene-clock .clock-number-burst-layer{pointer-events:none!important}
+</style>
+
 <style id="first-linyahan-poppins-whimsy">
 /* First chorus linyahan: Poppins + PURE VERTICAL BOB. No shaking,
    horizontal drift, or rotation. This is the only word motion for this line. */
@@ -2616,6 +2626,7 @@ const accentWords=new Set(['puso','mo','yo',"'oo'",'ligawan','oras','hindi','yan
   below are expressed in the MP3 timeline. The first "Pwede" is locked
   to 8.056s, matching the user's original cue.
 */
+/* BIBIGAY TIMING LOCK: original timing retained: 53.80–58.65 / 116.70–121.30. */
 const lines=[
   {start:8.056,end:15.85,text:'Pwede ba akong tumambay dyan sa puso mo?',style:'verse',section:'verse',cues:[8.056,9.261,9.589,10.186,10.555,11.305,11.680,12.430]},
   {start:15.90,end:23.55,text:"Parang masyado na yatang gasgas ang banat na 'to",style:'soft',section:'verse',cues:[15.90,16.28,16.55,16.72,18.28,18.78,19.10,19.35,19.42]},
@@ -2883,7 +2894,7 @@ function activate(i){
     if(lyric){
       // ONLY replace the lyric contents. The clock DOM, its animations,
       // and its hand phase remain untouched.
-      lyric.innerHTML=buildWords(item.text);
+      lyric.innerHTML=buildBibigayStack(item.text);
       lyric.classList.add('clock-whimsy-skill');
       lyric.classList.remove('clock-whimsy-time');
     }
@@ -3697,7 +3708,7 @@ function spawnClockNumberBackgroundBurst(wordIndex, opts={}){
   const cx=rect.left+rect.width/2-base.left;
   const cy=rect.top+rect.height/2-base.top;
   const elevated=!!opts.elevated;
-  const count=3;
+  const count=5;
   const group=String(Date.now())+'-'+Math.random();
 
   for(let n=0;n<count;n++){
@@ -3709,24 +3720,24 @@ function spawnClockNumberBackgroundBurst(wordIndex, opts={}){
     e.style.top=cy+'px';
 
     // Keep every burst small. Elevated words are only slightly larger.
-    e.style.fontSize=(elevated ? 30+Math.random()*7 : 26+Math.random()*6)+'px';
-    e.style.fontWeight='300';
-    e.style.setProperty('--alpha',(0.24+Math.random()*0.08).toFixed(3));
-    e.style.setProperty('--life',(0.78+Math.random()*0.16).toFixed(2)+'s');
-    e.style.setProperty('--scale',(0.82+Math.random()*0.22).toFixed(2));
+    e.style.fontSize=(elevated ? 58+Math.random()*24 : 48+Math.random()*22)+'px';
+    e.style.fontWeight='500';
+    e.style.setProperty('--alpha',(0.48+Math.random()*0.18).toFixed(3));
+    e.style.setProperty('--life',(1.05+Math.random()*0.25).toFixed(2)+'s');
+    e.style.setProperty('--scale',(1.05+Math.random()*0.42).toFixed(2));
     e.style.setProperty('--r',(-8+Math.random()*16)+'deg');
     e.style.setProperty('--r2',(-14+Math.random()*28)+'deg');
 
     if(elevated){
       // Magaling / ako: burst around the word in all directions, not upward.
       const angle=(Math.PI*2/count)*n+(Math.random()-.5)*.5;
-      const distance=42+Math.random()*42;
+      const distance=105+Math.random()*75;
       e.style.setProperty('--dx',(Math.cos(angle)*distance)+'px');
       e.style.setProperty('--dy',(Math.sin(angle)*distance)+'px');
     }else{
       // Other clock words: compact radial burst.
       const angle=(Math.PI*2/count)*n+(Math.random()-.5)*.45;
-      const distance=34+Math.random()*34;
+      const distance=85+Math.random()*65;
       e.style.setProperty('--dx',(Math.cos(angle)*distance)+'px');
       e.style.setProperty('--dy',(Math.sin(angle)*distance)+'px');
     }
