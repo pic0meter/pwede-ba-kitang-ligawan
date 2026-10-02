@@ -1444,6 +1444,61 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   color:var(--accent);
 }
 
+/* The four-line Bibigay stack now lives INSIDE the original clock scene,
+   so the clock, sparkles, ticks, hands, and number bursts remain visible behind it. */
+.line.scene-clock .clock-lyric .bibigay-stack,
+.line.scene-clock .clock-lyric .bibigay-stack{
+  width:100%;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  line-height:.84;
+  gap:.02em;
+  font-family:"Poppins",sans-serif !important;
+  font-size:clamp(52px,9.8vw,112px) !important;
+  font-weight:800 !important;
+  letter-spacing:-.055em !important;
+}
+.line.scene-clock .clock-lyric .bibigay-row{
+  width:max-content;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  line-height:.84;
+  white-space:nowrap;
+}
+.line.scene-clock .clock-lyric .word{
+  display:inline-block !important;
+  margin:0 .055em !important;
+  padding:0 !important;
+  font-family:"Poppins",sans-serif !important;
+  font-size:1em !important;
+  font-weight:800 !important;
+  letter-spacing:-.055em !important;
+  line-height:.84 !important;
+}
+.line.scene-clock .clock-lyric .word.visible{
+  animation:wordPop .42s cubic-bezier(.18,.9,.25,1.35) both !important;
+}
+.line.scene-clock .clock-lyric .word.current{
+  color:var(--accent);
+  transform:translateY(-.035em) scale(1.035) !important;
+  text-shadow:0 0 28px #ffb38a55;
+}
+@media(max-width:600px){
+  .line.scene-clock .clock-lyric .bibigay-stack{
+    font-size:clamp(39px,12.8vw,68px) !important;
+    line-height:.86;
+  }
+  .line.scene-clock .clock-lyric .bibigay-stack .word,
+  .line.scene-clock .clock-lyric .bibigay-stack .word{
+    line-height:.86 !important;
+    margin:0 .045em !important;
+  }
+}
+
 @media(max-width:600px){
   .line.scene-bibigay-stack{
     width:92vw !important;
@@ -2680,9 +2735,9 @@ function buildHeartSplitLine(text){
 function sceneFor(i){
   // Each lyric becomes a small motion-graphics scene.
   const scenes=[
-    'fly','slit','kailan-flight','wind','zoom','squiggle','bibigay-stack','clock',
+    'fly','slit','kailan-flight','wind','zoom','squiggle','clock','clock',
     'fly','question','pupuntahan','malayo-echo','orbit','wind','rubber','chase',
-    'bibigay-stack','fly','clock','crawl','flip','zoom','question'
+    'longa','fly','clock','crawl','flip','zoom','question'
   ];
   return scenes[i]||'chase';
 }
@@ -2723,7 +2778,7 @@ function buildBibigayStack(text){
 function buildClock(text){
   const nums=Array.from({length:12},(_,j)=>`<span class="clock-number" style="--n:${j}">${j===0?12:j}</span>`).join('');
   const ticks=Array.from({length:60},(_,j)=>`<i class="clock-tick ${j%5===0?'major':''}" data-tick="${j}"></i>`).join('');
-  const lyric=buildWords(text);
+  const lyric=(text==='Bibigay ko nang buo ang oras ko') ? buildBibigayStack(text) : buildWords(text);
   const sparks=Array.from({length:42},(_,i)=>{
     const angle=i*2.399963;
     const radius=34+(i%7)*7;
