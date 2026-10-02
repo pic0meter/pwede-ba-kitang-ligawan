@@ -3897,6 +3897,7 @@ function updateSpecialVisuals(t){
   if(inSabiMamaEcho){ spawnSabiMamaEcho(t); }
   else if(sabiMamaEchoActive) clearSabiMamaEcho();
   updateLaserHeart(t);
+}
 function updateLaserHeart(t){
   const el=L.querySelector('.line.active');
   if(!el || current!==4){
