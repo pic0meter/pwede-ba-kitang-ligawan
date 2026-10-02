@@ -2745,7 +2745,7 @@ const lines=[
   {start:8.056,end:15.85,text:'Pwede ba akong tumambay dyan sa puso mo?',style:'verse',section:'verse',cues:[8.056,9.261,9.589,10.186,10.555,11.305,11.680,12.430]},
   {start:15.90,end:23.55,text:"Parang masyado na yatang gasgas ang banat na 'to",style:'soft',section:'verse',cues:[15.90,16.28,16.55,16.72,18.28,18.78,19.10,19.35,19.42]},
   {start:23.70,end:31.55,text:"Kailan kaya ako makakaisip ng linyang para sa'yo?",style:'verse',section:'verse',cues:[23.70,24.15,24.48,24.92,26.95,27.30,27.78,28.12,28.42]},
-  {start:31.70,end:39.25,text:"Gusto ko lang naman ay makamit ang matamis mong 'oo'",style:'soft',section:'verse',cues:[31.70,32.18,32.48,32.72,32.88,33.15,34.85,35.48,35.92,36.42]},
+  {start:31.70,end:39.25,text:"Gusto ko lang naman ay makamit ang matamis mong oo",style:'soft',section:'verse',cues:[31.70,32.18,32.48,32.72,32.88,33.15,34.85,35.48,35.92,36.42]},
   {start:39.65,end:46.75,text:'Pwede ba kitang ligawan?',style:'chorus',section:'chorus',cues:[39.65,40.25,40.75,42.65]},
   {start:46.80,end:53.65,text:"Kahit 'di maganda ang mga linyahan",style:'soft',section:'chorus',cues:[46.82,47.12,48.32,48.82,49.25,49.50]},
   {start:53.80,end:58.65,text:'Bibigay ko nang buo ang oras ko',style:'soft',section:'chorus',cues:[53.80,54.18,54.55,54.90,55.10,55.42,55.78]},
@@ -2916,12 +2916,14 @@ function buildBibigayStack(text){
   const temp=document.createElement('div');
   temp.innerHTML=words;
 
-  const rowSpecs=[
-    [0,1],
-    [2,3],
-    [4],
-    [5,6]
-  ];
+  const rowSpecs = text === 'Gusto ko lang naman ay makamit ang matamis mong oo'
+    ? [[0,1,2,3,4],[5,6,7],[8,9]]
+    : [
+        [0,1],
+        [2,3],
+        [4],
+        [5,6]
+      ];
 
   const stack=document.createElement('div');
   stack.className='bibigay-stack';
