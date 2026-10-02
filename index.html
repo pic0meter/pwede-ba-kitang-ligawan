@@ -4038,7 +4038,29 @@ function render(){
       }
     });
   }else if(i===6 || i===18){
-    // No number bursts on this lyric.
+    // BIBIGAY: bursts only on Bibigay, buo, oras, and the final "ko".
+    const burstCues = [
+      [0, i===6 ? 53.80 : 116.70],      // Bibigay
+      [3, i===6 ? 54.90 : 117.78],      // buo
+      [5, i===6 ? 55.42 : 118.42],      // oras
+      [6, i===6 ? 55.78 : 118.78]       // final ko
+    ];
+    burstCues.forEach(([wordIndex,cue])=>{
+      const key = `${i}-${wordIndex}-main`;
+      if(t>=cue && t<cue+0.09 && !clockNumberBackgroundBursts.includes(key)){
+        clockNumberBackgroundBursts.push(key);
+        spawnClockNumberBackgroundBurst(wordIndex,{elevated:true});
+      }
+    });
+
+    // One extra number burst on "oras", immediately after it appears.
+    const orasCue = i===6 ? 55.42 : 118.42;
+    const orasSecondCue = orasCue + 0.20;
+    const secondKey = `${i}-5-second`;
+    if(t>=orasSecondCue && t<orasSecondCue+0.09 && !clockNumberBackgroundBursts.includes(secondKey)){
+      clockNumberBackgroundBursts.push(secondKey);
+      spawnClockNumberBackgroundBurst(5,{elevated:true});
+    }
   }else if(i===7){
     // Same one-second delay for the next line. Magaling/ako burst around
     // the word in all directions, with the same three-number limit.
@@ -4241,5 +4263,43 @@ render();
 }
 </style>
 
+
+<style id="bibigay-jumpy-final">
+/* BIBIGAY — jumpy word entrances. */
+.line.scene-clock .clock-lyric.bibigay-static .word.visible{
+  animation:bibigayJumpyIn .52s cubic-bezier(.16,1.28,.22,1) both !important;
+  animation-delay:calc(var(--i) * .075s) !important;
+  transform-origin:50% 88% !important;
+  will-change:transform,opacity,filter;
+}
+
+.line.scene-clock .clock-lyric.bibigay-static .word[data-word-index="0"].visible,
+.line.scene-clock .clock-lyric.bibigay-static .word[data-word-index="3"].visible,
+.line.scene-clock .clock-lyric.bibigay-static .word[data-word-index="5"].visible,
+.line.scene-clock .clock-lyric.bibigay-static .word[data-word-index="6"].visible{
+  animation-name:bibigayJumpyHeroIn !important;
+}
+
+@keyframes bibigayJumpyIn{
+  0%{opacity:0;transform:translate3d(0,28px,0) scale(.68,.78) rotate(-4deg);filter:blur(5px)}
+  38%{opacity:1;transform:translate3d(0,-10px,0) scale(1.10,.92) rotate(2deg);filter:blur(0)}
+  62%{transform:translate3d(0,4px,0) scale(.96,1.035) rotate(-1deg)}
+  82%{transform:translate3d(0,-2px,0) scale(1.025,.985) rotate(.5deg)}
+  100%{opacity:1;transform:translate3d(0,0,0) scale(1) rotate(0);filter:blur(0)}
+}
+
+@keyframes bibigayJumpyHeroIn{
+  0%{opacity:0;transform:translate3d(0,34px,0) scale(.58,.72) rotate(-6deg);filter:blur(6px)}
+  32%{opacity:1;transform:translate3d(0,-14px,0) scale(1.16,.88) rotate(3deg);filter:blur(0)}
+  52%{transform:translate3d(0,6px,0) scale(.94,1.05) rotate(-1.5deg)}
+  72%{transform:translate3d(0,-4px,0) scale(1.045,.98) rotate(.8deg)}
+  100%{opacity:1;transform:translate3d(0,0,0) scale(1) rotate(0);filter:blur(0)}
+}
+
+.line.scene-clock .clock-lyric.bibigay-static .word.current{
+  color:var(--accent);
+  text-shadow:0 0 28px #ffb38a55;
+}
+</style>
 </body>
 </html>
