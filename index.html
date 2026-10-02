@@ -2094,13 +2094,15 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   will-change:transform!important;
 }
 @keyframes orasContinuousBounce{
-  0%,100%{transform:translate3d(0,0,0) scale(1)}
-  12%{transform:translate3d(0,-9px,0) scale(1.055)}
-  25%{transform:translate3d(0,2px,0) scale(.975)}
-  40%{transform:translate3d(0,-6px,0) scale(1.035)}
-  55%{transform:translate3d(0,1px,0) scale(.99)}
-  72%{transform:translate3d(0,-3px,0) scale(1.015)}
-  86%{transform:translate3d(0,1px,0) scale(.997)}
+  0%,100%{transform:translate3d(0,0,0) rotate(0deg) scale(1)}
+  10%{transform:translate3d(-2px,-13px,0) rotate(-2deg) scale(1.08)}
+  20%{transform:translate3d(2px,3px,0) rotate(2deg) scale(.96)}
+  32%{transform:translate3d(-1px,-10px,0) rotate(-1.5deg) scale(1.06)}
+  44%{transform:translate3d(2px,2px,0) rotate(1.5deg) scale(.975)}
+  57%{transform:translate3d(-1px,-8px,0) rotate(-1deg) scale(1.045)}
+  70%{transform:translate3d(1px,2px,0) rotate(1deg) scale(.985)}
+  84%{transform:translate3d(0,-5px,0) rotate(-.7deg) scale(1.025)}
+  92%{transform:translate3d(0,1px,0) rotate(.4deg) scale(.995)}
 }
 
 /* FINAL OVERRIDE: Bibigay line is completely still except for "oras". */
