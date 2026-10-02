@@ -2794,7 +2794,7 @@ function updateOSaKanyaEcho(t){
     const scale=1+.018*Math.sin(phase*1.25);
 
     el.classList.add('current');
-    el.style.opacity=String(alpha*.42);
+    el.style.opacity=String(alpha*.24);
     el.style.filter=`blur(${(1-alpha)*7}px)`;
     el.style.transform=`translate(calc(-50% + ${bobX}px),calc(-50% + ${bobY}px)) scale(${scale})`;
   });
@@ -2830,7 +2830,7 @@ function updateSabiMamaEcho(t){
     const scale=1+.018*Math.sin(phase*1.25);
 
     el.classList.add('current');
-    el.style.opacity=String(alpha*.42);
+    el.style.opacity=String(alpha*.24);
     el.style.filter=`blur(${(1-alpha)*7}px)`;
     el.style.transform=`translate(calc(-50% + ${bobX}px),calc(-50% + ${bobY}px)) scale(${scale})`;
   });
