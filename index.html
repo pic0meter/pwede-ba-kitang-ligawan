@@ -2886,18 +2886,20 @@ function buildWords(text){
   // This lyric is intentionally split by sung syllable, not by whitespace.
   // The seven nodes must match the seven beat cues exactly: AT / KA / HIT / PA / HIRA / PAN / PA.
   if(text === "Ako ng tatay mo hindi aatras"){
-    const units=[
-      {html:'Ako',cue:0,breakAfter:true},
-      {html:'ng',cue:1},
-      {html:'ta',cue:2},
-      {html:'tay',cue:3,breakAfter:true},
-      {html:'mo',cue:4},
-      {html:'hindi',cue:5,breakAfter:true},
-      {html:'aatras',cue:6,breakAfter:true}
+    const groups=[
+      [{html:'Ako',cue:0}],
+      [{html:'ng',cue:1},{html:'ta',cue:2},{html:'tay',cue:3}],
+      [{html:'mo',cue:4},{html:'hindi',cue:5}],
+      [{html:'aatras',cue:6}]
     ];
-    return units.map((u,i)=>
-      `<span class="word${u.breakAfter?' break-after':''}" data-word-index="${i}" data-cue-index="${u.cue}" style="--i:${i};--tilt:0deg">${u.html}</span>`
-    ).join('');
+    let wordIndex=0;
+    return groups.map((group,g)=>{
+      const words=group.map(u=>{
+        const i=wordIndex++;
+        return `<span class="word" data-word-index="${i}" data-cue-index="${u.cue}" style="--i:${i};--tilt:0deg">${u.html}</span>`;
+      }).join('');
+      return `<span class="syllable-group${g?' group-break':''}">${words}</span>`;
+    }).join('');
   }
 
   if(text === 'At kahit pahirapan pa'){
@@ -4826,8 +4828,7 @@ render();
 
 <style id="ako-tatay-syllable-clean">
 /* 01:29.830 — AKO / NG TATAY / MO HINDI / AATRAS
-   Cumulative syllable units. Each cue reveals its own unit and keeps it beside
-   the units already sung; explicit breaks preserve the requested phrase groups. */
+   Each phrase group is centered as a unit, while its syllables appear cumulatively beside each other. */
 .line.scene-ako-tatay-syllable{
   width:min(1080px,92vw);
   min-height:48vh;
@@ -4836,10 +4837,19 @@ render();
   justify-content:center;
   align-content:center;
   flex-wrap:wrap;
-  column-gap:.16em;
-  row-gap:.08em;
   text-align:center;
   overflow:visible;
+}
+.line.scene-ako-tatay-syllable .syllable-group{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:.16em;
+  flex:0 0 auto;
+  white-space:nowrap;
+}
+.line.scene-ako-tatay-syllable .syllable-group.group-break{
+  flex-basis:100%;
 }
 .line.scene-ako-tatay-syllable .word{
   position:relative !important;
@@ -4857,18 +4867,12 @@ render();
   transform-origin:center center !important;
   will-change:opacity,transform,filter;
 }
-.line.scene-ako-tatay-syllable .word.break-after::after{
-  content:"";
-  flex-basis:100%;
-}
-.line.scene-ako-tatay-syllable .word.break-after{
-  margin-right:100% !important;
-}
 @media(max-width:600px){
   .line.scene-ako-tatay-syllable{
     width:96vw;
-    column-gap:.12em;
-    row-gap:.06em;
+  }
+  .line.scene-ako-tatay-syllable .syllable-group{
+    gap:.12em;
   }
   .line.scene-ako-tatay-syllable .word{
     font-size:clamp(42px,12vw,78px) !important;
