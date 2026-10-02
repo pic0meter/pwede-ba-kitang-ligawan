@@ -4222,6 +4222,17 @@ render();
   transform:none!important;
   text-shadow:none!important;
 }
+/* This lyric line is static as a whole; only "oras" is allowed to move. */
+.line.scene-clock:has(.clock-lyric.bibigay-static) .clock-wrap{
+  animation:none!important;
+  transform:none!important;
+}
+/* Re-enable continuous motion ONLY for "oras" after the static reset above. */
+.line.scene-clock .clock-lyric.bibigay-static .word[data-word-index="5"].visible{
+  animation:orasContinuousBounce 1.05s cubic-bezier(.45,.05,.55,.95) infinite!important;
+  transform-origin:50% 90%!important;
+  will-change:transform!important;
+}
 
 @keyframes clockSmoothIn{
   0%{opacity:0;transform:translate3d(0,18px,0) scale(.86)}
