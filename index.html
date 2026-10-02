@@ -3101,8 +3101,9 @@ function activate(i){
       // ONLY replace the lyric contents. The clock DOM, its animations,
       // and its hand phase remain untouched.
       lyric.innerHTML=buildBibigayStack(item.text);
-      lyric.classList.add('clock-whimsy-skill');
-      lyric.classList.remove('clock-whimsy-time');
+      lyric.classList.remove('clock-whimsy-skill','clock-whimsy-time','playful-clock-lyric','bibigay-static');
+      old.classList.remove('clock-whimsy-skill','playful-clock-lyric');
+      old.classList.add('kasi-stack-scene');
     }
     // Keep the host line permanently anchored to the first clock lyric.
     // The audio lyric index may advance to 7, but the visual clock never does.
@@ -4253,21 +4254,8 @@ function render(){
       spawnClockNumberBackgroundBurst(5,{elevated:true});
     }
   }else if(i===7){
-    // Same one-second delay for the next line. Magaling/ako burst around
-    // the word in all directions, with the same three-number limit.
-    const burstCues=[
-      [0,59.78,false],   // Kasi — +80ms
-      [2,60.56,false],   // alam — +80ms
-      [4,61.38,true],    // magaling — +80ms
-      [5,61.80,true]     // ako — +80ms
-    ];
-    burstCues.forEach(([wordIndex,cue,elevated])=>{
-      const key='7-'+wordIndex;
-      if(t>=cue && t<cue+0.07 && !clockNumberBackgroundBursts.includes(key)){
-        clockNumberBackgroundBursts.push(key);
-        spawnClockNumberBackgroundBurst(wordIndex,{elevated});
-      }
-    });
+    // Kasi stack uses clean typography only; no previous word/number burst effect.
+    clockNumberBackgroundBursts=[];
   }else{ 
     if(wordBackgroundBursts.length)clearWordBackgroundBursts();
     clockNumberBackgroundBursts=[];
