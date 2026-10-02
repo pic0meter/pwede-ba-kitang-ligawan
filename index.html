@@ -2102,6 +2102,33 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   72%{transform:translate3d(0,-3px,0) scale(1.015)}
   86%{transform:translate3d(0,1px,0) scale(.997)}
 }
+
+/* FINAL OVERRIDE: Bibigay line is completely still except for "oras". */
+.line.scene-clock .clock-lyric.bibigay-static .word,
+.line.scene-clock .clock-lyric.bibigay-static .word.visible,
+.line.scene-clock .clock-lyric.bibigay-static .word.current{
+  animation:none!important;
+  transform:none!important;
+  translate:none!important;
+  rotate:none!important;
+  scale:none!important;
+  opacity:1!important;
+  filter:none!important;
+  transition:none!important;
+  will-change:auto!important;
+}
+.line.scene-clock:has(.clock-lyric.bibigay-static) .clock-wrap{
+  animation:none!important;
+  transform:none!important;
+  translate:none!important;
+  rotate:none!important;
+  scale:none!important;
+}
+.line.scene-clock .clock-lyric.bibigay-static .word[data-word-index="5"].visible{
+  animation:orasContinuousBounce 1.05s cubic-bezier(.45,.05,.55,.95) infinite!important;
+  transform-origin:50% 90%!important;
+  will-change:transform!important;
+}
 </style>
 <style>
 /* Restore ONLY the spoken-word highlight for the first linyahan line.
