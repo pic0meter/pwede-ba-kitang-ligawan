@@ -4258,29 +4258,5 @@ render();
 }
 </style>
 
-
-<style id="oras-happy-bob-final">
-/* ORAS — happy jump + playful bob from its cue until the next lyric. */
-.line.scene-clock .clock-lyric.bibigay-static .word[data-word-index="5"].visible,
-.line.scene-clock .clock-lyric.bibigay-static .word[data-word-index="5"].visible.current{
-  animation:orasHappyJumpBob 0.82s cubic-bezier(.36,.07,.19,.97) infinite !important;
-  transform-origin:50% 92% !important;
-  will-change:transform !important;
-  color:var(--accent);
-  text-shadow:0 0 28px #ffb38a55;
-}
-
-@keyframes orasHappyJumpBob{
-  0%,100%{transform:translate3d(0,0,0) rotate(0deg) scale(1)}
-  12%{transform:translate3d(-1px,-7px,0) rotate(-2deg) scale(1.025)}
-  25%{transform:translate3d(2px,-18px,0) rotate(2deg) scale(1.055)}
-  38%{transform:translate3d(1px,-5px,0) rotate(-1deg) scale(1.015)}
-  50%{transform:translate3d(-2px,1px,0) rotate(1deg) scale(.985)}
-  64%{transform:translate3d(2px,-9px,0) rotate(2deg) scale(1.035)}
-  78%{transform:translate3d(-1px,-3px,0) rotate(-1.5deg) scale(1.01)}
-  90%{transform:translate3d(1px,1px,0) rotate(.5deg) scale(.995)}
-}
-</style>
-
 </body>
 </html>
