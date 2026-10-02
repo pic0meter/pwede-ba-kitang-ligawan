@@ -2692,6 +2692,7 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   <div id="grain"></div>
   <div id="backgroundBanat" aria-hidden="true"></div>
   <div id="sabiEchoField" aria-hidden="true"></div>
+  <div id="oSaKanyaEchoField" aria-hidden="true"></div>
   <div id="heartField" aria-hidden="true"></div><div id="wordExplosionField" aria-hidden="true"></div><div id="huge57Explosion" aria-hidden="true"></div><div id="ooExplosion" aria-hidden="true"></div><div id="siteSparkField" aria-hidden="true"></div>
   <div id="echoes"></div>
 <div id="top">
@@ -2747,6 +2748,57 @@ const SABI_ECHO_NODES=SABI_ECHO_WORDS.map((word,i)=>{
   SABI_ECHO_FIELD.appendChild(el);
   return el;
 });
+
+const OSA_ECHO_FIELD=document.querySelector('#oSaKanyaEchoField');
+const OSA_ECHO_WORDS=['o','sa','kanya'];
+const OSA_ECHO_START=85.230;
+const OSA_ECHO_END=86.545;
+const OSA_ECHO_CUES=[85.230,85.668,86.106];
+const OSA_ECHO_NEXT=[85.668,86.106,86.545];
+const OSA_ECHO_NODES=OSA_ECHO_WORDS.map((word,i)=>{
+  const el=document.createElement('span');
+  el.className='sabi-echo-word';
+  el.textContent=word;
+  el.dataset.index=String(i);
+  OSA_ECHO_FIELD.appendChild(el);
+  return el;
+});
+
+function updateOSaKanyaEcho(t){
+  const active=t>=OSA_ECHO_START && t<OSA_ECHO_END;
+  OSA_ECHO_FIELD.classList.toggle('active',active);
+
+  OSA_ECHO_NODES.forEach((el,i)=>{
+    const cue=OSA_ECHO_CUES[i];
+    const next=OSA_ECHO_NEXT[i];
+    const fadeIn=.12;
+    const fadeOut=.14;
+
+    if(!active || t<cue || t>=next){
+      el.classList.remove('current');
+      el.style.opacity='0';
+      el.style.filter='blur(7px)';
+      el.style.transform='translate(-50%,-50%) scale(.82)';
+      return;
+    }
+
+    const inP=Math.min(1,(t-cue)/fadeIn);
+    const outP=Math.min(1,(next-t)/fadeOut);
+    const easeIn=inP*inP*(3-2*inP);
+    const easeOut=outP*outP*(3-2*outP);
+    const alpha=Math.min(easeIn,easeOut);
+    const elapsed=t-cue;
+    const phase=elapsed*8.5+i*1.8;
+    const bobY=Math.sin(phase)*4.5;
+    const bobX=Math.cos(phase*.83+i)*2.5;
+    const scale=1+.018*Math.sin(phase*1.25);
+
+    el.classList.add('current');
+    el.style.opacity=String(alpha*.42);
+    el.style.filter=`blur(${(1-alpha)*7}px)`;
+    el.style.transform=`translate(calc(-50% + ${bobX}px),calc(-50% + ${bobY}px)) scale(${scale})`;
+  });
+}
 
 function updateSabiMamaEcho(t){
   const active=t>=SABI_ECHO_START && t<SABI_ECHO_END;
@@ -4263,6 +4315,7 @@ function render(){
   const i=lines.findIndex(x=>t>=x.start&&t<x.end);
   activate(i);
   updateSabiMamaEcho(t);
+  updateOSaKanyaEcho(t);
 
   // 01:18.75 — Pati ang nanay... starts completely clean. Clear every global/field effect.
   if(i===12){
@@ -4692,6 +4745,11 @@ render();
   }
 }
 </style>
+<style id="o-sa-kanya-background-echo">
+#oSaKanyaEchoField{position:absolute;inset:0;z-index:2;pointer-events:none;overflow:hidden;opacity:0}
+#oSaKanyaEchoField.active{opacity:1}
+</style>
+
 
 <style id="pati-kinetic-clean">
 /* 01:19 — PATI ANG NANAY MO'Y AKING DADALHAN
