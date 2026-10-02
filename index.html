@@ -2755,7 +2755,7 @@ const lines=[
   {start:71.35,end:74.15,text:'Ikaw ay lagi kong pupuntahan',style:'verse',section:'verse 2',cues:[71.35,71.72,72.05,72.48,72.90]},
   {start:74.18,end:78.00,text:"Kahit malayo pa 'yan",style:'soft',section:'verse 2',cues:[74.18,74.58,74.98,75.30,75.62]},
   {start:78.75,end:81.95,text:"Pati ang nanay mo'y aking dadalhan",style:'verse',scene:'pati-kinetic',section:'verse 2',cues:[78.75,79.05,79.42,79.78,80.05,80.35,80.70]},
-  {start:81.98,end:86.55,text:'Ng paborito niyang ulam',style:'soft',section:'verse 2',cues:[81.98,82.38,82.78,83.22]},
+  {start:81.98,end:86.55,text:'Ng paborito niyang ulam',style:'soft',scene:'ulam-kinetic',section:'verse 2',cues:[81.98,82.38,82.78,83.22]},
   {start:86.78,end:90.20,text:'At kahit pahirapan pa',style:'verse',section:'verse 2',cues:[86.78,87.15,87.62,88.02,88.42]},
   {start:90.28,end:94.20,text:'Ako ng tatay mo hindi aatras',style:'soft',section:'verse 2',cues:[90.28,90.72,91.05,91.42,91.78,92.15,92.55]},
   {start:94.28,end:98.80,text:'Kasi gusto kitaaaaaaaa',style:'chorus',section:'verse 2',cues:[94.28,94.70,95.05]},
@@ -3607,6 +3607,36 @@ function updateMotion(t){
       const idleScale=hasAppeared ? 1+Math.sin(t*(6.0+idx*.34)+idx*.8)*.035 : 1;
       w.style.opacity=String(ease);
       w.style.transform=`translate3d(${sway}px,${-lift+bob}px,0) scale(${scale*idleScale})`;
+      w.style.rotate='0deg';
+      w.style.filter='none';
+      w.style.textShadow=active ? '0 0 22px #ffb38a35' : 'none';
+      w.style.color=active ? 'var(--accent)' : '';
+      w.style.zIndex='5';
+    });
+  }
+
+
+  if(scene==='ulam-kinetic') {
+    // 01:22 — NG / PABORITO / NYANG / ULAM
+    // Same fast, happy independent bounce as PATI, with a deliberately
+    // compressed layout so the words sit very close together.
+    words.forEach((w,idx)=>{
+      const cue=item.cues?.[idx] ?? item.start;
+      const nextCue=item.cues?.[idx+1] ?? item.end;
+      const appear=Math.max(0,Math.min(1,(t-cue)/0.20));
+      const ease=appear*appear*(3-2*appear);
+      const active=t>=cue && t<nextCue;
+      const hasAppeared=t>=cue;
+
+      const phase=t*(7.8+idx*.48)+idx*1.42;
+      const bob=hasAppeared ? Math.sin(phase)*8.2 : 0;
+      const sway=hasAppeared ? Math.sin(t*(4.8+idx*.28)+idx*.9)*2.7 : 0;
+      const happyPop=hasAppeared ? 1+Math.max(0,Math.sin(phase*1.05))*0.045 : 1;
+      const scale=0.94+0.06*ease;
+      const lift=(1-ease)*16;
+
+      w.style.opacity=String(ease);
+      w.style.transform=`translate3d(${sway}px,${-lift+bob}px,0) scale(${scale*happyPop})`;
       w.style.rotate='0deg';
       w.style.filter='none';
       w.style.textShadow=active ? '0 0 22px #ffb38a35' : 'none';
@@ -4604,5 +4634,50 @@ render();
 }
 </style>
 
+
+<style id="ulam-kinetic-compressed">
+/* 01:22 — NG PABORITO NYANG ULAM
+   Same energetic bounce, with the four words intentionally compressed together. */
+.line.scene-ulam-kinetic{
+  width:min(900px,88vw);
+  min-height:48vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  align-content:center;
+  flex-wrap:wrap;
+  gap:.01em .015em;
+  text-align:center;
+  overflow:visible;
+}
+.line.scene-ulam-kinetic .word{
+  display:inline-block !important;
+  margin:0 -.075em !important;
+  padding:0 !important;
+  font-family:inherit !important;
+  font-size:clamp(30px,6.4vw,72px) !important;
+  font-weight:800 !important;
+  letter-spacing:-.065em !important;
+  line-height:.90 !important;
+  animation:none !important;
+  transition:none !important;
+  will-change:transform,opacity;
+}
+.line.scene-ulam-kinetic .word.current{
+  color:var(--accent) !important;
+}
+@media(max-width:600px){
+  .line.scene-ulam-kinetic{
+    width:91vw;
+    min-height:44vh;
+    gap:.01em .005em;
+  }
+  .line.scene-ulam-kinetic .word{
+    margin:0 -.065em !important;
+    font-size:clamp(27px,7.4vw,44px) !important;
+    letter-spacing:-.07em !important;
+  }
+}
+</style>
 </body>
 </html>
