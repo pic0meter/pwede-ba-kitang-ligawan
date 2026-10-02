@@ -2805,7 +2805,7 @@ function buildClock(text){
     const color=i%7===0?'#f8f0e6':'#ffb38a';
     return `<span class="clock-spark" style="--sx:${x}%;--sy:${y}%;--ss:${size}px;--so:${opacity};--dx:${dx}px;--dy:${dy}px;--sd:${dur}s;--sdelay:${delay}s;--sr:${rot}deg;--sc:${color}">✦</span>`;
   }).join('');
-  return `<div class="clock-wrap"><div class="clock-face"><div class="clock-hands"><i class="clock-hand hour"></i><i class="clock-hand minute"></i><i class="clock-hand second"></i><i class="clock-center"></i></div></div><div id="clockSparkField" aria-hidden="true">${sparks}</div><div class="clock-number-burst-layer" aria-hidden="true"></div><div class="clock-lyric">${lyric}</div></div>`;
+  return `<div class="clock-wrap"><div class="clock-face"><div class="clock-hands"><i class="clock-hand hour"></i><i class="clock-hand minute"></i><i class="clock-hand second"></i><i class="clock-center"></i></div></div><div id="clockSparkField" aria-hidden="true">${sparks}</div><div class="clock-number-burst-layer" aria-hidden="true"></div><div class="clock-lyric ${text === "Bibigay ko nang buo ang oras ko" ? "bibigay-static" : ""}">${lyric}</div></div>`;
 }
 
 function layoutClock(){
@@ -4022,23 +4022,7 @@ function render(){
       }
     });
   }else if(i===6 || i===18){
-    // Number bursts are synchronized exactly to the word entrance.
-    // Only: Bibigay, buo, oras, and the final ko.
-    const base = i===6 ? 0 : 1;
-    const cueBase = i===6 ? 53.80 : 116.70;
-    const burstCues=[
-      [0,cueBase],
-      [3,cueBase+1.10],
-      [5,cueBase+1.62],
-      [6,cueBase+1.98]
-    ];
-    burstCues.forEach(([wordIndex,cue])=>{
-      const key=i+'-'+wordIndex;
-      if(t>=cue && t<cue+0.09 && !clockNumberBackgroundBursts.includes(key)){
-        clockNumberBackgroundBursts.push(key);
-        spawnClockNumberBackgroundBurst(wordIndex,{elevated:wordIndex===5 || wordIndex===6});
-      }
-    });
+    // No number bursts on this lyric.
   }else if(i===7){
     // Same one-second delay for the next line. Magaling/ako burst around
     // the word in all directions, with the same three-number limit.
@@ -4212,6 +4196,17 @@ render();
   transform-origin:50% 85%!important;
   will-change:transform,translate!important;
 }
+.line.scene-clock .clock-lyric.bibigay-static .word.visible{
+  animation:none!important;
+  transform:none!important;
+  translate:none!important;
+  will-change:auto!important;
+}
+.line.scene-clock .clock-lyric.bibigay-static .word.current{
+  transform:none!important;
+  text-shadow:none!important;
+}
+
 @keyframes clockSmoothIn{
   0%{opacity:0;transform:translate3d(0,18px,0) scale(.86)}
   55%{opacity:1;transform:translate3d(0,-5px,0) scale(1.035)}
