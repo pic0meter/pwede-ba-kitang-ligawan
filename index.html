@@ -3207,10 +3207,10 @@ function activate(i){
     });
   }
 
-  /* 01:14 — "Kahit malayo pa 'yan": keep the foreground lyric,
-     but replace its background echoes with randomized station callouts.
-     The field remains independent from the foreground words, so the
-     station echoes do not affect the lyric timing. */
+  /* 01:16 — "Kahit malayo pa 'yan": fill the entire background with
+     repeated echoes of the complete phrase. The field is independent from
+     the foreground words, so the echoes can cover the screen without
+     changing the lyric's word-by-word timing. */
   if(i===11){
     el.classList.add('malayo-echo-scene');
 
@@ -3226,51 +3226,36 @@ function activate(i){
     field.className='malayo-echo-field';
     field.setAttribute('aria-hidden','true');
 
-    const stationNames=[
-      'Buendia!',
-      'Para po!',
-      'Magallanes',
-      'Cubao',
-      'Quiapo Central',
-      'Blumetrit Dimasalang',
-      'Quirino',
-      'Remedios',
-      'Luneta'
-    ];
-
-    // Shuffle the station names so the background callouts appear in a
-    // different/random order each time the scene is built.
-    const shuffledStations=[...stationNames].sort(()=>Math.random()-.5);
-
     const echoSpecs=[
-      ['8%','10%','clamp(26px,6.5vw,76px)',.095,-12, 1.7,-8, 5, 3.1,'#ff3b30'],
-      ['32%','7%','clamp(30px,7.2vw,84px)',.075,  7, 1.3, 6,-4, 2.7,'#00e5ff'],
-      ['61%','12%','clamp(24px,6vw,70px)',.085,-5, 1.5,-5, 7, 3.4,'#fff200'],
-      ['91%','8%','clamp(28px,7vw,82px)',.07, 11, 1.1, 7,-6, 2.9,'#ff4fd8'],
-      ['14%','28%','clamp(34px,8vw,94px)',.075,  5, 1.8,-6, 4, 3.0,'#39ff14'],
-      ['46%','27%','clamp(25px,6.4vw,74px)',.105,-8, 1.4, 5,-6, 2.5,'#ff7a00'],
-      ['78%','31%','clamp(32px,7.5vw,88px)',.065,  9, 1.9,-4, 6, 3.3,'#ffb38a'],
-      ['-4%','47%','clamp(28px,7vw,82px)',.08, -7, 1.2, 7,-5, 2.8,'#f8f0e6'],
-      ['27%','50%','clamp(23px,5.8vw,68px)',.07,  4, 1.6,-5, 7, 3.6,'#ffb38a'],
-      ['57%','48%','clamp(35px,8.2vw,98px)',.08,-10, 1.0, 6,-4, 2.6,'#f8f0e6'],
-      ['96%','52%','clamp(27px,6.8vw,80px)',.09,  6, 1.7,-7, 5, 3.0,'#ffb38a'],
-      ['10%','72%','clamp(30px,7.4vw,86px)',.075, -4, 1.3, 5,-7, 3.2,'#ffb38a'],
-      ['42%','74%','clamp(25px,6.2vw,72px)',.10,   8, 1.8,-6, 4, 2.9,'#f8f0e6'],
-      ['73%','70%','clamp(33px,7.8vw,92px)',.07, -6, 1.5, 7,-5, 3.5,'#ffb38a'],
-      ['101%','77%','clamp(27px,6.6vw,78px)',.085, 10, 1.2,-5, 6, 2.7,'#f8f0e6'],
-      ['-6%','91%','clamp(29px,7vw,82px)',.07, -9, 1.9, 6,-6, 3.1,'#ffb38a'],
-      ['25%','94%','clamp(24px,6vw,70px)',.095,  3, 1.4,-7, 5, 3.7,'#f8f0e6'],
-      ['58%','91%','clamp(31px,7.3vw,86px)',.075, -3, 1.6, 5,-7, 2.8,'#ffb38a'],
-      ['88%','94%','clamp(26px,6.4vw,75px)',.09,   7, 1.1,-6, 4, 3.3,'#f8f0e6']
+      ['8%','10%','clamp(26px,6.5vw,76px)',.095,-12, 1.1,-8, 5, 3.1,'#ff1744'],
+      ['32%','7%','clamp(30px,7.2vw,84px)',.075,  7, 0.7, 6,-4, 2.7,'#00e5ff'],
+      ['61%','12%','clamp(24px,6vw,70px)',.085,-5, 0.9,-5, 7, 3.4,'#fff200'],
+      ['91%','8%','clamp(28px,7vw,82px)',.07, 11, 0.5, 7,-6, 2.9,'#ff2d95'],
+      ['14%','28%','clamp(34px,8vw,94px)',.075,  5, 1.2,-6, 4, 3.0,'#39ff14'],
+      ['46%','27%','clamp(25px,6.4vw,74px)',.105,-8, 0.8, 5,-6, 2.5,'#ff6d00'],
+      ['78%','31%','clamp(32px,7.5vw,88px)',.065,  9, 1.3,-4, 6, 3.3,'#b026ff'],
+      ['-4%','47%','clamp(28px,7vw,82px)',.08, -7, 0.6, 7,-5, 2.8,'#ff1744'],
+      ['27%','50%','clamp(23px,5.8vw,68px)',.07,  4, 1,-5, 7, 3.6,'#00e5ff'],
+      ['57%','48%','clamp(35px,8.2vw,98px)',.08,-10, 0.4, 6,-4, 2.6,'#fff200'],
+      ['96%','52%','clamp(27px,6.8vw,80px)',.09,  6, 1.1,-7, 5, 3.0,'#ff2d95'],
+      ['10%','72%','clamp(30px,7.4vw,86px)',.075, -4, 0.7, 5,-7, 3.2,'#39ff14'],
+      ['42%','74%','clamp(25px,6.2vw,72px)',.10,   8, 1.2,-6, 4, 2.9,'#ff6d00'],
+      ['73%','70%','clamp(33px,7.8vw,92px)',.07, -6, 0.9, 7,-5, 3.5,'#b026ff'],
+      ['101%','77%','clamp(27px,6.6vw,78px)',.085, 10, 0.6,-5, 6, 2.7,'#ff1744'],
+      ['-6%','91%','clamp(29px,7vw,82px)',.07, -9, 1.3, 6,-6, 3.1,'#00e5ff'],
+      ['25%','94%','clamp(24px,6vw,70px)',.095,  3, 0.8,-7, 5, 3.7,'#fff200'],
+      ['58%','91%','clamp(31px,7.3vw,86px)',.075, -3, 1, 5,-7, 2.8,'#ff2d95'],
+      ['88%','94%','clamp(26px,6.4vw,75px)',.09,   7, 0.5,-6, 4, 3.3,'#39ff14']
     ];
 
-    echoSpecs.forEach(([x,y,size,alpha,rot,delay,ex,ey,speed,color],idx)=>{
+    echoSpecs.forEach(([x,y,size,alpha,rot,delay,ex,ey,speed,color])=>{
       const e=document.createElement('span');
       e.className='malayo-echo';
-
-      // Use the shuffled list repeatedly so every background echo is a
-      // station callout while keeping the positions/motion of the scene.
-      e.textContent=shuffledStations[idx % shuffledStations.length];
+      const stationEchoes=[
+        "Buendia","Para po!","Magallanes","Cubao","Quiapo",
+        "Central","Blumentritt","Dimasalang","Quirino","Remedios","Luneta"
+      ];
+      e.textContent=stationEchoes[Math.floor(Math.random()*stationEchoes.length)];
       e.style.setProperty('--mx',x);
       e.style.setProperty('--my',y);
       e.style.setProperty('--ms',size);
@@ -3555,7 +3540,7 @@ function updateMotion(t){
     if(oo) oo.style.transform=`translateY(${Math.sin(t*7)*3}px) scale(${1.02+.035*Math.max(0,Math.sin(t*4))})`;
   }
 
-  /* 01:14 — KAHIT / MALAYO / PA YAN.
+  /* 01:16 — KAHIT / MALAYO / PA YAN.
      Each foreground word gets its own energetic bob. */
   if(scene==='malayo-echo'){
     const cues=item.cues||[];
