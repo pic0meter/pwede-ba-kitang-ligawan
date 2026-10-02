@@ -3750,6 +3750,33 @@ function updateMotion(t){
 
 
 
+  if(scene==='ako-tatay-syllable') {
+    // Happy, playful bob while preserving the four centered phrase groups.
+    // The syllables remain side-by-side inside each group; only their motion changes.
+    words.forEach((w,idx)=>{
+      const cue=item.cues?.[Number(w.dataset.cueIndex ?? idx)] ?? item.start;
+      const hasAppeared=t>=cue;
+      if(!hasAppeared){
+        w.style.opacity='0';
+        w.style.transform='translate3d(0,18px,0) scaleX(.84) scaleY(.96)';
+        w.style.filter='none';
+        return;
+      }
+      const phase=t*(6.2+idx*.18)+idx*1.15;
+      const bob=Math.sin(phase)*7 + Math.sin(phase*1.9+idx)*2.2;
+      const sway=Math.sin(phase*.72+idx)*2.2;
+      const squash=1+.018*Math.sin(phase*1.35);
+      const enter=Math.min(1,(t-cue)/.16);
+      const ease=enter*enter*(3-2*enter);
+      w.style.opacity=String(ease);
+      w.style.transform=`translate3d(${sway}px,${bob}px,0) scaleX(${.84*squash}) scaleY(${1+.018*Math.sin(phase*.9)})`;
+      w.style.filter='none';
+      w.style.color='var(--accent)';
+      w.style.zIndex='5';
+    });
+  }
+
+
   if(scene==='pahirapan-beat') {
     // 01:26 — AT KAHIT PAHIRAPAN PA
     // One word owns the exact center at a time. The previous word is fully
@@ -4858,7 +4885,8 @@ render();
   width:auto !important;
   margin:0 !important;
   display:inline-block !important;
-  font-family:"Poppins",sans-serif !important;
+  font-family:"Arial Narrow","Roboto Condensed","Helvetica Neue",Arial,sans-serif !important;
+  font-stretch:condensed !important;
   font-size:clamp(54px,10vw,112px) !important;
   font-weight:800 !important;
   letter-spacing:-.055em !important;
