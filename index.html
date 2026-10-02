@@ -2883,6 +2883,15 @@ function cleanWord(w){
   return w.toLowerCase().replace(/[.,!?“”‘’"()]/g,'').trim();
 }
 function buildWords(text){
+  // This lyric is intentionally split by sung syllable, not by whitespace.
+  // The seven nodes must match the seven beat cues exactly: AT / KA / HIT / PA / HIRA / PAN / PA.
+  if(text === 'At kahit pahirapan pa'){
+    const syllables=['At','ka','hit','pa','hira','pan','pa'];
+    return syllables.map((part,i)=>
+      `<span class="word" data-word-index="${i}" style="--i:${i};--tilt:0deg">${part}</span>`
+    ).join('');
+  }
+
   const parts=text.split(/(\s+)/).filter(Boolean);
   let wordIndex=0;
   return parts.map(part=>{
