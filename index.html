@@ -2691,7 +2691,7 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 #sabiMamaEchoField{
   position:fixed;
   inset:0;
-  z-index:1;
+  z-index:3;
   overflow:hidden;
   pointer-events:none;
   display:flex;
@@ -4293,6 +4293,9 @@ function render(){
   const t=Math.min(A.currentTime||0,135);
   const i=lines.findIndex(x=>t>=x.start&&t<x.end);
   activate(i);
+  // Sabi ng mama echo runs independently of the active lyric index.
+  // This keeps it deterministic when scrubbing/replaying through 80.357–83.942s.
+  updateSpecialVisuals(t);
 
   // 01:18.75 — Pati ang nanay... starts completely clean. Clear every global/field effect.
   if(i===12){
