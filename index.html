@@ -2375,6 +2375,219 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 
 </style>
 
+<style id="malayo-echo-scene">
+/* 01:16 — "Kahit malayo pa 'yan": full-screen background echoes.
+   The repeated phrase stays behind the main lyric and moves with a playful,
+   energetic bob so the whole frame feels connected. */
+.line.malayo-echo-scene{
+  position:relative;
+  width:100vw;
+  max-width:none;
+  height:100vh;
+  min-height:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:visible;
+  z-index:4;
+  pointer-events:none;
+}
+.line.malayo-echo-scene.active{
+  animation:malayoMainBob 1.02s cubic-bezier(.36,.07,.19,.97) infinite alternate !important;
+}
+.line.malayo-echo-scene .malayo-foreground{
+  position:relative;
+  z-index:4;
+  width:min(88vw,620px);
+  height:min(62vh,500px);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:0;
+}
+.line.malayo-echo-scene .malayo-foreground .word{
+  position:relative;
+  display:block;
+  width:100%;
+  margin:0;
+  text-align:center;
+  white-space:nowrap;
+  line-height:.9;
+  font-size:clamp(48px,13vw,112px) !important;
+  font-weight:800 !important;
+  letter-spacing:-.055em !important;
+  z-index:4;
+  will-change:transform,opacity;
+}
+.line.malayo-echo-field{
+  position:absolute;
+  inset:-18vh -14vw;
+  z-index:0;
+  overflow:hidden;
+  pointer-events:none;
+}
+.malayo-echo{
+  position:absolute;
+  left:var(--mx);
+  top:var(--my);
+  white-space:nowrap;
+  font-family:inherit;
+  font-size:var(--ms);
+  font-weight:800;
+  letter-spacing:-.065em;
+  line-height:.9;
+  color:var(--mc,#f8f0e6);
+  opacity:0;
+  filter:blur(var(--mb,1px));
+  text-shadow:0 0 22px #ffb38a22;
+  transform:translate(-50%,-50%) rotate(var(--mr)) scale(.82);
+  transform-origin:center;
+  animation:
+    malayoEchoIn .75s cubic-bezier(.16,1.08,.25,1) var(--md) both,
+    malayoEchoBob var(--mspeed) ease-in-out calc(var(--md) + .62s) infinite alternate;
+}
+@keyframes malayoEchoIn{
+  0%{
+    opacity:0;
+    transform:translate(-50%,-50%) translate(0,12px) rotate(calc(var(--mr) - 5deg)) scale(.72);
+  }
+  48%{
+    opacity:var(--ma);
+    transform:translate(-50%,-50%) translate(var(--ex),var(--ey)) rotate(calc(var(--mr) + 2deg)) scale(1.04);
+  }
+  100%{
+    opacity:var(--ma);
+    transform:translate(-50%,-50%) translate(var(--ex),var(--ey)) rotate(var(--mr)) scale(1);
+  }
+}
+@keyframes malayoEchoBob{
+  0%{
+    opacity:calc(var(--ma) * .72);
+    transform:translate(-50%,-50%) translate(var(--ex),calc(var(--ey) + 7px)) rotate(calc(var(--mr) - 1.2deg)) scale(.985);
+  }
+  32%{
+    opacity:var(--ma);
+    transform:translate(-50%,-50%) translate(calc(var(--ex) - 7px),calc(var(--ey) - 5px)) rotate(calc(var(--mr) + 1.5deg)) scale(1.015);
+  }
+  67%{
+    opacity:calc(var(--ma) * .86);
+    transform:translate(-50%,-50%) translate(calc(var(--ex) + 6px),calc(var(--ey) + 3px)) rotate(calc(var(--mr) - .8deg)) scale(.995);
+  }
+  100%{
+    opacity:var(--ma);
+    transform:translate(-50%,-50%) translate(calc(var(--ex) - 3px),calc(var(--ey) - 7px)) rotate(calc(var(--mr) + 1deg)) scale(1.025);
+  }
+}
+@keyframes malayoMainBob{
+  0%{transform:translate3d(-6px,5px,0) rotate(-.5deg) scale(1)}
+  18%{transform:translate3d(5px,-7px,0) rotate(.65deg) scale(1.012)}
+  38%{transform:translate3d(-4px,8px,0) rotate(-.7deg) scale(.994)}
+  58%{transform:translate3d(7px,-4px,0) rotate(.55deg) scale(1.018)}
+  78%{transform:translate3d(-5px,5px,0) rotate(-.45deg) scale(1.006)}
+  100%{transform:translate3d(4px,-6px,0) rotate(.45deg) scale(1.014)}
+}
+.line.malayo-echo-scene.out .malayo-echo{
+  animation:malayoEchoOut .42s ease-in forwards !important;
+}
+@keyframes malayoEchoOut{
+  from{opacity:var(--ma);transform:translate(-50%,-50%) translate(var(--ex),var(--ey)) rotate(var(--mr)) scale(1)}
+  to{opacity:0;transform:translate(-50%,-50%) translate(calc(var(--ex) + var(--ox)),calc(var(--ey) - 18px)) rotate(calc(var(--mr) + 8deg)) scale(.78)}
+}
+@media(max-width:600px){
+  .line.malayo-echo-field{inset:-12vh -28vw}
+  .line.malayo-echo-scene .malayo-foreground{
+    width:88vw;
+    height:56vh;
+  }
+  .line.malayo-echo-scene .malayo-foreground .word{
+    font-size:clamp(42px,14vw,72px) !important;
+  }
+  .malayo-echo{
+    font-size:var(--ms-mobile,var(--ms));
+    letter-spacing:-.055em;
+  }
+}
+
+<style id="pupuntahan-scene">
+/* 01:11 — word-by-word entrance/exit scene. No orbit. */
+.line.pupuntahan-scene{
+  position:relative;
+  width:min(94vw,980px);
+  height:min(50vh,430px);
+  display:block;
+  overflow:visible;
+  text-align:center;
+}
+.line.pupuntahan-scene.active{
+  animation:none !important;
+  transform:none !important;
+  transition:none !important;
+}
+.line.pupuntahan-scene .word,
+.line.pupuntahan-scene .word.visible,
+.line.pupuntahan-scene .word.current{
+  position:absolute;
+  left:50%;
+  top:50%;
+  margin:0;
+  white-space:nowrap;
+  font-family:inherit !important;
+  font-size:clamp(30px,4.9vw,74px) !important;
+  font-weight:700 !important;
+  letter-spacing:-.045em !important;
+  line-height:1.05 !important;
+  transform-origin:center center;
+  opacity:0;
+  filter:none !important;
+  animation:none !important;
+  transition:none !important;
+  will-change:transform,opacity;
+}
+/* Larger same-word echo behind every lyric word. */
+.line.pupuntahan-scene .word::before{
+  content:attr(data-pupuntahan-echo);
+  position:absolute;
+  left:50%;
+  top:50%;
+  z-index:-1;
+  white-space:nowrap;
+  font:inherit;
+  color:#ffb38a;
+  font-size:1.22em;
+  font-weight:700;
+  opacity:0;
+  filter:blur(2.5px);
+  pointer-events:none;
+  transform:translate(-50%,-50%) scale(1.12);
+  transform-origin:center;
+}
+.line.pupuntahan-scene .word.pupuntahan-show::before{
+  animation:pupuntahanEcho 0.62s ease-out forwards !important;
+}
+@keyframes pupuntahanEcho{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.98)}
+  35%{opacity:.18;transform:translate(-50%,-50%) scale(1.16)}
+  100%{opacity:0;transform:translate(-50%,-50%) scale(1.28)}
+}
+@media(max-width:600px){
+  .line.pupuntahan-scene .word,
+  .line.pupuntahan-scene .word.visible,
+  .line.pupuntahan-scene .word.current{
+    font-size:clamp(29px,9vw,46px) !important;
+  }
+}
+
+/* 01:11 FINAL OVERRIDE — the pupuntahan scene owns its word opacity/motion. */
+.line.pupuntahan-scene.active .word,
+.line.pupuntahan-scene.active .word.visible,
+.line.pupuntahan-scene.active .word.current{
+  animation:none !important;
+  transition:none !important;
+}
+.line.pupuntahan-scene.active .word::before{pointer-events:none !important;}
+</style>
+
 <style id="huge-57-number-explosion">
 #huge57Explosion{
   position:absolute;inset:-35%;z-index:2;pointer-events:none;overflow:visible;
@@ -2540,6 +2753,19 @@ const lines=[
   {start:63.10,end:68.45,text:'Pwede ba kitang ligawan?',style:'chorus',section:'chorus',cues:[63.10,63.62,64.05,65.65]},
   {start:68.48,end:71.00,text:'Oo o hindi?',style:'big',section:'chorus',cues:[68.48,68.92,69.35]},
   {start:71.35,end:74.15,text:'Ikaw ay lagi kong pupuntahan',style:'verse',section:'verse 2',cues:[71.35,71.72,72.05,72.48,72.90]},
+  {start:74.18,end:78.00,text:"Kahit malayo pa 'yan",style:'soft',section:'verse 2',cues:[74.18,74.58,74.98,75.30,75.62]},
+  {start:78.75,end:81.95,text:"Pati ang nanay mo'y aking dadalhan",style:'verse',scene:'pati-kinetic',section:'verse 2',cues:[78.75,79.05,79.42,79.78,80.05,80.35,80.70]},
+  {start:81.98,end:86.55,text:'Ng paborito niyang ulam',style:'soft',section:'verse 2',cues:[81.98,82.38,82.78,83.22]},
+  {start:86.78,end:90.20,text:'At kahit pahirapan pa',style:'verse',section:'verse 2',cues:[86.78,87.15,87.62,88.02,88.42]},
+  {start:90.28,end:94.20,text:'Ako ng tatay mo hindi aatras',style:'soft',section:'verse 2',cues:[90.28,90.72,91.05,91.42,91.78,92.15,92.55]},
+  {start:94.28,end:98.80,text:'Kasi gusto kitaaaaaaaa',style:'chorus',section:'verse 2',cues:[94.28,94.70,95.05]},
+  {start:98.82,end:102.55,text:'Gustong-gusto, gustong-gusto kita',style:'big',section:'verse 2',cues:[98.82,99.45,100.10]},
+  {start:102.72,end:109.70,text:'Pwede ba kitang ligawan?',style:'chorus',section:'final',cues:[102.72,103.28,103.72,105.25]},
+  {start:109.75,end:116.55,text:"Kahit 'di maganda ang mga linyahan",style:'soft',section:'final',cues:[109.75,110.05,111.95,112.42,112.82,113.15]},
+  {start:116.70,end:121.30,text:'Bibigay ko nang buo ang oras ko',style:'soft',section:'final',cues:[116.70,117.05,117.42,117.78,118.10,118.42,118.78]},
+  {start:121.35,end:126.25,text:"Kasi do'n alam kong magaling ako",style:'verse',section:'final',cues:[121.35,121.75,122.10,122.48,122.90,123.32,123.78]},
+  {start:126.35,end:132.15,text:'Pwede ba kitang ligawan?',style:'chorus',section:'final',cues:[126.35,126.92,127.35,128.80]},
+  {start:132.18,end:135.10,text:'Oo o hindi?',style:'big',section:'final',cues:[132.18,132.60,133.00]}
 ];
 
 let current=-1,playing=false,lastBeat=-1,raf=0,scrubbing=false,heartCueShown=false;
@@ -2677,7 +2903,8 @@ function sceneFor(i){
   // Each lyric becomes a small motion-graphics scene.
   const scenes=[
     'fly','slit','kailan-flight','wind','zoom','squiggle','clock','clock',
-    'fly','question','pupuntahan'
+    'fly','question','pupuntahan','malayo-echo','pati-kinetic','wind','rubber','chase',
+    'longa','fly','clock','crawl','flip','zoom','question'
   ];
   return scenes[i]||'chase';
 }
@@ -2980,6 +3207,73 @@ function activate(i){
     });
   }
 
+  /* 01:16 — "Kahit malayo pa 'yan": fill the entire background with
+     repeated echoes of the complete phrase. The field is independent from
+     the foreground words, so the echoes can cover the screen without
+     changing the lyric's word-by-word timing. */
+  if(i===11){
+    el.classList.add('malayo-echo-scene');
+
+    // Centered three-line foreground: KAHIT / MALAYO / PA YAN.
+    el.innerHTML='';
+    const foreground=buildWords('Kahit malayo pa yan');
+    const holder=document.createElement('div');
+    holder.className='malayo-foreground';
+    holder.innerHTML=foreground;
+    el.appendChild(holder);
+
+    const field=document.createElement('div');
+    field.className='malayo-echo-field';
+    field.setAttribute('aria-hidden','true');
+
+    const echoSpecs=[
+      ['8%','10%','clamp(26px,6.5vw,76px)',.095,-12, 1.1,-8, 5, 3.1,'#ff1744'],
+      ['32%','7%','clamp(30px,7.2vw,84px)',.075,  7, 0.7, 6,-4, 2.7,'#00e5ff'],
+      ['61%','12%','clamp(24px,6vw,70px)',.085,-5, 0.9,-5, 7, 3.4,'#fff200'],
+      ['91%','8%','clamp(28px,7vw,82px)',.07, 11, 0.5, 7,-6, 2.9,'#ff2d95'],
+      ['14%','28%','clamp(34px,8vw,94px)',.075,  5, 1.2,-6, 4, 3.0,'#39ff14'],
+      ['46%','27%','clamp(25px,6.4vw,74px)',.105,-8, 0.8, 5,-6, 2.5,'#ff6d00'],
+      ['78%','31%','clamp(32px,7.5vw,88px)',.065,  9, 1.3,-4, 6, 3.3,'#b026ff'],
+      ['-4%','47%','clamp(28px,7vw,82px)',.08, -7, 0.6, 7,-5, 2.8,'#ff1744'],
+      ['27%','50%','clamp(23px,5.8vw,68px)',.07,  4, 1,-5, 7, 3.6,'#00e5ff'],
+      ['57%','48%','clamp(35px,8.2vw,98px)',.08,-10, 0.4, 6,-4, 2.6,'#fff200'],
+      ['96%','52%','clamp(27px,6.8vw,80px)',.09,  6, 1.1,-7, 5, 3.0,'#ff2d95'],
+      ['10%','72%','clamp(30px,7.4vw,86px)',.075, -4, 0.7, 5,-7, 3.2,'#39ff14'],
+      ['42%','74%','clamp(25px,6.2vw,72px)',.10,   8, 1.2,-6, 4, 2.9,'#ff6d00'],
+      ['73%','70%','clamp(33px,7.8vw,92px)',.07, -6, 0.9, 7,-5, 3.5,'#b026ff'],
+      ['101%','77%','clamp(27px,6.6vw,78px)',.085, 10, 0.6,-5, 6, 2.7,'#ff1744'],
+      ['-6%','91%','clamp(29px,7vw,82px)',.07, -9, 1.3, 6,-6, 3.1,'#00e5ff'],
+      ['25%','94%','clamp(24px,6vw,70px)',.095,  3, 0.8,-7, 5, 3.7,'#fff200'],
+      ['58%','91%','clamp(31px,7.3vw,86px)',.075, -3, 1, 5,-7, 2.8,'#ff2d95'],
+      ['88%','94%','clamp(26px,6.4vw,75px)',.09,   7, 0.5,-6, 4, 3.3,'#39ff14']
+    ];
+
+    echoSpecs.forEach(([x,y,size,alpha,rot,delay,ex,ey,speed,color])=>{
+      const e=document.createElement('span');
+      e.className='malayo-echo';
+      const stationEchoes=[
+        "Buendia","Para po!","Magallanes","Cubao","Quiapo",
+        "Central","Blumentritt","Dimasalang","Quirino","Remedios","Luneta"
+      ];
+      e.textContent=stationEchoes[Math.floor(Math.random()*stationEchoes.length)];
+      e.style.setProperty('--mx',x);
+      e.style.setProperty('--my',y);
+      e.style.setProperty('--ms',size);
+      e.style.setProperty('--ma',alpha);
+      e.style.setProperty('--mr',rot+'deg');
+      e.style.setProperty('--md',delay+'s');
+      e.style.setProperty('--ex',ex+'px');
+      e.style.setProperty('--ey',ey+'px');
+      e.style.setProperty('--mspeed',speed+'s');
+      e.style.setProperty('--mc',color);
+      e.style.setProperty('--mb',(0.5+(alpha>.09?0.35:0.2))+'px');
+      e.style.setProperty('--ox',(ex>0?18:-18)+'px');
+      field.appendChild(e);
+    });
+
+    el.prepend(field);
+  }
+
   if(i===5){
     el.classList.add('first-linyahan-vertical');
     el.querySelectorAll('.word').forEach((w,idx)=>{
@@ -3248,10 +3542,65 @@ function updateMotion(t){
 
   /* 01:16 — KAHIT / MALAYO / PA YAN.
      Each foreground word gets its own energetic bob. */
+  if(scene==='malayo-echo'){
+    const cues=item.cues||[];
+    words.forEach((w,i)=>{
+      const cue=cues[i] ?? item.start;
+      const nextCue=cues[i+1] ?? item.end;
+      const fadeIn=.16;
+      const fadeOut=.18;
+
+      if(t<cue){
+        w.style.opacity='0';
+        w.style.transform='translate3d(0,18px,0) scale(.94)';
+        w.style.filter='none';
+        return;
+      }
+
+      const inP=Math.min(1,(t-cue)/fadeIn);
+      const outP=Math.min(1,(nextCue-t)/fadeOut);
+      const easeIn=inP*inP*(3-2*inP);
+      const easeOut=outP*outP*(3-2*outP);
+      const alpha=Math.min(easeIn,easeOut);
+
+      const phase=t*(7.8+i*.72)+i*1.65;
+      const x=Math.sin(phase)*4.5;
+      const y=Math.cos(phase*1.12)*7.5;
+      const r=Math.sin(phase*.86+i)*1.7;
+      const scale=1+.028*Math.sin(phase*1.18);
+
+      w.style.opacity=String(alpha);
+      w.style.transform=`translate3d(${x}px,${y}px,0) rotate(${r}deg) scale(${scale})`;
+      w.style.filter='none';
+      w.style.zIndex='5';
+    });
+  }
+
+  if(scene==='pati-kinetic') {
+    // Clean, standalone kinetic typography for 01:19 — no inherited effects.
+    words.forEach((w,idx)=>{
+      const cue=item.cues?.[idx] ?? item.start;
+      const nextCue=item.cues?.[idx+1] ?? item.end;
+      const appear=Math.max(0,Math.min(1,(t-cue)/0.24));
+      const ease=appear*appear*(3-2*appear);
+      const active=t>=cue && t<nextCue;
+      const bob=active ? Math.sin((t-cue)*8.5)*2.5 : 0;
+      const lift=(1-ease)*18;
+      const scale=0.94+0.06*ease;
+      w.style.opacity=String(ease);
+      w.style.transform=`translate3d(0,${-lift+bob}px,0) scale(${scale})`;
+      w.style.rotate='0deg';
+      w.style.filter='none';
+      w.style.textShadow=active ? '0 0 22px #ffb38a35' : 'none';
+      w.style.color=active ? 'var(--accent)' : '';
+      w.style.zIndex='5';
+    });
+  }
+
   // Extra idle heartbeat for every scene, layered through independent transform properties.
   words.forEach((w,i)=>{
     if(!w.classList.contains('visible'))return;
-    if(scene==='fly' || scene==='flip' || scene==='orbit' || scene==='pupuntahan')return; // scene owns its transform
+    if(scene==='fly' || scene==='flip' || scene==='orbit' || scene==='pupuntahan' || scene==='malayo-echo' || scene==='pati-kinetic')return; // scene owns its transform
     const idleX=Math.sin(t*5.4+i*.9)*1.8;
     const idleY=Math.cos(t*5.4+i*1.1)*1.4;
     const idleR=Math.sin(t*5.4+i)*.75;
@@ -3809,11 +4158,22 @@ function spawnBanatEchoes(){
 }
 
 function render(){
-  if((A.currentTime||0)>=74.15){A.currentTime=74.15;A.pause();}
-  const t=Math.min(A.currentTime||0,74.15);
+  if((A.currentTime||0)>=135){A.currentTime=135;A.pause();}
+  const t=Math.min(A.currentTime||0,135);
   const i=lines.findIndex(x=>t>=x.start&&t<x.end);
   activate(i);
 
+  // 01:18.75 — Pati ang nanay... starts completely clean. Clear every global/field effect.
+  if(i===12){
+    ['heartField','backgroundBanat','echoes','siteSparkField','wordExplosionField','huge57Explosion','ooExplosion'].forEach(id=>{
+      const field=document.getElementById(id);
+      if(field) field.replaceChildren();
+    });
+    APP.classList.remove('beat','gusto-clean');
+    document.querySelectorAll('.line').forEach(line=>{
+      if(line!==document.querySelector('.line[data-index="12"]')) line.classList.remove('active');
+    });
+  }
 
   // Keep the GUSTO line completely clean of the old square/confetti decoration.
   APP.classList.toggle('gusto-clean', i===3);
@@ -4180,6 +4540,47 @@ render();
 })();
 </script>
 
+
+<style id="pati-kinetic-clean">
+/* 01:19 — PATI ANG NANAY MO'Y AKING DADALHAN
+   Simple sequential kinetic typography. No inherited scene effects. */
+.line.scene-pati-kinetic{
+  width:min(1080px,92vw);
+  min-height:48vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  align-content:center;
+  flex-wrap:wrap;
+  gap:.08em .16em;
+  text-align:center;
+}
+.line.scene-pati-kinetic .word{
+  display:inline-block !important;
+  margin:0 .025em !important;
+  font-family:inherit !important;
+  font-size:clamp(30px,6.4vw,72px) !important;
+  font-weight:800 !important;
+  letter-spacing:-.045em !important;
+  line-height:.92 !important;
+  animation:none !important;
+  transition:none !important;
+  will-change:transform,opacity;
+}
+.line.scene-pati-kinetic .word.current{
+  color:var(--accent) !important;
+}
+@media(max-width:600px){
+  .line.scene-pati-kinetic{
+    width:88vw;
+    min-height:44vh;
+    gap:.08em .13em;
+  }
+  .line.scene-pati-kinetic .word{
+    font-size:clamp(27px,7.4vw,44px) !important;
+  }
+}
+</style>
 
 </body>
 </html>
