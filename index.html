@@ -704,6 +704,109 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   100%{opacity:0;transform:scale(1.08)}
 }
 
+/* FIRST-CHORUS — horizontal line behind the stacked words. */
+.first-linyahan-stroke{
+  position:absolute;
+  z-index:1;
+  pointer-events:none;
+  opacity:0;
+  will-change:transform,opacity;
+  border:0;
+  background:repeating-linear-gradient(90deg,#ffb38a 0 12px,transparent 12px 23px);
+  box-shadow:0 0 9px #ffb38a55;
+}
+.first-linyahan-vertical.active .first-linyahan-stroke{
+  animation-timing-function:cubic-bezier(.18,.8,.18,1);
+  animation-fill-mode:forwards;
+}
+
+/* Many independent edge-to-edge strokes. Every stroke still travels from one
+   side of the viewport to the opposite side; only its entry edge, angle,
+   speed, thickness and opacity vary. */
+.first-linyahan-stroke-h{
+  left:-125vw; width:150vw; height:var(--thick,2px);
+  top:var(--y,50%);
+  background:repeating-linear-gradient(90deg,#ffb38a 0 var(--dash,12px),transparent var(--dash,12px) calc(var(--dash,12px) + var(--gap,11px)));
+  animation-name:firstLinyahanTravelH;
+  animation-duration:var(--dur,3.2s);
+  animation-delay:var(--delay,0s);
+  animation-timing-function:linear!important;
+}
+.first-linyahan-stroke-h.reverse{
+  left:auto; right:-125vw;
+  animation-name:firstLinyahanTravelHReverse;
+}
+.first-linyahan-stroke-v{
+  top:-125vh; left:var(--x,50%); width:var(--thick,2px); height:150vh;
+  background:repeating-linear-gradient(0deg,#ffb38a 0 var(--dash,12px),transparent var(--dash,12px) calc(var(--dash,12px) + var(--gap,11px)));
+  animation-name:firstLinyahanTravelV;
+  animation-duration:var(--dur,3.2s);
+  animation-delay:var(--delay,0s);
+  animation-timing-function:linear!important;
+}
+.first-linyahan-stroke-v.reverse{
+  top:auto; bottom:-125vh;
+  animation-name:firstLinyahanTravelVReverse;
+}
+.first-linyahan-stroke-d{
+  width:155vw; height:var(--thick,2px);
+  left:-130vw; top:var(--y,50%);
+  transform:rotate(var(--angle,25deg));
+  transform-origin:center center;
+  background:repeating-linear-gradient(90deg,#ffb38a 0 var(--dash,11px),transparent var(--dash,11px) calc(var(--dash,11px) + var(--gap,14px)));
+  animation-name:firstLinyahanTravelD;
+  animation-duration:var(--dur,3.4s);
+  animation-delay:var(--delay,0s);
+  animation-timing-function:linear!important;
+}
+.first-linyahan-stroke-d.reverse{
+  left:auto; right:-130vw;
+  animation-name:firstLinyahanTravelDReverse;
+}
+@keyframes firstLinyahanTravelH{
+  0%{opacity:0;transform:translateX(-18vw)}
+  8%{opacity:var(--op,.5)}
+  88%{opacity:var(--op,.5);transform:translateX(150vw)}
+  100%{opacity:0;transform:translateX(175vw)}
+}
+@keyframes firstLinyahanTravelHReverse{
+  0%{opacity:0;transform:translateX(18vw)}
+  8%{opacity:var(--op,.5)}
+  88%{opacity:var(--op,.5);transform:translateX(-150vw)}
+  100%{opacity:0;transform:translateX(-175vw)}
+}
+@keyframes firstLinyahanTravelV{
+  0%{opacity:0;transform:translateY(-18vh)}
+  8%{opacity:var(--op,.5)}
+  88%{opacity:var(--op,.5);transform:translateY(150vh)}
+  100%{opacity:0;transform:translateY(175vh)}
+}
+@keyframes firstLinyahanTravelVReverse{
+  0%{opacity:0;transform:translateY(18vh)}
+  8%{opacity:var(--op,.5)}
+  88%{opacity:var(--op,.5);transform:translateY(-150vh)}
+  100%{opacity:0;transform:translateY(-175vh)}
+}
+@keyframes firstLinyahanTravelD{
+  0%{opacity:0;transform:translateX(-145vw) rotate(var(--angle,25deg))}
+  8%{opacity:var(--op,.5)}
+  88%{opacity:var(--op,.5);transform:translateX(145vw) rotate(var(--angle,25deg))}
+  100%{opacity:0;transform:translateX(175vw) rotate(var(--angle,25deg))}
+}
+@keyframes firstLinyahanTravelDReverse{
+  0%{opacity:0;transform:translateX(145vw) rotate(var(--angle,-25deg))}
+  8%{opacity:var(--op,.5)}
+  88%{opacity:var(--op,.5);transform:translateX(-145vw) rotate(var(--angle,-25deg))}
+  100%{opacity:0;transform:translateX(-175vw) rotate(var(--angle,-25deg))}
+}
+.line.first-linyahan-vertical.out{animation:none!important;}
+.line.first-linyahan-vertical.out .first-linyahan-stroke{animation:firstLinyahanStrokeOut .28s ease-in forwards!important;}
+@keyframes firstLinyahanStrokeOut{from{opacity:inherit}to{opacity:0}}
+
+/* Keep the older dashed-line machinery inactive for this treatment. */
+.first-linyahan-vertical .linyahan-dash-field{
+  display:none!important;
+}
 
 /* Old i=6 cursive-clock lyric treatment removed: replaced by .scene-bibigay-stack. */
 .line.scene-clock.clock-whimsy-skill .clock-lyric{
@@ -2582,129 +2685,6 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 }
 </style>
 
-<style id="kailan-poppins-bigger">
-.line[data-index="2"] .word,
-.line[data-index="2"] .word.visible,
-.line[data-index="2"] .word.current{font-family:"Poppins",sans-serif!important;font-weight:800!important;font-size:1.28em!important;}
-@media(max-width:600px){.line[data-index="2"] .word,.line[data-index="2"] .word.visible,.line[data-index="2"] .word.current{font-size:1.18em!important;font-weight:800!important;}}
-</style>
-
-<style id="gusto-stack-final">
-/* GUSTO stack — typography/layout only; preserve the existing word effects. */
-.line.scene-gusto-stack{
-  width:min(96vw,1100px)!important;
-  min-height:52vh!important;
-  display:flex!important;
-  flex-direction:column!important;
-  align-items:center!important;
-  justify-content:center!important;
-  text-align:center!important;
-  gap:0!important;
-  white-space:nowrap!important;
-  font-family:"Poppins",sans-serif!important;
-  font-weight:800!important;
-}
-.line.scene-gusto-stack .gusto-stack{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  gap:.02em;
-  line-height:.82;
-  font-family:"Poppins",sans-serif!important;
-  font-size:clamp(48px,8.8vw,104px);
-  font-weight:800;
-  letter-spacing:-.055em;
-}
-.line.scene-gusto-stack .gusto-row{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  width:max-content;
-  line-height:.82;
-  white-space:nowrap;
-}
-.line.scene-gusto-stack .word{
-  font-family:"Poppins",sans-serif!important;
-  font-weight:800!important;
-  font-size:1em!important;
-  line-height:.82!important;
-  margin:0 .045em!important;
-}
-.line.scene-gusto-stack .gusto-oo{
-  font-size:5em!important;
-  line-height:.72!important;
-  color:var(--accent)!important;
-  text-shadow:0 0 34px #ffb38a66;
-  margin:.02em 0!important;
-}
-/* More energetic whole-line bob, while the existing word-level motion remains. */
-.line.scene-gusto-stack.active{
-  animation:gustoStackEnergeticBob 1.05s cubic-bezier(.36,.07,.19,.97) infinite alternate!important;
-}
-@keyframes gustoStackEnergeticBob{
-  0%{transform:translate3d(-9px,7px,0) rotate(-.7deg)}
-  18%{transform:translate3d(7px,-10px,0) rotate(.85deg)}
-  38%{transform:translate3d(-8px,9px,0) rotate(-.9deg)}
-  58%{transform:translate3d(10px,-7px,0) rotate(.75deg)}
-  78%{transform:translate3d(-6px,8px,0) rotate(-.65deg)}
-  100%{transform:translate3d(8px,-8px,0) rotate(.7deg)}
-}
-@media(max-width:600px){
-  .line.scene-gusto-stack{width:96vw!important;min-height:50vh!important}
-  .line.scene-gusto-stack .gusto-stack{font-size:clamp(38px,10.5vw,72px)}
-  .line.scene-gusto-stack .gusto-oo{font-size:5em!important}
-}
-</style>
-
-
-<style id="gusto-stack-00-32-final">
-/* 00:32 GUSTO — explicit four-line stack. Other lyrics untouched. */
-.line[data-index="3"].scene-gusto-stack{
-  width:min(96vw,1100px)!important;
-  display:flex!important; flex-direction:column!important;
-  align-items:center!important; justify-content:center!important;
-  text-align:center!important; white-space:nowrap!important;
-  font-family:"Poppins",sans-serif!important;
-  font-weight:800!important;
-}
-.line[data-index="3"] .gusto-stack{
-  display:flex!important; flex-direction:column!important;
-  align-items:center!important; justify-content:center!important;
-  gap:.02em!important; line-height:.82!important;
-  font-family:"Poppins",sans-serif!important;
-  font-size:clamp(48px,8.8vw,104px)!important;
-  font-weight:800!important; letter-spacing:-.055em!important;
-}
-.line[data-index="3"] .gusto-row{
-  display:flex!important; align-items:center!important; justify-content:center!important;
-  width:max-content!important; line-height:.82!important; white-space:nowrap!important;
-}
-.line[data-index="3"] .gusto-row .word{
-  font-family:"Poppins",sans-serif!important; font-weight:800!important;
-  font-size:1em!important; line-height:.82!important; margin:0 .045em!important;
-}
-.line[data-index="3"] .gusto-row:nth-child(4) .word{
-  font-size:5em!important; line-height:.72!important;
-  color:var(--accent)!important; text-shadow:0 0 34px #ffb38a66;
-  margin:.02em 0!important;
-}
-.line[data-index="3"].active{
-  animation:gustoStackEnergeticBobFinal 1.05s cubic-bezier(.36,.07,.19,.97) infinite alternate!important;
-}
-@keyframes gustoStackEnergeticBobFinal{
-  0%{transform:translate3d(-9px,7px,0) rotate(-.7deg)}
-  18%{transform:translate3d(7px,-10px,0) rotate(.85deg)}
-  38%{transform:translate3d(-8px,9px,0) rotate(-.9deg)}
-  58%{transform:translate3d(10px,-7px,0) rotate(.75deg)}
-  78%{transform:translate3d(-6px,8px,0) rotate(-.65deg)}
-  100%{transform:translate3d(8px,-8px,0) rotate(.7deg)}
-}
-@media(max-width:600px){
-  .line[data-index="3"] .gusto-stack{font-size:clamp(38px,10.5vw,72px)!important}
-  .line[data-index="3"] .gusto-row:nth-child(4) .word{font-size:5em!important}
-}
-</style>
 </head>
 <body>
 <div id="app">
@@ -2765,7 +2745,7 @@ const lines=[
   {start:8.056,end:15.85,text:'Pwede ba akong tumambay dyan sa puso mo?',style:'verse',section:'verse',cues:[8.056,9.261,9.589,10.186,10.555,11.305,11.680,12.430]},
   {start:15.90,end:23.55,text:"Parang masyado na yatang gasgas ang banat na 'to",style:'soft',section:'verse',cues:[15.90,16.28,16.55,16.72,18.28,18.78,19.10,19.35,19.42]},
   {start:23.70,end:31.55,text:"Kailan kaya ako makakaisip ng linyang para sa'yo?",style:'verse',section:'verse',cues:[23.70,24.15,24.48,24.92,26.95,27.30,27.78,28.12,28.42]},
-  {start:31.70,end:39.25,text:"Gusto ko lang naman ay makamit ang matamis mong oo",style:'soft',section:'verse',cues:[31.70,32.18,32.48,32.72,32.88,33.15,34.85,35.48,35.92,36.42]},
+  {start:31.70,end:39.25,text:"Gusto ko lang naman ay makamit ang matamis mong 'oo'",style:'soft',section:'verse',cues:[31.70,32.18,32.48,32.72,32.88,33.15,34.85,35.48,35.92,36.42]},
   {start:39.65,end:46.75,text:'Pwede ba kitang ligawan?',style:'chorus',section:'chorus',cues:[39.65,40.25,40.75,42.65]},
   {start:46.80,end:53.65,text:"Kahit 'di maganda ang mga linyahan",style:'soft',section:'chorus',cues:[46.82,47.12,48.32,48.82,49.25,49.50]},
   {start:53.80,end:58.65,text:'Bibigay ko nang buo ang oras ko',style:'soft',section:'chorus',cues:[53.80,54.18,54.55,54.90,55.10,55.42,55.78]},
@@ -2922,36 +2902,11 @@ function buildParangStackLine(text){
 function sceneFor(i){
   // Each lyric becomes a small motion-graphics scene.
   const scenes=[
-    'fly','slit','kailan-flight','wind','zoom','gusto-stack','clock','clock',
+    'fly','slit','kailan-flight','wind','zoom','squiggle','clock','clock',
     'fly','question','pupuntahan','malayo-echo','orbit','wind','rubber','chase',
     'longa','fly','clock','crawl','flip','zoom','question'
   ];
   return scenes[i]||'chase';
-}
-
-function buildGustoStack(text){
-  const temp=document.createElement('div');
-  temp.innerHTML=buildWords(text);
-
-  // Four centered rows: Gusto ko / lang naman ay / makamit ang matamis mong / oo
-  const rowSpecs=[[0,1],[2,3,4],[5,6,7],[8]];
-  const stack=document.createElement('div');
-  stack.className='gusto-stack';
-
-  rowSpecs.forEach((indices,rowIndex)=>{
-    const row=document.createElement('div');
-    row.className='gusto-row';
-    row.dataset.row=rowIndex;
-    indices.forEach(idx=>{
-      const word=temp.querySelector(`.word[data-word-index="${idx}"]`);
-      if(word) row.appendChild(word);
-    });
-    stack.appendChild(row);
-  });
-
-  const oo=stack.querySelector('.word[data-word-index="8"]');
-  if(oo) oo.classList.add('gusto-oo');
-  return stack;
 }
 
 function buildBibigayStack(text){
@@ -3133,8 +3088,7 @@ function activate(i){
   const item=lines[i];
   const scene=(i===0)?'heart-split':sceneFor(i);
   const qClass=item.text==='Oo o hindi?'?' scene-question':'';
-  const body=scene==='gusto-stack'?buildGustoStack(item.text):
-             scene==='bibigay-stack'?buildBibigayStack(item.text):
+  const body=scene==='bibigay-stack'?buildBibigayStack(item.text):
              scene==='clock'?buildClock(item.text):
              scene==='heart-split'?buildHeartSplitLine(item.text):
              (scene==='slit' && i===1)?buildParangStackLine(item.text):
@@ -3150,11 +3104,7 @@ function activate(i){
     el=document.createElement('div');
     el.className=`line motion scene-${scene} ${item.style}${qClass}${specialClass}`;
     el.dataset.index=i;
-    if(body && body.nodeType){
-      el.appendChild(body);
-    }else{
-      el.innerHTML=body;
-    }
+    el.innerHTML=body;
   }
 
   // Keep the outgoing lyric in the stage while the new lyric enters.
@@ -3326,6 +3276,28 @@ function activate(i){
       w.style.setProperty('--echo-x',((idx%2===0?-1:1)*(7+idx*1.5))+'px');
       w.style.setProperty('--echo-y',((idx%3)-1)*4+'px');
       w.style.setProperty('--echo-rot',((idx%2===0?-1:1)*(idx%3+0.5))+'deg');
+    });
+    const strokeSpecs=[
+      ['h',false,18,2,.42,3.4,0.02,10,12],['h',true,30,3,.30,4.1,.18,16,17],
+      ['h',false,42,1,.62,2.7,.34,8,13],['h',true,55,2,.48,3.6,.52,12,10],
+      ['h',false,68,4,.25,4.4,.70,20,18],['h',true,80,2,.55,3.0,.88,9,14],
+      ['v',false,16,2,.38,3.8,.12,10,12],['v',true,29,3,.52,3.2,.30,15,15],
+      ['v',false,43,1,.66,2.8,.46,7,11],['v',true,57,2,.32,4.0,.64,18,16],
+      ['v',false,71,3,.50,3.5,.82,12,12],['v',true,84,1,.44,4.2,.96,9,18],
+    ];
+    strokeSpecs.forEach(([type,reverse,pos,thick,op,dur,delay,dash,gap])=>{
+      const stroke=document.createElement('div');
+      stroke.className='first-linyahan-stroke first-linyahan-stroke-'+type+(reverse?' reverse':'');
+      stroke.setAttribute('aria-hidden','true');
+      stroke.style.setProperty('--'+(type==='h'?'y':type==='v'?'x':'y'),pos+'%');
+      stroke.style.setProperty('--thick',thick+'px');
+      stroke.style.setProperty('--op',op);
+      stroke.style.setProperty('--dur',dur+'s');
+      stroke.style.setProperty('--delay',delay+'s');
+      stroke.style.setProperty('--dash',dash+'px');
+      stroke.style.setProperty('--gap',gap+'px');
+      if(type==='d') stroke.style.setProperty('--angle',(reverse?-24:24)+'deg');
+      el.appendChild(stroke);
     });
   }
   if(i===1){
