@@ -1516,6 +1516,21 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
     font-size:clamp(30px,7.5vw,48px) !important;
   }
 }
+
+/* KASI STACK — remove the previous per-word clock/magaling animation.
+   The stack should use only its new three-size typography treatment. */
+.line.scene-clock .clock-lyric .kasi-stack .word,
+.line.scene-clock .clock-lyric .kasi-stack .word.visible,
+.line.scene-clock .clock-lyric .kasi-stack .word.magaling-word,
+.line.scene-clock .clock-lyric .kasi-stack .word.magaling-word.visible{
+  animation:none !important;
+  transform:none !important;
+  filter:none !important;
+  opacity:1 !important;
+  text-shadow:none !important;
+  color:var(--ink) !important;
+  will-change:auto !important;
+}
 @media(max-width:600px){
   .line.scene-clock .clock-lyric .bibigay-stack{
     font-size:clamp(39px,12.8vw,68px) !important;
