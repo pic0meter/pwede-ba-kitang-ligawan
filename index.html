@@ -3596,11 +3596,16 @@ function updateMotion(t){
       const appear=Math.max(0,Math.min(1,(t-cue)/0.24));
       const ease=appear*appear*(3-2*appear);
       const active=t>=cue && t<nextCue;
-      const bob=active ? Math.sin((t-cue)*8.5)*2.5 : 0;
+      // Each word gets its own bob phase and speed. The motion is deliberately
+      // slightly different per word so the line feels playful without moving
+      // as one synchronized block.
+      const bob=active ? Math.sin((t-cue)*(7.0+idx*.65)+idx*1.15)*2.8 : 0;
+      const sway=active ? Math.sin((t-cue)*(4.2+idx*.38)+idx*.9)*1.15 : 0;
       const lift=(1-ease)*18;
       const scale=0.94+0.06*ease;
+      const idleScale=active ? 1+Math.sin((t-cue)*(5.4+idx*.32)+idx*.7)*.012 : 1;
       w.style.opacity=String(ease);
-      w.style.transform=`translate3d(0,${-lift+bob}px,0) scale(${scale})`;
+      w.style.transform=`translate3d(${sway}px,${-lift+bob}px,0) scale(${scale*idleScale})`;
       w.style.rotate='0deg';
       w.style.filter='none';
       w.style.textShadow=active ? '0 0 22px #ffb38a35' : 'none';
