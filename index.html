@@ -1487,6 +1487,35 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   transform:translateY(-.035em) scale(1.035) !important;
   text-shadow:0 0 28px #ffb38a55;
 }
+
+/* KASI DO'N — three-row Poppins stack with deliberately huge size jumps. */
+.line.scene-clock .clock-lyric .kasi-stack{
+  font-family:"Poppins",sans-serif !important;
+  font-weight:800 !important;
+  font-size:clamp(40px,4.8vw,60px) !important;
+  line-height:.84 !important;
+  letter-spacing:-.055em !important;
+  gap:.02em !important;
+}
+.line.scene-clock .clock-lyric .kasi-stack .word{
+  font-family:"Poppins",sans-serif !important;
+  font-weight:800 !important;
+}
+.line.scene-clock .clock-lyric .kasi-stack .kasi-row-1{font-size:1em !important;}
+.line.scene-clock .clock-lyric .kasi-stack .kasi-row-2{font-size:1.6em !important;}
+.line.scene-clock .clock-lyric .kasi-stack .kasi-row-3{font-size:2.25em !important;}
+.line.scene-clock .clock-lyric .kasi-stack .kasi-row-1,
+.line.scene-clock .clock-lyric .kasi-stack .kasi-row-2,
+.line.scene-clock .clock-lyric .kasi-stack .kasi-row-3{
+  font-family:"Poppins",sans-serif !important;
+  font-weight:800 !important;
+  width:max-content;
+}
+@media(max-width:600px){
+  .line.scene-clock .clock-lyric .kasi-stack{
+    font-size:clamp(30px,7.5vw,48px) !important;
+  }
+}
 @media(max-width:600px){
   .line.scene-clock .clock-lyric .bibigay-stack{
     font-size:clamp(39px,12.8vw,68px) !important;
@@ -2916,21 +2945,25 @@ function buildBibigayStack(text){
   const temp=document.createElement('div');
   temp.innerHTML=words;
 
-  const rowSpecs = text === 'Gusto ko lang naman ay makamit ang matamis mong oo'
+  const isGusto = text === 'Gusto ko lang naman ay makamit ang matamis mong oo';
+  const isKasi = text === "Kasi do'n alam kong magaling ako";
+  const rowSpecs = isGusto
     ? [[0,1,2,3,4],[5,6,7],[8,9]]
-    : [
-        [0,1],
-        [2,3],
-        [4],
-        [5,6]
-      ];
+    : isKasi
+      ? [[0,1],[2,3],[4,5]]
+      : [
+          [0,1],
+          [2,3],
+          [4],
+          [5,6]
+        ];
 
   const stack=document.createElement('div');
-  stack.className='bibigay-stack';
+  stack.className='bibigay-stack' + (isKasi ? ' kasi-stack' : '');
 
   rowSpecs.forEach((indices,rowIndex)=>{
     const row=document.createElement('div');
-    row.className='bibigay-row';
+    row.className='bibigay-row' + (isKasi ? ` kasi-row-${rowIndex+1}` : '');
     row.dataset.row=rowIndex;
 
     indices.forEach(idx=>{
