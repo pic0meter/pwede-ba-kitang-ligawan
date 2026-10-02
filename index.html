@@ -808,28 +808,7 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   display:none!important;
 }
 
-/* CLOCK LYRICS — playful, rounded, hand-lettered feel; never cursive. */
-.line.scene-clock.cursive-clock-lyric .clock-lyric{
-  font-family:"Arial Rounded MT Bold","Trebuchet MS","Avenir Next Rounded",ui-rounded,sans-serif;
-  font-weight:800;
-  font-size:clamp(28px,7.2vw,72px);
-  letter-spacing:-.025em;
-  line-height:1.0;
-  max-width:92%;
-  gap:.02em .08em;
-  transform:translate(-50%,-50%) rotate(-1deg);
-}
-.line.scene-clock.cursive-clock-lyric .clock-lyric .word{
-  font-size:1em !important;
-  font-weight:800 !important;
-  letter-spacing:inherit !important;
-  text-shadow:0 2px 0 #0002, 0 0 18px #ffb38a18;
-}
-.line.scene-clock.cursive-clock-lyric .clock-lyric .word.visible{
-  animation:playfulClockIn .58s cubic-bezier(.12,1.4,.25,1) both,
-            playfulClockDance 1.15s ease-in-out .58s infinite;
-  animation-delay:calc(var(--i)*.055s),calc(.68s + var(--i)*.045s);
-}
+/* Old i=6 cursive-clock lyric treatment removed: replaced by .scene-bibigay-stack. */
 .line.scene-clock.clock-whimsy-skill .clock-lyric{
   transform:translate(-50%,-50%) rotate(1.2deg) scale(1.02);
 }
@@ -1374,6 +1353,115 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .question-mark{display:inline-block;opacity:0;color:var(--accent);font-weight:900;transform:translateY(.35em) rotate(-18deg) scale(.55);will-change:transform}
 .question-mark.visible{opacity:1;animation:qMark .55s cubic-bezier(.12,1.5,.3,1) both}
 @keyframes qMark{0%{transform:translateY(.35em) rotate(-18deg) scale(.55)}65%{transform:translateY(-.08em) rotate(12deg) scale(1.2)}100%{transform:translateY(-.02em) rotate(6deg) scale(1.08)}}
+
+/* --- BIBIGAY KO — SHARP FOUR-ROW TYPOGRAPHY ---
+   Replaces the old clock/longa presentation for both occurrences.
+   Layout is deliberately fixed as:
+   Bibigay ko
+   nang buo
+   ang
+   oras ko
+*/
+.line.scene-bibigay-stack{
+  width:min(94vw,1100px) !important;
+  min-height:48vh !important;
+  height:auto !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  align-content:center !important;
+  flex-wrap:nowrap !important;
+  flex-direction:column !important;
+  gap:0 !important;
+  text-align:center !important;
+  white-space:nowrap !important;
+  font-family:"Poppins",sans-serif !important;
+  font-size:clamp(52px,9.8vw,112px) !important;
+  font-weight:800 !important;
+  letter-spacing:-.055em !important;
+  line-height:.84 !important;
+  transform-style:flat !important;
+}
+
+/* Kill inherited scene-specific typography/motion that was attached to
+   the old clock/longa treatments. */
+.line.scene-bibigay-stack,
+.line.scene-bibigay-stack.active,
+.line.scene-bibigay-stack.out{
+  font-family:"Poppins",sans-serif !important;
+  font-weight:800 !important;
+  letter-spacing:-.055em !important;
+}
+
+.line.scene-bibigay-stack .bibigay-stack{
+  width:100%;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  line-height:.84;
+  gap:.02em;
+}
+
+.line.scene-bibigay-stack .bibigay-row{
+  width:max-content;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin:0;
+  padding:0;
+  line-height:.84;
+  white-space:nowrap;
+}
+
+.line.scene-bibigay-stack .word{
+  display:inline-block !important;
+  margin:0 .055em !important;
+  padding:0 !important;
+  font-family:"Poppins",sans-serif !important;
+  font-size:1em !important;
+  font-weight:800 !important;
+  letter-spacing:-.055em !important;
+  line-height:.84 !important;
+  text-align:center !important;
+}
+
+/* Preserve the existing cue-driven reveal/current-word behavior without
+   allowing the old scene rules to resize or reshape individual words. */
+.line.scene-bibigay-stack .word.visible{
+  animation:wordPop .42s cubic-bezier(.18,.9,.25,1.35) both !important;
+}
+
+.line.scene-bibigay-stack .word.current{
+  color:var(--accent);
+  transform:translateY(-.035em) scale(1.035) !important;
+  text-shadow:0 0 28px #ffb38a55;
+}
+
+.line.scene-bibigay-stack .word.accent,
+.line.scene-bibigay-stack .word.visible.accent{
+  color:var(--accent);
+}
+
+@media(max-width:600px){
+  .line.scene-bibigay-stack{
+    width:92vw !important;
+    min-height:48vh !important;
+    font-size:clamp(39px,12.8vw,68px) !important;
+    line-height:.86 !important;
+  }
+
+  .line.scene-bibigay-stack .bibigay-stack,
+  .line.scene-bibigay-stack .bibigay-row,
+  .line.scene-bibigay-stack .word{
+    line-height:.86 !important;
+  }
+
+  .line.scene-bibigay-stack .word{
+    margin:0 .045em !important;
+  }
+}
 
 /* 8 — long "kitaaaaa": each A physically follows the previous A */
 .line.scene-longa{display:flex;flex-wrap:nowrap;justify-content:center;gap:0;white-space:nowrap}
@@ -2592,11 +2680,44 @@ function buildHeartSplitLine(text){
 function sceneFor(i){
   // Each lyric becomes a small motion-graphics scene.
   const scenes=[
-    'fly','slit','kailan-flight','wind','zoom','squiggle','clock','clock',
+    'fly','slit','kailan-flight','wind','zoom','squiggle','bibigay-stack','clock',
     'fly','question','pupuntahan','malayo-echo','orbit','wind','rubber','chase',
-    'longa','fly','clock','crawl','flip','zoom','question'
+    'bibigay-stack','fly','clock','crawl','flip','zoom','question'
   ];
   return scenes[i]||'chase';
+}
+
+function buildBibigayStack(text){
+  // Four centered rows, while preserving the original word order/cues:
+  // Bibigay ko / nang buo / ang / oras ko
+  const words=buildWords(text);
+  const temp=document.createElement('div');
+  temp.innerHTML=words;
+
+  const rowSpecs=[
+    [0,1],
+    [2,3],
+    [4],
+    [5,6]
+  ];
+
+  const stack=document.createElement('div');
+  stack.className='bibigay-stack';
+
+  rowSpecs.forEach((indices,rowIndex)=>{
+    const row=document.createElement('div');
+    row.className='bibigay-row';
+    row.dataset.row=rowIndex;
+
+    indices.forEach(idx=>{
+      const word=temp.querySelector(`.word[data-word-index="${idx}"]`);
+      if(word) row.appendChild(word);
+    });
+
+    stack.appendChild(row);
+  });
+
+  return stack.outerHTML;
 }
 
 function buildClock(text){
@@ -2745,7 +2866,10 @@ function activate(i){
   const item=lines[i];
   const scene=(i===0)?'heart-split':sceneFor(i);
   const qClass=item.text==='Oo o hindi?'?' scene-question':'';
-  const body=scene==='clock'?buildClock(item.text):scene==='heart-split'?buildHeartSplitLine(item.text):buildWords(item.text);
+  const body=scene==='bibigay-stack'?buildBibigayStack(item.text):
+             scene==='clock'?buildClock(item.text):
+             scene==='heart-split'?buildHeartSplitLine(item.text):
+             buildWords(item.text);
   let el;
   if(scene==='heart-split'){
     el=document.createElement('div');
@@ -2959,7 +3083,6 @@ function activate(i){
     el.querySelectorAll('.word[data-word-index="6"], .word[data-word-index="7"], .word[data-word-index="8"]').forEach(w=>w.classList.add('scratch-word'));
   }
   if(i===3) el.classList.add('gusto-shiver');
-  if(i===6) el.classList.add('cursive-clock-lyric','clock-whimsy-time');
   if(i===7) el.classList.add('playful-clock-lyric','clock-whimsy-skill');
   SEC.textContent=item.section;
   requestAnimationFrame(()=>{el.classList.add('active'); if(scene==='clock') layoutClock();});
