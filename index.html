@@ -3758,7 +3758,7 @@ function updateMotion(t){
       const hasAppeared=t>=cue;
       if(!hasAppeared){
         w.style.opacity='0';
-        w.style.transform='translate3d(0,18px,0) scaleX(.84) scaleY(.96)';
+        w.style.transform='translate3d(0,18px,0) scaleX(.78) scaleY(.96)';
         w.style.filter='none';
         return;
       }
@@ -3769,7 +3769,7 @@ function updateMotion(t){
       const enter=Math.min(1,(t-cue)/.16);
       const ease=enter*enter*(3-2*enter);
       w.style.opacity=String(ease);
-      w.style.transform=`translate3d(${sway}px,${bob}px,0) scaleX(${.84*squash}) scaleY(${1+.018*Math.sin(phase*.9)})`;
+      w.style.transform=`translate3d(${sway}px,${bob}px,0) scaleX(${.78*squash}) scaleY(${1+.018*Math.sin(phase*.9)})`;
       w.style.filter='none';
       w.style.color='var(--accent)';
       w.style.zIndex='5';
@@ -4885,8 +4885,7 @@ render();
   width:auto !important;
   margin:0 !important;
   display:inline-block !important;
-  font-family:"Arial Narrow","Roboto Condensed","Helvetica Neue",Arial,sans-serif !important;
-  font-stretch:condensed !important;
+  font-family:"Poppins",sans-serif !important;
   font-size:clamp(54px,10vw,112px) !important;
   font-weight:800 !important;
   letter-spacing:-.055em !important;
