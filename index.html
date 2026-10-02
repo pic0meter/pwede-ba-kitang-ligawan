@@ -2860,7 +2860,7 @@ const lines=[
   {start:74.18,end:78.00,text:"Kahit malayo pa 'yan",style:'soft',section:'verse 2',cues:[74.18,74.58,74.98,75.30,75.62]},
   {start:78.75,end:81.95,text:"Pati ang nanay mo'y aking dadalhan",style:'verse',scene:'pati-kinetic',section:'verse 2',cues:[78.75,79.05,79.42,79.78,80.05,80.35,80.70]},
   {start:81.98,end:86.55,text:'Ng paborito niyang ulam',style:'soft',scene:'ulam-kinetic',section:'verse 2',cues:[81.98,82.38,82.78,83.22]},
-  {start:86.78,end:90.20,text:'At kahit pahirapan pa',style:'verse',section:'verse 2',cues:[86.78,87.15,87.62,88.02,88.42]},
+  {start:86.78,end:90.20,text:'At kahit pahirapan pa',style:'verse',scene:'pahirapan-beat',section:'verse 2',cues:[86.78,86.99,87.071,87.588,88.121,88.804,89.377]},
   {start:90.28,end:94.20,text:'Ako ng tatay mo hindi aatras',style:'soft',section:'verse 2',cues:[90.28,90.72,91.05,91.42,91.78,92.15,92.55]},
   {start:94.28,end:98.80,text:'Kasi gusto kitaaaaaaaa',style:'chorus',section:'verse 2',cues:[94.28,94.70,95.05]},
   {start:98.82,end:102.55,text:'Gustong-gusto, gustong-gusto kita',style:'big',section:'verse 2',cues:[98.82,99.45,100.10]},
@@ -3007,7 +3007,7 @@ function sceneFor(i){
   // Each lyric becomes a small motion-graphics scene.
   const scenes=[
     'fly','slit','kailan-flight','wind','zoom','squiggle','clock','clock',
-    'fly','question','pupuntahan','malayo-echo','pati-kinetic','ulam-kinetic','rubber','chase',
+    'fly','question','pupuntahan','malayo-echo','pati-kinetic','ulam-kinetic','pahirapan-beat','chase',
     'longa','fly','clock','crawl','flip','zoom','question'
   ];
   return scenes[i]||'chase';
@@ -3482,10 +3482,11 @@ function updateWords(t){
   const words=[...el.querySelectorAll('.word')];
   const cues=item.cues;
   let currentWord=-1;
+  const singleBeatScene=sceneFor(current)==='pahirapan-beat';
 
   words.forEach((w,i)=>{
     const start=cues[i] ?? (item.start+(i/words.length)*(item.end-item.start));
-    const visible=t>=start;
+    const visible=singleBeatScene ? (t>=start && t<(cues[i+1] ?? item.end)) : t>=start;
     w.classList.toggle('visible',visible);
     if(visible)currentWord=i;
   });
@@ -3719,6 +3720,51 @@ function updateMotion(t){
     });
   }
 
+
+
+  if(scene==='pahirapan-beat') {
+    // 01:26 — AT KAHIT PAHIRAPAN PA
+    // One word owns the exact center at a time. The previous word is fully
+    // gone by the next cue; nothing from the old typographic treatment carries over.
+    const cues=item.cues||[];
+    const fadeIn=.08;
+    const fadeOut=.10;
+    words.forEach((w,idx)=>{
+      const cue=cues[idx] ?? item.start;
+      const next=cues[idx+1] ?? item.end;
+      const active=t>=cue && t<next;
+
+      if(!active){
+        w.style.opacity='0';
+        w.style.transform='translate3d(-50%,-50%,0) scale(.88)';
+        w.style.filter='none';
+        w.style.textShadow='none';
+        w.style.color='';
+        w.style.zIndex='1';
+        w.style.rotate='0deg';
+        w.style.translate='0 0';
+        w.style.scale='1';
+        return;
+      }
+
+      const inP=Math.min(1,(t-cue)/fadeIn);
+      const outP=Math.min(1,(next-t)/fadeOut);
+      const easeIn=inP*inP*(3-2*inP);
+      const easeOut=outP*outP*(3-2*outP);
+      const alpha=Math.min(easeIn,easeOut);
+      const elapsed=t-cue;
+      const beat=Math.sin(elapsed*10.5+idx*.7);
+      const bob=Math.sin(elapsed*8.5+idx)*3.5;
+      const scale=1+.025*beat;
+
+      w.style.opacity=String(alpha);
+      w.style.transform=`translate3d(-50%,calc(-50% + ${bob}px),0) scale(${scale})`;
+      w.style.filter=`blur(${(1-alpha)*3}px)`;
+      w.style.textShadow=`0 0 ${18+12*alpha}px #ffb38a55`;
+      w.style.color='var(--accent)';
+      w.style.zIndex='5';
+    });
+  }
 
   if(scene==='ulam-kinetic') {
     // 01:22 — NG / PABORITO / NYANG / ULAM
@@ -4751,6 +4797,41 @@ render();
 </style>
 
 
+<style id="pahirapan-beat-clean">
+/* 01:26 — AT KAHIT PAHIRAPAN PA
+   Exact beat-by-beat center typography. Only one word is visible at once. */
+.line.scene-pahirapan-beat{
+  width:100%;
+  min-height:48vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  overflow:visible;
+}
+.line.scene-pahirapan-beat .word{
+  position:absolute !important;
+  left:50% !important;
+  top:50% !important;
+  width:92vw !important;
+  margin:0 !important;
+  display:block !important;
+  font-family:"Poppins",sans-serif !important;
+  font-size:clamp(58px,12vw,132px) !important;
+  font-weight:800 !important;
+  letter-spacing:-.065em !important;
+  line-height:.9 !important;
+  text-align:center !important;
+  transform-origin:center center !important;
+  will-change:opacity,transform,filter;
+}
+@media(max-width:600px){
+  .line.scene-pahirapan-beat .word{
+    width:96vw !important;
+    font-size:clamp(48px,15vw,92px) !important;
+  }
+}
+</style>
 <style id="pati-kinetic-clean">
 /* 01:19 — PATI ANG NANAY MO'Y AKING DADALHAN
    Simple sequential kinetic typography. No inherited scene effects. */
