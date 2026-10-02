@@ -310,9 +310,9 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 
 
 #wordExplosionField{position:absolute;inset:0;z-index:1;overflow:hidden;pointer-events:none}
-.clock-number-burst-layer{position:absolute;inset:-18%;z-index:3;overflow:visible;pointer-events:none}
+.clock-number-burst-layer{position:absolute;inset:0;z-index:1;overflow:visible;pointer-events:none}
 .word-bg-burst{position:absolute;left:0;top:0;white-space:nowrap;font-family:inherit;font-weight:inherit;letter-spacing:inherit;line-height:inherit;color:#f8f0e6;opacity:0;transform:translate(-50%,-50%) scale(.18) rotate(var(--r));animation:wordBgBurst var(--life) cubic-bezier(.12,.8,.18,1) forwards;filter:blur(.35px);text-shadow:0 0 18px #ffb38a2e}
-.clock-number-bg-burst{position:absolute;left:0;top:0;white-space:nowrap;font-family:"Poppins",sans-serif;font-weight:500;letter-spacing:-.02em;color:var(--accent);opacity:0;transform:translate(-50%,-50%) scale(.22) rotate(var(--r));animation:clockNumberBgBurst var(--life) cubic-bezier(.2,.8,.25,1) forwards;filter:blur(.15px);text-shadow:0 0 18px #ffb38a55;z-index:3;pointer-events:none}
+.clock-number-bg-burst{position:absolute;left:0;top:0;white-space:nowrap;font-family:"Helvetica Neue",Arial,sans-serif;font-weight:300;letter-spacing:-.02em;color:var(--accent);opacity:0;transform:translate(-50%,-50%) scale(.35) rotate(var(--r));animation:clockNumberBgBurst var(--life) cubic-bezier(.2,.8,.25,1) forwards;filter:blur(.15px);text-shadow:0 0 10px #ffb38a22;z-index:1;pointer-events:none}
 @keyframes clockNumberBgBurst{0%{opacity:0;transform:translate(-50%,-50%) scale(.35) rotate(var(--r))}8%{opacity:var(--alpha);transform:translate(-50%,-50%) scale(.9) rotate(var(--r))}24%{opacity:calc(var(--alpha)*.72);transform:translate(calc(-50% + var(--dx)*.45),calc(-50% + var(--dy)*.45)) scale(1) rotate(var(--r2))}100%{opacity:0;transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(var(--scale)) rotate(var(--r2))}}
 @keyframes wordBgBurst{0%{opacity:0;transform:translate(-50%,-50%) scale(.18) rotate(var(--r))}12%{opacity:var(--alpha)}45%{opacity:calc(var(--alpha)*.72)}100%{opacity:0;transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(var(--scale)) rotate(var(--r2))}}
 
@@ -574,16 +574,16 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .line.motion .word:nth-child(7n+1){font-size:1.12em}
 
 .clock-wrap{position:relative;width:min(94vw,760px);height:min(52vh,450px);display:grid;place-items:center}
-.clock-face{position:absolute;width:min(70vw,320px);height:min(70vw,320px);border:1px solid #ffffff30;border-radius:50%;opacity:.9;background:radial-gradient(circle,#ffb38a08 0 55%,transparent 72%);box-shadow:0 0 45px #ffb38a0c inset,0 0 24px #ffb38a12}
+.clock-face{position:absolute;width:min(78vw,360px);height:min(78vw,360px);border:2px solid #ffffff28;border-radius:50%;opacity:.9;background:radial-gradient(circle,#ffb38a08 0 55%,transparent 72%);box-shadow:0 0 55px #ffb38a10 inset,0 0 34px #ffb38a10}
 /* Clock-number bursts sit above the clock face but below the lyric words. */
-.line.scene-clock .clock-face{z-index:1}
-.line.scene-clock .clock-lyric{z-index:5}
+.line.scene-clock .clock-face{z-index:0}
+.line.scene-clock .clock-lyric{z-index:2}
 .clock-face::before{content:"";position:absolute;inset:7%;border:1px solid #ffffff14;border-radius:50%}
 .clock-face::after{content:"";position:absolute;inset:1.8%;border:1px dotted #ffb38a18;border-radius:50%;animation:clockOrbit 14s linear infinite}
-.clock-number{position:absolute;left:50%;top:50%;font:600 clamp(9px,1.9vw,13px) ui-monospace,SFMono-Regular,Menlo,monospace;color:#c7bbb0;transform:translate(-50%,-50%);opacity:0;animation:clockNumberIn .48s cubic-bezier(.15,1.35,.3,1) forwards;animation-delay:calc(var(--n)*28ms)}
+.clock-number{position:absolute;left:50%;top:50%;font:700 clamp(10px,2.4vw,15px) ui-monospace,SFMono-Regular,Menlo,monospace;color:#b7aaa0;transform:translate(-50%,-50%);opacity:0;animation:clockNumberIn .48s cubic-bezier(.15,1.35,.3,1) forwards;animation-delay:calc(var(--n)*28ms)}
 @keyframes clockNumberIn{0%{opacity:0}70%{opacity:1}100%{opacity:.9}}
-.clock-tick{position:absolute;left:50%;top:50%;width:1px;height:4px;background:#ffffff20;transform-origin:center center;border-radius:2px}
-.clock-tick.major{width:1px;height:8px;background:#ffffff38}
+.clock-tick{position:absolute;left:50%;top:50%;width:1px;height:5px;background:#ffffff28;transform-origin:center center;border-radius:2px}
+.clock-tick.major{width:2px;height:10px;background:#ffffff48}
 @keyframes clockOrbit{to{transform:rotate(360deg)}}
 
 
@@ -808,7 +808,28 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   display:none!important;
 }
 
-/* Old i=6 cursive-clock lyric treatment removed: replaced by .scene-bibigay-stack. */
+/* CLOCK LYRICS — playful, rounded, hand-lettered feel; never cursive. */
+.line.scene-clock.cursive-clock-lyric .clock-lyric{
+  font-family:"Arial Rounded MT Bold","Trebuchet MS","Avenir Next Rounded",ui-rounded,sans-serif;
+  font-weight:800;
+  font-size:clamp(28px,7.2vw,72px);
+  letter-spacing:-.025em;
+  line-height:1.0;
+  max-width:92%;
+  gap:.02em .08em;
+  transform:translate(-50%,-50%) rotate(-1deg);
+}
+.line.scene-clock.cursive-clock-lyric .clock-lyric .word{
+  font-size:1em !important;
+  font-weight:800 !important;
+  letter-spacing:inherit !important;
+  text-shadow:0 2px 0 #0002, 0 0 18px #ffb38a18;
+}
+.line.scene-clock.cursive-clock-lyric .clock-lyric .word.visible{
+  animation:playfulClockIn .58s cubic-bezier(.12,1.4,.25,1) both,
+            playfulClockDance 1.15s ease-in-out .58s infinite;
+  animation-delay:calc(var(--i)*.055s),calc(.68s + var(--i)*.045s);
+}
 .line.scene-clock.clock-whimsy-skill .clock-lyric{
   transform:translate(-50%,-50%) rotate(1.2deg) scale(1.02);
 }
@@ -1354,170 +1375,6 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .question-mark.visible{opacity:1;animation:qMark .55s cubic-bezier(.12,1.5,.3,1) both}
 @keyframes qMark{0%{transform:translateY(.35em) rotate(-18deg) scale(.55)}65%{transform:translateY(-.08em) rotate(12deg) scale(1.2)}100%{transform:translateY(-.02em) rotate(6deg) scale(1.08)}}
 
-/* --- BIBIGAY KO — SHARP FOUR-ROW TYPOGRAPHY ---
-   Replaces the old clock/longa presentation for both occurrences.
-   Layout is deliberately fixed as:
-   Bibigay ko
-   nang buo
-   ang
-   oras ko
-*/
-.line.scene-bibigay-stack{
-  width:min(94vw,1100px) !important;
-  min-height:48vh !important;
-  height:auto !important;
-  display:flex !important;
-  align-items:center !important;
-  justify-content:center !important;
-  align-content:center !important;
-  flex-wrap:nowrap !important;
-  flex-direction:column !important;
-  gap:0 !important;
-  text-align:center !important;
-  white-space:nowrap !important;
-  font-family:"Poppins",sans-serif !important;
-  font-size:clamp(52px,9.8vw,112px) !important;
-  font-weight:800 !important;
-  letter-spacing:-.055em !important;
-  line-height:.84 !important;
-  transform-style:flat !important;
-}
-
-/* Kill inherited scene-specific typography/motion that was attached to
-   the old clock/longa treatments. */
-.line.scene-bibigay-stack,
-.line.scene-bibigay-stack.active,
-.line.scene-bibigay-stack.out{
-  font-family:"Poppins",sans-serif !important;
-  font-weight:800 !important;
-  letter-spacing:-.055em !important;
-}
-
-.line.scene-bibigay-stack .bibigay-stack{
-  width:100%;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
-  line-height:.84;
-  gap:.02em;
-}
-
-.line.scene-bibigay-stack .bibigay-row{
-  width:max-content;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  margin:0;
-  padding:0;
-  line-height:.84;
-  white-space:nowrap;
-}
-
-.line.scene-bibigay-stack .word{
-  display:inline-block !important;
-  margin:0 .055em !important;
-  padding:0 !important;
-  font-family:"Poppins",sans-serif !important;
-  font-size:1em !important;
-  font-weight:800 !important;
-  letter-spacing:-.055em !important;
-  line-height:.84 !important;
-  text-align:center !important;
-}
-
-/* Preserve the existing cue-driven reveal/current-word behavior without
-   allowing the old scene rules to resize or reshape individual words. */
-.line.scene-bibigay-stack .word.visible{
-  animation:wordPop .42s cubic-bezier(.18,.9,.25,1.35) both !important;
-}
-
-.line.scene-bibigay-stack .word.current{
-  color:var(--accent);
-  transform:translateY(-.035em) scale(1.035) !important;
-  text-shadow:0 0 28px #ffb38a55;
-}
-
-.line.scene-bibigay-stack .word.accent,
-.line.scene-bibigay-stack .word.visible.accent{
-  color:var(--accent);
-}
-
-/* The four-line Bibigay stack now lives INSIDE the original clock scene,
-   so the clock, sparkles, ticks, hands, and number bursts remain visible behind it. */
-.line.scene-clock .clock-lyric .bibigay-stack,
-.line.scene-clock .clock-lyric .bibigay-stack{
-  width:100%;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
-  line-height:.84;
-  gap:.02em;
-  font-family:"Poppins",sans-serif !important;
-  font-size:clamp(52px,9.8vw,112px) !important;
-  font-weight:800 !important;
-  letter-spacing:-.055em !important;
-}
-.line.scene-clock .clock-lyric .bibigay-row{
-  width:max-content;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  line-height:.84;
-  white-space:nowrap;
-}
-.line.scene-clock .clock-lyric .word{
-  display:inline-block !important;
-  margin:0 .055em !important;
-  padding:0 !important;
-  font-family:"Poppins",sans-serif !important;
-  font-size:1em !important;
-  font-weight:800 !important;
-  letter-spacing:-.055em !important;
-  line-height:.84 !important;
-}
-.line.scene-clock .clock-lyric .word.visible{
-  animation:wordPop .42s cubic-bezier(.18,.9,.25,1.35) both !important;
-}
-.line.scene-clock .clock-lyric .word.current{
-  color:var(--accent);
-  transform:translateY(-.035em) scale(1.035) !important;
-  text-shadow:0 0 28px #ffb38a55;
-}
-@media(max-width:600px){
-  .line.scene-clock .clock-lyric .bibigay-stack{
-    font-size:clamp(39px,12.8vw,68px) !important;
-    line-height:.86;
-  }
-  .line.scene-clock .clock-lyric .bibigay-stack .word,
-  .line.scene-clock .clock-lyric .bibigay-stack .word{
-    line-height:.86 !important;
-    margin:0 .045em !important;
-  }
-}
-
-@media(max-width:600px){
-  .line.scene-bibigay-stack{
-    width:92vw !important;
-    min-height:48vh !important;
-    font-size:clamp(39px,12.8vw,68px) !important;
-    line-height:.86 !important;
-  }
-
-  .line.scene-bibigay-stack .bibigay-stack,
-  .line.scene-bibigay-stack .bibigay-row,
-  .line.scene-bibigay-stack .word{
-    line-height:.86 !important;
-  }
-
-  .line.scene-bibigay-stack .word{
-    margin:0 .045em !important;
-  }
-}
-
 /* 8 — long "kitaaaaa": each A physically follows the previous A */
 .line.scene-longa{display:flex;flex-wrap:nowrap;justify-content:center;gap:0;white-space:nowrap}
 .long-word{display:inline-flex;align-items:baseline;color:var(--accent);font-weight:inherit;letter-spacing:-.035em}
@@ -1970,7 +1827,7 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .line.scene-kailan-flight{position:relative;display:block;width:min(92vw,900px);min-height:48vh;overflow:visible}
 .line.scene-kailan-flight .word{position:absolute;left:50%;top:50%;margin:0;white-space:nowrap;transform:translate3d(-50%,-50%,0);will-change:transform,opacity;animation:none!important}
 .line.scene-kailan-flight .word.accent{color:var(--accent)}
-.line.scene-kailan-flight .word{font-family:"Poppins",sans-serif !important;font-size:clamp(36px,6.2vw,92px) !important;font-weight:900 !important;letter-spacing:-.035em;-webkit-text-stroke:1.8px currentColor;text-shadow:0 0 12px #ffb38a33;}
+.line.scene-kailan-flight .word{font-family:"Arial Rounded MT Bold","Trebuchet MS","Comic Sans MS",ui-rounded,sans-serif !important;font-weight:800;letter-spacing:-.035em;text-shadow:0 0 12px #ffb38a33;}
 
 
 @keyframes linyahanFootstepReverse{
@@ -2086,22 +1943,6 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 @keyframes linyahanTransitionPulse{0%{opacity:1;transform:translate3d(0,0,0) scale(1)}32%{transform:translate3d(-3px,2px,0) scale(1.045) rotate(-.35deg);filter:drop-shadow(0 0 15px #ffb38a55)}62%{transform:translate3d(3px,-3px,0) scale(1.085) rotate(.4deg);filter:drop-shadow(0 0 27px #ffb38a77)}100%{opacity:1;transform:translate3d(0,0,0) scale(1) rotate(0);filter:none}}
 @keyframes linyahanTransitionFade{0%{opacity:1;transform:translate3d(0,0,0) scale(1);filter:none}45%{opacity:.78;transform:translate3d(0,-4px,0) scale(.99);filter:blur(.35px)}100%{opacity:0;transform:translate3d(0,-12px,0) scale(.965);filter:blur(1.8px)}}
 
-
-/* Only the "oras" word gets the stronger bounce. */
-.line.scene-clock .clock-lyric .word[data-word-index="5"]{
-  animation:orasStrongerBounce 1.15s cubic-bezier(.45,.05,.55,.95) infinite!important;
-  transform-origin:50% 90%!important;
-  will-change:transform!important;
-}
-@keyframes orasStrongerBounce{
-  0%,100%{transform:translate3d(0,0,0) scale(1) rotate(0deg)}
-  12%{transform:translate3d(-3px,-10px,0) scale(1.055) rotate(-1.2deg)}
-  25%{transform:translate3d(3px,2px,0) scale(.975) rotate(1deg)}
-  40%{transform:translate3d(-2px,-7px,0) scale(1.035) rotate(-.9deg)}
-  55%{transform:translate3d(2px,1px,0) scale(.99) rotate(.8deg)}
-  72%{transform:translate3d(-2px,-4px,0) scale(1.015) rotate(-.6deg)}
-  86%{transform:translate3d(2px,1px,0) scale(.997) rotate(.5deg)}
-}
 </style>
 <style>
 /* Restore ONLY the spoken-word highlight for the first linyahan line.
@@ -2230,16 +2071,6 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   width:auto !important;
   height:auto !important;
 }
-</style>
-
-<style id="bibigay-clock-final">
-/* BIBIGAY CLOCK: sleek face + prominent radial number bursts. */
-.line.scene-clock .clock-face{z-index:1!important}
-.line.scene-clock #clockSparkField{z-index:2!important}
-.line.scene-clock .clock-number-burst-layer{z-index:3!important}
-.line.scene-clock .clock-lyric{z-index:5!important}
-.line.scene-clock .clock-number-bg-burst{font-family:"Poppins",sans-serif!important;font-weight:500!important}
-.line.scene-clock .clock-number-burst-layer{pointer-events:none!important}
 </style>
 
 <style id="first-linyahan-poppins-whimsy">
@@ -2372,142 +2203,88 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   overflow:visible !important;
 }
 
-
 </style>
 
-<style id="malayo-echo-scene">
-/* 01:16 — "Kahit malayo pa 'yan": full-screen background echoes.
-   The repeated phrase stays behind the main lyric and moves with a playful,
-   energetic bob so the whole frame feels connected. */
-.line.malayo-echo-scene{
-  position:relative;
-  width:100vw;
-  max-width:none;
-  height:100vh;
-  min-height:0;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  overflow:visible;
-  z-index:4;
-  pointer-events:none;
+<style id="footsteps-scene">
+/* 01:14 — "Kahit malayo pa 'yan": real uploaded footprints walking across the background. */
+.line.scene-footsteps{
+  position:relative !important;
+  width:100% !important;
+  max-width:none !important;
+  height:100% !important;
+  min-height:0 !important;
+  display:block !important;
+  overflow:hidden !important;
+  isolation:isolate;
 }
-.line.malayo-echo-scene.active{
-  animation:malayoMainBob 1.02s cubic-bezier(.36,.07,.19,.97) infinite alternate !important;
+.line.scene-footsteps.active{
+  animation:none !important;
+  transform:none !important;
 }
-.line.malayo-echo-scene .malayo-foreground{
-  position:relative;
-  z-index:4;
-  width:min(88vw,620px);
-  height:min(62vh,500px);
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  gap:0;
-}
-.line.malayo-echo-scene .malayo-foreground .word{
-  position:relative;
-  display:block;
-  width:100%;
-  margin:0;
-  text-align:center;
-  white-space:nowrap;
-  line-height:.9;
-  font-size:clamp(48px,13vw,112px) !important;
-  font-weight:800 !important;
-  letter-spacing:-.055em !important;
-  z-index:4;
-  will-change:transform,opacity;
-}
-.line.malayo-echo-field{
+.line.scene-footsteps .footstep-route{
   position:absolute;
-  inset:-18vh -14vw;
+  inset:0;
   z-index:0;
-  overflow:hidden;
   pointer-events:none;
+  overflow:hidden;
+  opacity:1;
 }
-.malayo-echo{
+.line.scene-footsteps .footstep-img{
   position:absolute;
-  left:var(--mx);
-  top:var(--my);
-  white-space:nowrap;
-  font-family:inherit;
-  font-size:var(--ms);
-  font-weight:800;
-  letter-spacing:-.065em;
-  line-height:.9;
-  color:var(--mc,#f8f0e6);
+  left:var(--x);
+  top:var(--y);
+  width:clamp(34px,5.4vw,72px);
+  height:auto;
+  display:block;
   opacity:0;
-  filter:blur(var(--mb,1px));
-  text-shadow:0 0 22px #ffb38a22;
-  transform:translate(-50%,-50%) rotate(var(--mr)) scale(.82);
-  transform-origin:center;
-  animation:
-    malayoEchoIn .75s cubic-bezier(.16,1.08,.25,1) var(--md) both,
-    malayoEchoBob var(--mspeed) ease-in-out calc(var(--md) + .62s) infinite alternate;
+  object-fit:contain;
+  transform-origin:50% 52%;
+  transform:translate(-50%,-50%) rotate(var(--rot)) scale(.72);
+  filter:drop-shadow(0 2px 5px rgba(0,0,0,.18)) drop-shadow(0 0 8px rgba(255,179,138,.10));
+  will-change:transform,opacity;
+  animation:realFootstepAppear .34s cubic-bezier(.2,.85,.25,1) var(--delay) forwards;
 }
-@keyframes malayoEchoIn{
+/* Keep the individual marks visible after they land, like a real trail. */
+@keyframes realFootstepAppear{
   0%{
     opacity:0;
-    transform:translate(-50%,-50%) translate(0,12px) rotate(calc(var(--mr) - 5deg)) scale(.72);
+    transform:translate(-50%,-50%) rotate(var(--rot)) scale(.62);
+    filter:drop-shadow(0 0 0 rgba(0,0,0,0)) blur(2px);
   }
-  48%{
-    opacity:var(--ma);
-    transform:translate(-50%,-50%) translate(var(--ex),var(--ey)) rotate(calc(var(--mr) + 2deg)) scale(1.04);
-  }
-  100%{
-    opacity:var(--ma);
-    transform:translate(-50%,-50%) translate(var(--ex),var(--ey)) rotate(var(--mr)) scale(1);
-  }
-}
-@keyframes malayoEchoBob{
-  0%{
-    opacity:calc(var(--ma) * .72);
-    transform:translate(-50%,-50%) translate(var(--ex),calc(var(--ey) + 7px)) rotate(calc(var(--mr) - 1.2deg)) scale(.985);
-  }
-  32%{
-    opacity:var(--ma);
-    transform:translate(-50%,-50%) translate(calc(var(--ex) - 7px),calc(var(--ey) - 5px)) rotate(calc(var(--mr) + 1.5deg)) scale(1.015);
-  }
-  67%{
-    opacity:calc(var(--ma) * .86);
-    transform:translate(-50%,-50%) translate(calc(var(--ex) + 6px),calc(var(--ey) + 3px)) rotate(calc(var(--mr) - .8deg)) scale(.995);
+  65%{
+    opacity:.82;
+    transform:translate(-50%,calc(-50% - 4px)) rotate(var(--rot)) scale(1.04);
+    filter:drop-shadow(0 2px 5px rgba(0,0,0,.18)) drop-shadow(0 0 9px rgba(255,179,138,.12));
   }
   100%{
-    opacity:var(--ma);
-    transform:translate(-50%,-50%) translate(calc(var(--ex) - 3px),calc(var(--ey) - 7px)) rotate(calc(var(--mr) + 1deg)) scale(1.025);
+    opacity:.66;
+    transform:translate(-50%,-50%) rotate(var(--rot)) scale(1);
+    filter:drop-shadow(0 2px 5px rgba(0,0,0,.18)) drop-shadow(0 0 8px rgba(255,179,138,.10));
   }
 }
-@keyframes malayoMainBob{
-  0%{transform:translate3d(-6px,5px,0) rotate(-.5deg) scale(1)}
-  18%{transform:translate3d(5px,-7px,0) rotate(.65deg) scale(1.012)}
-  38%{transform:translate3d(-4px,8px,0) rotate(-.7deg) scale(.994)}
-  58%{transform:translate3d(7px,-4px,0) rotate(.55deg) scale(1.018)}
-  78%{transform:translate3d(-5px,5px,0) rotate(-.45deg) scale(1.006)}
-  100%{transform:translate3d(4px,-6px,0) rotate(.45deg) scale(1.014)}
+.line.scene-footsteps .footstep-route.fade-out{
+  animation:footstepRouteFade .55s ease forwards;
 }
-.line.malayo-echo-scene.out .malayo-echo{
-  animation:malayoEchoOut .42s ease-in forwards !important;
+@keyframes footstepRouteFade{
+  to{opacity:0;transform:translateX(1.5vw)}
 }
-@keyframes malayoEchoOut{
-  from{opacity:var(--ma);transform:translate(-50%,-50%) translate(var(--ex),var(--ey)) rotate(var(--mr)) scale(1)}
-  to{opacity:0;transform:translate(-50%,-50%) translate(calc(var(--ex) + var(--ox)),calc(var(--ey) - 18px)) rotate(calc(var(--mr) + 8deg)) scale(.78)}
+
+/* The lyric remains clearly above the walking trail. */
+.line.scene-footsteps .word{
+  position:relative;
+  z-index:2;
+  will-change:transform,opacity;
 }
+.line.scene-footsteps .word.current{
+  text-shadow:0 0 12px #ffb38a44;
+}
+
 @media(max-width:600px){
-  .line.malayo-echo-field{inset:-12vh -28vw}
-  .line.malayo-echo-scene .malayo-foreground{
-    width:88vw;
-    height:56vh;
-  }
-  .line.malayo-echo-scene .malayo-foreground .word{
-    font-size:clamp(42px,14vw,72px) !important;
-  }
-  .malayo-echo{
-    font-size:var(--ms-mobile,var(--ms));
-    letter-spacing:-.055em;
+  .line.scene-footsteps .footstep-img{
+    width:clamp(28px,10vw,52px);
   }
 }
+</style>
 
 <style id="pupuntahan-scene">
 /* 01:11 — word-by-word entrance/exit scene. No orbit. */
@@ -2587,111 +2364,13 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 }
 .line.pupuntahan-scene.active .word::before{pointer-events:none !important;}
 </style>
-
-<style id="huge-57-number-explosion">
-#huge57Explosion{
-  position:absolute;inset:-35%;z-index:2;pointer-events:none;overflow:visible;
-  opacity:0;
-}
-#huge57Explosion.active{opacity:1}
-.huge57-number{
-  position:absolute;left:50%;top:50%;white-space:nowrap;
-  font-family:"Poppins",sans-serif;font-weight:800;line-height:1;
-  letter-spacing:-.07em;color:#ffb38a;
-  text-shadow:0 0 22px #ffb38a88,0 0 60px #ffb38a44;
-  opacity:0;
-  transform:translate(-50%,-50%) scale(.03) rotate(var(--r));
-  animation:huge57Burst var(--life) cubic-bezier(.08,.72,.14,1) forwards;
-  will-change:transform,opacity;
-}
-@keyframes huge57Burst{
-  0%{opacity:0;transform:translate(-50%,-50%) scale(.03) rotate(var(--r))}
-  7%{opacity:1;transform:translate(-50%,-50%) scale(.30) rotate(calc(var(--r)*.65))}
-  18%{opacity:.98;transform:translate(calc(-50% + var(--dx1)),calc(-50% + var(--dy1))) scale(1.35) rotate(var(--r2))}
-  42%{opacity:.82;transform:translate(calc(-50% + var(--dx2)),calc(-50% + var(--dy2))) scale(1.05) rotate(var(--r2))}
-  72%{opacity:.38;transform:translate(calc(-50% + var(--dx3)),calc(-50% + var(--dy3))) scale(.82) rotate(var(--r3))}
-  100%{opacity:0;transform:translate(calc(-50% + var(--dx4)),calc(-50% + var(--dy4))) scale(.55) rotate(var(--r3))}
-}
-.huge57-flash{
-  position:absolute;left:50%;top:50%;width:5vw;height:5vw;min-width:28px;min-height:28px;
-  border-radius:50%;background:#fff2e8;
-  box-shadow:0 0 35px #fff2e8,0 0 100px #ffb38a,0 0 180px #ffb38a66;
-  opacity:0;transform:translate(-50%,-50%) scale(.05);
-  animation:huge57Flash .72s cubic-bezier(.12,.75,.15,1) forwards;
-}
-@keyframes huge57Flash{
-  0%{opacity:0;transform:translate(-50%,-50%) scale(.05)}
-  10%{opacity:.9}
-  30%{opacity:.55;transform:translate(-50%,-50%) scale(8)}
-  65%{opacity:.18;transform:translate(-50%,-50%) scale(22)}
-  100%{opacity:0;transform:translate(-50%,-50%) scale(38)}
-}
-</style>
-
-
-<style id="pwede-stack-poppins-only">
-
-
-/* PARANG MASYADO — main lyric only: thick Poppins, stacked in three rows. */
-.line.scene-slit[data-index="1"] .parang-stack{
-  width:min(94vw,980px);
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  gap:.02em;
-  text-align:center;
-  font-family:"Poppins",sans-serif !important;
-  font-weight:800 !important;
-  line-height:.92;
-}
-.line.scene-slit[data-index="1"] .parang-stack-row{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  flex-wrap:nowrap;
-  white-space:nowrap;
-  width:max-content;
-  font-family:"Poppins",sans-serif !important;
-  font-weight:800 !important;
-}
-.line.scene-slit[data-index="1"] .parang-stack .word{
-  font-family:"Poppins",sans-serif !important;
-  font-weight:800 !important;
-}
-
-/* FIRST LYRIC — typography/layout only. Existing effects remain untouched. */
-.line.scene-heart-split .pwede-stack{
-  width:min(92vw,900px);
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  gap:.035em;
-  text-align:center;
-  font-family:"Poppins",sans-serif !important;
-}
-.line.scene-heart-split .pwede-stack-row{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  flex-wrap:nowrap;
-  white-space:nowrap;
-  width:max-content;
-  font-family:"Poppins",sans-serif !important;
-}
-.line.scene-heart-split .pwede-stack .word{
-  font-family:"Poppins",sans-serif !important;
-}
-</style>
-
 </head>
 <body>
 <div id="app">
   <div class="ambient"><div class="orb o1"></div><div class="orb o2"></div></div>
   <div id="grain"></div>
   <div id="backgroundBanat" aria-hidden="true"></div>
-  <div id="heartField" aria-hidden="true"></div><div id="wordExplosionField" aria-hidden="true"></div><div id="huge57Explosion" aria-hidden="true"></div><div id="ooExplosion" aria-hidden="true"></div><div id="siteSparkField" aria-hidden="true"></div>
+  <div id="heartField" aria-hidden="true"></div><div id="wordExplosionField" aria-hidden="true"></div><div id="ooExplosion" aria-hidden="true"></div><div id="siteSparkField" aria-hidden="true"></div>
   <div id="echoes"></div>
 <div id="top">
     <div class="title"><span class="dot"></span><span>Pwede Ba Kitang Ligawan</span></div>
@@ -2740,12 +2419,11 @@ const accentWords=new Set(['puso','mo','yo',"'oo'",'ligawan','oras','hindi','yan
   below are expressed in the MP3 timeline. The first "Pwede" is locked
   to 8.056s, matching the user's original cue.
 */
-/* BIBIGAY TIMING LOCK: original timing retained: 53.80–58.65 / 116.70–121.30. */
 const lines=[
   {start:8.056,end:15.85,text:'Pwede ba akong tumambay dyan sa puso mo?',style:'verse',section:'verse',cues:[8.056,9.261,9.589,10.186,10.555,11.305,11.680,12.430]},
   {start:15.90,end:23.55,text:"Parang masyado na yatang gasgas ang banat na 'to",style:'soft',section:'verse',cues:[15.90,16.28,16.55,16.72,18.28,18.78,19.10,19.35,19.42]},
   {start:23.70,end:31.55,text:"Kailan kaya ako makakaisip ng linyang para sa'yo?",style:'verse',section:'verse',cues:[23.70,24.15,24.48,24.92,26.95,27.30,27.78,28.12,28.42]},
-  {start:31.70,end:39.25,text:"Gusto ko lang naman ay makamit ang matamis mong oo",style:'soft',section:'verse',cues:[31.70,32.18,32.48,32.72,32.88,33.15,34.85,35.48,35.92,36.42]},
+  {start:31.70,end:39.25,text:"Gusto ko lang naman ay makamit ang matamis mong 'oo'",style:'soft',section:'verse',cues:[31.70,32.18,32.48,32.72,32.88,33.15,34.85,35.48,35.92,36.42]},
   {start:39.65,end:46.75,text:'Pwede ba kitang ligawan?',style:'chorus',section:'chorus',cues:[39.65,40.25,40.75,42.65]},
   {start:46.80,end:53.65,text:"Kahit 'di maganda ang mga linyahan",style:'soft',section:'chorus',cues:[46.82,47.12,48.32,48.82,49.25,49.50]},
   {start:53.80,end:58.65,text:'Bibigay ko nang buo ang oras ko',style:'soft',section:'chorus',cues:[53.80,54.18,54.55,54.90,55.10,55.42,55.78]},
@@ -2754,7 +2432,7 @@ const lines=[
   {start:68.48,end:71.00,text:'Oo o hindi?',style:'big',section:'chorus',cues:[68.48,68.92,69.35]},
   {start:71.35,end:74.15,text:'Ikaw ay lagi kong pupuntahan',style:'verse',section:'verse 2',cues:[71.35,71.72,72.05,72.48,72.90]},
   {start:74.18,end:78.00,text:"Kahit malayo pa 'yan",style:'soft',section:'verse 2',cues:[74.18,74.58,74.98,75.30,75.62]},
-  {start:78.75,end:81.95,text:"Pati ang nanay mo'y aking dadalhan",style:'verse',scene:'pati-kinetic',section:'verse 2',cues:[78.75,79.05,79.42,79.78,80.05,80.35,80.70]},
+  {start:78.75,end:81.95,text:"Pati ang nanay mo'y aking dadalhan",style:'verse',section:'verse 2',cues:[78.75,79.05,79.42,79.78,80.05,80.35,80.70]},
   {start:81.98,end:86.55,text:'Ng paborito niyang ulam',style:'soft',section:'verse 2',cues:[81.98,82.38,82.78,83.22]},
   {start:86.78,end:90.20,text:'At kahit pahirapan pa',style:'verse',section:'verse 2',cues:[86.78,87.15,87.62,88.02,88.42]},
   {start:90.28,end:94.20,text:'Ako ng tatay mo hindi aatras',style:'soft',section:'verse 2',cues:[90.28,90.72,91.05,91.42,91.78,92.15,92.55]},
@@ -2821,133 +2499,56 @@ function buildWords(text){
 function buildHeartSplitLine(text){
   const temp=document.createElement('div');
   temp.innerHTML=buildWords(text);
+  const top=document.createElement('div');
+  top.className='lyric-part top';
+  const bottom=document.createElement('div');
+  bottom.className='lyric-part heart-line';
+  const field=document.createElement('div');
+  field.className='heart-field';
+  field.setAttribute('aria-hidden','true');
+  bottom.appendChild(field);
 
-  // ONLY change the lyric arrangement:
-  // Pwede ba akong
-  // tumambay dyan
-  // sa puso mo?
-  const rows=[
-    {className:'pwede-stack-row row-1',min:0,max:2},
-    {className:'pwede-stack-row row-2',min:3,max:4},
-    {className:'pwede-stack-row row-3',min:5,max:7}
-  ];
-
-  const stack=document.createElement('div');
-  stack.className='pwede-stack';
-
-  const nodes=[...temp.childNodes];
-  rows.forEach(spec=>{
-    const row=document.createElement('div');
-    row.className=spec.className;
-    nodes.forEach(node=>{
-      const word=node.nodeType===1 && node.classList.contains('word');
-      const idx=word ? Number(node.dataset.wordIndex) : null;
-      if(word && idx>=spec.min && idx<=spec.max){
-        row.appendChild(node);
-      }else if(!word && idx===null){
-        // Whitespace is handled naturally by the row's flex gap.
-      }
-    });
-    stack.appendChild(row);
+  [...temp.childNodes].forEach(node=>{
+    const word=node.nodeType===1 && node.classList.contains('word');
+    const idx=word ? Number(node.dataset.wordIndex) : null;
+    if(word && idx>=5){
+      // Keep "sa puso mo" together while preserving their original cue indices.
+      bottom.appendChild(node);
+    }else{
+      top.appendChild(node);
+    }
   });
 
-  // Preserve the existing heart emitter around "puso" exactly as before.
-  const puso=stack.querySelector('.word[data-word-index="6"]');
+  // Put the heart emitter around the exact visual anchor for "puso".
+  const puso=bottom.querySelector('.word[data-word-index="6"]');
   if(puso){
     const anchor=document.createElement('span');
     anchor.className='heart-anchor';
     puso.replaceWith(anchor);
     anchor.appendChild(puso);
   }
-
-  const field=document.createElement('div');
-  field.className='heart-field';
-  field.setAttribute('aria-hidden','true');
-  stack.querySelector('.row-3').prepend(field);
-
-  return stack;
+  const wrap=document.createDocumentFragment();
+  wrap.appendChild(top);
+  wrap.appendChild(bottom);
+  return wrap;
 }
 
 
-
-function buildParangStackLine(text){
-  const temp=document.createElement('div');
-  temp.innerHTML=buildWords(text);
-
-  // Only the main lyric is stacked; background echoes remain untouched.
-  const rows=[
-    {className:'parang-stack-row row-1',min:0,max:1},
-    {className:'parang-stack-row row-2',min:2,max:4},
-    {className:'parang-stack-row row-3',min:5,max:8}
-  ];
-
-  const stack=document.createElement('div');
-  stack.className='parang-stack';
-  const nodes=[...temp.childNodes];
-
-  rows.forEach(spec=>{
-    const row=document.createElement('div');
-    row.className=spec.className;
-    nodes.forEach(node=>{
-      const word=node.nodeType===1 && node.classList.contains('word');
-      const idx=word ? Number(node.dataset.wordIndex) : null;
-      if(word && idx>=spec.min && idx<=spec.max) row.appendChild(node);
-    });
-    stack.appendChild(row);
-  });
-
-  return stack.outerHTML;
-}
 
 function sceneFor(i){
   // Each lyric becomes a small motion-graphics scene.
   const scenes=[
     'fly','slit','kailan-flight','wind','zoom','squiggle','clock','clock',
-    'fly','question','pupuntahan','malayo-echo','pati-kinetic','wind','rubber','chase',
+    'fly','question','pupuntahan','footsteps','orbit','wind','rubber','chase',
     'longa','fly','clock','crawl','flip','zoom','question'
   ];
   return scenes[i]||'chase';
 }
 
-function buildBibigayStack(text){
-  // Four centered rows, while preserving the original word order/cues:
-  // Bibigay ko / nang buo / ang / oras ko
-  const words=buildWords(text);
-  const temp=document.createElement('div');
-  temp.innerHTML=words;
-
-  const rowSpecs = text === 'Gusto ko lang naman ay makamit ang matamis mong oo'
-    ? [[0,1,2,3,4],[5,6,7],[8,9]]
-    : [
-        [0,1],
-        [2,3],
-        [4],
-        [5,6]
-      ];
-
-  const stack=document.createElement('div');
-  stack.className='bibigay-stack';
-
-  rowSpecs.forEach((indices,rowIndex)=>{
-    const row=document.createElement('div');
-    row.className='bibigay-row';
-    row.dataset.row=rowIndex;
-
-    indices.forEach(idx=>{
-      const word=temp.querySelector(`.word[data-word-index="${idx}"]`);
-      if(word) row.appendChild(word);
-    });
-
-    stack.appendChild(row);
-  });
-
-  return stack.outerHTML;
-}
-
 function buildClock(text){
   const nums=Array.from({length:12},(_,j)=>`<span class="clock-number" style="--n:${j}">${j===0?12:j}</span>`).join('');
   const ticks=Array.from({length:60},(_,j)=>`<i class="clock-tick ${j%5===0?'major':''}" data-tick="${j}"></i>`).join('');
-  const lyric=(text==='Bibigay ko nang buo ang oras ko') ? buildBibigayStack(text) : buildWords(text);
+  const lyric=buildWords(text);
   const sparks=Array.from({length:42},(_,i)=>{
     const angle=i*2.399963;
     const radius=34+(i%7)*7;
@@ -2963,7 +2564,7 @@ function buildClock(text){
     const color=i%7===0?'#f8f0e6':'#ffb38a';
     return `<span class="clock-spark" style="--sx:${x}%;--sy:${y}%;--ss:${size}px;--so:${opacity};--dx:${dx}px;--dy:${dy}px;--sd:${dur}s;--sdelay:${delay}s;--sr:${rot}deg;--sc:${color}">✦</span>`;
   }).join('');
-  return `<div class="clock-wrap"><div class="clock-face"><div class="clock-hands"><i class="clock-hand hour"></i><i class="clock-hand minute"></i><i class="clock-hand second"></i><i class="clock-center"></i></div></div><div id="clockSparkField" aria-hidden="true">${sparks}</div><div class="clock-number-burst-layer" aria-hidden="true"></div><div class="clock-lyric ${text === "Bibigay ko nang buo ang oras ko" ? "bibigay-static" : ""}">${lyric}</div></div>`;
+  return `<div class="clock-wrap"><div id="clockSparkField" aria-hidden="true">${sparks}</div><div class="clock-face">${ticks}${nums}<div class="clock-hands"><i class="clock-hand hour"></i><i class="clock-hand minute"></i><i class="clock-hand second"></i><i class="clock-center"></i></div></div><div class="clock-number-burst-layer" aria-hidden="true"></div><div class="clock-lyric">${lyric}</div></div>`;
 }
 
 function layoutClock(){
@@ -3052,7 +2653,7 @@ function activate(i){
     if(lyric){
       // ONLY replace the lyric contents. The clock DOM, its animations,
       // and its hand phase remain untouched.
-      lyric.innerHTML=buildBibigayStack(item.text);
+      lyric.innerHTML=buildWords(item.text);
       lyric.classList.add('clock-whimsy-skill');
       lyric.classList.remove('clock-whimsy-time');
     }
@@ -3090,11 +2691,7 @@ function activate(i){
   const item=lines[i];
   const scene=(i===0)?'heart-split':sceneFor(i);
   const qClass=item.text==='Oo o hindi?'?' scene-question':'';
-  const body=scene==='bibigay-stack'?buildBibigayStack(item.text):
-             scene==='clock'?buildClock(item.text):
-             scene==='heart-split'?buildHeartSplitLine(item.text):
-             (scene==='slit' && i===1)?buildParangStackLine(item.text):
-             buildWords(item.text);
+  const body=scene==='clock'?buildClock(item.text):scene==='heart-split'?buildHeartSplitLine(item.text):buildWords(item.text);
   let el;
   if(scene==='heart-split'){
     el=document.createElement('div');
@@ -3207,71 +2804,47 @@ function activate(i){
     });
   }
 
-  /* 01:16 — "Kahit malayo pa 'yan": fill the entire background with
-     repeated echoes of the complete phrase. The field is independent from
-     the foreground words, so the echoes can cover the screen without
-     changing the lyric's word-by-word timing. */
   if(i===11){
-    el.classList.add('malayo-echo-scene');
+    el.classList.add('footsteps-scene');
 
-    // Centered three-line foreground: KAHIT / MALAYO / PA YAN.
-    el.innerHTML='';
-    const foreground=buildWords('Kahit malayo pa yan');
-    const holder=document.createElement('div');
-    holder.className='malayo-foreground';
-    holder.innerHTML=foreground;
-    el.appendChild(holder);
+    const route=document.createElement('div');
+    route.className='footstep-route';
+    route.setAttribute('aria-hidden','true');
 
-    const field=document.createElement('div');
-    field.className='malayo-echo-field';
-    field.setAttribute('aria-hidden','true');
+    // Use the user's actual left/right footprint PNGs and lay them down
+    // one at a time along a natural walking path from left to right.
+    const leftFoot="Left.png";
+    const rightFoot="Right.png";
+    const steps=18;
 
-    const echoSpecs=[
-      ['8%','10%','clamp(26px,6.5vw,76px)',.095,-12, 1.1,-8, 5, 3.1,'#ff1744'],
-      ['32%','7%','clamp(30px,7.2vw,84px)',.075,  7, 0.7, 6,-4, 2.7,'#00e5ff'],
-      ['61%','12%','clamp(24px,6vw,70px)',.085,-5, 0.9,-5, 7, 3.4,'#fff200'],
-      ['91%','8%','clamp(28px,7vw,82px)',.07, 11, 0.5, 7,-6, 2.9,'#ff2d95'],
-      ['14%','28%','clamp(34px,8vw,94px)',.075,  5, 1.2,-6, 4, 3.0,'#39ff14'],
-      ['46%','27%','clamp(25px,6.4vw,74px)',.105,-8, 0.8, 5,-6, 2.5,'#ff6d00'],
-      ['78%','31%','clamp(32px,7.5vw,88px)',.065,  9, 1.3,-4, 6, 3.3,'#b026ff'],
-      ['-4%','47%','clamp(28px,7vw,82px)',.08, -7, 0.6, 7,-5, 2.8,'#ff1744'],
-      ['27%','50%','clamp(23px,5.8vw,68px)',.07,  4, 1,-5, 7, 3.6,'#00e5ff'],
-      ['57%','48%','clamp(35px,8.2vw,98px)',.08,-10, 0.4, 6,-4, 2.6,'#fff200'],
-      ['96%','52%','clamp(27px,6.8vw,80px)',.09,  6, 1.1,-7, 5, 3.0,'#ff2d95'],
-      ['10%','72%','clamp(30px,7.4vw,86px)',.075, -4, 0.7, 5,-7, 3.2,'#39ff14'],
-      ['42%','74%','clamp(25px,6.2vw,72px)',.10,   8, 1.2,-6, 4, 2.9,'#ff6d00'],
-      ['73%','70%','clamp(33px,7.8vw,92px)',.07, -6, 0.9, 7,-5, 3.5,'#b026ff'],
-      ['101%','77%','clamp(27px,6.6vw,78px)',.085, 10, 0.6,-5, 6, 2.7,'#ff1744'],
-      ['-6%','91%','clamp(29px,7vw,82px)',.07, -9, 1.3, 6,-6, 3.1,'#00e5ff'],
-      ['25%','94%','clamp(24px,6vw,70px)',.095,  3, 0.8,-7, 5, 3.7,'#fff200'],
-      ['58%','91%','clamp(31px,7.3vw,86px)',.075, -3, 1, 5,-7, 2.8,'#ff2d95'],
-      ['88%','94%','clamp(26px,6.4vw,75px)',.09,   7, 0.5,-6, 4, 3.3,'#39ff14']
-    ];
+    for(let j=0;j<steps;j++){
+      const p=j/(steps-1);
 
-    echoSpecs.forEach(([x,y,size,alpha,rot,delay,ex,ey,speed,color])=>{
-      const e=document.createElement('span');
-      e.className='malayo-echo';
-      const stationEchoes=[
-        "Buendia","Para po!","Magallanes","Cubao","Quiapo",
-        "Central","Blumentritt","Dimasalang","Quirino","Remedios","Luneta"
-      ];
-      e.textContent=stationEchoes[Math.floor(Math.random()*stationEchoes.length)];
-      e.style.setProperty('--mx',x);
-      e.style.setProperty('--my',y);
-      e.style.setProperty('--ms',size);
-      e.style.setProperty('--ma',alpha);
-      e.style.setProperty('--mr',rot+'deg');
-      e.style.setProperty('--md',delay+'s');
-      e.style.setProperty('--ex',ex+'px');
-      e.style.setProperty('--ey',ey+'px');
-      e.style.setProperty('--mspeed',speed+'s');
-      e.style.setProperty('--mc',color);
-      e.style.setProperty('--mb',(0.5+(alpha>.09?0.35:0.2))+'px');
-      e.style.setProperty('--ox',(ex>0?18:-18)+'px');
-      field.appendChild(e);
-    });
+      // A gentle walking path that travels across the entire background.
+      const x=4.5 + p*91;
+      const y=67 - Math.sin(p*Math.PI)*25 + Math.sin(p*Math.PI*2.15)*2.5;
 
-    el.prepend(field);
+      // Alternate feet. Each image is rotated to follow the direction of travel,
+      // with a small alternating angle so it reads as an actual person's stride.
+      const isLeft=(j%2===0);
+      const foot=document.createElement('img');
+      foot.className='footstep-img';
+      foot.src=isLeft ? leftFoot : rightFoot;
+      foot.alt='';
+      foot.draggable=false;
+
+      const strideAngle=-10 + Math.sin(p*Math.PI)*17 + (isLeft ? -2.5 : 2.5);
+      foot.style.setProperty('--x',x+'%');
+      foot.style.setProperty('--y',y+'%');
+      foot.style.setProperty('--rot',strideAngle.toFixed(2)+'deg');
+
+      // Footsteps appear in sequence, with a slight pause between each step.
+      foot.style.setProperty('--delay',(j*0.16).toFixed(2)+'s');
+      route.appendChild(foot);
+    }
+
+    el.appendChild(route);
+    el._footstepRoute=route;
   }
 
   if(i===5){
@@ -3312,6 +2885,7 @@ function activate(i){
     el.querySelectorAll('.word[data-word-index="6"], .word[data-word-index="7"], .word[data-word-index="8"]').forEach(w=>w.classList.add('scratch-word'));
   }
   if(i===3) el.classList.add('gusto-shiver');
+  if(i===6) el.classList.add('cursive-clock-lyric','clock-whimsy-time');
   if(i===7) el.classList.add('playful-clock-lyric','clock-whimsy-skill');
   SEC.textContent=item.section;
   requestAnimationFrame(()=>{el.classList.add('active'); if(scene==='clock') layoutClock();});
@@ -3539,68 +3113,10 @@ function updateMotion(t){
     const oo=words[0];
     if(oo) oo.style.transform=`translateY(${Math.sin(t*7)*3}px) scale(${1.02+.035*Math.max(0,Math.sin(t*4))})`;
   }
-
-  /* 01:16 — KAHIT / MALAYO / PA YAN.
-     Each foreground word gets its own energetic bob. */
-  if(scene==='malayo-echo'){
-    const cues=item.cues||[];
-    words.forEach((w,i)=>{
-      const cue=cues[i] ?? item.start;
-      const nextCue=cues[i+1] ?? item.end;
-      const fadeIn=.16;
-      const fadeOut=.18;
-
-      if(t<cue){
-        w.style.opacity='0';
-        w.style.transform='translate3d(0,18px,0) scale(.94)';
-        w.style.filter='none';
-        return;
-      }
-
-      const inP=Math.min(1,(t-cue)/fadeIn);
-      const outP=Math.min(1,(nextCue-t)/fadeOut);
-      const easeIn=inP*inP*(3-2*inP);
-      const easeOut=outP*outP*(3-2*outP);
-      const alpha=Math.min(easeIn,easeOut);
-
-      const phase=t*(7.8+i*.72)+i*1.65;
-      const x=Math.sin(phase)*4.5;
-      const y=Math.cos(phase*1.12)*7.5;
-      const r=Math.sin(phase*.86+i)*1.7;
-      const scale=1+.028*Math.sin(phase*1.18);
-
-      w.style.opacity=String(alpha);
-      w.style.transform=`translate3d(${x}px,${y}px,0) rotate(${r}deg) scale(${scale})`;
-      w.style.filter='none';
-      w.style.zIndex='5';
-    });
-  }
-
-  if(scene==='pati-kinetic') {
-    // Clean, standalone kinetic typography for 01:19 — no inherited effects.
-    words.forEach((w,idx)=>{
-      const cue=item.cues?.[idx] ?? item.start;
-      const nextCue=item.cues?.[idx+1] ?? item.end;
-      const appear=Math.max(0,Math.min(1,(t-cue)/0.24));
-      const ease=appear*appear*(3-2*appear);
-      const active=t>=cue && t<nextCue;
-      const bob=active ? Math.sin((t-cue)*8.5)*2.5 : 0;
-      const lift=(1-ease)*18;
-      const scale=0.94+0.06*ease;
-      w.style.opacity=String(ease);
-      w.style.transform=`translate3d(0,${-lift+bob}px,0) scale(${scale})`;
-      w.style.rotate='0deg';
-      w.style.filter='none';
-      w.style.textShadow=active ? '0 0 22px #ffb38a35' : 'none';
-      w.style.color=active ? 'var(--accent)' : '';
-      w.style.zIndex='5';
-    });
-  }
-
   // Extra idle heartbeat for every scene, layered through independent transform properties.
   words.forEach((w,i)=>{
     if(!w.classList.contains('visible'))return;
-    if(scene==='fly' || scene==='flip' || scene==='orbit' || scene==='pupuntahan' || scene==='malayo-echo' || scene==='pati-kinetic')return; // scene owns its transform
+    if(scene==='fly' || scene==='flip' || scene==='orbit' || scene==='pupuntahan' || scene==='footsteps')return; // scene owns its transform
     const idleX=Math.sin(t*5.4+i*.9)*1.8;
     const idleY=Math.cos(t*5.4+i*1.1)*1.4;
     const idleR=Math.sin(t*5.4+i)*.75;
@@ -3649,6 +3165,40 @@ function updateMotion(t){
       w.style.filter='none';
       w.style.zIndex='5';
       w.classList.add('pupuntahan-show');
+    });
+  }
+
+
+  if(scene==='footsteps'){
+    const route=el._footstepRoute || el.querySelector('.footstep-route');
+    if(route){
+      // The route exists only for this lyric and fades just before the line exits.
+      if(t>=item.end-.58){
+        route.classList.add('fade-out');
+      }else{
+        route.classList.remove('fade-out');
+      }
+    }
+
+    // Keep the words simple and let the walking trail carry the scene.
+    words.forEach((w,i)=>{
+      const cue=item.cues?.[i] ?? item.start;
+      const nextCue=item.cues?.[i+1] ?? item.end;
+      if(t<cue || t>=nextCue){
+        w.style.opacity='0';
+        return;
+      }
+      const enter=Math.min(1,(t-cue)/.16);
+      const leave=Math.min(1,(nextCue-t)/.16);
+      const easeIn=enter*enter*(3-2*enter);
+      const easeOut=leave*leave*(3-2*leave);
+      const alpha=Math.min(easeIn,easeOut);
+      const phase=t*4.8+i*.8;
+      const bobY=Math.sin(phase)*2.5;
+      const bobR=Math.sin(phase*.8+i)*.7;
+      w.style.opacity=String(alpha);
+      w.style.transform=`translateY(${bobY}px) rotate(${bobR}deg)`;
+      w.style.zIndex='2';
     });
   }
 
@@ -3892,7 +3442,7 @@ function spawnClockNumberBackgroundBurst(wordIndex, opts={}){
   const cx=rect.left+rect.width/2-base.left;
   const cy=rect.top+rect.height/2-base.top;
   const elevated=!!opts.elevated;
-  const count=5;
+  const count=3;
   const group=String(Date.now())+'-'+Math.random();
 
   for(let n=0;n<count;n++){
@@ -3904,25 +3454,24 @@ function spawnClockNumberBackgroundBurst(wordIndex, opts={}){
     e.style.top=cy+'px';
 
     // Keep every burst small. Elevated words are only slightly larger.
-    e.style.fontSize=(elevated ? 58+Math.random()*24 : 48+Math.random()*22)+'px';
-    e.style.fontWeight='500';
-    e.style.color=(n%2===0 ? '#ffb38a' : '#f8f0e6');
-    e.style.setProperty('--alpha',(0.48+Math.random()*0.18).toFixed(3));
-    e.style.setProperty('--life',(1.05+Math.random()*0.25).toFixed(2)+'s');
-    e.style.setProperty('--scale',(1.05+Math.random()*0.42).toFixed(2));
+    e.style.fontSize=(elevated ? 30+Math.random()*7 : 26+Math.random()*6)+'px';
+    e.style.fontWeight='300';
+    e.style.setProperty('--alpha',(0.24+Math.random()*0.08).toFixed(3));
+    e.style.setProperty('--life',(0.78+Math.random()*0.16).toFixed(2)+'s');
+    e.style.setProperty('--scale',(0.82+Math.random()*0.22).toFixed(2));
     e.style.setProperty('--r',(-8+Math.random()*16)+'deg');
     e.style.setProperty('--r2',(-14+Math.random()*28)+'deg');
 
     if(elevated){
       // Magaling / ako: burst around the word in all directions, not upward.
       const angle=(Math.PI*2/count)*n+(Math.random()-.5)*.5;
-      const distance=105+Math.random()*75;
+      const distance=42+Math.random()*42;
       e.style.setProperty('--dx',(Math.cos(angle)*distance)+'px');
       e.style.setProperty('--dy',(Math.sin(angle)*distance)+'px');
     }else{
       // Other clock words: compact radial burst.
       const angle=(Math.PI*2/count)*n+(Math.random()-.5)*.45;
-      const distance=85+Math.random()*65;
+      const distance=34+Math.random()*34;
       e.style.setProperty('--dx',(Math.cos(angle)*distance)+'px');
       e.style.setProperty('--dy',(Math.sin(angle)*distance)+'px');
     }
@@ -4163,18 +3712,6 @@ function render(){
   const i=lines.findIndex(x=>t>=x.start&&t<x.end);
   activate(i);
 
-  // 01:18.75 — Pati ang nanay... starts completely clean. Clear every global/field effect.
-  if(i===12){
-    ['heartField','backgroundBanat','echoes','siteSparkField','wordExplosionField','huge57Explosion','ooExplosion'].forEach(id=>{
-      const field=document.getElementById(id);
-      if(field) field.replaceChildren();
-    });
-    APP.classList.remove('beat','gusto-clean');
-    document.querySelectorAll('.line').forEach(line=>{
-      if(line!==document.querySelector('.line[data-index="12"]')) line.classList.remove('active');
-    });
-  }
-
   // Keep the GUSTO line completely clean of the old square/confetti decoration.
   APP.classList.toggle('gusto-clean', i===3);
   if(i===3){
@@ -4217,38 +3754,33 @@ function render(){
         spawnWordBackgroundBurst(wordIndex);
       }
     });
-  }else if(i===6 || i===18){
-    // BIBIGAY: bursts only on Bibigay, buo, oras, and the final "ko".
-    const burstCues = [
-      [0, i===6 ? 53.80 : 116.70],      // Bibigay
-      [3, i===6 ? 54.90 : 117.78],      // buo
-      [5, i===6 ? 55.42 : 118.42],      // oras
-      [6, i===6 ? 55.78 : 118.78]       // final ko
+  }else if(i===6){
+    // One second after the spoken word. Three small, thin numbers per burst.
+    // Both "ko" words are explicitly included.
+    const burstCues=[
+      [0,54.80,false], // Bibigay
+      [1,55.18,false], // ko
+      [2,55.55,false], // nang
+      [3,55.90,false], // buo
+      [4,56.12,false], // ang
+      [5,56.42,false], // oras
+      [6,56.78,false]  // ko
     ];
-    burstCues.forEach(([wordIndex,cue])=>{
-      const key = `${i}-${wordIndex}-main`;
-      if(t>=cue && t<cue+0.09 && !clockNumberBackgroundBursts.includes(key)){
+    burstCues.forEach(([wordIndex,cue,elevated])=>{
+      const key='6-'+wordIndex;
+      if(t>=cue && t<cue+0.07 && !clockNumberBackgroundBursts.includes(key)){
         clockNumberBackgroundBursts.push(key);
-        spawnClockNumberBackgroundBurst(wordIndex,{elevated:true});
+        spawnClockNumberBackgroundBurst(wordIndex,{elevated});
       }
     });
-
-    // One extra number burst on "oras", immediately after it appears.
-    const orasCue = i===6 ? 55.42 : 118.42;
-    const orasSecondCue = orasCue + 0.20;
-    const secondKey = `${i}-5-second`;
-    if(t>=orasSecondCue && t<orasSecondCue+0.09 && !clockNumberBackgroundBursts.includes(secondKey)){
-      clockNumberBackgroundBursts.push(secondKey);
-      spawnClockNumberBackgroundBurst(5,{elevated:true});
-    }
   }else if(i===7){
     // Same one-second delay for the next line. Magaling/ako burst around
     // the word in all directions, with the same three-number limit.
     const burstCues=[
-      [0,59.78,false],   // Kasi — +80ms
-      [2,60.56,false],   // alam — +80ms
-      [4,61.38,true],    // magaling — +80ms
-      [5,61.80,true]     // ako — +80ms
+      [0,59.70,false],   // Kasi
+      [2,60.48,false],   // alam
+      [4,61.30,true],    // magaling
+      [5,61.72,true]     // ako
     ];
     burstCues.forEach(([wordIndex,cue,elevated])=>{
       const key='7-'+wordIndex;
@@ -4377,210 +3909,6 @@ render();
 </script>
 
 
-
-
-<style id="bibigay-clock-clean-final">
-/* FINAL BIBIGAY CLOCK RULES — one authoritative layer. */
-.line.scene-clock .clock-face{
-  width:min(92vw,440px)!important;
-  height:min(92vw,440px)!important;
-  border:none!important;
-  background:transparent!important;
-  box-shadow:none!important;
-  opacity:1!important;
-}
-.line.scene-clock .clock-face::before{
-  content:""!important;
-  position:absolute!important;
-  inset:7%!important;
-  border:1px solid #ffffff32!important;
-  border-radius:50%!important;
-}
-.line.scene-clock .clock-face::after{display:none!important}
-.line.scene-clock .clock-face > .clock-number,
-.line.scene-clock .clock-face > .clock-tick{display:none!important}
-.line.scene-clock #clockSparkField{display:block!important;position:absolute!important;inset:0!important;z-index:2!important;pointer-events:none!important;overflow:visible!important}
-.line.scene-clock .clock-number-burst-layer{z-index:3!important}
-.line.scene-clock .clock-lyric{z-index:5!important}
-.line.scene-clock .clock-hand{opacity:.88!important}
-
-/* Smooth entrance + independent bob. Bob uses the separate translate property,
-   so it never fights the entrance transform. */
-.line.scene-clock.clock-whimsy-time .clock-lyric .word.visible,
-.line.scene-clock.clock-whimsy-skill .clock-lyric .word.visible{
-  animation:clockSmoothIn .64s cubic-bezier(.22,.9,.28,1) both,
-            clockSmoothBob 1.9s cubic-bezier(.45,.05,.55,.95) .64s infinite!important;
-  animation-delay:calc(var(--i)*.055s),calc(.64s + var(--i)*.065s)!important;
-  transform-origin:50% 85%!important;
-  will-change:transform,translate!important;
-}
-.line.scene-clock .clock-lyric.bibigay-static .word.current{
-  color:var(--accent);
-  text-shadow:0 0 28px #ffb38a55;
-}
-
-/* Keep ORAS animated even while it is the currently highlighted word.
-   The highlight may change its color/glow, but must never cancel its jump. */
-
-@keyframes clockSmoothIn{
-  0%{opacity:0;transform:translate3d(0,18px,0) scale(.86)}
-  55%{opacity:1;transform:translate3d(0,-5px,0) scale(1.035)}
-  78%{transform:translate3d(0,2px,0) scale(.992)}
-  100%{opacity:1;transform:none}
-}
-@keyframes clockSmoothBob{
-  0%,100%{translate:0 0}
-  25%{translate:0 -3px}
-  50%{translate:0 1.5px}
-  75%{translate:0 -2px}
-}
-
-.line.scene-clock .clock-number-bg-burst{
-  font-family:"Poppins",sans-serif!important;
-  font-weight:500!important;
-  font-size:clamp(16px,3.8vw,24px)!important;
-  text-shadow:0 0 10px #ffb38a32!important;
-}
-</style>
-
-
-<style id="bibigay-jumpy-final">
-/* BIBIGAY — jumpy word entrances. */
-.line.scene-clock .clock-lyric.bibigay-static .word.visible{
-  animation:bibigayJumpyIn .52s cubic-bezier(.16,1.28,.22,1) both !important;
-  animation-delay:calc(var(--i) * .075s) !important;
-  transform-origin:50% 88% !important;
-  will-change:transform,opacity,filter;
-}
-
-.line.scene-clock .clock-lyric.bibigay-static .word[data-word-index="0"].visible,
-.line.scene-clock .clock-lyric.bibigay-static .word[data-word-index="3"].visible,
-.line.scene-clock .clock-lyric.bibigay-static .word[data-word-index="5"].visible,
-.line.scene-clock .clock-lyric.bibigay-static .word[data-word-index="6"].visible{
-  animation-name:bibigayJumpyHeroIn !important;
-}
-
-@keyframes bibigayJumpyIn{
-  0%{opacity:0;transform:translate3d(0,28px,0) scale(.68,.78) rotate(-4deg);filter:blur(5px)}
-  38%{opacity:1;transform:translate3d(0,-10px,0) scale(1.10,.92) rotate(2deg);filter:blur(0)}
-  62%{transform:translate3d(0,4px,0) scale(.96,1.035) rotate(-1deg)}
-  82%{transform:translate3d(0,-2px,0) scale(1.025,.985) rotate(.5deg)}
-  100%{opacity:1;transform:translate3d(0,0,0) scale(1) rotate(0);filter:blur(0)}
-}
-
-@keyframes bibigayJumpyHeroIn{
-  0%{opacity:0;transform:translate3d(0,34px,0) scale(.58,.72) rotate(-6deg);filter:blur(6px)}
-  32%{opacity:1;transform:translate3d(0,-14px,0) scale(1.16,.88) rotate(3deg);filter:blur(0)}
-  52%{transform:translate3d(0,6px,0) scale(.94,1.05) rotate(-1.5deg)}
-  72%{transform:translate3d(0,-4px,0) scale(1.045,.98) rotate(.8deg)}
-  100%{opacity:1;transform:translate3d(0,0,0) scale(1) rotate(0);filter:blur(0)}
-}
-
-.line.scene-clock .clock-lyric.bibigay-static .word.current{
-  color:var(--accent);
-  text-shadow:0 0 28px #ffb38a55;
-}
-</style>
-
-<script id="huge-57-number-explosion-js">
-(function(){
-  const field=document.getElementById("huge57Explosion");
-  const audio=document.getElementById("audio");
-  if(!field || !audio) return;
-  let fired=false;
-
-  function trigger(){
-    if(fired) return;
-    fired=true;
-    field.classList.add("active");
-
-    const flash=document.createElement("div");
-    flash.className="huge57-flash";
-    field.appendChild(flash);
-
-    const values=["1","2","3","4","5","6","7","8","9","10","11","12"];
-    values.forEach((value,i)=>{
-      const el=document.createElement("span");
-      el.className="huge57-number";
-      el.textContent=value;
-
-      const angle=(Math.PI*2*i/values.length)+(Math.random()-.5)*.22;
-      const radius=300+Math.random()*700;
-      const d=(m)=>Math.cos(angle)*radius*m;
-      const e=(m)=>Math.sin(angle)*radius*m;
-
-      el.style.setProperty("--dx1",d(.18)+"px");
-      el.style.setProperty("--dy1",e(.18)+"px");
-      el.style.setProperty("--dx2",d(.58)+"px");
-      el.style.setProperty("--dy2",e(.58)+"px");
-      el.style.setProperty("--dx3",d(.86)+"px");
-      el.style.setProperty("--dy3",e(.86)+"px");
-      el.style.setProperty("--dx4",d(1.08)+"px");
-      el.style.setProperty("--dy4",e(1.08)+"px");
-      el.style.setProperty("--r",((Math.random()-.5)*28)+"deg");
-      el.style.setProperty("--r2",((Math.random()-.5)*16)+"deg");
-      el.style.setProperty("--r3",((Math.random()-.5)*22)+"deg");
-      el.style.setProperty("--life",(1.15+Math.random()*.65)+"s");
-      el.style.fontSize=(9+Math.random()*17)+"vw";
-      el.style.animationDelay=(Math.random()*.11)+"s";
-      field.appendChild(el);
-    });
-
-    setTimeout(()=>{
-      field.classList.remove("active");
-      field.replaceChildren();
-      fired=false;
-    },2100);
-  }
-
-  audio.addEventListener("timeupdate",()=>{
-    if(audio.currentTime>=57 && audio.currentTime<57.20 && !fired) trigger();
-    if(audio.currentTime<56.5) fired=false;
-  });
-})();
-</script>
-
-
-<style id="pati-kinetic-clean">
-/* 01:19 — PATI ANG NANAY MO'Y AKING DADALHAN
-   Simple sequential kinetic typography. No inherited scene effects. */
-.line.scene-pati-kinetic{
-  width:min(1080px,92vw);
-  min-height:48vh;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  align-content:center;
-  flex-wrap:wrap;
-  gap:.08em .16em;
-  text-align:center;
-}
-.line.scene-pati-kinetic .word{
-  display:inline-block !important;
-  margin:0 .025em !important;
-  font-family:inherit !important;
-  font-size:clamp(30px,6.4vw,72px) !important;
-  font-weight:800 !important;
-  letter-spacing:-.045em !important;
-  line-height:.92 !important;
-  animation:none !important;
-  transition:none !important;
-  will-change:transform,opacity;
-}
-.line.scene-pati-kinetic .word.current{
-  color:var(--accent) !important;
-}
-@media(max-width:600px){
-  .line.scene-pati-kinetic{
-    width:88vw;
-    min-height:44vh;
-    gap:.08em .13em;
-  }
-  .line.scene-pati-kinetic .word{
-    font-size:clamp(27px,7.4vw,44px) !important;
-  }
-}
-</style>
 
 </body>
 </html>
