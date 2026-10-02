@@ -4219,8 +4219,16 @@ render();
   will-change:auto!important;
 }
 .line.scene-clock .clock-lyric.bibigay-static .word.current{
-  transform:none!important;
-  text-shadow:none!important;
+  color:var(--accent);
+  text-shadow:0 0 28px #ffb38a55;
+}
+
+/* Keep ORAS animated even while it is the currently highlighted word.
+   The highlight may change its color/glow, but must never cancel its jump. */
+.line.scene-clock .clock-lyric.bibigay-static .word[data-word-index="5"].current{
+  animation:orasJumpAndBob 1.15s cubic-bezier(.45,.05,.55,.95) infinite!important;
+  transform-origin:50% 90%!important;
+  will-change:transform!important;
 }
 
 /* ONLY "oras" moves in the Bibigay stack.
