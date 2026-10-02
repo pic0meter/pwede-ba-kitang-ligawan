@@ -2861,7 +2861,7 @@ const lines=[
   {start:78.75,end:81.95,text:"Pati ang nanay mo'y aking dadalhan",style:'verse',scene:'pati-kinetic',section:'verse 2',cues:[78.75,79.05,79.42,79.78,80.05,80.35,80.70]},
   {start:81.98,end:86.55,text:'Ng paborito niyang ulam',style:'soft',scene:'ulam-kinetic',section:'verse 2',cues:[81.98,82.38,82.78,83.22]},
   {start:86.419,end:90.20,text:'At kahit pahirapan pa',style:'verse',scene:'pahirapan-beat',section:'verse 2',cues:[86.419,86.649,87.071,87.588,88.121,88.804,89.377]},
-  {start:90.28,end:94.20,text:'Ako ng tatay mo hindi aatras',style:'soft',section:'verse 2',cues:[90.28,90.72,91.05,91.42,91.78,92.15,92.55]},
+  {start:89.83,end:94.20,text:"Ako ng tatay mo hindi aatras",style:'soft',scene:'ako-tatay-syllable',section:'verse 2',cues:[89.830,90.339,90.574,91.027,91.568,92.037,92.335]},
   {start:94.28,end:98.80,text:'Kasi gusto kitaaaaaaaa',style:'chorus',section:'verse 2',cues:[94.28,94.70,95.05]},
   {start:98.82,end:102.55,text:'Gustong-gusto, gustong-gusto kita',style:'big',section:'verse 2',cues:[98.82,99.45,100.10]},
   {start:102.72,end:109.70,text:'Pwede ba kitang ligawan?',style:'chorus',section:'final',cues:[102.72,103.28,103.72,105.25]},
@@ -2885,6 +2885,21 @@ function cleanWord(w){
 function buildWords(text){
   // This lyric is intentionally split by sung syllable, not by whitespace.
   // The seven nodes must match the seven beat cues exactly: AT / KA / HIT / PA / HIRA / PAN / PA.
+  if(text === "Ako ng tatay mo hindi aatras"){
+    const units=[
+      {html:'Ako',cue:0,breakAfter:true},
+      {html:'ng',cue:1},
+      {html:'ta',cue:2},
+      {html:'tay',cue:3,breakAfter:true},
+      {html:'mo',cue:4},
+      {html:'hindi',cue:5,breakAfter:true},
+      {html:'aatras',cue:6,breakAfter:true}
+    ];
+    return units.map((u,i)=>
+      `<span class="word${u.breakAfter?' break-after':''}" data-word-index="${i}" data-cue-index="${u.cue}" style="--i:${i};--tilt:0deg">${u.html}</span>`
+    ).join('');
+  }
+
   if(text === 'At kahit pahirapan pa'){
     const syllables=['At','ka','hit','pa','hira','pan','pa'];
     return syllables.map((part,i)=>
@@ -3016,7 +3031,7 @@ function sceneFor(i){
   // Each lyric becomes a small motion-graphics scene.
   const scenes=[
     'fly','slit','kailan-flight','wind','zoom','squiggle','clock','clock',
-    'fly','question','pupuntahan','malayo-echo','pati-kinetic','ulam-kinetic','pahirapan-beat','chase',
+    'fly','question','pupuntahan','malayo-echo','pati-kinetic','ulam-kinetic','pahirapan-beat','ako-tatay-syllable','chase',
     'longa','fly','clock','crawl','flip','zoom','question'
   ];
   return scenes[i]||'chase';
@@ -3492,10 +3507,12 @@ function updateWords(t){
   const cues=item.cues;
   let currentWord=-1;
   const singleBeatScene=sceneFor(current)==='pahirapan-beat';
+  const syllableLineScene=sceneFor(current)==='ako-tatay-syllable';
 
   words.forEach((w,i)=>{
-    const start=cues[i] ?? (item.start+(i/words.length)*(item.end-item.start));
-    const visible=singleBeatScene ? (t>=start && t<(cues[i+1] ?? item.end)) : t>=start;
+    const cueIndex=Number(w.dataset.cueIndex ?? i);
+    const start=cues[cueIndex] ?? (item.start+(i/words.length)*(item.end-item.start));
+    const visible=singleBeatScene ? (t>=start && t<(cues[cueIndex+1] ?? item.end)) : t>=start;
     w.classList.toggle('visible',visible);
     if(visible)currentWord=i;
   });
@@ -4806,6 +4823,58 @@ render();
 </style>
 
 
+
+<style id="ako-tatay-syllable-clean">
+/* 01:29.830 — AKO / NG TATAY / MO HINDI / AATRAS
+   Cumulative syllable units. Each cue reveals its own unit and keeps it beside
+   the units already sung; explicit breaks preserve the requested phrase groups. */
+.line.scene-ako-tatay-syllable{
+  width:min(1080px,92vw);
+  min-height:48vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  align-content:center;
+  flex-wrap:wrap;
+  column-gap:.16em;
+  row-gap:.08em;
+  text-align:center;
+  overflow:visible;
+}
+.line.scene-ako-tatay-syllable .word{
+  position:relative !important;
+  left:auto !important;
+  top:auto !important;
+  width:auto !important;
+  margin:0 !important;
+  display:inline-block !important;
+  font-family:"Poppins",sans-serif !important;
+  font-size:clamp(54px,10vw,112px) !important;
+  font-weight:800 !important;
+  letter-spacing:-.055em !important;
+  line-height:.9 !important;
+  text-align:center !important;
+  transform-origin:center center !important;
+  will-change:opacity,transform,filter;
+}
+.line.scene-ako-tatay-syllable .word.break-after::after{
+  content:"";
+  flex-basis:100%;
+}
+.line.scene-ako-tatay-syllable .word.break-after{
+  margin-right:100% !important;
+}
+@media(max-width:600px){
+  .line.scene-ako-tatay-syllable{
+    width:96vw;
+    column-gap:.12em;
+    row-gap:.06em;
+  }
+  .line.scene-ako-tatay-syllable .word{
+    font-size:clamp(42px,12vw,78px) !important;
+  }
+}
+</style>
 <style id="pahirapan-beat-clean">
 /* 01:26 — AT KAHIT PAHIRAPAN PA
    Exact beat-by-beat center typography. Only one word is visible at once. */
