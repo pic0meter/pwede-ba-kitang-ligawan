@@ -2086,6 +2086,22 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 @keyframes linyahanTransitionPulse{0%{opacity:1;transform:translate3d(0,0,0) scale(1)}32%{transform:translate3d(-3px,2px,0) scale(1.045) rotate(-.35deg);filter:drop-shadow(0 0 15px #ffb38a55)}62%{transform:translate3d(3px,-3px,0) scale(1.085) rotate(.4deg);filter:drop-shadow(0 0 27px #ffb38a77)}100%{opacity:1;transform:translate3d(0,0,0) scale(1) rotate(0);filter:none}}
 @keyframes linyahanTransitionFade{0%{opacity:1;transform:translate3d(0,0,0) scale(1);filter:none}45%{opacity:.78;transform:translate3d(0,-4px,0) scale(.99);filter:blur(.35px)}100%{opacity:0;transform:translate3d(0,-12px,0) scale(.965);filter:blur(1.8px)}}
 
+
+/* Only the "oras" word gets the stronger bounce. */
+.line.scene-clock .clock-lyric.bibigay-static .word[data-word-index="5"].visible{
+  animation:orasContinuousBounce 1.05s cubic-bezier(.45,.05,.55,.95) infinite!important;
+  transform-origin:50% 90%!important;
+  will-change:transform!important;
+}
+@keyframes orasContinuousBounce{
+  0%,100%{transform:translate3d(0,0,0) scale(1)}
+  12%{transform:translate3d(0,-9px,0) scale(1.055)}
+  25%{transform:translate3d(0,2px,0) scale(.975)}
+  40%{transform:translate3d(0,-6px,0) scale(1.035)}
+  55%{transform:translate3d(0,1px,0) scale(.99)}
+  72%{transform:translate3d(0,-3px,0) scale(1.015)}
+  86%{transform:translate3d(0,1px,0) scale(.997)}
+}
 </style>
 <style>
 /* Restore ONLY the spoken-word highlight for the first linyahan line.
