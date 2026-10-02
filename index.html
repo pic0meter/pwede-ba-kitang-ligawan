@@ -2861,7 +2861,7 @@ const lines=[
   {start:78.75,end:81.95,text:"Pati ang nanay mo'y aking dadalhan",style:'verse',scene:'pati-kinetic',section:'verse 2',cues:[78.75,79.05,79.42,79.78,80.05,80.35,80.70]},
   {start:81.98,end:86.55,text:'Ng paborito niyang ulam',style:'soft',scene:'ulam-kinetic',section:'verse 2',cues:[81.98,82.38,82.78,83.22]},
   {start:86.419,end:90.20,text:'At kahit pahirapan pa',style:'verse',scene:'pahirapan-beat',section:'verse 2',cues:[86.419,86.649,87.071,87.588,88.121,88.804,89.377]},
-  {start:89.83,end:94.20,text:"Ako ng tatay mo hindi aatras",style:'soft',scene:'ako-tatay-syllable',section:'verse 2',cues:[89.830,90.339,90.574,91.027,91.568,92.037,92.335]},
+  {start:89.83,end:94.20,text:"Ako ng tatay mo hindi aatras",style:'soft',scene:'ako-tatay-syllable',section:'verse 2',cues:[89.830,90.339,90.574,91.027,91.568,92.037,92.335,92.729]},
   {start:94.28,end:98.80,text:'Kasi gusto kitaaaaaaaa',style:'chorus',section:'verse 2',cues:[94.28,94.70,95.05]},
   {start:98.82,end:102.55,text:'Gustong-gusto, gustong-gusto kita',style:'big',section:'verse 2',cues:[98.82,99.45,100.10]},
   {start:102.72,end:109.70,text:'Pwede ba kitang ligawan?',style:'chorus',section:'final',cues:[102.72,103.28,103.72,105.25]},
@@ -2890,7 +2890,7 @@ function buildWords(text){
       [{html:'Ako',cue:0}],
       [{html:'ng',cue:1},{html:'ta',cue:2},{html:'tay',cue:3}],
       [{html:'mo',cue:4},{html:'hindi',cue:5}],
-      [{html:'aatras',cue:6}]
+      [{html:'a',cue:6},{html:'atras',cue:7}]
     ];
     let wordIndex=0;
     return groups.map((group,g)=>{
@@ -4908,6 +4908,10 @@ render();
 /* Keep TA and TAY as separate syllables, but visually tuck them together. */
 .line.scene-ako-tatay-syllable .syllable-group.group-break:nth-of-type(2) .word:nth-child(3){
   margin-left:-.22em !important;
+}
+/* Keep A + ATRAS separate syllable elements, but visually tuck them into one word. */
+.line.scene-ako-tatay-syllable .syllable-group.group-break:nth-of-type(4) .word:nth-child(2){
+  margin-left:-.28em !important;
 }
 </style>
 <style id="pahirapan-beat-clean">
