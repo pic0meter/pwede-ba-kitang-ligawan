@@ -2903,7 +2903,7 @@ function sceneFor(i){
   // Each lyric becomes a small motion-graphics scene.
   const scenes=[
     'fly','slit','kailan-flight','wind','zoom','squiggle','clock','clock',
-    'fly','question','pupuntahan','malayo-echo','orbit','wind','rubber','chase',
+    'fly','question','pupuntahan','malayo-echo','pati-kinetic','wind','rubber','chase',
     'longa','fly','clock','crawl','flip','zoom','question'
   ];
   return scenes[i]||'chase';
@@ -3600,7 +3600,7 @@ function updateMotion(t){
   // Extra idle heartbeat for every scene, layered through independent transform properties.
   words.forEach((w,i)=>{
     if(!w.classList.contains('visible'))return;
-    if(scene==='fly' || scene==='flip' || scene==='orbit' || scene==='pupuntahan' || scene==='malayo-echo')return; // scene owns its transform
+    if(scene==='fly' || scene==='flip' || scene==='orbit' || scene==='pupuntahan' || scene==='malayo-echo' || scene==='pati-kinetic')return; // scene owns its transform
     const idleX=Math.sin(t*5.4+i*.9)*1.8;
     const idleY=Math.cos(t*5.4+i*1.1)*1.4;
     const idleR=Math.sin(t*5.4+i)*.75;
