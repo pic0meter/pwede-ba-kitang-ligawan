@@ -2685,6 +2685,12 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 }
 </style>
 
+<style id="kailan-poppins-bigger">
+.line[data-index="2"] .word,
+.line[data-index="2"] .word.visible,
+.line[data-index="2"] .word.current{font-family:"Poppins",sans-serif!important;font-weight:800!important;font-size:1.28em!important;}
+@media(max-width:600px){.line[data-index="2"] .word,.line[data-index="2"] .word.visible,.line[data-index="2"] .word.current{font-size:1.18em!important;font-weight:800!important;}}
+</style>
 </head>
 <body>
 <div id="app">
@@ -3104,7 +3110,11 @@ function activate(i){
     el=document.createElement('div');
     el.className=`line motion scene-${scene} ${item.style}${qClass}${specialClass}`;
     el.dataset.index=i;
-    el.innerHTML=body;
+    if(body && body.nodeType){
+      el.appendChild(body);
+    }else{
+      el.innerHTML=body;
+    }
   }
 
   // Keep the outgoing lyric in the stage while the new lyric enters.
