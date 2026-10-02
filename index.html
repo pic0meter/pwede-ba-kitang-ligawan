@@ -2903,7 +2903,7 @@ function sceneFor(i){
   // Each lyric becomes a small motion-graphics scene.
   const scenes=[
     'fly','slit','kailan-flight','wind','zoom','squiggle','clock','clock',
-    'fly','question','pupuntahan','malayo-echo','pati-kinetic','wind','rubber','chase',
+    'fly','question','pupuntahan','malayo-echo','pati-kinetic','ulam-kinetic','rubber','chase',
     'longa','fly','clock','crawl','flip','zoom','question'
   ];
   return scenes[i]||'chase';
@@ -3648,7 +3648,7 @@ function updateMotion(t){
   // Extra idle heartbeat for every scene, layered through independent transform properties.
   words.forEach((w,i)=>{
     if(!w.classList.contains('visible'))return;
-    if(scene==='fly' || scene==='flip' || scene==='orbit' || scene==='pupuntahan' || scene==='malayo-echo' || scene==='pati-kinetic')return; // scene owns its transform
+    if(scene==='fly' || scene==='flip' || scene==='orbit' || scene==='pupuntahan' || scene==='malayo-echo' || scene==='pati-kinetic' || scene==='ulam-kinetic')return; // scene owns its transform
     const idleX=Math.sin(t*5.4+i*.9)*1.8;
     const idleY=Math.cos(t*5.4+i*1.1)*1.4;
     const idleR=Math.sin(t*5.4+i)*.75;
@@ -4642,23 +4642,24 @@ render();
   width:min(900px,88vw);
   min-height:48vh;
   display:flex;
+  flex-direction:column;
   align-items:center;
   justify-content:center;
   align-content:center;
-  flex-wrap:wrap;
-  gap:.01em .015em;
+  flex-wrap:nowrap;
+  gap:0;
   text-align:center;
   overflow:visible;
 }
 .line.scene-ulam-kinetic .word{
-  display:inline-block !important;
-  margin:0 -.075em !important;
+  display:block !important;
+  margin:0 !important;
   padding:0 !important;
   font-family:inherit !important;
   font-size:clamp(30px,6.4vw,72px) !important;
   font-weight:800 !important;
   letter-spacing:-.065em !important;
-  line-height:.90 !important;
+  line-height:.68 !important;
   animation:none !important;
   transition:none !important;
   will-change:transform,opacity;
@@ -4670,12 +4671,13 @@ render();
   .line.scene-ulam-kinetic{
     width:91vw;
     min-height:44vh;
-    gap:.01em .005em;
+    gap:0;
   }
   .line.scene-ulam-kinetic .word{
-    margin:0 -.065em !important;
+    margin:0 !important;
     font-size:clamp(27px,7.4vw,44px) !important;
     letter-spacing:-.07em !important;
+    line-height:.66 !important;
   }
 }
 </style>
