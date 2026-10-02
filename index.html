@@ -704,109 +704,6 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   100%{opacity:0;transform:scale(1.08)}
 }
 
-/* FIRST-CHORUS — horizontal line behind the stacked words. */
-.first-linyahan-stroke{
-  position:absolute;
-  z-index:1;
-  pointer-events:none;
-  opacity:0;
-  will-change:transform,opacity;
-  border:0;
-  background:repeating-linear-gradient(90deg,#ffb38a 0 12px,transparent 12px 23px);
-  box-shadow:0 0 9px #ffb38a55;
-}
-.first-linyahan-vertical.active .first-linyahan-stroke{
-  animation-timing-function:cubic-bezier(.18,.8,.18,1);
-  animation-fill-mode:forwards;
-}
-
-/* Many independent edge-to-edge strokes. Every stroke still travels from one
-   side of the viewport to the opposite side; only its entry edge, angle,
-   speed, thickness and opacity vary. */
-.first-linyahan-stroke-h{
-  left:-125vw; width:150vw; height:var(--thick,2px);
-  top:var(--y,50%);
-  background:repeating-linear-gradient(90deg,#ffb38a 0 var(--dash,12px),transparent var(--dash,12px) calc(var(--dash,12px) + var(--gap,11px)));
-  animation-name:firstLinyahanTravelH;
-  animation-duration:var(--dur,3.2s);
-  animation-delay:var(--delay,0s);
-  animation-timing-function:linear!important;
-}
-.first-linyahan-stroke-h.reverse{
-  left:auto; right:-125vw;
-  animation-name:firstLinyahanTravelHReverse;
-}
-.first-linyahan-stroke-v{
-  top:-125vh; left:var(--x,50%); width:var(--thick,2px); height:150vh;
-  background:repeating-linear-gradient(0deg,#ffb38a 0 var(--dash,12px),transparent var(--dash,12px) calc(var(--dash,12px) + var(--gap,11px)));
-  animation-name:firstLinyahanTravelV;
-  animation-duration:var(--dur,3.2s);
-  animation-delay:var(--delay,0s);
-  animation-timing-function:linear!important;
-}
-.first-linyahan-stroke-v.reverse{
-  top:auto; bottom:-125vh;
-  animation-name:firstLinyahanTravelVReverse;
-}
-.first-linyahan-stroke-d{
-  width:155vw; height:var(--thick,2px);
-  left:-130vw; top:var(--y,50%);
-  transform:rotate(var(--angle,25deg));
-  transform-origin:center center;
-  background:repeating-linear-gradient(90deg,#ffb38a 0 var(--dash,11px),transparent var(--dash,11px) calc(var(--dash,11px) + var(--gap,14px)));
-  animation-name:firstLinyahanTravelD;
-  animation-duration:var(--dur,3.4s);
-  animation-delay:var(--delay,0s);
-  animation-timing-function:linear!important;
-}
-.first-linyahan-stroke-d.reverse{
-  left:auto; right:-130vw;
-  animation-name:firstLinyahanTravelDReverse;
-}
-@keyframes firstLinyahanTravelH{
-  0%{opacity:0;transform:translateX(-18vw)}
-  8%{opacity:var(--op,.5)}
-  88%{opacity:var(--op,.5);transform:translateX(150vw)}
-  100%{opacity:0;transform:translateX(175vw)}
-}
-@keyframes firstLinyahanTravelHReverse{
-  0%{opacity:0;transform:translateX(18vw)}
-  8%{opacity:var(--op,.5)}
-  88%{opacity:var(--op,.5);transform:translateX(-150vw)}
-  100%{opacity:0;transform:translateX(-175vw)}
-}
-@keyframes firstLinyahanTravelV{
-  0%{opacity:0;transform:translateY(-18vh)}
-  8%{opacity:var(--op,.5)}
-  88%{opacity:var(--op,.5);transform:translateY(150vh)}
-  100%{opacity:0;transform:translateY(175vh)}
-}
-@keyframes firstLinyahanTravelVReverse{
-  0%{opacity:0;transform:translateY(18vh)}
-  8%{opacity:var(--op,.5)}
-  88%{opacity:var(--op,.5);transform:translateY(-150vh)}
-  100%{opacity:0;transform:translateY(-175vh)}
-}
-@keyframes firstLinyahanTravelD{
-  0%{opacity:0;transform:translateX(-145vw) rotate(var(--angle,25deg))}
-  8%{opacity:var(--op,.5)}
-  88%{opacity:var(--op,.5);transform:translateX(145vw) rotate(var(--angle,25deg))}
-  100%{opacity:0;transform:translateX(175vw) rotate(var(--angle,25deg))}
-}
-@keyframes firstLinyahanTravelDReverse{
-  0%{opacity:0;transform:translateX(145vw) rotate(var(--angle,-25deg))}
-  8%{opacity:var(--op,.5)}
-  88%{opacity:var(--op,.5);transform:translateX(-145vw) rotate(var(--angle,-25deg))}
-  100%{opacity:0;transform:translateX(-175vw) rotate(var(--angle,-25deg))}
-}
-.line.first-linyahan-vertical.out{animation:none!important;}
-.line.first-linyahan-vertical.out .first-linyahan-stroke{animation:firstLinyahanStrokeOut .28s ease-in forwards!important;}
-@keyframes firstLinyahanStrokeOut{from{opacity:inherit}to{opacity:0}}
-
-/* Keep the older dashed-line machinery inactive for this treatment. */
-.first-linyahan-vertical .linyahan-dash-field{
-  display:none!important;
-}
 
 /* Old i=6 cursive-clock lyric treatment removed: replaced by .scene-bibigay-stack. */
 .line.scene-clock.clock-whimsy-skill .clock-lyric{
@@ -3429,28 +3326,6 @@ function activate(i){
       w.style.setProperty('--echo-x',((idx%2===0?-1:1)*(7+idx*1.5))+'px');
       w.style.setProperty('--echo-y',((idx%3)-1)*4+'px');
       w.style.setProperty('--echo-rot',((idx%2===0?-1:1)*(idx%3+0.5))+'deg');
-    });
-    const strokeSpecs=[
-      ['h',false,18,2,.42,3.4,0.02,10,12],['h',true,30,3,.30,4.1,.18,16,17],
-      ['h',false,42,1,.62,2.7,.34,8,13],['h',true,55,2,.48,3.6,.52,12,10],
-      ['h',false,68,4,.25,4.4,.70,20,18],['h',true,80,2,.55,3.0,.88,9,14],
-      ['v',false,16,2,.38,3.8,.12,10,12],['v',true,29,3,.52,3.2,.30,15,15],
-      ['v',false,43,1,.66,2.8,.46,7,11],['v',true,57,2,.32,4.0,.64,18,16],
-      ['v',false,71,3,.50,3.5,.82,12,12],['v',true,84,1,.44,4.2,.96,9,18],
-    ];
-    strokeSpecs.forEach(([type,reverse,pos,thick,op,dur,delay,dash,gap])=>{
-      const stroke=document.createElement('div');
-      stroke.className='first-linyahan-stroke first-linyahan-stroke-'+type+(reverse?' reverse':'');
-      stroke.setAttribute('aria-hidden','true');
-      stroke.style.setProperty('--'+(type==='h'?'y':type==='v'?'x':'y'),pos+'%');
-      stroke.style.setProperty('--thick',thick+'px');
-      stroke.style.setProperty('--op',op);
-      stroke.style.setProperty('--dur',dur+'s');
-      stroke.style.setProperty('--delay',delay+'s');
-      stroke.style.setProperty('--dash',dash+'px');
-      stroke.style.setProperty('--gap',gap+'px');
-      if(type==='d') stroke.style.setProperty('--angle',(reverse?-24:24)+'deg');
-      el.appendChild(stroke);
     });
   }
   if(i===1){
