@@ -2088,53 +2088,19 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 
 
 /* Only the "oras" word gets the stronger bounce. */
-.line.scene-clock .clock-lyric.bibigay-static .word[data-word-index="5"].visible,
-.line.scene-clock .clock-lyric.bibigay-static .word[data-word-index="5"].current{
-  /* Keep the base transform completely neutral; animate independent transform
-     properties so the .current transform rule cannot cancel the bounce. */
-  transform:none!important;
-  animation:orasContinuousBounce 1.05s cubic-bezier(.45,.05,.55,.95) infinite!important;
-  transform-origin:50% 90%!important;
-  will-change:translate,rotate,scale!important;
-}
-@keyframes orasContinuousBounce{
-  0%,100%{translate:0 0;rotate:0deg;scale:1 1}
-  10%{translate:-4px -24px;rotate:-2.5deg;scale:.94 1.12}
-  20%{translate:4px 6px;rotate:2.5deg;scale:1.10 .88}
-  30%{translate:-3px -19px;rotate:-2deg;scale:.95 1.10}
-  40%{translate:3px 5px;rotate:2deg;scale:1.09 .90}
-  50%{translate:-4px -26px;rotate:-2.7deg;scale:.92 1.14}
-  60%{translate:4px 7px;rotate:2.7deg;scale:1.11 .87}
-  70%{translate:-3px -17px;rotate:-1.8deg;scale:.96 1.08}
-  80%{translate:3px 5px;rotate:1.8deg;scale:1.08 .91}
-  90%{translate:-2px -10px;rotate:-1deg;scale:.98 1.05}
-}
-
-/* FINAL OVERRIDE: Bibigay line is completely still except for "oras". */
-.line.scene-clock .clock-lyric.bibigay-static .word:not([data-word-index="5"]),
-.line.scene-clock .clock-lyric.bibigay-static .word:not([data-word-index="5"]).visible,
-.line.scene-clock .clock-lyric.bibigay-static .word:not([data-word-index="5"]).current{
-  animation:none!important;
-  transform:none!important;
-  translate:none!important;
-  rotate:none!important;
-  scale:none!important;
-  opacity:1!important;
-  filter:none!important;
-  transition:none!important;
-  will-change:auto!important;
-}
-.line.scene-clock:has(.clock-lyric.bibigay-static) .clock-wrap{
-  animation:none!important;
-  transform:none!important;
-  translate:none!important;
-  rotate:none!important;
-  scale:none!important;
-}
-.line.scene-clock .clock-lyric.bibigay-static .word[data-word-index="5"].visible{
-  animation:orasContinuousBounce 1.05s cubic-bezier(.45,.05,.55,.95) infinite!important;
+.line.scene-clock .clock-lyric .word[data-word-index="5"]{
+  animation:orasStrongerBounce 1.15s cubic-bezier(.45,.05,.55,.95) infinite!important;
   transform-origin:50% 90%!important;
   will-change:transform!important;
+}
+@keyframes orasStrongerBounce{
+  0%,100%{transform:translate3d(0,0,0) scale(1) rotate(0deg)}
+  12%{transform:translate3d(-3px,-10px,0) scale(1.055) rotate(-1.2deg)}
+  25%{transform:translate3d(3px,2px,0) scale(.975) rotate(1deg)}
+  40%{transform:translate3d(-2px,-7px,0) scale(1.035) rotate(-.9deg)}
+  55%{transform:translate3d(2px,1px,0) scale(.99) rotate(.8deg)}
+  72%{transform:translate3d(-2px,-4px,0) scale(1.015) rotate(-.6deg)}
+  86%{transform:translate3d(2px,1px,0) scale(.997) rotate(.5deg)}
 }
 </style>
 <style>
@@ -3466,14 +3432,6 @@ function updateMotion(t){
   // Extra idle heartbeat for every scene, layered through independent transform properties.
   words.forEach((w,i)=>{
     if(!w.classList.contains('visible'))return;
-    // The Bibigay stack has its own motion rules: keep the generic idle
-    // heartbeat from adding movement to every word. Only "oras" is animated.
-    if(el.querySelector('.clock-lyric.bibigay-static')){
-      w.style.translate='0 0';
-      w.style.rotate='0deg';
-      w.style.scale='1';
-      return;
-    }
     if(scene==='fly' || scene==='flip' || scene==='orbit' || scene==='pupuntahan' || scene==='malayo-echo')return; // scene owns its transform
     const idleX=Math.sin(t*5.4+i*.9)*1.8;
     const idleY=Math.cos(t*5.4+i*1.1)*1.4;
@@ -4260,22 +4218,9 @@ render();
   translate:none!important;
   will-change:auto!important;
 }
-.line.scene-clock .clock-lyric.bibigay-static .word.current:not([data-word-index="5"]){
+.line.scene-clock .clock-lyric.bibigay-static .word.current{
   transform:none!important;
   text-shadow:none!important;
-}
-/* This lyric line is static as a whole; only "oras" is allowed to move. */
-.line.scene-clock:has(.clock-lyric.bibigay-static) .clock-wrap{
-  animation:none!important;
-  transform:none!important;
-}
-/* Re-enable continuous motion ONLY for "oras" after the static reset above. */
-.line.scene-clock .clock-lyric.bibigay-static .word[data-word-index="5"].visible,
-.line.scene-clock .clock-lyric.bibigay-static .word[data-word-index="5"].current{
-  transform:none!important;
-  animation:orasContinuousBounce 1.05s cubic-bezier(.45,.05,.55,.95) infinite!important;
-  transform-origin:50% 90%!important;
-  will-change:translate,rotate,scale!important;
 }
 
 @keyframes clockSmoothIn{
