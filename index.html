@@ -2903,9 +2903,18 @@ function buildWords(text){
   }
 
   if(text === 'At kahit pahirapan pa'){
-    const syllables=['At','ka','hit','pa','hira','pan','pa'];
-    return syllables.map((part,i)=>
-      `<span class="word" data-word-index="${i}" style="--i:${i};--tilt:0deg">${part}</span>`
+    // The opening "At ka" must land together on the former KA beat.
+    // Keep the remaining syllable beats unchanged.
+    const beats=[
+      {html:'At ka',cue:1},
+      {html:'hit',cue:2},
+      {html:'pa',cue:3},
+      {html:'hira',cue:4},
+      {html:'pan',cue:5},
+      {html:'pa',cue:6}
+    ];
+    return beats.map((part,i)=>
+      `<span class="word" data-word-index="${i}" data-cue-index="${part.cue}" style="--i:${i};--tilt:0deg">${part.html}</span>`
     ).join('');
   }
 
