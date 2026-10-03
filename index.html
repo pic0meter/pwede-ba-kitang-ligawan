@@ -2693,7 +2693,6 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   <div id="backgroundBanat" aria-hidden="true"></div>
   <div id="sabiEchoField" aria-hidden="true"></div>
   <div id="oSaKanyaEchoField" aria-hidden="true"></div>
-  <div id="akoTatayEchoField" aria-hidden="true"></div>
   <div id="heartField" aria-hidden="true"></div><div id="wordExplosionField" aria-hidden="true"></div><div id="huge57Explosion" aria-hidden="true"></div><div id="ooExplosion" aria-hidden="true"></div><div id="siteSparkField" aria-hidden="true"></div>
   <div id="echoes"></div>
 <div id="top">
@@ -2746,7 +2745,7 @@ const SABI_ECHO_NODES=SABI_ECHO_WORDS.map((word,i)=>{
   el.className='sabi-echo-word';
   el.textContent=word;
   el.dataset.index=String(i);
-  if(SABI_ECHO_FIELD) SABI_ECHO_FIELD.appendChild(el);
+  SABI_ECHO_FIELD.appendChild(el);
   return el;
 });
 
@@ -2761,65 +2760,11 @@ const OSA_ECHO_NODES=OSA_ECHO_WORDS.map((word,i)=>{
   el.className='sabi-echo-word';
   el.textContent=word;
   el.dataset.index=String(i);
-  if(OSA_ECHO_FIELD) OSA_ECHO_FIELD.appendChild(el);
-  return el;
-});
-
-function updateSabiMamaEcho(t){
-  if(!SABI_ECHO_FIELD) return;
-  const active=t>=SABI_ECHO_START && t<SABI_ECHO_END;
-  SABI_ECHO_FIELD.classList.toggle('active',active);
-
-  SABI_ECHO_NODES.forEach((el,i)=>{
-    const cue=SABI_ECHO_CUES[i];
-    const next=SABI_ECHO_NEXT[i];
-    const fadeIn=.10;
-    const fadeOut=.12;
-
-    if(!active || t<cue || t>=next){
-      el.classList.remove('current');
-      el.style.opacity='0';
-      el.style.filter='blur(7px)';
-      el.style.transform='translate(-50%,-50%) scale(.84)';
-      return;
-    }
-
-    const inP=Math.min(1,(t-cue)/fadeIn);
-    const outP=Math.min(1,(next-t)/fadeOut);
-    const easeIn=inP*inP*(3-2*inP);
-    const easeOut=outP*outP*(3-2*outP);
-    const alpha=Math.min(easeIn,easeOut);
-    const elapsed=t-cue;
-    const phase=elapsed*8.5+i*1.8;
-    const bobY=Math.sin(phase)*4.5;
-    const bobX=Math.cos(phase*.83+i)*2.5;
-    const scale=1+.018*Math.sin(phase*1.25);
-
-    el.classList.add('current');
-    el.style.opacity=String(alpha*.16);
-    el.style.filter=`blur(${(1-alpha)*7}px)`;
-    el.style.transform=`translate(calc(-50% + ${bobX}px),calc(-50% + ${bobY}px)) scale(${scale})`;
-  });
-}
-
-const AKO_TATAY_ECHO_FIELD=document.querySelector('#akoTatayEchoField');
-const AKO_TATAY_ECHO_WORDS=['Ako','ng','ta','tay','mo','hindi','a','atras'];
-const AKO_TATAY_ECHO_START=89.830;
-const AKO_TATAY_ECHO_END=94.200;
-const AKO_TATAY_ECHO_FADE_START=93.894;
-const AKO_TATAY_ECHO_CUES=[89.830,90.339,90.574,91.027,91.568,92.037,92.335,92.729];
-const AKO_TATAY_ECHO_NEXT=[90.339,90.574,91.027,91.568,92.037,92.335,92.729,94.200];
-const AKO_TATAY_ECHO_NODES=AKO_TATAY_ECHO_WORDS.map((word,i)=>{
-  const el=document.createElement('span');
-  el.className='ako-tatay-echo-word';
-  el.textContent=word;
-  el.dataset.index=String(i);
-  if(AKO_TATAY_ECHO_FIELD) AKO_TATAY_ECHO_FIELD.appendChild(el);
+  OSA_ECHO_FIELD.appendChild(el);
   return el;
 });
 
 function updateOSaKanyaEcho(t){
-  if(!OSA_ECHO_FIELD) return;
   const active=t>=OSA_ECHO_START && t<OSA_ECHO_END;
   OSA_ECHO_FIELD.classList.toggle('active',active);
 
@@ -2855,31 +2800,21 @@ function updateOSaKanyaEcho(t){
   });
 }
 
-function updateAkoTatayEcho(t){
-  if(!AKO_TATAY_ECHO_FIELD) return;
-  const active=t>=AKO_TATAY_ECHO_START && t<AKO_TATAY_ECHO_END;
-  AKO_TATAY_ECHO_FIELD.classList.toggle('active',active);
+function updateSabiMamaEcho(t){
+  const active=t>=SABI_ECHO_START && t<SABI_ECHO_END;
+  SABI_ECHO_FIELD.classList.toggle('active',active);
 
-  // Keep the echo directly behind the currently highlighted foreground syllable.
-  // Its position is read from the actual lyric node, so it follows the centered
-  // layout (including the tight TA/TAY and A/ATRAS pairs) instead of sitting at
-  // the middle of the screen independently.
-  const activeLine=L.querySelector('.line.active');
-  const foregroundWords=activeLine ? [...activeLine.querySelectorAll('.word')] : [];
-  const fieldRect=AKO_TATAY_ECHO_FIELD.getBoundingClientRect();
+  SABI_ECHO_NODES.forEach((el,i)=>{
+    const cue=SABI_ECHO_CUES[i];
+    const next=SABI_ECHO_NEXT[i];
+    const fadeIn=.12;
+    const fadeOut=.14;
 
-  AKO_TATAY_ECHO_NODES.forEach((el,i)=>{
-    const cue=AKO_TATAY_ECHO_CUES[i];
-    const next=AKO_TATAY_ECHO_NEXT[i];
-    const fadeIn=.10;
-    const fadeOut=.10;
-    const isCurrent=active && t>=cue && t<next;
-
-    if(!isCurrent){
+    if(!active || t<cue || t>=next){
       el.classList.remove('current');
       el.style.opacity='0';
-      el.style.filter='blur(8px)';
-      el.style.transform='translate(-50%,-50%) scale(.92)';
+      el.style.filter='blur(7px)';
+      el.style.transform='translate(-50%,-50%) scale(.82)';
       return;
     }
 
@@ -2887,34 +2822,17 @@ function updateAkoTatayEcho(t){
     const outP=Math.min(1,(next-t)/fadeOut);
     const easeIn=inP*inP*(3-2*inP);
     const easeOut=outP*outP*(3-2*outP);
-    let alpha=Math.min(easeIn,easeOut);
-    let pulse=1;
-
-    if(t>=AKO_TATAY_ECHO_FADE_START){
-      const p=Math.min(1,(t-AKO_TATAY_ECHO_FADE_START)/(94.280-AKO_TATAY_ECHO_FADE_START));
-      pulse=1+.08*Math.sin(p*Math.PI*3)*(1-p);
-    }
-
-    const foreground=foregroundWords.find(w=>Number(w.dataset.cueIndex ?? w.dataset.wordIndex ?? -1)===i);
-    if(foreground){
-      const rect=foreground.getBoundingClientRect();
-      const cs=getComputedStyle(foreground);
-      const x=rect.left-fieldRect.left+rect.width/2;
-      const y=rect.top-fieldRect.top+rect.height/2;
-      el.style.left=`${x}px`;
-      el.style.top=`${y}px`;
-      el.style.width='auto';
-      el.style.fontFamily=cs.fontFamily;
-      el.style.fontSize=cs.fontSize;
-      el.style.fontWeight=cs.fontWeight;
-      el.style.letterSpacing=cs.letterSpacing;
-      el.style.lineHeight=cs.lineHeight;
-    }
+    const alpha=Math.min(easeIn,easeOut);
+    const elapsed=t-cue;
+    const phase=elapsed*8.5+i*1.8;
+    const bobY=Math.sin(phase)*4.5;
+    const bobX=Math.cos(phase*.83+i)*2.5;
+    const scale=1+.018*Math.sin(phase*1.25);
 
     el.classList.add('current');
-    el.style.opacity=String(alpha*.16);
-    el.style.filter=`blur(${(1-alpha)*8}px)`;
-    el.style.transform=`translate(-50%,-50%) scale(${pulse*(.96+.035*alpha)})`;
+    el.style.opacity=String(alpha*.24);
+    el.style.filter=`blur(${(1-alpha)*7}px)`;
+    el.style.transform=`translate(calc(-50% + ${bobX}px),calc(-50% + ${bobY}px)) scale(${scale})`;
   });
 }
 
@@ -2943,8 +2861,8 @@ const lines=[
   {start:78.75,end:81.95,text:"Pati ang nanay mo'y aking dadalhan",style:'verse',scene:'pati-kinetic',section:'verse 2',cues:[78.75,79.05,79.42,79.78,80.05,80.35,80.70]},
   {start:81.98,end:86.55,text:'Ng paborito niyang ulam',style:'soft',scene:'ulam-kinetic',section:'verse 2',cues:[81.98,82.38,82.78,83.22]},
   {start:86.419,end:90.20,text:'At kahit pahirapan pa',style:'verse',scene:'pahirapan-beat',section:'verse 2',cues:[86.419,86.649,87.071,87.588,88.121,88.804,89.377]},
-  {start:89.83,end:94.20,text:"Ako ng tatay mo hindi aatras",style:'soft',scene:'ako-tatay-syllable',section:'verse 2',cues:[89.830,90.339,90.574,91.027,91.568,92.037,92.335,92.729]},
-  {start:94.28,end:98.80,text:'Kasi gusto kitaaaaaaaa',style:'chorus',section:'verse 2',cues:[94.28,94.70,95.05]},
+  {start:89.83,end:94.912,text:"Ako ng tatay mo hindi aatras",style:'soft',scene:'ako-tatay-syllable',section:'verse 2',cues:[89.830,90.339,90.574,91.027,91.568,92.037,92.335,92.729]},
+  {start:94.912,end:98.80,text:'Kasi gusto kitaaaaaaaa',style:'chorus',section:'verse 2',cues:[94.912,95.20,95.55]},
   {start:98.82,end:102.55,text:'Gustong-gusto, gustong-gusto kita',style:'big',section:'verse 2',cues:[98.82,99.45,100.10]},
   {start:102.72,end:109.70,text:'Pwede ba kitang ligawan?',style:'chorus',section:'final',cues:[102.72,103.28,103.72,105.25]},
   {start:109.75,end:116.55,text:"Kahit 'di maganda ang mga linyahan",style:'soft',section:'final',cues:[109.75,110.05,111.95,112.42,112.82,113.15]},
@@ -3311,6 +3229,9 @@ function activate(i){
       old.classList.remove('question-chorus-pulse','question-chorus-fade');
       setTimeout(()=>old.remove(),40);
     }else{
+      if(oldIndex===8 && i===9){
+        old.classList.add('ako-tatay-exit');
+      }
       old.classList.add('out');
       setTimeout(()=>old.remove(),700);
     }
@@ -3348,6 +3269,14 @@ function activate(i){
   // so its exit animation could never actually be seen. The overlap below gives
   // the first-half transitions a real crossfade instead of a hard cut.
   if(i<=9) el.classList.add('first-half-transition');
+  if(scene==='ako-tatay-syllable'){
+    const echoField=document.createElement('div');
+    echoField.className='ako-tatay-echo-field';
+    echoField.setAttribute('aria-hidden','true');
+    echoField.dataset.activeIndex='-1';
+    el.appendChild(echoField);
+  }
+
   L.appendChild(el);
   if(scene==='clock') el.dataset.clockOriginIndex=String(i);
   if(i===0) el.classList.add('puso-throb');
@@ -3629,45 +3558,6 @@ function updateWords(t){
 
 }
 
-function updateAkoTatayWholeLinePulse(t){
-  const line=document.querySelector('.line.active');
-  const isAkoTatay=current>=0 && sceneFor(current)==='ako-tatay-syllable';
-  const pulseStart=93.894;
-  const pulseEnd=94.280; // clear completely just before the next lyric enters
-
-  // Always reset both layers first. This makes seeking backward/forward safe.
-  if(!isAkoTatay || !line){
-    if(line){
-      line.style.opacity='';
-      line.style.transform='';
-      line.style.filter='';
-    }
-    if(AKO_TATAY_ECHO_FIELD) AKO_TATAY_ECHO_FIELD.style.opacity='';
-    return;
-  }
-
-  if(t<pulseStart){
-    line.style.opacity='1';
-    line.style.transform='';
-    line.style.filter='';
-    if(AKO_TATAY_ECHO_FIELD) AKO_TATAY_ECHO_FIELD.style.opacity='';
-    return;
-  }
-
-  const p=Math.min(1,Math.max(0,(t-pulseStart)/(pulseEnd-pulseStart)));
-  const ease=p*p*(3-2*p);
-  const pulseWave=Math.sin(p*Math.PI);
-
-  // One shared exit treatment: the foreground line and its background echo
-  // pulse together, then disappear together.
-  line.style.opacity=String(1-ease);
-  line.style.transform=`scale(${1+0.055*pulseWave})`;
-  line.style.filter=`blur(${pulseWave*1.5}px)`;
-
-  const echoFade=1-ease;
-  if(AKO_TATAY_ECHO_FIELD) AKO_TATAY_ECHO_FIELD.style.opacity=String(echoFade);
-}
-
 function updateMotion(t){
   const el=L.querySelector('.line.active');
   if(!el||current<0)return;
@@ -3907,6 +3797,93 @@ function updateMotion(t){
     });
   }
 
+
+  if(scene==='ako-tatay-syllable') {
+    /*
+      01:29.830–01:34.912 — AKO / NG TATAY / MO HINDI / AATRAS
+      Each syllable gets a stronger, independent bob/bounce. The currently
+      highlighted syllable also throws a few very soft foreground copies to
+      random screen positions. Copies are recreated only when the highlight
+      changes, so they cannot accumulate into a stale effect.
+    */
+    const cues=item.cues||[];
+    let activeIndex=-1;
+    words.forEach((w,idx)=>{
+      const cue=cues[Number(w.dataset.cueIndex ?? idx)] ?? item.start;
+      if(t>=cue) activeIndex=idx;
+    });
+
+    words.forEach((w,idx)=>{
+      const cue=cues[Number(w.dataset.cueIndex ?? idx)] ?? item.start;
+      const hasAppeared=t>=cue;
+      if(!hasAppeared){
+        w.style.opacity='0';
+        w.style.transform='translate3d(0,24px,0) scale(.74,.90) rotate(-2deg)';
+        w.style.filter='blur(2px)';
+        return;
+      }
+
+      const phase=t*(8.4+idx*.34)+idx*1.37;
+      const bob=Math.sin(phase)*10.5 + Math.sin(phase*2.15+idx)*3.1;
+      const sway=Math.sin(phase*.78+idx*1.1)*3.4;
+      const squash=1+.032*Math.sin(phase*1.42);
+      const stretch=1+.018*Math.sin(phase*1.07+idx);
+      const enter=Math.min(1,(t-cue)/.14);
+      const ease=enter*enter*(3-2*enter);
+      const isActive=idx===activeIndex;
+
+      w.style.opacity=String(ease);
+      w.style.transform=
+        `translate3d(${sway}px,${bob}px,0) scaleX(${.78*squash*stretch}) scaleY(${1+.026*Math.sin(phase*.91)}) rotate(${Math.sin(phase*.63+idx)*1.35}deg)`;
+      w.style.filter='none';
+      w.style.color=isActive?'var(--accent)':'';
+      w.style.textShadow=isActive?'0 0 28px #ffb38a55':'none';
+      w.style.zIndex=isActive?'8':'5';
+    });
+
+    // Foreground echoes are tied to the currently highlighted syllable.
+    const echoHost=el.querySelector('.ako-tatay-echo-field');
+    if(echoHost){
+      if(activeIndex<0){
+        echoHost.dataset.activeIndex='-1';
+        echoHost.replaceChildren();
+      }else{
+        const activeWord=words[activeIndex];
+        const key=String(activeIndex);
+        if(echoHost.dataset.activeIndex!==key){
+          echoHost.dataset.activeIndex=key;
+          echoHost.replaceChildren();
+
+          const sourceText=activeWord.textContent.trim();
+          const count=5;
+          for(let n=0;n<count;n++){
+            const echo=document.createElement('span');
+            echo.className='ako-tatay-echo';
+            echo.textContent=sourceText;
+
+            const x=8+Math.random()*84;
+            const y=10+Math.random()*80;
+            const rot=-13+Math.random()*26;
+            const scale=.48+Math.random()*.42;
+            const dx=-20+Math.random()*40;
+            const dy=-24+Math.random()*48;
+            const delay=n*.035;
+
+            echo.style.left=x+'%';
+            echo.style.top=y+'%';
+            echo.style.setProperty('--rot',rot+'deg');
+            echo.style.setProperty('--scale',scale);
+            echo.style.setProperty('--dx',dx+'px');
+            echo.style.setProperty('--dy',dy+'px');
+            echo.style.setProperty('--delay',delay+'s');
+            echo.style.setProperty('--alpha',(0.08+Math.random()*.10).toFixed(3));
+            echo.style.fontSize=`clamp(30px,${7+Math.random()*7}vw,86px)`;
+            echoHost.appendChild(echo);
+          }
+        }
+      }
+    }
+  }
 
   if(scene==='pahirapan-beat') {
     // 01:26 — AT KAHIT PAHIRAPAN PA
@@ -4546,9 +4523,8 @@ function render(){
   const t=Math.min(A.currentTime||0,135);
   const i=lines.findIndex(x=>t>=x.start&&t<x.end);
   activate(i);
-  try{ updateSabiMamaEcho(t); }catch(e){ console.warn('Sabi echo disabled:',e); }
-  try{ updateOSaKanyaEcho(t); }catch(e){ console.warn('O sa kanya echo disabled:',e); }
-  try{ updateAkoTatayEcho(t); }catch(e){ console.warn('Ako/Tatay echo disabled:',e); }
+  updateSabiMamaEcho(t);
+  updateOSaKanyaEcho(t);
 
   // 01:18.75 — Pati ang nanay... starts completely clean. Clear every global/field effect.
   if(i===12){
@@ -4670,7 +4646,6 @@ function render(){
   }
 
   updateWords(t);
-  updateAkoTatayWholeLinePulse(t);
   updateMotion(t);
   if(current===4){
     const qf=document.getElementById('questionChaos');
@@ -4986,49 +4961,6 @@ render();
 
 
 
-<style id="ako-tatay-background-echo">
-/* 01:29.830–01:33.894 — faded background echo follows the currently highlighted syllable.
-   The final pulse begins at 01:33.894 so the echo clears for the next line. */
-#akoTatayEchoField{
-  position:absolute;
-  inset:0;
-  z-index:2;
-  pointer-events:none;
-  overflow:hidden;
-  opacity:0;
-}
-#akoTatayEchoField.active{opacity:1}
-.ako-tatay-echo-word{
-  position:absolute;
-  left:50%;
-  top:50%;
-  width:94vw;
-  text-align:center;
-  white-space:nowrap;
-  font-family:"Poppins",sans-serif;
-  font-size:clamp(72px,18vw,190px);
-  font-weight:800;
-  letter-spacing:-.075em;
-  line-height:.82;
-  color:#f8f0e6;
-  opacity:0;
-  filter:blur(8px);
-  text-shadow:0 0 34px #ffb38a22;
-  transform:translate(-50%,-50%) scale(.84);
-  will-change:transform,opacity,filter;
-}
-.ako-tatay-echo-word.current{
-  color:#ffb38a;
-  text-shadow:0 0 40px #ffb38a30;
-}
-@media(max-width:600px){
-  .ako-tatay-echo-word{
-    width:96vw;
-    font-size:clamp(58px,19vw,108px);
-    letter-spacing:-.065em;
-  }
-}
-</style>
 <style id="ako-tatay-syllable-clean">
 /* 01:29.830 — AKO / NG TATAY / MO HINDI / AATRAS
    Each phrase group is centered as a unit, while its syllables appear cumulatively beside each other. */
@@ -5213,5 +5145,101 @@ render();
   }
 }
 </style>
+
+<style id="ako-tatay-energetic-final">
+/* 01:29.830–01:34.912 — stronger playful motion + faded foreground echoes. */
+.line.scene-ako-tatay-syllable{
+  z-index:5 !important;
+}
+.line.scene-ako-tatay-syllable .ako-tatay-echo-field{
+  position:absolute;
+  inset:-18vh -8vw;
+  z-index:10;
+  pointer-events:none;
+  overflow:visible;
+}
+.line.scene-ako-tatay-syllable .ako-tatay-echo{
+  position:absolute;
+  display:block;
+  width:auto;
+  white-space:nowrap;
+  font-family:"Poppins",sans-serif;
+  font-weight:800;
+  letter-spacing:-.055em;
+  line-height:.9;
+  color:#f8f0e6;
+  opacity:0;
+  filter:blur(1.8px);
+  text-shadow:0 0 22px #ffb38a20;
+  transform:translate(-50%,-50%) scale(.35) rotate(var(--rot));
+  animation:akoTatayEchoIn .82s cubic-bezier(.16,.82,.2,1) var(--delay) forwards;
+  will-change:transform,opacity,filter;
+}
+@keyframes akoTatayEchoIn{
+  0%{
+    opacity:0;
+    transform:translate(-50%,-50%) scale(.32) rotate(var(--rot));
+    filter:blur(4px);
+  }
+  18%{
+    opacity:var(--alpha);
+  }
+  52%{
+    opacity:calc(var(--alpha)*.82);
+    transform:translate(calc(-50% + var(--dx)*.35),calc(-50% + var(--dy)*.35))
+      scale(var(--scale)) rotate(var(--rot));
+    filter:blur(1.8px);
+  }
+  100%{
+    opacity:0;
+    transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy)))
+      scale(calc(var(--scale)*1.12)) rotate(var(--rot));
+    filter:blur(3.8px);
+  }
+}
+
+/* The whole outgoing line gets one musical swell, then a clean fade. */
+.line.scene-ako-tatay-syllable.ako-tatay-exit{
+  animation:akoTatayPulseOut .66s cubic-bezier(.18,.78,.2,1) both !important;
+  z-index:9 !important;
+}
+@keyframes akoTatayPulseOut{
+  0%{
+    opacity:1;
+    transform:translate3d(0,0,0) scale(1);
+    filter:blur(0);
+  }
+  18%{
+    opacity:1;
+    transform:translate3d(0,-2px,0) scale(1.035);
+    filter:drop-shadow(0 0 16px #ffb38a44);
+  }
+  36%{
+    opacity:1;
+    transform:translate3d(0,2px,0) scale(1.075);
+    filter:drop-shadow(0 0 30px #ffb38a66);
+  }
+  52%{
+    opacity:.92;
+    transform:translate3d(0,-1px,0) scale(1.035);
+    filter:blur(.25px);
+  }
+  100%{
+    opacity:0;
+    transform:translate3d(0,-20px,0) scale(.95);
+    filter:blur(6px);
+  }
+}
+.line.scene-ako-tatay-syllable.ako-tatay-exit .ako-tatay-echo-field{
+  animation:akoTatayEchoFieldOut .48s ease-out forwards;
+}
+@keyframes akoTatayEchoFieldOut{
+  from{opacity:1;transform:scale(1)}
+  to{opacity:0;transform:scale(1.05)}
+}
+
+/* Exact handoff: Kasi begins at 01:34.912 and does not inherit the old motion. */
+</style>
+
 </body>
 </html>
