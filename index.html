@@ -3086,6 +3086,35 @@ overflow:visible;
   }
 }
 </style>
+
+<style id="mobile-performance-optimization">
+@media(max-width:600px){
+  /* Avoid promoting every lyric node to its own GPU layer. */
+  .line:not(.active), .word:not(.visible):not(.current){
+    will-change:auto !important;
+  }
+  .line.active{
+    will-change:transform,opacity !important;
+  }
+  /* The site uses many decorative blur filters; soften only the non-essential
+     background copies on phones so the main lyric stays crisp. */
+  .ako-tatay-echo,
+  .ako-tatay-sparkle,
+  .sabi-echo-word,
+  .word-explosion,
+  .clock-number-burst,
+  .site-star{
+    will-change:transform,opacity !important;
+  }
+  .ako-tatay-echo{filter:blur(1px) !important;}
+  .sabi-echo-word{filter:blur(4px) !important;}
+  /* Contain decorative fields so their paints do not invalidate the whole stage. */
+  #heartField,#backgroundBanat,#echoes,#siteSparkField,#wordExplosionField,#huge57Explosion,#ooExplosion,
+  #sabiEchoField,#oSaKanyaEchoField{
+    contain:layout paint style;
+  }
+}
+</style>
 </head>
 <body>
 <div id="app">
@@ -3274,6 +3303,8 @@ const lines=[
 ];
 
 let current=-1,playing=false,lastBeat=-1,raf=0,scrubbing=false,heartCueShown=false;
+const MOBILE_PERF=window.matchMedia('(max-width:600px)').matches;
+let lastRenderLine=-2;
 
 function fmt(s){
   s=Math.max(0,s||0);
@@ -4030,7 +4061,7 @@ function spawnHiLablabEchoes(field, text='Hi Lablab!'){
   field.replaceChildren();
 
   const frag=document.createDocumentFragment();
-  const count=40;
+  const count=MOBILE_PERF?16:40;
 
   for(let i=0;i<count;i++){
     const echo=document.createElement('span');
@@ -4078,7 +4109,7 @@ function spawnKasiAEchoes(field){
   field.replaceChildren();
 
   const frag=document.createDocumentFragment();
-  const count=108;
+  const count=MOBILE_PERF?48:108;
 
   for(let i=0;i<count;i++){
     const a=document.createElement('span');
@@ -4560,7 +4591,7 @@ function updateMotion(t){
           echoHost.replaceChildren();
 
           const sourceText=activeWord.textContent.trim();
-          const count=10;
+          const count=MOBILE_PERF?5:10;
           for(let n=0;n<count;n++){
             const echo=document.createElement('span');
             echo.className='ako-tatay-echo';
@@ -4588,7 +4619,7 @@ function updateMotion(t){
 
           // A loose field of tiny-to-large sparkles around the active echo word.
           // They stay foreground, fade quickly, and are cleared with the echoes.
-          const sparkleCount=22;
+          const sparkleCount=MOBILE_PERF?8:22;
           for(let n=0;n<sparkleCount;n++){
             const sparkle=document.createElement('span');
             sparkle.className='ako-tatay-sparkle';
@@ -4976,7 +5007,7 @@ function spawnClockNumberBackgroundBurst(wordIndex, opts={}){
   const cx=rect.left+rect.width/2-base.left;
   const cy=rect.top+rect.height/2-base.top;
   const elevated=!!opts.elevated;
-  const count=5;
+  const count=MOBILE_PERF?3:5;
   const group=String(Date.now())+'-'+Math.random();
 
   for(let n=0;n<count;n++){
@@ -5030,7 +5061,7 @@ function spawnWordBackgroundBurst(wordIndex){
   const cx=rect.left+rect.width/2-base.left;
   const cy=rect.top+rect.height/2-base.top;
   const computed=getComputedStyle(word);
-  const count=16;
+  const count=MOBILE_PERF?8:16;
   for(let i=0;i<count;i++){
     const e=document.createElement('span');
     e.className='word-bg-burst';
@@ -5145,7 +5176,7 @@ function spawnPusoHearts(){
   pusoBurstActive=true;
 
   // Burst around the center of the lyric, then disappear like bubbles.
-  const count=22;
+  const count=MOBILE_PERF?10:22;
   for(let i=0;i<count;i++){
     const h=document.createElement('span');
     h.className='puso-heart';
@@ -5177,7 +5208,7 @@ function spawnPusoHearts(){
 function initSiteSparks(){
   const field=document.querySelector('#siteSparkField');
   if(!field || field.children.length) return;
-  const count=42;
+  const count=MOBILE_PERF?18:42;
   for(let i=0;i<count;i++){
     const star=document.createElement('span');
     star.className='site-spark';
@@ -5218,7 +5249,7 @@ function spawnBanatEchoes(){
     'Verdana, sans-serif'
   ];
 
-  const count=18;
+  const count=MOBILE_PERF?8:18;
   for(let i=0;i<count;i++){
     const e=document.createElement('div');
     e.className='banat-echo';
@@ -5249,29 +5280,31 @@ function render(){
   updateSabiMamaEcho(t);
   updateOSaKanyaEcho(t);
 
-  // 01:18.75 — Pati ang nanay... starts completely clean. Clear every global/field effect.
-  if(i===12){
-    ['heartField','backgroundBanat','echoes','siteSparkField','wordExplosionField','huge57Explosion','ooExplosion'].forEach(id=>{
-      const field=document.getElementById(id);
-      if(field) field.replaceChildren();
-    });
-    APP.classList.remove('beat','gusto-clean');
-    // There may be a stale, inactive copy of index 12 during a transition.
-    // Target the ACTIVE PATI line specifically; never let an older copy cause
-    // the newly-created lyric to lose its active class.
-    const patiLine=L.querySelector('.line.active[data-index="12"]');
-    document.querySelectorAll('.line').forEach(line=>{
-      if(line!==patiLine) line.classList.remove('active');
-    });
-  }
+  // Transition-only cleanup. These fields used to be cleared every animation
+  // frame while the same lyric was active, forcing repeated DOM mutation on mobile.
+  // Do it once when entering the scene instead.
+  if(i!==lastRenderLine){
+    if(i===12){
+      ['heartField','backgroundBanat','echoes','siteSparkField','wordExplosionField','huge57Explosion','ooExplosion'].forEach(id=>{
+        const field=document.getElementById(id);
+        if(field) field.replaceChildren();
+      });
+      APP.classList.remove('beat','gusto-clean');
+      const patiLine=L.querySelector('.line.active[data-index="12"]');
+      document.querySelectorAll('.line').forEach(line=>{
+        if(line!==patiLine) line.classList.remove('active');
+      });
+    }
 
-  // Keep the GUSTO line completely clean of the old square/confetti decoration.
-  APP.classList.toggle('gusto-clean', i===3);
-  if(i===3){
-    ['heartField','backgroundBanat','echoes','siteSparkField'].forEach(id=>{
-      const field=document.getElementById(id);
-      if(field) field.replaceChildren();
-    });
+    if(i===3){
+      ['heartField','backgroundBanat','echoes','siteSparkField'].forEach(id=>{
+        const field=document.getElementById(id);
+        if(field) field.replaceChildren();
+      });
+    }
+
+    APP.classList.toggle('gusto-clean', i===3);
+    lastRenderLine=i;
   }
 
   // Time-locked visual effects:
@@ -5390,8 +5423,11 @@ const d=Math.min(A.duration||135,135);
   const breathe=1+Math.max(0,1-Math.abs(beatPhase-.5)*2)*.022;
   O1.style.transform=`translate(var(--mx),var(--my)) scale(${breathe})`;
   O2.style.transform=`translate(calc(var(--mx) * -.6),calc(var(--my) * -.6)) scale(${1+(breathe-.978)*2})`;
-  document.documentElement.style.setProperty('--x',(50+Math.sin(t*.7)*12)+'%');
-  document.documentElement.style.setProperty('--y',(50+Math.cos(t*.53)*10)+'%');
+  if(!MOBILE_PERF || t*1000-(window.__lastBgVarUpdate||-Infinity)>=33){
+    document.documentElement.style.setProperty('--x',(50+Math.sin(t*.7)*12)+'%');
+    document.documentElement.style.setProperty('--y',(50+Math.cos(t*.53)*10)+'%');
+    window.__lastBgVarUpdate=t*1000;
+  }
 
   raf=requestAnimationFrame(render);
 }
