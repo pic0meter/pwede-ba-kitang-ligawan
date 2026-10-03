@@ -2912,13 +2912,19 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 }
 
 @media(max-width:600px){
+  /* Keep the full “Gustong-gusto” rows inside narrow phone screens.
+     Desktop sizing remains unchanged. */
   .line.scene-gustong-stack .gustong-stack{
-    width:96vw;
+    width:100vw;
+    max-width:100vw;
+    overflow:visible;
   }
   .line.scene-gustong-stack .gustong-stack-row{
-    font-size:clamp(50px,16.5vw,96px) !important;
+    width:100%;
+    max-width:100%;
+    font-size:clamp(40px,11.5vw,64px) !important;
     letter-spacing:-.09em !important;
-    line-height:.66 !important;
+    line-height:.68 !important;
     color:#ffb38a !important;
     text-shadow:0 0 10px #ffb38a55,0 0 22px #ffb38a40,0 0 40px #ffb38a28 !important;
   }
