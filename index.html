@@ -2685,6 +2685,161 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 }
 </style>
 
+
+<style id="kasi-gusto-kita-grand-stack">
+/* 01:35 — KASI / GUSTO / KITA
+   Large, compressed three-line stack with a theatrical entrance. */
+.line.scene-kasi-grand-stack{
+  width:100% !important;
+  min-height:52vh !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  overflow:visible !important;
+  text-align:center !important;
+}
+
+.line.scene-kasi-grand-stack .kasi-stack{
+  width:min(90vw,900px);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:0;
+  text-align:center;
+  font-family:"Poppins",sans-serif !important;
+  font-weight:800 !important;
+  line-height:.68;
+  transform:translateZ(0);
+}
+
+.line.scene-kasi-grand-stack .kasi-stack-row{
+  display:block;
+  width:max-content;
+  margin:0;
+  padding:0;
+  font-family:"Poppins",sans-serif !important;
+  font-size:clamp(68px,14vw,150px) !important;
+  font-weight:800 !important;
+  letter-spacing:-.085em !important;
+  line-height:.68 !important;
+  color:#ffb38a !important;
+  text-shadow:0 0 12px #ffb38a55,0 0 28px #ffb38a44,0 0 52px #ffb38a2e !important;
+  will-change:transform,opacity,filter;
+  transform-origin:center center;
+}
+
+.line.scene-kasi-grand-stack .kasi-row-1{--entry-rot:-8deg;}
+.line.scene-kasi-grand-stack .kasi-row-2{--entry-rot:7deg;}
+.line.scene-kasi-grand-stack .kasi-row-3{--entry-rot:-5deg;}
+
+.line.scene-kasi-grand-stack .kasi-stack-row.kasi-enter{
+  animation:kasiGrandPop .68s cubic-bezier(.10,.92,.16,1.08) both;
+}
+
+@keyframes kasiGrandPop{
+  0%{
+    opacity:0;
+    transform:translate3d(0,92px,0) scale(.12) rotate(var(--entry-rot));
+    filter:blur(11px);
+  }
+  32%{
+    opacity:1;
+    transform:translate3d(0,-22px,0) scale(1.30) rotate(calc(var(--entry-rot) * -.40));
+    filter:blur(0);
+  }
+  52%{
+    transform:translate3d(0,9px,0) scale(.88) rotate(calc(var(--entry-rot) * .12));
+  }
+  72%{
+    transform:translate3d(0,-5px,0) scale(1.10) rotate(0deg);
+  }
+  88%{
+    transform:translate3d(0,2px,0) scale(.97) rotate(0deg);
+  }
+  100%{
+    opacity:1;
+    transform:translate3d(0,0,0) scale(1) rotate(0deg);
+    filter:blur(0);
+  }
+}
+
+@media(max-width:600px){
+  .line.scene-kasi-grand-stack .kasi-stack{
+    width:94vw;
+  }
+  .line.scene-kasi-grand-stack .kasi-stack-row{
+    font-size:clamp(58px,17vw,100px) !important;
+    letter-spacing:-.09em !important;
+    line-height:.66 !important;
+    color:#ffb38a !important;
+    text-shadow:0 0 10px #ffb38a55,0 0 22px #ffb38a40,0 0 40px #ffb38a28 !important;
+  }
+}
+</style>
+
+
+<style id="kasi-grand-stack-isolation">
+/* HARD ISOLATION: this scene is not allowed to inherit the generic word
+   animation/current-word treatment used by the older lyric scenes. */
+.line.scene-kasi-grand-stack .word,
+.line.scene-kasi-grand-stack .word.visible,
+.line.scene-kasi-grand-stack .word.current{
+  animation:none !important;
+  translate:none !important;
+  rotate:none !important;
+  scale:none !important;
+  text-shadow:none;
+}
+
+.line.scene-kasi-grand-stack .kasi-stack-row{
+  animation-fill-mode:both !important;
+  translate:0 0 !important;
+  rotate:0deg !important;
+  scale:1 !important;
+}
+</style>
+
+
+<style id="kasi-a-echo-flight">
+/* KASI — dense A echo stream, left -> right only. */
+.kasi-a-echo-field{
+  position:fixed;
+inset:-12vh -12vw;
+z-index:14;
+pointer-events:none;
+overflow:visible;
+  opacity:0;
+}
+.kasi-a-echo-field.active{opacity:1}
+.kasi-flying-a{
+  position:absolute;
+  left:0;
+  top:0;
+  font-family:"Poppins",sans-serif!important;
+  font-weight:800!important;
+  color:#ffb38a!important;
+  line-height:1;
+  white-space:nowrap;
+  opacity:0;
+  text-shadow:0 0 10px #f8f0e628,0 0 26px #f8f0e61a;
+  will-change:transform,opacity;
+  animation:kasiAEchoFly var(--dur) linear var(--delay) both;
+}
+@keyframes kasiAEchoFly{
+  0%{
+    opacity:0;
+    transform:translate3d(-42vw,var(--y),0) scale(var(--s)) rotate(var(--r));
+  }
+  7%{opacity:var(--alpha)}
+  88%{opacity:var(--alpha)}
+  100%{
+    opacity:0;
+    transform:translate3d(142vw,var(--y2),0) scale(var(--s2)) rotate(var(--r2));
+  }
+}
+</style>
+
 </head>
 <body>
 <div id="app">
@@ -2862,7 +3017,7 @@ const lines=[
   {start:81.98,end:86.55,text:'Ng paborito niyang ulam',style:'soft',scene:'ulam-kinetic',section:'verse 2',cues:[81.98,82.38,82.78,83.22]},
   {start:86.419,end:90.20,text:'At kahit pahirapan pa',style:'verse',scene:'pahirapan-beat',section:'verse 2',cues:[86.419,86.649,87.071,87.588,88.121,88.804,89.377]},
   {start:89.83,end:94.912,text:"Ako ng tatay mo hindi aatras",style:'soft',scene:'ako-tatay-syllable',section:'verse 2',cues:[89.830,90.339,90.574,91.027,91.568,92.037,92.335,92.729]},
-  {start:94.912,end:98.80,text:'Kasi gusto kitaaaaaaaa',style:'chorus',section:'verse 2',cues:[94.912,95.20,95.55]},
+  {start:94.912,end:98.80,text:'Kasi gusto kita',style:'chorus',scene:'kasi-grand-stack',section:'verse 2',cues:[94.912,95.20,95.55]},
   {start:98.82,end:102.55,text:'Gustong-gusto, gustong-gusto kita',style:'big',section:'verse 2',cues:[98.82,99.45,100.10]},
   {start:102.72,end:109.70,text:'Pwede ba kitang ligawan?',style:'chorus',section:'final',cues:[102.72,103.28,103.72,105.25]},
   {start:109.75,end:116.55,text:"Kahit 'di maganda ang mga linyahan",style:'soft',section:'final',cues:[109.75,110.05,111.95,112.42,112.82,113.15]},
@@ -2958,6 +3113,24 @@ function buildWords(text){
 }
 
 
+
+function buildKasiStackLine(text){
+  const words=['Kasi','gusto','kita'];
+  const stack=document.createElement('div');
+  stack.className='kasi-stack';
+
+  words.forEach((word,i)=>{
+    const row=document.createElement('div');
+    row.className=`kasi-stack-row kasi-row-${i+1}`;
+    row.dataset.kasiIndex=String(i);
+    row.textContent=word;
+    stack.appendChild(row);
+  });
+
+  return stack;
+}
+
+
 function buildHeartSplitLine(text){
   const temp=document.createElement('div');
   temp.innerHTML=buildWords(text);
@@ -3043,7 +3216,7 @@ function sceneFor(i){
   // Each lyric becomes a small motion-graphics scene.
   const scenes=[
     'fly','slit','kailan-flight','wind','zoom','squiggle','clock','clock',
-    'fly','question','pupuntahan','malayo-echo','pati-kinetic','ulam-kinetic','pahirapan-beat','ako-tatay-syllable','chase',
+    'fly','question','pupuntahan','malayo-echo','pati-kinetic','ulam-kinetic','pahirapan-beat','ako-tatay-syllable','kasi-grand-stack',
     'longa','fly','clock','crawl','flip','zoom','question'
   ];
   return scenes[i]||'chase';
@@ -3229,7 +3402,7 @@ function activate(i){
       old.classList.remove('question-chorus-pulse','question-chorus-fade');
       setTimeout(()=>old.remove(),40);
     }else{
-      if(oldIndex===8 && i===9){
+      if(oldIndex===15 && i===16){
         old.classList.add('ako-tatay-exit');
       }
       old.classList.add('out');
@@ -3248,14 +3421,21 @@ function activate(i){
   const body=scene==='bibigay-stack'?buildBibigayStack(item.text):
              scene==='clock'?buildClock(item.text):
              scene==='heart-split'?buildHeartSplitLine(item.text):
+             scene==='kasi-grand-stack'?buildKasiStackLine(item.text):
              (scene==='slit' && i===1)?buildParangStackLine(item.text):
              buildWords(item.text);
   let el;
-  if(scene==='heart-split'){
+  if(scene==='heart-split' || scene==='kasi-grand-stack'){
     el=document.createElement('div');
-    el.className=`line motion scene-heart-split ${item.style}${qClass}`;
+    el.className=`line motion scene-${scene} ${item.style}${qClass}`;
     el.dataset.index=i;
     el.appendChild(body);
+    if(scene==='kasi-grand-stack'){
+      const field=document.createElement('div');
+      field.className='kasi-a-echo-field';
+      field.setAttribute('aria-hidden','true');
+      el.appendChild(field);
+    }
   }else{
     const specialClass = i===0 ? ' puso-scene' : '';
     el=document.createElement('div');
@@ -3558,12 +3738,104 @@ function updateWords(t){
 
 }
 
+
+function spawnKasiAEchoes(field){
+  if(!field) return;
+  field.replaceChildren();
+
+  const frag=document.createDocumentFragment();
+  const count=108;
+
+  for(let i=0;i<count;i++){
+    const a=document.createElement('span');
+    a.className='kasi-flying-a';
+    a.textContent='A';
+
+    const size=18+Math.random()*112;
+    const y=4+Math.random()*92;
+    const dur=Math.random()<.24 ? (0.72+Math.random()*.34) : (0.28+Math.random()*.34);
+    const delay=Math.random()*1.05;
+    const alpha=.24+Math.random()*.66;
+    const drift=(Math.random()-.5)*7;
+    const scale=size/70;
+    const rot=(Math.random()-.5)*16;
+
+    a.style.fontSize=`${size.toFixed(1)}px`;
+    a.style.setProperty('--y',`${y}vh`);
+    a.style.setProperty('--y2',`${y+drift}vh`);
+    a.style.setProperty('--s',scale.toFixed(3));
+    a.style.setProperty('--s2',(scale*(.86+Math.random()*.30)).toFixed(3));
+    a.style.setProperty('--dur',`${dur.toFixed(2)}s`);
+    a.style.setProperty('--delay',`${delay.toFixed(2)}s`);
+    a.style.setProperty('--alpha',alpha.toFixed(2));
+    a.style.setProperty('--r',`${rot.toFixed(1)}deg`);
+    a.style.setProperty('--r2',`${(rot+(Math.random()-.5)*28).toFixed(1)}deg`);
+
+    frag.appendChild(a);
+  }
+
+  field.appendChild(frag);
+}
+
 function updateMotion(t){
   const el=L.querySelector('.line.active');
   if(!el||current<0)return;
   const item=lines[current];
   const scene=sceneFor(current);
   const words=[...el.querySelectorAll('.word')];
+
+  if(scene==='kasi-grand-stack'){
+    const aField=el.querySelector('.kasi-a-echo-field');
+    if(aField){
+      aField.classList.toggle('active',t>=96.638 && t<item.end);
+      if(t>=96.638 && !aField.dataset.fired){
+        spawnKasiAEchoes(aField);
+        aField.dataset.fired='1';
+      }
+      if(t<96.638){
+        aField.dataset.fired='';
+        aField.replaceChildren();
+      }
+    }
+
+    const rows=[...el.querySelectorAll('.kasi-stack-row')];
+
+    rows.forEach((row,i)=>{
+      const cue=item.cues?.[i] ?? item.start;
+      const elapsed=t-cue;
+
+      if(t<cue){
+        row.classList.remove('kasi-enter');
+        row.style.opacity='0';
+        row.style.transform='translate3d(0,92px,0) scale(.12) rotate(var(--entry-rot))';
+        row.style.filter='blur(11px)';
+        return;
+      }
+
+      if(!row.classList.contains('kasi-enter')){
+        row.classList.add('kasi-enter');
+      }
+
+      /* Once the theatrical entrance is finished, remove its animation.
+         Otherwise its CSS transform animation overrides the live bob below. */
+      if(elapsed>.76){
+        row.classList.remove('kasi-enter');
+
+        const phase=(elapsed-.76)*7.2+i*.85;
+        const y=Math.sin(phase)*8.5;
+        const x=Math.sin(phase*.82+i*1.15)*4.5;
+        const s=1+Math.sin(phase*1.18+i)*.035;
+        const r=Math.sin(phase*.92+i*.7)*1.15;
+
+        row.style.transform=
+          `translate3d(${x}px,${y}px,0) scale(${s}) rotate(${r}deg)`;
+        row.style.opacity='1';
+        row.style.filter='none';
+      }
+    });
+    return;
+  }
+
 
   if(scene==='kailan-flight'){
     // Lightweight, time-driven word flight. No observers, particles, or CSS
@@ -5137,10 +5409,10 @@ render();
   display:block !important;
   margin:0 !important;
   padding:0 !important;
-  font-family:inherit !important;
+  font-family:"Poppins",sans-serif !important;
   font-size:clamp(30px,6.4vw,72px) !important;
-  font-weight:800 !important;
-  letter-spacing:-.065em !important;
+  font-weight:700 !important;
+  letter-spacing:-.055em !important;
   line-height:.68 !important;
   animation:none !important;
   transition:none !important;
@@ -5157,8 +5429,10 @@ render();
   }
   .line.scene-ulam-kinetic .word{
     margin:0 !important;
+    font-family:"Poppins",sans-serif !important;
     font-size:clamp(27px,7.4vw,44px) !important;
-    letter-spacing:-.07em !important;
+    font-weight:700 !important;
+    letter-spacing:-.055em !important;
     line-height:.66 !important;
   }
 }
