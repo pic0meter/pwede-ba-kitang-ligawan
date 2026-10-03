@@ -4284,10 +4284,16 @@ function updateMotion(t){
         w.style.transform='translate3d(0,22px,0) scale(.88)';
         w.style.filter='blur(4px)';
       }else{
-        const pop=1+Math.max(0,Math.sin((t-cue)*8))*0.018;
-        const lift=Math.sin((t-cue)*3.2+idx*.8)*1.2;
+        // Energetic bob + bounce: each word gets its own slightly offset
+        // rhythm so the line feels playful and alive without changing layout.
+        const elapsed=t-cue;
+        const bounce=Math.max(0,Math.sin(elapsed*12.5))*Math.exp(-elapsed*1.8);
+        const bob=Math.sin(elapsed*7.2+idx*.85)*3.6;
+        const sideBob=Math.cos(elapsed*5.8+idx*1.15)*1.2;
+        const lift=bob-bounce*7.5;
+        const pop=1+Math.max(0,Math.sin(elapsed*12.5))*0.045;
         w.style.opacity=String(Math.max(.92,ease));
-        w.style.transform=`translate3d(0,${lift}px,0) scale(${pop})`;
+        w.style.transform=`translate3d(${sideBob}px,${lift}px,0) scale(${pop})`;
         w.style.filter='blur(0)';
       }
 
