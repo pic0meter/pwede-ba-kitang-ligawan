@@ -2693,6 +2693,7 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   <div id="backgroundBanat" aria-hidden="true"></div>
   <div id="sabiEchoField" aria-hidden="true"></div>
   <div id="oSaKanyaEchoField" aria-hidden="true"></div>
+  <div id="akoTatayEchoField" aria-hidden="true"></div>
   <div id="heartField" aria-hidden="true"></div><div id="wordExplosionField" aria-hidden="true"></div><div id="huge57Explosion" aria-hidden="true"></div><div id="ooExplosion" aria-hidden="true"></div><div id="siteSparkField" aria-hidden="true"></div>
   <div id="echoes"></div>
 <div id="top">
@@ -2764,6 +2765,22 @@ const OSA_ECHO_NODES=OSA_ECHO_WORDS.map((word,i)=>{
   return el;
 });
 
+const AKO_TATAY_ECHO_FIELD=document.querySelector('#akoTatayEchoField');
+const AKO_TATAY_ECHO_WORDS=['Ako','ng','ta','tay','mo','hindi','a','atras'];
+const AKO_TATAY_ECHO_START=89.830;
+const AKO_TATAY_ECHO_END=94.200;
+const AKO_TATAY_ECHO_FADE_START=93.894;
+const AKO_TATAY_ECHO_CUES=[89.830,90.339,90.574,91.027,91.568,92.037,92.335,92.729];
+const AKO_TATAY_ECHO_NEXT=[90.339,90.574,91.027,91.568,92.037,92.335,92.729,94.200];
+const AKO_TATAY_ECHO_NODES=AKO_TATAY_ECHO_WORDS.map((word,i)=>{
+  const el=document.createElement('span');
+  el.className='ako-tatay-echo-word';
+  el.textContent=word;
+  el.dataset.index=String(i);
+  AKO_TATAY_ECHO_FIELD.appendChild(el);
+  return el;
+});
+
 function updateOSaKanyaEcho(t){
   const active=t>=OSA_ECHO_START && t<OSA_ECHO_END;
   OSA_ECHO_FIELD.classList.toggle('active',active);
@@ -2797,6 +2814,49 @@ function updateOSaKanyaEcho(t){
     el.style.opacity=String(alpha*.24);
     el.style.filter=`blur(${(1-alpha)*7}px)`;
     el.style.transform=`translate(calc(-50% + ${bobX}px),calc(-50% + ${bobY}px)) scale(${scale})`;
+  });
+}
+
+function updateAkoTatayEcho(t){
+  const active=t>=AKO_TATAY_ECHO_START && t<AKO_TATAY_ECHO_END;
+  AKO_TATAY_ECHO_FIELD.classList.toggle('active',active);
+
+  AKO_TATAY_ECHO_NODES.forEach((el,i)=>{
+    const cue=AKO_TATAY_ECHO_CUES[i];
+    const next=AKO_TATAY_ECHO_NEXT[i];
+    const fadeIn=.10;
+    const fadeOut=.10;
+
+    if(!active || t<cue || t>=next){
+      el.classList.remove('current');
+      el.style.opacity='0';
+      el.style.filter='blur(8px)';
+      el.style.transform='translate(-50%,-50%) scale(.84)';
+      return;
+    }
+
+    const inP=Math.min(1,(t-cue)/fadeIn);
+    const outP=Math.min(1,(next-t)/fadeOut);
+    const easeIn=inP*inP*(3-2*inP);
+    const easeOut=outP*outP*(3-2*outP);
+    let alpha=Math.min(easeIn,easeOut);
+    let pulse=1;
+
+    if(t>=AKO_TATAY_ECHO_FADE_START){
+      const p=Math.min(1,(t-AKO_TATAY_ECHO_FADE_START)/(AKO_TATAY_ECHO_END-AKO_TATAY_ECHO_FADE_START));
+      const eased=p*p*(3-2*p);
+      alpha*=1-eased;
+      pulse=1+.08*Math.sin(p*Math.PI*3)*(1-p);
+    }
+
+    const elapsed=t-cue;
+    const bobY=Math.sin(elapsed*7+i*.65)*3.5;
+    const bobX=Math.cos(elapsed*5.5+i)*2;
+
+    el.classList.add('current');
+    el.style.opacity=String(alpha*.16);
+    el.style.filter=`blur(${(1-alpha)*8}px)`;
+    el.style.transform=`translate(calc(-50% + ${bobX}px),calc(-50% + ${bobY}px)) scale(${pulse*(.96+.035*alpha)})`;
   });
 }
 
@@ -4427,6 +4487,7 @@ function render(){
   activate(i);
   updateSabiMamaEcho(t);
   updateOSaKanyaEcho(t);
+  updateAkoTatayEcho(t);
 
   // 01:18.75 — Pati ang nanay... starts completely clean. Clear every global/field effect.
   if(i===12){
@@ -4863,6 +4924,49 @@ render();
 
 
 
+<style id="ako-tatay-background-echo">
+/* 01:29.830–01:33.894 — faded background echo follows the currently highlighted syllable.
+   The final pulse begins at 01:33.894 so the echo clears for the next line. */
+#akoTatayEchoField{
+  position:absolute;
+  inset:0;
+  z-index:2;
+  pointer-events:none;
+  overflow:hidden;
+  opacity:0;
+}
+#akoTatayEchoField.active{opacity:1}
+.ako-tatay-echo-word{
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:94vw;
+  text-align:center;
+  white-space:nowrap;
+  font-family:"Poppins",sans-serif;
+  font-size:clamp(72px,18vw,190px);
+  font-weight:800;
+  letter-spacing:-.075em;
+  line-height:.82;
+  color:#f8f0e6;
+  opacity:0;
+  filter:blur(8px);
+  text-shadow:0 0 34px #ffb38a22;
+  transform:translate(-50%,-50%) scale(.84);
+  will-change:transform,opacity,filter;
+}
+.ako-tatay-echo-word.current{
+  color:#ffb38a;
+  text-shadow:0 0 40px #ffb38a30;
+}
+@media(max-width:600px){
+  .ako-tatay-echo-word{
+    width:96vw;
+    font-size:clamp(58px,19vw,108px);
+    letter-spacing:-.065em;
+  }
+}
+</style>
 <style id="ako-tatay-syllable-clean">
 /* 01:29.830 — AKO / NG TATAY / MO HINDI / AATRAS
    Each phrase group is centered as a unit, while its syllables appear cumulatively beside each other. */
