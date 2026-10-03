@@ -2778,6 +2778,170 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 }
 </style>
 
+<style id="gustong-gusto-stack">
+/* 01:38.82 — GUSTONG-GUSTO / GUSTONG-GUSTO / KITA
+   Same stacked kinetic treatment as KASI, but completely clean: no A field. */
+.line.scene-gustong-stack{
+  width:100% !important;
+  min-height:52vh !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  overflow:visible !important;
+  text-align:center !important;
+}
+
+.line.scene-gustong-stack .gustong-stack{
+  width:min(94vw,980px);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:0;
+  text-align:center;
+  font-family:"Poppins",sans-serif !important;
+  font-weight:800 !important;
+  line-height:.68;
+  transform:translateZ(0);
+}
+
+.line.scene-gustong-stack .gustong-stack-row{
+  display:block;
+  width:max-content;
+  margin:0;
+  padding:0;
+  font-family:"Poppins",sans-serif !important;
+  font-size:clamp(62px,13.5vw,145px) !important;
+  font-weight:800 !important;
+  letter-spacing:-.085em !important;
+  line-height:.68 !important;
+  color:#f8f0e6 !important;
+  text-shadow:0 0 12px #ffb38a55,0 0 28px #ffb38a44,0 0 52px #ffb38a2e !important;
+  will-change:transform,opacity,filter;
+  transform-origin:center center;
+}
+
+.line.scene-gustong-stack .gustong-row-1{--entry-rot:-8deg;}
+.line.scene-gustong-stack .gustong-row-2{--entry-rot:7deg;}
+.line.scene-gustong-stack .gustong-row-3{--entry-rot:-5deg;}
+
+.line.scene-gustong-stack .gustong-stack-row{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:0;
+  white-space:nowrap;
+}
+
+.line.scene-gustong-stack .gustong-piece{
+  display:inline-block;
+  font:inherit;
+  color:inherit;
+  line-height:inherit;
+  letter-spacing:inherit;
+  opacity:0;
+  transform:translate3d(0,92px,0) scale(.12) rotate(var(--piece-rot,-8deg));
+  filter:blur(11px);
+  will-change:transform,opacity,filter;
+}
+
+.line.scene-gustong-stack .gustong-piece.gustong-piece-enter{
+  animation:gustongPiecePop .68s cubic-bezier(.10,.92,.16,1.08) both;
+}
+
+@keyframes gustongPiecePop{
+  0%{
+    opacity:0;
+    transform:translate3d(0,92px,0) scale(.12) rotate(var(--piece-rot));
+    filter:blur(11px);
+  }
+  32%{
+    opacity:1;
+    transform:translate3d(0,-22px,0) scale(1.30) rotate(calc(var(--piece-rot) * -.40));
+    filter:blur(0);
+  }
+  52%{
+    transform:translate3d(0,9px,0) scale(.88) rotate(calc(var(--piece-rot) * .12));
+  }
+  72%{
+    transform:translate3d(0,-5px,0) scale(1.10) rotate(0deg);
+  }
+  88%{
+    transform:translate3d(0,2px,0) scale(.97) rotate(0deg);
+  }
+  100%{
+    opacity:1;
+    transform:translate3d(0,0,0) scale(1) rotate(0deg);
+    filter:blur(0);
+  }
+}
+
+.line.scene-gustong-stack .gustong-stack-row.gustong-enter{
+  animation:gustongGrandPop .68s cubic-bezier(.10,.92,.16,1.08) both;
+}
+
+@keyframes gustongGrandPop{
+  0%{
+    opacity:0;
+    transform:translate3d(0,92px,0) scale(.12) rotate(var(--entry-rot));
+    filter:blur(11px);
+  }
+  32%{
+    opacity:1;
+    transform:translate3d(0,-22px,0) scale(1.30) rotate(calc(var(--entry-rot) * -.40));
+    filter:blur(0);
+  }
+  52%{
+    transform:translate3d(0,9px,0) scale(.88) rotate(calc(var(--entry-rot) * .12));
+  }
+  72%{
+    transform:translate3d(0,-5px,0) scale(1.10) rotate(0deg);
+  }
+  88%{
+    transform:translate3d(0,2px,0) scale(.97) rotate(0deg);
+  }
+  100%{
+    opacity:1;
+    transform:translate3d(0,0,0) scale(1) rotate(0deg);
+    filter:blur(0);
+  }
+}
+
+.line.scene-gustong-stack .gustong-stack-row.gustong-live{
+  /* The live bob is applied by updateMotion after the entrance finishes. */
+}
+
+@media(max-width:600px){
+  .line.scene-gustong-stack .gustong-stack{
+    width:96vw;
+  }
+  .line.scene-gustong-stack .gustong-stack-row{
+    font-size:clamp(50px,16.5vw,96px) !important;
+    letter-spacing:-.09em !important;
+    line-height:.66 !important;
+    color:#ffb38a !important;
+    text-shadow:0 0 10px #ffb38a55,0 0 22px #ffb38a40,0 0 40px #ffb38a28 !important;
+  }
+}
+
+.line.scene-gustong-stack .word,
+.line.scene-gustong-stack .word.visible,
+.line.scene-gustong-stack .word.current{
+  animation:none !important;
+  translate:none !important;
+  rotate:none !important;
+  scale:none !important;
+  text-shadow:none;
+}
+
+.line.scene-gustong-stack .gustong-stack-row{
+  animation-fill-mode:both !important;
+  translate:0 0 !important;
+  rotate:0deg !important;
+  scale:1 !important;
+}
+</style>
+
 
 <style id="kasi-grand-stack-isolation">
 /* HARD ISOLATION: this scene is not allowed to inherit the generic word
@@ -2837,6 +3001,56 @@ overflow:visible;
     opacity:0;
     transform:translate3d(142vw,var(--y2),0) scale(var(--s2)) rotate(var(--r2));
   }
+}
+</style>
+
+
+<style id="gustong-hilablab-echo">
+.line.scene-gustong-stack .hilablab-echo-field{
+  position:absolute;
+  inset:-18vh -18vw;
+  z-index:1;
+  pointer-events:none;
+  overflow:visible;
+  opacity:0;
+}
+.line.scene-gustong-stack .hilablab-echo{
+  position:absolute;
+  left:0;
+  top:0;
+  white-space:nowrap;
+  font-family:"Poppins",sans-serif!important;
+  font-weight:800!important;
+  font-size:var(--hs)!important;
+  line-height:1;
+  color:#ffb38a!important;
+  opacity:0;
+  letter-spacing:-.055em;
+  text-shadow:0 0 12px #ffb38a55,0 0 30px #ffb38a35;
+  will-change:transform,opacity,filter;
+  animation:hilablabFly var(--hd) cubic-bezier(.16,.72,.18,1) var(--hdelay) both;
+}
+@keyframes hilablabFly{
+  0%{
+    opacity:0;
+    transform:translate3d(var(--hx0),var(--hy0),0) scale(var(--hscale0)) rotate(var(--hr0));
+    filter:blur(7px);
+  }
+  12%{opacity:var(--ha);filter:blur(1px)}
+  70%{
+    opacity:var(--ha);
+    transform:translate3d(var(--hx1),var(--hy1),0) scale(var(--hscale1)) rotate(var(--hr1));
+    filter:blur(0);
+  }
+  100%{
+    opacity:0;
+    transform:translate3d(var(--hx2),var(--hy2),0) scale(var(--hscale2)) rotate(var(--hr2));
+    filter:blur(4px);
+  }
+}
+.line.scene-gustong-stack .gustong-stack{
+  position:relative;
+  z-index:5;
 }
 </style>
 
@@ -3131,6 +3345,38 @@ function buildKasiStackLine(text){
 }
 
 
+function buildGustongStackLine(text){
+  const stack=document.createElement('div');
+  stack.className='gustong-stack';
+
+  // Each hyphenated phrase is split into two independently entering pieces:
+  // "Gustong-" → "gusto", then the second "gustong-" → "gusto".
+  const rows=[
+    ['Gustong-','gusto'],
+    ['gustong-','gusto'],
+    ['kita']
+  ];
+
+  rows.forEach((parts,rowIndex)=>{
+    const row=document.createElement('div');
+    row.className=`gustong-stack-row gustong-row-${rowIndex+1}`;
+    row.dataset.gustongIndex=String(rowIndex);
+
+    parts.forEach((part,partIndex)=>{
+      const piece=document.createElement('span');
+      piece.className='gustong-piece';
+      piece.dataset.gustongPiece=String(partIndex);
+      piece.textContent=part;
+      row.appendChild(piece);
+    });
+
+    stack.appendChild(row);
+  });
+
+  return stack;
+}
+
+
 function buildHeartSplitLine(text){
   const temp=document.createElement('div');
   temp.innerHTML=buildWords(text);
@@ -3217,7 +3463,7 @@ function sceneFor(i){
   const scenes=[
     'fly','slit','kailan-flight','wind','zoom','squiggle','clock','clock',
     'fly','question','pupuntahan','malayo-echo','pati-kinetic','ulam-kinetic','pahirapan-beat','ako-tatay-syllable','kasi-grand-stack',
-    'longa','fly','clock','crawl','flip','zoom','question'
+    'gustong-stack','fly','clock','crawl','flip','zoom','question'
   ];
   return scenes[i]||'chase';
 }
@@ -3422,10 +3668,11 @@ function activate(i){
              scene==='clock'?buildClock(item.text):
              scene==='heart-split'?buildHeartSplitLine(item.text):
              scene==='kasi-grand-stack'?buildKasiStackLine(item.text):
+             scene==='gustong-stack'?buildGustongStackLine(item.text):
              (scene==='slit' && i===1)?buildParangStackLine(item.text):
              buildWords(item.text);
   let el;
-  if(scene==='heart-split' || scene==='kasi-grand-stack'){
+  if(scene==='heart-split' || scene==='kasi-grand-stack' || scene==='gustong-stack'){
     el=document.createElement('div');
     el.className=`line motion scene-${scene} ${item.style}${qClass}`;
     el.dataset.index=i;
@@ -3433,6 +3680,12 @@ function activate(i){
     if(scene==='kasi-grand-stack'){
       const field=document.createElement('div');
       field.className='kasi-a-echo-field';
+      field.setAttribute('aria-hidden','true');
+      el.appendChild(field);
+    }
+    if(scene==='gustong-stack'){
+      const field=document.createElement('div');
+      field.className='hilablab-echo-field';
       field.setAttribute('aria-hidden','true');
       el.appendChild(field);
     }
@@ -3739,6 +3992,55 @@ function updateWords(t){
 }
 
 
+
+function spawnHiLablabEchoes(field, text='Hi Lablab!'){
+  if(!field) return;
+  field.replaceChildren();
+
+  const frag=document.createDocumentFragment();
+  const count=40;
+
+  for(let i=0;i<count;i++){
+    const echo=document.createElement('span');
+    echo.className='hilablab-echo';
+    echo.textContent=text;
+
+    const size=18+Math.random()*82;
+    const startX=-22+Math.random()*144;
+    const startY=3+Math.random()*94;
+    const endX=startX+(Math.random()-.5)*26;
+    const endY=startY+(Math.random()-.5)*18;
+    const exitX=endX+(Math.random()-.5)*24;
+    const exitY=endY+(Math.random()-.5)*24;
+    const dur=.50+Math.random()*.58;
+    const delay=Math.random()*.38;
+    const alpha=.14+Math.random()*.38;
+    const scale=.55+Math.random()*.80;
+    const rot=(Math.random()-.5)*14;
+
+    echo.style.setProperty('--hs',`${size.toFixed(1)}px`);
+    echo.style.setProperty('--hx0',`${startX.toFixed(1)}vw`);
+    echo.style.setProperty('--hy0',`${startY.toFixed(1)}vh`);
+    echo.style.setProperty('--hx1',`${endX.toFixed(1)}vw`);
+    echo.style.setProperty('--hy1',`${endY.toFixed(1)}vh`);
+    echo.style.setProperty('--hx2',`${exitX.toFixed(1)}vw`);
+    echo.style.setProperty('--hy2',`${exitY.toFixed(1)}vh`);
+    echo.style.setProperty('--hscale0',(scale*.72).toFixed(3));
+    echo.style.setProperty('--hscale1',scale.toFixed(3));
+    echo.style.setProperty('--hscale2',(scale*(.82+Math.random()*.30)).toFixed(3));
+    echo.style.setProperty('--hr0',`${(rot-6).toFixed(1)}deg`);
+    echo.style.setProperty('--hr1',`${rot.toFixed(1)}deg`);
+    echo.style.setProperty('--hr2',`${(rot+(Math.random()-.5)*18).toFixed(1)}deg`);
+    echo.style.setProperty('--hd',`${dur.toFixed(2)}s`);
+    echo.style.setProperty('--hdelay',`${delay.toFixed(2)}s`);
+    echo.style.setProperty('--ha',alpha.toFixed(2));
+
+    frag.appendChild(echo);
+  }
+
+  field.appendChild(frag);
+}
+
 function spawnKasiAEchoes(field){
   if(!field) return;
   field.replaceChildren();
@@ -3783,6 +4085,94 @@ function updateMotion(t){
   const item=lines[current];
   const scene=sceneFor(current);
   const words=[...el.querySelectorAll('.word')];
+
+  if(scene==='gustong-stack'){
+    const field=el.querySelector('.hilablab-echo-field');
+
+    if(field){
+      // Two sequential echo treatments on the same visual field:
+      // "Hi Lablab!" = 1:39.564–1:41.091
+      // "I love you" = 1:41.345–the next lyric at 1:42.720
+      const hiActive=t>=99.564 && t<101.091;
+      const loveActive=t>=101.345 && t<102.720;
+      const active=hiActive || loveActive;
+      field.style.opacity=active?'1':'0';
+
+      if(hiActive && field.dataset.echoCue!=='hi'){
+        spawnHiLablabEchoes(field,'Hi Lablab!');
+        field.dataset.echoCue='hi';
+      }
+
+      if(loveActive && field.dataset.echoCue!=='love'){
+        spawnHiLablabEchoes(field,'I love you');
+        field.dataset.echoCue='love';
+      }
+
+      if(t<99.564 || (t>=101.091 && t<101.345) || t>=102.720){
+        if(t<99.564 || t>=102.720){
+          field.dataset.echoCue='';
+          field.replaceChildren();
+        }
+      }
+    }
+
+    const rows=[...el.querySelectorAll('.gustong-stack-row')];
+
+    // First row: Gustong- / gusto
+    // Second row: gustong- / gusto
+    // Third row: kita
+    const pieceCues=[
+      [item.cues?.[0] ?? item.start, (item.cues?.[0] ?? item.start)+.23],
+      [item.cues?.[1] ?? item.start, (item.cues?.[1] ?? item.start)+.23],
+      [item.cues?.[2] ?? item.start]
+    ];
+
+    rows.forEach((row,rowIndex)=>{
+      const pieces=[...row.querySelectorAll('.gustong-piece')];
+
+      pieces.forEach((piece,pieceIndex)=>{
+        const cue=pieceCues[rowIndex][pieceIndex] ?? item.start;
+        const elapsed=t-cue;
+
+        piece.style.setProperty(
+          '--piece-rot',
+          `${(rowIndex%2===0 ? -1 : 1) * (6 + pieceIndex*3)}deg`
+        );
+
+        if(t<cue){
+          piece.classList.remove('gustong-piece-enter');
+          piece.style.opacity='0';
+          piece.style.transform=
+            'translate3d(0,92px,0) scale(.12) rotate(var(--piece-rot))';
+          piece.style.filter='blur(11px)';
+          return;
+        }
+
+        if(!piece.classList.contains('gustong-piece-enter')){
+          piece.classList.add('gustong-piece-enter');
+        }
+
+        // Same live kinetic bob as KASI, but each piece has its own phase.
+        if(elapsed>.76){
+          piece.classList.remove('gustong-piece-enter');
+
+          const phase=(elapsed-.76)*7.2+rowIndex*.85+pieceIndex*.55;
+          const y=Math.sin(phase)*8.5;
+          const x=Math.sin(phase*.82+rowIndex*1.15+pieceIndex*.65)*4.5;
+          const s=1+Math.sin(phase*1.18+rowIndex+pieceIndex)*.035;
+          const r=Math.sin(phase*.92+rowIndex*.7+pieceIndex*.45)*1.15;
+
+          piece.style.transform=
+            `translate3d(${x}px,${y}px,0) scale(${s}) rotate(${r}deg)`;
+          piece.style.opacity='1';
+          piece.style.filter='none';
+        }
+      });
+    });
+
+    return;
+  }
+
 
   if(scene==='kasi-grand-stack'){
     const aField=el.querySelector('.kasi-a-echo-field');
