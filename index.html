@@ -3878,6 +3878,261 @@ overflow:visible;
 }
 </style>
 
+
+<style id="mobile-second-and-fourth-line-centering">
+@media (max-width:600px){
+  /* SECOND LYRIC / index 1: center the full stacked scene. */
+  #lyric > .line.scene-slit[data-index="1"]{
+    position:absolute !important; left:0 !important; right:0 !important; width:100vw !important; max-width:100vw !important; margin-left:0 !important; margin-right:0 !important; box-sizing:border-box !important; display:flex !important; flex-direction:column !important; align-items:center !important; justify-content:center !important; text-align:center !important;
+  }
+  #lyric > .line.scene-slit[data-index="1"] > .parang-stack{width:100% !important;max-width:100vw !important;margin-left:auto !important;margin-right:auto !important;align-items:center !important;justify-content:center !important;text-align:center !important;}
+  #lyric > .line.scene-slit[data-index="1"] .parang-stack-row{width:100% !important;max-width:100vw !important;margin-left:auto !important;margin-right:auto !important;justify-content:center !important;align-items:center !important;box-sizing:border-box !important;}
+
+  /* FOURTH LYRIC / index 3: scene-wind is a flex-wrapped line.
+     Give the scene the full mobile width so its justify-content:center
+     has the viewport as its reference, without touching word transforms. */
+  #lyric > .line.scene-wind[data-index="3"]{
+    position:absolute !important;
+    left:0 !important;
+    right:0 !important;
+    width:100vw !important;
+    max-width:100vw !important;
+    margin-left:0 !important;
+    margin-right:0 !important;
+    box-sizing:border-box !important;
+    display:flex !important;
+    flex-wrap:wrap !important;
+    align-items:center !important;
+    justify-content:center !important;
+    align-content:center !important;
+    text-align:center !important;
+    padding-left:0 !important;
+    padding-right:0 !important;
+  }
+}
+</style>
+
+
+<style id="mobile-all-lines-final">
+/* MOBILE MASTER LAYOUT — audit all 24 lyric scenes independently.
+   Base goal: every foreground lyric stays inside the phone viewport and remains
+   visually centered. Existing per-word animations/transforms are preserved. */
+@media (max-width:600px){
+  #stage{padding:8vh 3vw 14vh !important;}
+  #lyric,.lyric{width:100vw !important;max-width:100vw !important;overflow:visible !important;}
+
+  /* Normal flowing scenes: give the line the full phone width and let the
+     words wrap rather than pushing the whole scene off-screen. */
+  #lyric > .line[data-index="0"],
+  #lyric > .line[data-index="2"],
+  #lyric > .line[data-index="3"],
+  #lyric > .line[data-index="4"],
+  #lyric > .line[data-index="5"],
+  #lyric > .line[data-index="7"],
+  #lyric > .line[data-index="8"],
+  #lyric > .line[data-index="9"],
+  #lyric > .line[data-index="12"],
+  #lyric > .line[data-index="13"],
+  #lyric > .line[data-index="14"],
+  #lyric > .line[data-index="16"],
+  #lyric > .line[data-index="18"],
+  #lyric > .line[data-index="20"],
+  #lyric > .line[data-index="21"],
+  #lyric > .line[data-index="22"],
+  #lyric > .line[data-index="23"]{
+    left:0 !important;
+    right:0 !important;
+    width:100vw !important;
+    max-width:100vw !important;
+    margin-left:0 !important;
+    margin-right:0 !important;
+    box-sizing:border-box !important;
+    text-align:center !important;
+    justify-content:center !important;
+    align-items:center !important;
+  }
+
+  /* Keep regular word groups centered and constrain their total width. */
+  #lyric > .line[data-index="0"] .word,
+  #lyric > .line[data-index="2"] .word,
+  #lyric > .line[data-index="3"] .word,
+  #lyric > .line[data-index="4"] .word,
+  #lyric > .line[data-index="5"] .word,
+  #lyric > .line[data-index="7"] .word,
+  #lyric > .line[data-index="8"] .word,
+  #lyric > .line[data-index="9"] .word,
+  #lyric > .line[data-index="12"] .word,
+  #lyric > .line[data-index="13"] .word,
+  #lyric > .line[data-index="14"] .word,
+  #lyric > .line[data-index="16"] .word,
+  #lyric > .line[data-index="20"] .word,
+  #lyric > .line[data-index="21"] .word,
+  #lyric > .line[data-index="22"] .word,
+  #lyric > .line[data-index="23"] .word{
+    max-width:94vw !important;
+  }
+
+  /* 0 — heart-split: keep the central composition inside the phone. */
+  #lyric > .line[data-index="0"]{font-size:clamp(30px,8.6vw,48px) !important;}
+
+  /* 1 — PARANG stack: each row is independently centered. */
+  #lyric > .line.scene-slit[data-index="1"]{
+    left:0 !important;right:0 !important;width:100vw !important;max-width:100vw !important;
+    margin:0 !important;display:flex !important;flex-direction:column !important;
+    align-items:center !important;justify-content:center !important;text-align:center !important;
+  }
+  #lyric > .line.scene-slit[data-index="1"] > .parang-stack{
+    width:100vw !important;max-width:100vw !important;margin:0 auto !important;
+    align-items:center !important;justify-content:center !important;text-align:center !important;
+  }
+  #lyric > .line.scene-slit[data-index="1"] .parang-stack-row{
+    width:100vw !important;max-width:100vw !important;margin:0 !important;
+    justify-content:center !important;align-items:center !important;box-sizing:border-box !important;
+    padding:0 2vw !important;
+  }
+  #lyric > .line.scene-slit[data-index="1"] .word{font-size:clamp(25px,7.1vw,40px) !important;}
+
+  /* 2 — KAILAN: absolute words already use left:50%; keep them centered. */
+  #lyric > .line.scene-kailan-flight[data-index="2"]{
+    width:100vw !important;max-width:100vw !important;left:0 !important;right:0 !important;
+  }
+  #lyric > .line.scene-kailan-flight[data-index="2"] .word{
+    max-width:94vw !important;font-size:clamp(27px,7.7vw,43px) !important;
+  }
+
+  /* 3 — GUSTO: wind/flow line, centered but safely narrower than viewport. */
+  #lyric > .line.scene-wind[data-index="3"]{
+    width:100vw !important;max-width:100vw !important;left:0 !important;right:0 !important;
+    padding:0 3vw !important;box-sizing:border-box !important;
+    font-size:clamp(25px,7.0vw,42px) !important;
+    gap:.015em .045em !important;
+  }
+  #lyric > .line.scene-wind[data-index="3"] .word{margin-left:.025em !important;margin-right:.025em !important;}
+
+  /* 4 — first chorus: prevent the long question from exceeding phone width. */
+  #lyric > .line[data-index="4"]{font-size:clamp(39px,10.8vw,60px) !important;white-space:normal !important;padding:0 3vw !important;}
+
+  /* 5 — vertical linyahan treatment. */
+  #lyric > .line.first-linyahan-vertical[data-index="5"]{
+    width:100vw !important;max-width:100vw !important;left:0 !important;right:0 !important;
+    height:min(58vh,520px) !important;align-items:center !important;justify-content:center !important;
+  }
+  #lyric > .line.first-linyahan-vertical[data-index="5"] .word{font-size:clamp(31px,8.5vw,48px) !important;}
+
+  /* 6 — Bibigay/clock treatment: the actual clock remains centered; lyric rows
+     are centered inside it. */
+  #lyric > .line[data-index="6"]{width:100vw !important;max-width:100vw !important;left:0 !important;right:0 !important;}
+  #lyric > .line.scene-clock[data-index="6"] .clock-wrap{width:100vw !important;max-width:100vw !important;}
+  #lyric > .line.scene-clock[data-index="6"] .clock-lyric{width:94vw !important;max-width:94vw !important;}
+  #lyric > .line.scene-clock[data-index="6"] .word{max-width:88vw !important;}
+
+  /* 7 — MAGALING kinetic stack. */
+  #lyric > .line.scene-magaling-kinetic[data-index="7"]{
+    width:100vw !important;max-width:100vw !important;left:0 !important;right:0 !important;
+    padding:0 3vw !important;box-sizing:border-box !important;
+  }
+  #lyric > .line.scene-magaling-kinetic[data-index="7"] .word{font-size:clamp(25px,7.3vw,43px) !important;}
+
+  /* 8/9 — chorus/question lines. */
+  #lyric > .line[data-index="8"]{font-size:clamp(39px,10.8vw,60px) !important;padding:0 3vw !important;}
+  #lyric > .line[data-index="9"]{font-size:clamp(43px,12vw,62px) !important;padding:0 3vw !important;}
+
+  /* 10 — PUPUNTAHAN: every word is absolute at 50%, so constrain its size. */
+  #lyric > .line.pupuntahan-scene[data-index="10"]{
+    width:100vw !important;max-width:100vw !important;left:0 !important;right:0 !important;
+  }
+  #lyric > .line.pupuntahan-scene[data-index="10"] .word{font-size:clamp(29px,8.7vw,46px) !important;max-width:92vw !important;}
+
+  /* 11 — MALAYO: foreground is its own centered holder. */
+  #lyric > .line.malayo-echo-scene[data-index="11"]{
+    width:100vw !important;max-width:100vw !important;left:0 !important;right:0 !important;
+  }
+  #lyric > .line.malayo-echo-scene[data-index="11"] .malayo-foreground{
+    width:94vw !important;max-width:94vw !important;margin:0 auto !important;
+    left:50% !important;transform:translateX(-50%) !important;
+  }
+  #lyric > .line.malayo-echo-scene[data-index="11"] .malayo-foreground .word{font-size:clamp(34px,10.5vw,56px) !important;}
+
+  /* 12/13/14 — kinetic verse scenes. */
+  #lyric > .line.scene-pati-kinetic[data-index="12"],
+  #lyric > .line.scene-ulam-kinetic[data-index="13"],
+  #lyric > .line.scene-pahirapan-beat[data-index="14"]{
+    width:100vw !important;max-width:100vw !important;left:0 !important;right:0 !important;
+    padding:0 3vw !important;box-sizing:border-box !important;
+  }
+  #lyric > .line.scene-pati-kinetic[data-index="12"] .word,
+  #lyric > .line.scene-ulam-kinetic[data-index="13"] .word,
+  #lyric > .line.scene-pahirapan-beat[data-index="14"] .word{font-size:clamp(25px,7.0vw,42px) !important;}
+
+  /* 15 — syllable groups: keep every group centered and prevent side drift. */
+  #lyric > .line.scene-ako-tatay-syllable[data-index="15"]{
+    width:100vw !important;max-width:100vw !important;left:0 !important;right:0 !important;
+    padding:0 2vw !important;box-sizing:border-box !important;
+    align-items:center !important;justify-content:center !important;text-align:center !important;
+  }
+  #lyric > .line.scene-ako-tatay-syllable[data-index="15"] .syllable-group{justify-content:center !important;}
+
+  /* 16 — KASI GRAND STACK: each row stays centered. */
+  #lyric > .line.scene-kasi-grand-stack[data-index="16"]{
+    width:100vw !important;max-width:100vw !important;left:0 !important;right:0 !important;
+    padding:0 2vw !important;box-sizing:border-box !important;
+  }
+  #lyric > .line.scene-kasi-grand-stack[data-index="16"] .kasi-stack,
+  #lyric > .line.scene-kasi-grand-stack[data-index="16"] .kasi-row{
+    margin-left:auto !important;margin-right:auto !important;justify-content:center !important;text-align:center !important;
+  }
+  #lyric > .line.scene-kasi-grand-stack[data-index="16"] .word{font-size:clamp(27px,8vw,46px) !important;}
+
+  /* 17 — GUSTONG-GUSTO stack. */
+  #lyric > .line.scene-gustong-stack[data-index="17"]{
+    width:100vw !important;max-width:100vw !important;left:0 !important;right:0 !important;
+    padding:0 2vw !important;box-sizing:border-box !important;
+  }
+  #lyric > .line.scene-gustong-stack[data-index="17"] .gustong-stack,
+  #lyric > .line.scene-gustong-stack[data-index="17"] .gustong-row{
+    margin-left:auto !important;margin-right:auto !important;justify-content:center !important;text-align:center !important;
+  }
+  #lyric > .line.scene-gustong-stack[data-index="17"] .word{font-size:clamp(27px,8.5vw,47px) !important;}
+
+  /* 18 — PWede typing: two rows, both independently centered. */
+  #lyric > .line.scene-pwede-typing[data-index="18"]{
+    width:100vw !important;max-width:100vw !important;left:0 !important;right:0 !important;
+    padding:0 2vw !important;box-sizing:border-box !important;
+    align-items:center !important;justify-content:center !important;text-align:center !important;
+  }
+  #lyric > .line.scene-pwede-typing[data-index="18"] .pwede-typing-wrap,
+  #lyric > .line.scene-pwede-typing[data-index="18"] .pwede-typing-row{
+    width:100% !important;max-width:100% !important;margin-left:auto !important;margin-right:auto !important;
+    justify-content:center !important;text-align:center !important;
+  }
+  #lyric > .line.scene-pwede-typing[data-index="18"] .word{font-size:clamp(27px,8vw,45px) !important;}
+
+  /* 19 — final linyahan two-row layout. */
+  #lyric > .line[data-index="19"]{
+    width:100vw !important;max-width:100vw !important;left:0 !important;right:0 !important;
+    padding:0 2vw !important;box-sizing:border-box !important;
+  }
+  #lyric > .line[data-index="19"] .final-linyahan-row{width:100% !important;justify-content:center !important;}
+  #lyric > .line[data-index="19"] .final-linyahan-row .word{font-size:clamp(25px,7.1vw,40px) !important;}
+
+  /* 20 — scattered final Bibigay: keep the scattered copies within the phone,
+     but center the main lyric container. */
+  #lyric > .line[data-index="20"]{width:100vw !important;max-width:100vw !important;left:0 !important;right:0 !important;padding:0 2vw !important;}
+
+  /* 21 — final MAGALING kinetic. */
+  #lyric > .line.scene-magaling-kinetic[data-index="21"]{
+    width:100vw !important;max-width:100vw !important;left:0 !important;right:0 !important;padding:0 3vw !important;box-sizing:border-box !important;
+  }
+  #lyric > .line.scene-magaling-kinetic[data-index="21"] .word{font-size:clamp(25px,7.3vw,43px) !important;}
+
+  /* 22/23 — final chorus and final question. */
+  #lyric > .line[data-index="22"]{font-size:clamp(39px,10.8vw,60px) !important;padding:0 3vw !important;}
+  #lyric > .line[data-index="23"]{font-size:clamp(43px,12vw,62px) !important;padding:0 3vw !important;}
+
+  /* Never allow the main foreground words to create horizontal page overflow. */
+  #lyric > .line .word{box-sizing:border-box;}
+}
+</style>
 </head>
 <body>
 <div id="app">
@@ -7602,326 +7857,3 @@ render();
   .line.scene-scattered .word[data-word-index="6"]{left:76%;top:67%}
 }
 </style>
-
-<style id="mobile-centering-fix-v2">
-/*
-  MOBILE V2
-  Do NOT replace the transform on .line: the animation system uses transform
-  for entrances/bobs. Instead, center absolute lyric boxes horizontally with
-  left/right + auto margins. This leaves every existing animation transform
-  untouched.
-*/
-@media (max-width:600px){
-
-  html,body{
-    width:100%;
-    max-width:100%;
-    min-width:0;
-    height:100%;
-    height:100dvh;
-    overflow:hidden;
-  }
-
-  #app{
-    position:fixed;
-    inset:0;
-    width:100%;
-    height:100dvh;
-    max-width:100vw;
-    overflow:hidden;
-  }
-
-  #stage{
-    position:absolute;
-    inset:0;
-    width:100%;
-    height:100%;
-    padding:0;
-    display:grid;
-    place-items:center;
-    overflow:hidden;
-  }
-
-  #stage > .lyric{
-    position:relative;
-    width:100%;
-    max-width:100vw;
-    height:min(48dvh,430px);
-    max-height:48dvh;
-    margin:0;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    overflow:visible;
-  }
-
-  /*
-    The original .line elements are absolute. On desktop their static
-    position happens to land correctly inside the flex container, but on
-    mobile some scene-specific widths/positioning make that unreliable.
-    Horizontal centering here is independent of transform animations.
-  */
-  #lyric > .line:not(.scene-clock){
-    left:0 !important;
-    right:0 !important;
-    margin-left:auto !important;
-    margin-right:auto !important;
-    box-sizing:border-box;
-  }
-
-  /* Keep the clock's deliberately full-stage geometry untouched. */
-  #lyric > .line.scene-clock{
-    left:0 !important;
-    right:0 !important;
-    width:100% !important;
-    max-width:none !important;
-    margin-left:0 !important;
-    margin-right:0 !important;
-  }
-
-  /* Main generic lyric widths */
-  #lyric > .line.verse{
-    width:min(88vw,560px);
-    max-width:88vw;
-    font-size:clamp(25px,7.2vw,42px);
-  }
-
-  #lyric > .line.soft{
-    width:min(88vw,560px);
-    max-width:88vw;
-    font-size:clamp(23px,6.7vw,38px);
-  }
-
-  #lyric > .line.chorus{
-    width:min(94vw,650px);
-    max-width:94vw;
-    font-size:clamp(39px,12.5vw,76px);
-  }
-
-  #lyric > .line.big{
-    width:min(94vw,680px);
-    max-width:94vw;
-    font-size:clamp(46px,15vw,92px);
-  }
-
-  /*
-    Special scenes that intentionally use absolute/flex children.
-    Their parent remains centered; their children can keep their own
-    animation coordinates.
-  */
-  #lyric > .line.scene-heart-split,
-  #lyric > .line.scene-kailan-flight,
-  #lyric > .line.scene-pupuntahan,
-  #lyric > .line.scene-scattered,
-  #lyric > .line.scene-clock,
-  #lyric > .line.pwede-typing-scene,
-  #lyric > .line.final-linyahan-two-line,
-  #lyric > .line.scene-linyahan-sparkle,
-  #lyric > .line.first-linyahan-vertical,
-  #lyric > .line.scene-bibigay-stack,
-  #lyric > .line.scene-magaling-kinetic{
-    margin-left:auto !important;
-    margin-right:auto !important;
-  }
-
-  #lyric > .line.scene-heart-split{
-    width:min(92vw,650px) !important;
-    max-width:92vw !important;
-  }
-
-  #lyric > .line.scene-kailan-flight{
-    width:min(92vw,620px) !important;
-    max-width:92vw !important;
-  }
-
-  #lyric > .line.scene-scattered{
-    width:min(92vw,620px) !important;
-    max-width:92vw !important;
-  }
-
-  #lyric > .line.pwede-typing-scene{
-    width:min(94vw,680px) !important;
-    max-width:94vw !important;
-  }
-
-  #lyric > .line.final-linyahan-two-line,
-  #lyric > .line.scene-linyahan-sparkle{
-    width:min(94vw,680px) !important;
-    max-width:94vw !important;
-  }
-
-  /*
-    These rows were explicitly nowrap in the desktop design. On a phone,
-    allow the row to wrap rather than pushing the whole lyric off-screen.
-  */
-  .pwede-typing-scene .pwede-typing-row,
-  .final-linyahan-row{
-    max-width:94vw;
-    justify-content:center;
-  }
-
-  .final-linyahan-row{
-    flex-wrap:wrap;
-    white-space:normal;
-  }
-
-  /*
-    Keep the final "Bibigay..." stack centered and scale it before it can
-    exceed the phone width.
-  */
-  .line.scene-bibigay-stack{
-    width:92vw !important;
-    max-width:92vw !important;
-  }
-
-  .line.scene-bibigay-stack .bibigay-stack{
-    max-width:92vw;
-  }
-
-  /*
-    Mobile versions of the very large scene typography.
-  */
-  .line.scene-magaling-kinetic{
-    width:94vw !important;
-    max-width:94vw !important;
-  }
-
-  .line.scene-magaling-kinetic .word{
-    font-size:clamp(26px,7.4vw,44px) !important;
-    margin-left:.07em !important;
-    margin-right:.07em !important;
-  }
-
-  /*
-    Keep common centered flex scenes from acquiring a desktop-width
-    intrinsic size on narrow screens.
-  */
-  .line.scene-fly,
-  .line.scene-flip,
-  .line.scene-rubber,
-  .line.motion{
-    max-width:94vw;
-  }
-
-  /*
-    Decorative effects are allowed to paint outside their own scene, but
-    the page itself must never become wider than the phone viewport.
-  */
-  #backgroundBanat,
-  #greetingEchoField,
-  #missYouEchoField,
-  #missYouStarField,
-  #sabiEchoField,
-  #oSaKanyaEchoField,
-  #heartField,
-  #wordExplosionField,
-  #huge57Explosion,
-  #ooExplosion,
-  #siteSparkField,
-  #echoes,
-  #questionChaos{
-    max-width:100vw;
-  }
-
-  #top{
-    left:max(14px,5vw);
-    right:max(14px,5vw);
-    top:max(12px,env(safe-area-inset-top,0px));
-  }
-
-  #controls{
-    left:max(14px,5vw);
-    right:max(14px,5vw);
-    bottom:max(12px,env(safe-area-inset-bottom,0px));
-  }
-
-  #hint{
-    width:90vw;
-    left:50%;
-    bottom:calc(max(12px,env(safe-area-inset-bottom,0px)) + 70px);
-  }
-
-  #section{
-    right:max(12px,5vw);
-  }
-}
-
-@media (max-width:380px){
-  #lyric > .line:not(.scene-clock){
-    max-width:94vw;
-  }
-
-  #lyric > .line.verse{
-    width:92vw;
-    max-width:92vw;
-    font-size:clamp(22px,6.6vw,35px);
-  }
-
-  #lyric > .line.soft{
-    width:92vw;
-    max-width:92vw;
-    font-size:clamp(20px,6vw,32px);
-  }
-
-  #lyric > .line.chorus{
-    width:94vw;
-    max-width:94vw;
-    font-size:clamp(33px,11vw,60px);
-  }
-
-  #lyric > .line.big{
-    width:94vw;
-    max-width:94vw;
-    font-size:clamp(38px,13.5vw,74px);
-  }
-}
-</style>
-
-<style id="mobile-second-line-centering">
-@media (max-width:600px){
-  /* SECOND LYRIC / index 1: "Parang masyado..."
-     Center the scene itself and independently center its stacked rows.
-     Do not touch the line's transform because its bob animation owns it. */
-  #lyric > .line.scene-slit[data-index="1"]{
-    position:absolute !important;
-    left:0 !important;
-    right:0 !important;
-    width:100vw !important;
-    max-width:100vw !important;
-    margin-left:0 !important;
-    margin-right:0 !important;
-    box-sizing:border-box !important;
-    display:flex !important;
-    flex-direction:column !important;
-    align-items:center !important;
-    justify-content:center !important;
-    text-align:center !important;
-  }
-
-  #lyric > .line.scene-slit[data-index="1"] > .parang-stack{
-    width:100% !important;
-    max-width:100vw !important;
-    margin-left:auto !important;
-    margin-right:auto !important;
-    align-items:center !important;
-    justify-content:center !important;
-    text-align:center !important;
-  }
-
-  #lyric > .line.scene-slit[data-index="1"] .parang-stack-row{
-    width:100% !important;
-    max-width:100vw !important;
-    margin-left:auto !important;
-    margin-right:auto !important;
-    justify-content:center !important;
-    align-items:center !important;
-    box-sizing:border-box !important;
-  }
-
-  #lyric > .line.scene-slit[data-index="1"] .parang-stack .word{
-    flex:0 0 auto;
-  }
-}
-</style>
-
-
