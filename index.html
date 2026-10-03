@@ -384,7 +384,38 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 #greetingEchoField{position:absolute;inset:0;z-index:7;overflow:hidden;pointer-events:none}
 .greeting-echo{position:absolute;left:var(--gx);top:var(--gy);white-space:nowrap;color:#fff;font-weight:700;line-height:1;letter-spacing:-.045em;opacity:0;mix-blend-mode:screen;filter:blur(var(--gb));transform:translate(-50%,-50%) scale(.72) rotate(var(--gr));animation:greetingEchoLife var(--gl) cubic-bezier(.16,.78,.25,1) forwards;will-change:transform,opacity}
 @keyframes greetingEchoLife{0%{opacity:0;transform:translate(-50%,-50%) scale(.72) rotate(var(--gr));filter:blur(4px)}18%{opacity:var(--ga);filter:blur(var(--gb))}55%{opacity:calc(var(--ga) * .82);transform:translate(-50%,-50%) scale(1.02) rotate(var(--gr));filter:blur(var(--gb))}100%{opacity:0;transform:translate(-50%,-50%) scale(1.16) rotate(var(--gr));filter:blur(1.5px)}}
-#missYouEchoField{position:absolute;inset:0;z-index:2;overflow:hidden;pointer-events:none;}
+#missYouEchoField{position:absolute;inset:0;z-index:4;overflow:hidden;pointer-events:none;}
+#missYouStarField{position:absolute;inset:0;z-index:2;overflow:hidden;pointer-events:none;}
+.miss-you-star{
+  position:absolute;left:50%;top:50%;
+  width:var(--ss);height:var(--ss);
+  opacity:0;
+  background:#fff;border-radius:1px;
+  transform:translate(-50%,-50%) scale(.1) rotate(45deg);
+  box-shadow:0 0 5px #fff,0 0 12px #ffb38a66;
+  will-change:transform,opacity;
+  animation:missYouStarForm var(--life) cubic-bezier(.18,.82,.2,1) var(--delay) forwards,
+            missYouStarTwinkle var(--twinkle) ease-in-out var(--twinkle-delay) infinite alternate;
+}
+.miss-you-star::before,.miss-you-star::after{
+  content:"";position:absolute;left:50%;top:50%;
+  background:linear-gradient(90deg,transparent,#fff,transparent);
+  transform:translate(-50%,-50%);opacity:.8;
+}
+.miss-you-star::before{width:320%;height:1px;}
+.miss-you-star::after{width:1px;height:320%;}
+@keyframes missYouStarForm{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.08) rotate(45deg);filter:blur(3px)}
+  12%{opacity:.9}
+  42%{opacity:.78;transform:translate(calc(-50% + var(--x1)),calc(-50% + var(--y1))) scale(.7) rotate(45deg);filter:blur(.2px)}
+  72%{opacity:.72;transform:translate(calc(-50% + var(--x2)),calc(-50% + var(--y2))) scale(1) rotate(45deg);filter:blur(0)}
+  100%{opacity:.48;transform:translate(calc(-50% + var(--x2)),calc(-50% + var(--y2))) scale(1) rotate(45deg);filter:blur(0)}
+}
+@keyframes missYouStarTwinkle{
+  0%{opacity:.30;transform:translate(calc(-50% + var(--x2)),calc(-50% + var(--y2))) scale(.82) rotate(45deg)}
+  100%{opacity:.68;transform:translate(calc(-50% + var(--x2)),calc(-50% + var(--y2))) scale(1.12) rotate(45deg)}
+}
+
 .miss-you-echo{position:absolute;left:var(--mxp);top:var(--myp);white-space:nowrap;color:#fff;font-family:"Poppins",sans-serif;font-weight:600;letter-spacing:-.045em;line-height:1;opacity:0;mix-blend-mode:screen;text-shadow:0 0 18px #fff4;filter:blur(var(--mblur));transform:translate(-50%,-50%) scale(.72) rotate(var(--mrot));animation:missYouEchoMotion var(--mlife) cubic-bezier(.16,.78,.25,1) forwards;will-change:transform,opacity;}
 @keyframes missYouEchoMotion{0%{opacity:0;transform:translate(-50%,-50%) scale(.72) rotate(var(--mrot));filter:blur(5px)}15%{opacity:var(--malpha);filter:blur(var(--mblur))}55%{opacity:calc(var(--malpha)*.78);transform:translate(calc(-50% + var(--mdx1)),calc(-50% + var(--mdy1))) scale(1) rotate(calc(var(--mrot) + var(--mrot2)));filter:blur(var(--mblur))}100%{opacity:0;transform:translate(calc(-50% + var(--mdx2)),calc(-50% + var(--mdy2))) scale(1.16) rotate(calc(var(--mrot) + var(--mrot3)));filter:blur(2px)}}
 
@@ -503,6 +534,39 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .word.deny.crossed{color:#cbbfb5;transform:translateY(.02em) rotate(-2deg) scale(1)}
 .word.deny.crossed::after{content:"";position:absolute;left:-.08em;right:-.08em;top:52%;height:.075em;background:var(--accent);box-shadow:0 0 10px #ffb38a55;transform:rotate(-7deg) scaleX(0);transform-origin:left center;animation:crossOut .35s cubic-bezier(.2,.8,.2,1) forwards}
 @keyframes wordPop{0%{transform:translateY(.3em) scale(.86) rotate(var(--tilt,0deg));opacity:.15}55%{transform:translateY(-.07em) scale(1.055) rotate(calc(var(--tilt,0deg) * -1));opacity:1}100%{transform:translateY(0) scale(1) rotate(0);opacity:1}}
+/* 01:57 — "Bibigay ko nang buo ang [redacted]"
+   Plain typography only. Keep the normal word-by-word lyric reveal,
+   but remove every kinetic typography animation, bob, rotation, scaling,
+   and motion from this specific line. */
+.line[data-index="20"]{
+  animation:none!important;
+  transition:opacity .32s ease!important;
+  transform:translateY(0) scale(1)!important;
+  filter:none!important;
+}
+.line[data-index="20"].active{
+  animation:none!important;
+  transform:translateY(0) scale(1)!important;
+  filter:none!important;
+}
+.line[data-index="20"].out{
+  animation:none!important;
+  transform:translateY(0) scale(1)!important;
+  filter:none!important;
+}
+.line[data-index="20"] .word,
+.line[data-index="20"] .word.visible,
+.line[data-index="20"] .word.current{
+  animation:none!important;
+  transform:none!important;
+  filter:none!important;
+  rotate:0deg!important;
+  scale:1!important;
+}
+.line[data-index="20"] .word.current{
+  color:var(--accent);
+  text-shadow:0 0 18px #ffb38a35;
+}
 @keyframes chorusPop{0%{transform:translateY(.22em) scale(.72) rotate(-5deg);opacity:.05}60%{transform:translateY(-.08em) scale(1.12) rotate(2deg);opacity:1}100%{transform:translateY(0) scale(1) rotate(0);opacity:1}}
 @keyframes bigBounce{0%{transform:translateY(.4em) scale(.65) rotate(-4deg);opacity:0}58%{transform:translateY(-.09em) scale(1.13) rotate(2deg);opacity:1}100%{transform:translateY(0) scale(1) rotate(0);opacity:1}}
 @keyframes stretchWiggle{0%{transform:translateY(.25em) scaleX(.7);opacity:.15}35%{transform:translateY(-.08em) scaleX(1.08) rotate(-1deg);opacity:1}65%{transform:translateY(.025em) scaleX(1.18) rotate(1deg)}100%{transform:translateY(0) scaleX(1.08) rotate(0);opacity:1}}
@@ -595,6 +659,42 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 
 
 
+/* FINAL 01:49 — two-line lyric stack:
+   Kahit 'di maganda
+   ang mga larawan
+   The two rows remain a single lyric scene, with the same soft playful motion. */
+.line.final-linyahan-two-line{
+  width:min(92vw,1050px);
+  min-height:0;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:.02em;
+  text-align:center;
+  overflow:visible;
+  z-index:5;
+}
+.final-linyahan-row{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-wrap:nowrap;
+  white-space:nowrap;
+  line-height:1;
+}
+.final-linyahan-row .word{
+  margin:.03em .10em!important;
+}
+.final-linyahan-row.row-1 .word{
+  font-size:.92em;
+}
+.final-linyahan-row.row-2 .word{
+  font-size:1.02em;
+}
+@media(max-width:600px){
+  .final-linyahan-row .word{margin:.03em .06em!important;}
+}
 /* FINAL "Kahit 'di maganda ang mga linyahan" — simple typography + soft sparkles. */
 .line.scene-linyahan-sparkle{
   width:min(92vw,1050px);
@@ -2444,36 +2544,86 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   84%{transform:translateY(-.09em) scale(.98,1.05) rotate(-1.5deg)}
 }
 
-/* 01:55.628–01:57.091 — simultaneous radial “I / miss / you” burst. */
-#missYouEchoField{position:absolute;inset:0;z-index:2;overflow:hidden;pointer-events:none;}
-.miss-you-burst-word{
-  position:absolute;left:50%;top:50%;width:max-content;
-  color:#fff;font-family:"Poppins",sans-serif;font-weight:600;
-  font-size:clamp(34px,5.6vw,76px);line-height:.95;letter-spacing:-.055em;
-  text-align:center;opacity:0;text-shadow:0 0 18px #fff3;filter:blur(3px);
-  transform:translate(-50%,-50%) scale(.28) rotate(var(--rot));
-  animation:missYouWordBurst 1.08s cubic-bezier(.12,.82,.22,1) both;
-  animation-delay:var(--delay);will-change:transform,opacity,filter;
+/* 01:55.628–01:57.091 — individual “I” / “miss” / “you” fragments
+   explode radially together. The phrase itself is never duplicated. */
+#missYouEchoField{position:absolute;inset:0;z-index:4;overflow:hidden;pointer-events:none;}
+#missYouStarField{position:absolute;inset:0;z-index:2;overflow:hidden;pointer-events:none;}
+.miss-you-star{
+  position:absolute;left:50%;top:50%;
+  width:var(--ss);height:var(--ss);
+  opacity:0;
+  background:#fff;border-radius:1px;
+  transform:translate(-50%,-50%) scale(.1) rotate(45deg);
+  box-shadow:0 0 5px #fff,0 0 12px #ffb38a66;
+  will-change:transform,opacity;
+  animation:missYouStarForm var(--life) cubic-bezier(.18,.82,.2,1) var(--delay) forwards,
+            missYouStarTwinkle var(--twinkle) ease-in-out var(--twinkle-delay) infinite alternate;
 }
-@keyframes missYouWordBurst{
-  0%{opacity:0;transform:translate(-50%,-50%) scale(.28) rotate(var(--rot));filter:blur(4px)}
-  12%{opacity:var(--alpha);filter:blur(0)}
-  100%{opacity:0;transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(1) rotate(calc(var(--rot) + var(--spin)));filter:blur(1.2px)}
+.miss-you-star::before,.miss-you-star::after{
+  content:"";position:absolute;left:50%;top:50%;
+  background:linear-gradient(90deg,transparent,#fff,transparent);
+  transform:translate(-50%,-50%);opacity:.8;
 }
-.miss-you-sparkle{
-  position:absolute;left:50%;top:50%;width:7px;height:7px;border-radius:50%;
-  background:#fff;box-shadow:0 0 9px #fff,0 0 18px #fff8;
-  opacity:0;transform:translate(-50%,-50%) scale(.15) rotate(45deg);
-  animation:missYouSparkBurst .90s cubic-bezier(.12,.9,.2,1) both;
-  animation-delay:var(--delay);will-change:transform,opacity;
+.miss-you-star::before{width:320%;height:1px;}
+.miss-you-star::after{width:1px;height:320%;}
+@keyframes missYouStarForm{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.08) rotate(45deg);filter:blur(3px)}
+  12%{opacity:.9}
+  42%{opacity:.78;transform:translate(calc(-50% + var(--x1)),calc(-50% + var(--y1))) scale(.7) rotate(45deg);filter:blur(.2px)}
+  72%{opacity:.72;transform:translate(calc(-50% + var(--x2)),calc(-50% + var(--y2))) scale(1) rotate(45deg);filter:blur(0)}
+  100%{opacity:.48;transform:translate(calc(-50% + var(--x2)),calc(-50% + var(--y2))) scale(1) rotate(45deg);filter:blur(0)}
 }
-.miss-you-sparkle::before,.miss-you-sparkle::after{content:"";position:absolute;left:50%;top:50%;background:#fff;border-radius:2px;transform:translate(-50%,-50%);}
-.miss-you-sparkle::before{width:2px;height:28px}.miss-you-sparkle::after{width:28px;height:2px}
-@keyframes missYouSparkBurst{
-  0%{opacity:0;transform:translate(-50%,-50%) scale(.08) rotate(45deg)}
-  20%{opacity:var(--sa);transform:translate(calc(-50% + var(--sx)),calc(-50% + var(--sy))) scale(1.35) rotate(45deg)}
-  48%{opacity:calc(var(--sa) * .82);transform:translate(calc(-50% + var(--sx2)),calc(-50% + var(--sy2))) scale(.78) rotate(45deg)}
-  100%{opacity:0;transform:translate(calc(-50% + var(--sx3)),calc(-50% + var(--sy3))) scale(.12) rotate(45deg)}
+@keyframes missYouStarTwinkle{
+  0%{opacity:.30;transform:translate(calc(-50% + var(--x2)),calc(-50% + var(--y2))) scale(.82) rotate(45deg)}
+  100%{opacity:.68;transform:translate(calc(-50% + var(--x2)),calc(-50% + var(--y2))) scale(1.12) rotate(45deg)}
+}
+
+.miss-you-spark{
+  position:absolute;
+  left:50%;top:50%;
+  width:var(--ss);height:var(--ss);
+  border-radius:50%;
+  background:#fff;
+  opacity:0;
+  z-index:0;
+  box-shadow:0 0 5px #fff8,0 0 11px #ffb38a55;
+  transform:translate(-50%,-50%) scale(.15);
+  animation:missYouSparkle .72s cubic-bezier(.16,.82,.25,1) both;
+  animation-delay:var(--delay);
+  will-change:transform,opacity;
+}
+@keyframes missYouSparkle{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.15)}
+  14%{opacity:var(--alpha)}
+  45%{opacity:calc(var(--alpha)*.82);transform:translate(calc(-50% + var(--x1)),calc(-50% + var(--y1))) scale(1)}
+  100%{opacity:0;transform:translate(calc(-50% + var(--x2)),calc(-50% + var(--y2))) scale(.45)}
+}
+.miss-you-stack-word{
+  position:absolute;
+  left:50%; top:50%;
+  width:max-content;
+  color:#fff;
+  font-family:"Poppins",sans-serif;
+  font-weight:600;
+  font-size:clamp(42px,6.5vw,88px);
+  line-height:.95;
+  letter-spacing:-.055em;
+  text-align:center;
+  opacity:0;
+  text-shadow:0 0 20px #fff3;
+  filter:blur(2px);
+  transform:translate(-50%,-50%) scale(.35) rotate(var(--rot));
+  animation:missYouRadial .72s cubic-bezier(.16,.82,.25,1) both;
+  animation-delay:var(--delay);
+  will-change:transform,opacity,filter;
+}
+.miss-you-sparkle{position:absolute;left:50%;top:50%;width:var(--ss);height:var(--ss);border-radius:50%;background:#fff;opacity:0;z-index:-1;box-shadow:0 0 8px #fff,0 0 18px #ffb38a99;animation:missSparkle .72s ease-out var(--delay) forwards;}
+@keyframes missSparkle{0%{opacity:0;transform:translate(-50%,-50%) scale(.1)}18%{opacity:var(--sa);transform:translate(calc(-50% + var(--sx)),calc(-50% + var(--sy))) scale(1)}55%{opacity:calc(var(--sa)*.8)}100%{opacity:0;transform:translate(calc(-50% + var(--sx2)),calc(-50% + var(--sy2))) scale(.35)}}
+@keyframes missYouRadial{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.35) rotate(var(--rot));filter:blur(4px)}
+  13%{opacity:var(--alpha);filter:blur(0)}
+  42%{opacity:calc(var(--alpha)*.92);transform:translate(calc(-50% + var(--x1)),calc(-50% + var(--y1))) scale(.78) rotate(calc(var(--rot) + var(--spin)));filter:blur(.3px)}
+  100%{opacity:0;transform:translate(calc(-50% + var(--x2)),calc(-50% + var(--y2))) scale(1) rotate(calc(var(--rot) + var(--spin2)));filter:blur(1.5px)}
 }
 </style>
 <style>
@@ -3611,6 +3761,123 @@ overflow:visible;
 }
 </style>
 
+<style id="final-chorus-202-font-uniform">
+/* FINAL CHORUS 02:02 — only the last "Kasi do'n alam kong magaling ako" (121.35–126.25).
+   Keep every word at exactly the same typography; do not inherit scene-flip's
+   alternating word sizes. */
+.line[data-index="21"] .word,
+.line[data-index="21"] .word.visible,
+.line[data-index="21"] .word.current{
+  font-family:"Poppins",sans-serif !important;
+  font-size:clamp(28px,4.4vw,68px) !important;
+  font-weight:600 !important;
+  letter-spacing:-.045em !important;
+  line-height:1.05 !important;
+  transform-origin:center center;
+}
+@media(max-width:600px){
+  .line[data-index="21"] .word,
+  .line[data-index="21"] .word.visible,
+  .line[data-index="21"] .word.current{
+    font-size:clamp(27px,7.5vw,44px) !important;
+    letter-spacing:-.035em !important;
+  }
+}
+</style>
+
+<style id="final-chorus-magaling-word-echo">
+/* FINAL CHORUS 02:02 — word echoes.
+   Each lyric word leaves two soft trailing copies while the main word keeps
+   its existing energetic bob/bounce. The echoes are decorative only and
+   never participate in layout. */
+.line[data-index="21"].scene-magaling-kinetic .word.visible{
+  isolation:isolate;
+  overflow:visible;
+}
+.line[data-index="21"].scene-magaling-kinetic .word.visible::before,
+.line[data-index="21"].scene-magaling-kinetic .word.visible::after{
+  content:attr(data-echo);
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:max-content;
+  white-space:nowrap;
+  pointer-events:none;
+  font:inherit;
+  letter-spacing:inherit;
+  line-height:inherit;
+  transform-origin:center center;
+  z-index:-1;
+}
+.line[data-index="21"].scene-magaling-kinetic .word.visible::before{
+  color:#ffb38a;
+  opacity:.20;
+  filter:blur(1.2px);
+  animation:magalingEchoBack 1.05s ease-in-out infinite;
+}
+.line[data-index="21"].scene-magaling-kinetic .word.visible::after{
+  color:#f8f0e6;
+  opacity:.12;
+  filter:blur(2px);
+  animation:magalingEchoFar 1.35s ease-in-out .08s infinite;
+}
+.line[data-index="21"].scene-magaling-kinetic .word.current::before{
+  opacity:.34;
+  filter:blur(.8px);
+}
+.line[data-index="21"].scene-magaling-kinetic .word.current::after{
+  opacity:.22;
+  filter:blur(1.5px);
+}
+@keyframes magalingEchoBack{
+  0%,100%{transform:translate(-50%,-50%) scale(1) translate3d(-2px,2px,0);opacity:.16;}
+  25%{transform:translate(-50%,-50%) scale(1.025) translate3d(4px,-3px,0);opacity:.28;}
+  55%{transform:translate(-50%,-50%) scale(1.05) translate3d(-5px,3px,0);opacity:.20;}
+  80%{transform:translate(-50%,-50%) scale(1.03) translate3d(5px,-2px,0);opacity:.27;}
+}
+@keyframes magalingEchoFar{
+  0%,100%{transform:translate(-50%,-50%) scale(1.02) translate3d(-5px,4px,0);opacity:.08;}
+  35%{transform:translate(-50%,-50%) scale(1.07) translate3d(8px,-5px,0);opacity:.17;}
+  70%{transform:translate(-50%,-50%) scale(1.10) translate3d(-8px,5px,0);opacity:.11;}
+}
+</style>
+
+<style>
+/* 01:43 — calmer version of the "Pwede ba kitang ligawan?" section.
+   Keep the same typography and echoes, but reduce the bounce/chaos. */
+.line[data-index="18"].pwede-typing-scene .word.visible{
+  animation:pwedeCalmWord 2.2s ease-in-out infinite !important;
+  animation-delay:var(--word-bob-delay,0ms) !important;
+}
+@keyframes pwedeCalmWord{
+  0%,100%{transform:translateY(0) scaleX(.88) scaleY(1) rotate(0deg)}
+  50%{transform:translateY(-.025em) scaleX(.885) scaleY(1.008) rotate(-.12deg)}
+}
+.line[data-index="18"].pwede-typing-scene .typing-word.visible .typing-char{
+  animation:typingCharInCalm .28s ease-out both !important;
+  animation-delay:calc(var(--char-i) * 55ms) !important;
+}
+@keyframes typingCharInCalm{
+  0%{opacity:0;transform:translateY(.06em) scale(.96);filter:blur(1.5px)}
+  100%{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}
+}
+.line[data-index="18"].pwede-typing-scene .typing-word .typing-char::before{
+  animation:typingCharEchoCalm .42s ease-out both !important;
+  animation-delay:calc(var(--char-i) * 55ms) !important;
+}
+@keyframes typingCharEchoCalm{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.94)}
+  100%{opacity:.14;transform:translate(-50%,-50%) scale(1.12)}
+}
+.line[data-index="18"].pwede-typing-scene .word::before{
+  animation:wordEchoCalmIn .75s ease-out forwards !important;
+}
+@keyframes wordEchoCalmIn{
+  0%{opacity:0;transform:translate(-50%,-50%) translate(var(--echo-x),var(--echo-y)) scale(.96) rotate(var(--echo-rot))}
+  100%{opacity:.11;transform:translate(-50%,-50%) translate(var(--echo-x),var(--echo-y)) scale(calc(var(--echo-scale) * .94)) rotate(var(--echo-rot))}
+}
+</style>
+
 </head>
 <body>
 <div id="app">
@@ -3619,6 +3886,7 @@ overflow:visible;
   <div id="backgroundBanat" aria-hidden="true"></div>
   <div id="greetingEchoField" aria-hidden="true"></div>
   <div id="missYouEchoField" aria-hidden="true"></div>
+  <div id="missYouStarField" aria-hidden="true"></div>
   <div id="sabiEchoField" aria-hidden="true"></div>
   <div id="oSaKanyaEchoField" aria-hidden="true"></div>
   <div id="heartField" aria-hidden="true"></div><div id="wordExplosionField" aria-hidden="true"></div><div id="huge57Explosion" aria-hidden="true"></div><div id="ooExplosion" aria-hidden="true"></div><div id="siteSparkField" aria-hidden="true"></div>
@@ -3794,7 +4062,7 @@ const lines=[
   {start:98.82,end:102.55,text:'Gustong-gusto, gustong-gusto kita',style:'big',section:'verse 2',cues:[98.82,99.45,100.10]},
   {start:102.72,end:109.70,text:'Pwede ba kitang ligawan?',style:'chorus',section:'final',cues:[102.72,103.28,103.72,105.25]},
   {start:109.75,end:116.55,text:"Kahit 'di maganda ang mga linyahan",style:'soft',section:'final',cues:[109.75,110.05,111.95,112.42,112.82,113.15]},
-  {start:116.70,end:121.30,text:'Bibigay ko nang buo ang oras ko',style:'soft',section:'final',cues:[116.70,117.05,117.42,117.78,118.10,118.42,118.78]},
+  {start:117.087,end:121.30,text:'Bibigay ko nang buo ang [redacted]',style:'soft',section:'final',cues:[117.087,117.902,118.379,118.729,119.381,119.875,120.956]},
   {start:121.35,end:126.25,text:"Kasi do'n alam kong magaling ako",style:'verse',section:'final',cues:[121.35,121.75,122.10,122.48,122.90,123.32,123.78]},
   {start:126.35,end:132.15,text:'Pwede ba kitang ligawan?',style:'chorus',section:'final',cues:[126.35,126.92,127.35,128.80]},
   {start:132.18,end:135.10,text:'Oo o hindi?',style:'big',section:'final',cues:[132.18,132.60,133.00]}
@@ -3812,6 +4080,31 @@ function fmt(s){
 function cleanWord(w){
   return w.toLowerCase().replace(/[.,!?“”‘’"()]/g,'').trim();
 }
+function buildFinalLinyahanLine(text){
+  const temp=document.createElement('div');
+  temp.innerHTML=buildWords(text);
+  const words=[...temp.querySelectorAll('.word')];
+  const stack=document.createElement('div');
+  stack.className='final-linyahan-stack';
+
+  const rows=[
+    {className:'final-linyahan-row row-1',min:0,max:2},
+    {className:'final-linyahan-row row-2',min:3,max:5}
+  ];
+
+  rows.forEach(spec=>{
+    const row=document.createElement('div');
+    row.className=spec.className;
+    words.forEach(word=>{
+      const idx=Number(word.dataset.wordIndex);
+      if(idx>=spec.min && idx<=spec.max) row.appendChild(word);
+    });
+    stack.appendChild(row);
+  });
+
+  return stack.outerHTML;
+}
+
 function buildWords(text){
   // This lyric is intentionally split by sung syllable, not by whitespace.
   // The seven nodes must match the seven beat cues exactly: AT / KA / HIT / PA / HIRA / PAN / PA.
@@ -3826,7 +4119,8 @@ function buildWords(text){
     return groups.map((group,g)=>{
       const words=group.map(u=>{
         const i=wordIndex++;
-        return `<span class="word" data-word-index="${i}" data-cue-index="${u.cue}" style="--i:${i};--tilt:0deg">${u.html}</span>`;
+        const accent=(u.html==='a' || u.html==='atras') ? ' accent' : '';
+        return `<span class="word${accent}" data-word-index="${i}" data-cue-index="${u.cue}" style="--i:${i};--tilt:0deg">${u.html}</span>`;
       }).join('');
       return `<span class="syllable-group${g?' group-break':''}">${words}</span>`;
     }).join('');
@@ -3880,9 +4174,9 @@ function buildWords(text){
     const flyR=((wordIndex%2?-1:1)*(8+(wordIndex%5)*7))+'deg';
     if(clean==='puso')classes.push('puso-word');
     if(clean==='gasgas')classes.push('gasgas-word');
-    const html=`<span class="${classes.join(' ')}" data-word-index="${wordIndex}" style="--i:${wordIndex};--tilt:${tilt}deg;--fx:${flyX};--fy:${flyY};--fr:${flyR}">${base}</span>`;
+    const html=`<span class="${classes.join(' ')}" data-word-index="${wordIndex}" data-echo="${base}" style="--i:${wordIndex};--tilt:${tilt}deg;--fx:${flyX};--fy:${flyY};--fr:${flyR}">${base}</span>`;
     wordIndex++;
-    if(isQuestionHindi) return html+'<span class="question-mark" data-question-index="'+(wordIndex-1)+'">?</span>';
+    if(isQuestionHindi) return html.replace('</span>', '<span class="deny-strike" aria-hidden="true"></span></span>')+'<span class="question-mark" data-question-index="'+(wordIndex-1)+'">?</span>';
     return html;
   }).join('');
 }
@@ -4081,6 +4375,12 @@ function buildPwedeTypingLine(text){
 
 function sceneFor(i){
   // Each lyric becomes a small motion-graphics scene.
+  // The 01:57 "Bibigay ko nang buo ang [redacted]" line is intentionally
+  // static: keep the lyric timing, but remove the crawl/kinetic motion.
+  // FINAL CHORUS 02:02: force index 21 onto the dedicated magaling scene
+  // so its word-by-word bob/bounce logic actually runs.
+  if(i===21) return 'magaling-kinetic';
+  if(i===20) return 'scattered';
   const scenes=[
     'fly','slit','kailan-flight','wind','zoom','squiggle','clock','magaling-kinetic',
     'fly','question','pupuntahan','malayo-echo','pati-kinetic','ulam-kinetic','pahirapan-beat','ako-tatay-syllable','kasi-grand-stack',
@@ -4127,7 +4427,7 @@ function buildBibigayStack(text){
 function buildClock(text){
   const nums=Array.from({length:12},(_,j)=>`<span class="clock-number" style="--n:${j}">${j===0?12:j}</span>`).join('');
   const ticks=Array.from({length:60},(_,j)=>`<i class="clock-tick ${j%5===0?'major':''}" data-tick="${j}"></i>`).join('');
-  const lyric=(text==='Bibigay ko nang buo ang oras ko') ? buildBibigayStack(text) : buildWords(text);
+  const lyric=(text==='Bibigay ko nang buo ang [redacted]' || text==='Bibigay ko nang buo ang oras ko') ? buildBibigayStack(text) : buildWords(text);
   const sparks=Array.from({length:42},(_,i)=>{
     const angle=i*2.399963;
     const radius=34+(i%7)*7;
@@ -4143,7 +4443,7 @@ function buildClock(text){
     const color=i%7===0?'#f8f0e6':'#ffb38a';
     return `<span class="clock-spark" style="--sx:${x}%;--sy:${y}%;--ss:${size}px;--so:${opacity};--dx:${dx}px;--dy:${dy}px;--sd:${dur}s;--sdelay:${delay}s;--sr:${rot}deg;--sc:${color}">✦</span>`;
   }).join('');
-  return `<div class="clock-wrap"><div class="clock-face"><div class="clock-hands"><i class="clock-hand hour"></i><i class="clock-hand minute"></i><i class="clock-hand second"></i><i class="clock-center"></i></div></div><div id="clockSparkField" aria-hidden="true">${sparks}</div><div class="clock-number-burst-layer" aria-hidden="true"></div><div class="clock-lyric ${text === "Bibigay ko nang buo ang oras ko" ? "bibigay-static" : ""}">${lyric}</div></div>`;
+  return `<div class="clock-wrap"><div class="clock-face"><div class="clock-hands"><i class="clock-hand hour"></i><i class="clock-hand minute"></i><i class="clock-hand second"></i><i class="clock-center"></i></div></div><div id="clockSparkField" aria-hidden="true">${sparks}</div><div class="clock-number-burst-layer" aria-hidden="true"></div><div class="clock-lyric ${text === "Bibigay ko nang buo ang [redacted]" ? "bibigay-static" : ""}">${lyric}</div></div>`;
 }
 
 function layoutClock(){
@@ -4269,6 +4569,7 @@ function activate(i){
              scene==='magaling-kinetic'?buildMagalingStackLine(item.text):
              scene==='gustong-stack'?buildGustongStackLine(item.text):
              scene==='pwede-typing'?buildPwedeTypingLine(item.text):
+             (scene==='linyahan-sparkle' && i===19)?buildFinalLinyahanLine(item.text):
              (scene==='slit' && i===1)?buildParangStackLine(item.text):
              buildWords(item.text);
   let el;
@@ -4297,6 +4598,8 @@ function activate(i){
     el.innerHTML=body;
   }
 
+  if(i===19) el.classList.add('final-linyahan-two-line');
+
   // Keep the outgoing lyric in the stage while the new lyric enters.
   // Previously L.replaceChildren()/L.innerHTML removed the old line instantly,
   // so its exit animation could never actually be seen. The overlap below gives
@@ -4311,6 +4614,11 @@ function activate(i){
   }
 
   L.appendChild(el);
+  if(i===20){
+    el.querySelectorAll('.word').forEach(w=>{
+      w.dataset.echo=w.textContent.trim();
+    });
+  }
   if(scene==='clock') el.dataset.clockOriginIndex=String(i);
   if(i===0) el.classList.add('puso-throb');
   if(i===4){
@@ -4392,6 +4700,26 @@ function activate(i){
     el.querySelectorAll('.word').forEach((w,idx)=>{
       w.setAttribute('data-echo',w.textContent.trim());
       w.style.setProperty('--exit-x', (idx%2===0 ? '-16px' : '16px'));
+    });
+  }
+
+  /* LAST CHORUS — 02:06 "Pwede ba kitang ligawan?".
+     Give each actual lyric word its own larger, faded echo behind it. */
+  if(i===22){
+    el.classList.add('last-chorus-word-echo');
+    el.querySelectorAll('.word').forEach((w,idx)=>{
+      w.setAttribute('data-echo',w.textContent.trim());
+      w.style.setProperty('--last-echo-delay', (idx * 70) + 'ms');
+    });
+  }
+
+  /* LAST "Oo o Hindi?" — 02:12.18. Use the exact same larger, faded
+     per-word echo treatment as the preceding last-chorus line. */
+  if(i===23){
+    el.classList.add('last-chorus-word-echo');
+    el.querySelectorAll('.word').forEach((w,idx)=>{
+      w.setAttribute('data-echo',w.textContent.trim());
+      w.style.setProperty('--last-echo-delay', (idx * 70) + 'ms');
     });
   }
 
@@ -5791,9 +6119,9 @@ function spawnHeartPop(wordIndex, cls, count=20){
     const h=document.createElement('span');
     h.className='puso-heart '+cls;
     h.textContent='♥';
-    const angle=(Math.PI*2/count)*i + (Math.random()-.5)*.55;
-    const distance=55 + Math.random()*190;
-    const size=8 + Math.random()*24;
+    const angle=(Math.PI*2/count)*i + (Math.random()-.5)*.72;
+    const distance=70 + Math.random()*270;
+    const size=12 + Math.random()*34;
     h.style.setProperty('--size',size+'px');
     h.style.setProperty('--dx',(Math.cos(angle)*distance)+'px');
     h.style.setProperty('--dy',(Math.sin(angle)*distance - 25 - Math.random()*75)+'px');
@@ -5852,7 +6180,7 @@ function spawnPusoHearts(){
     h.className='puso-heart';
     h.textContent='♥';
 
-    const angle=(Math.PI*2/count)*i + (Math.random()-.5)*.55;
+    const angle=(Math.PI*2/count)*i + (Math.random()-.5)*.72;
     const distance=70 + Math.random()*210;
     const size=8 + Math.random()*22;
 
@@ -5991,55 +6319,144 @@ function clearMissYouEchoes(){
   if(field) field.replaceChildren();
   missYouEchoCue='';
 }
+let missYouStarsActive=false;
+function clearMissYouStars(){
+  const field=document.querySelector('#missYouStarField');
+  if(field) field.replaceChildren();
+  missYouStarsActive=false;
+}
+function spawnMissYouStars(){
+  const field=document.querySelector('#missYouStarField');
+  if(!field) return;
+  field.replaceChildren();
+  missYouStarsActive=true;
+  const count=MOBILE_PERF?18:34;
+  for(let i=0;i<count;i++){
+    const e=document.createElement('span');
+    e.className='miss-you-star';
+    const angle=(Math.PI*2/count)*i + (-.20 + Math.random()*.40);
+    const radius1=55+Math.random()*130;
+    const radius2=210+Math.random()*360;
+    e.style.setProperty('--x1',(Math.cos(angle)*radius1).toFixed(1)+'px');
+    e.style.setProperty('--y1',(Math.sin(angle)*radius1*.72).toFixed(1)+'px');
+    e.style.setProperty('--x2',(Math.cos(angle)*radius2).toFixed(1)+'px');
+    e.style.setProperty('--y2',(Math.sin(angle)*radius2*.72).toFixed(1)+'px');
+    e.style.setProperty('--ss',(1.8+Math.random()*3.2).toFixed(1)+'px');
+    e.style.setProperty('--delay',(i*.018+Math.random()*.08).toFixed(3)+'s');
+    e.style.setProperty('--life',(0.72+Math.random()*.34).toFixed(2)+'s');
+    e.style.setProperty('--twinkle',(1.2+Math.random()*1.8).toFixed(2)+'s');
+    e.style.setProperty('--twinkle-delay',(0.9+Math.random()*1.2).toFixed(2)+'s');
+    field.appendChild(e);
+  }
+}
+
 function spawnMissYouEchoes(){
   const field=document.querySelector('#missYouEchoField');
   if(!field) return;
   field.replaceChildren();
   missYouEchoCue='miss-you';
 
-  const bursts=MOBILE_PERF?7:11;
-  const words=['I','miss','you'];
-  for(let b=0;b<bursts;b++){
-    const delay=(b*.055 + Math.random()*.04).toFixed(3)+'s';
-    words.forEach((word,w)=>{
-      const e=document.createElement('div');
-      e.className='miss-you-burst-word';
-      e.textContent=word;
-      // Every word in a burst launches at the same moment, but each takes its own random direction.
-      const angle=Math.random()*Math.PI*2;
-      const radius=260+Math.random()*430;
-      const dx=Math.cos(angle)*radius;
-      const dy=Math.sin(angle)*radius*.72;
-      e.style.setProperty('--dx',dx.toFixed(1)+'px');
-      e.style.setProperty('--dy',dy.toFixed(1)+'px');
-      e.style.setProperty('--rot',(-9+Math.random()*18).toFixed(2)+'deg');
-      e.style.setProperty('--spin',(-18+Math.random()*36).toFixed(2)+'deg');
-      e.style.setProperty('--alpha',(Math.random()<0.18 ? (0.28+Math.random()*0.14) : (0.06+Math.random()*0.09)).toFixed(3));
-      e.style.setProperty('--delay',delay);
-      e.style.fontSize=(40+Math.random()*34)+'px';
-      field.appendChild(e);
-    });
+  const count=MOBILE_PERF?9:16;
 
-    // Sparkles explode from the shared center at the exact same time as the words.
-    const sparkleCount=MOBILE_PERF?3:5;
-    for(let j=0;j<sparkleCount;j++){
-      const sp=document.createElement('div');
-      sp.className='miss-you-sparkle';
-      const a=Math.random()*Math.PI*2;
-      const r=18+Math.random()*42;
-      const r2=85+Math.random()*120;
-       const r3=130+Math.random()*150;
-      sp.style.setProperty('--sx',(Math.cos(a)*r).toFixed(1)+'px');
-      sp.style.setProperty('--sy',(Math.sin(a)*r).toFixed(1)+'px');
-      sp.style.setProperty('--sx2',(Math.cos(a)*r2).toFixed(1)+'px');
-      sp.style.setProperty('--sy2',(Math.sin(a)*r2).toFixed(1)+'px');
-       sp.style.setProperty('--sx3',(Math.cos(a)*r3).toFixed(1)+'px');
-       sp.style.setProperty('--sy3',(Math.sin(a)*r3).toFixed(1)+'px');
-      sp.style.setProperty('--delay',delay);
-      sp.style.setProperty('--sa',(Math.random()<0.16 ? (0.55+Math.random()*0.30) : (0.12+Math.random()*0.20)).toFixed(3));
-      field.appendChild(sp);
-    }
+  // Small background sparkle specks burst with the same radial timing.
+  // They stay behind the I/miss/you fragments and remain deliberately subtle.
+  const sparkleCount=MOBILE_PERF?12:26;
+  for(let i=0;i<sparkleCount;i++){
+    const e=document.createElement('span');
+    e.className='miss-you-spark';
+    const angle=Math.random()*Math.PI*2;
+    const radius1=45+Math.random()*125;
+    const radius2=190+Math.random()*360;
+    e.style.setProperty('--x1',(Math.cos(angle)*radius1).toFixed(1)+'px');
+    e.style.setProperty('--y1',(Math.sin(angle)*radius1*.72).toFixed(1)+'px');
+    e.style.setProperty('--x2',(Math.cos(angle)*radius2).toFixed(1)+'px');
+    e.style.setProperty('--y2',(Math.sin(angle)*radius2*.72).toFixed(1)+'px');
+    e.style.setProperty('--alpha',(0.10+Math.random()*0.12).toFixed(3));
+    e.style.setProperty('--delay',(Math.random()*.08).toFixed(3)+'s');
+    e.style.setProperty('--ss',(1.5+Math.random()*3.0).toFixed(1)+'px');
+    field.appendChild(e);
   }
+
+  for(let i=0;i<count;i++){
+    const e=document.createElement('div');
+    e.className='miss-you-stack-word';
+    for(let sp=0;sp<2;sp++){
+      const sparkle=document.createElement('span');
+      sparkle.className='miss-you-sparkle';
+      const sa=(0.32+Math.random()*0.28);
+      sparkle.style.setProperty('--ss',(2+Math.random()*4)+'px');
+      sparkle.style.setProperty('--sx',((Math.random()-.5)*180)+'px');
+      sparkle.style.setProperty('--sy',((Math.random()-.5)*120)+'px');
+      sparkle.style.setProperty('--sx2',((Math.random()-.5)*520)+'px');
+      sparkle.style.setProperty('--sy2',((Math.random()-.5)*380)+'px');
+      sparkle.style.setProperty('--sa',sa.toFixed(2));
+      sparkle.style.setProperty('--delay',(i*0.035+Math.random()*.08)+'s');
+      field.appendChild(sparkle);
+    }
+    const missFragments=['I','miss','you'];
+    e.textContent=missFragments[Math.floor(Math.random()*missFragments.length)];
+
+    const angle=(Math.PI*2/count)*i + (-.20 + Math.random()*.40);
+    const radius1=95 + Math.random()*150;
+    const radius2=260 + Math.random()*390;
+    const x1=Math.cos(angle)*radius1;
+    const y1=Math.sin(angle)*radius1*.72;
+    const x2=Math.cos(angle)*radius2;
+    const y2=Math.sin(angle)*radius2*.72;
+
+    e.style.setProperty('--x1',x1.toFixed(1)+'px');
+    e.style.setProperty('--y1',y1.toFixed(1)+'px');
+    e.style.setProperty('--x2',x2.toFixed(1)+'px');
+    e.style.setProperty('--y2',y2.toFixed(1)+'px');
+    e.style.setProperty('--rot',(-7+Math.random()*14).toFixed(2)+'deg');
+    e.style.setProperty('--spin',(-4+Math.random()*8).toFixed(2)+'deg');
+    e.style.setProperty('--spin2',(-10+Math.random()*20).toFixed(2)+'deg');
+    e.style.setProperty('--alpha',(0.10+Math.random()*0.10).toFixed(3));
+    e.style.setProperty('--delay',(i*0.035+Math.random()*.10).toFixed(3)+'s');
+    e.style.fontSize=(42+Math.random()*34)+'px';
+
+    field.appendChild(e);
+  }
+}
+
+let finalHindiHeartPopShown=false;
+function clearFinalHindiHeartPop(){
+  const field=document.querySelector('#heartField');
+  if(field) field.querySelectorAll('.final-hindi-heart').forEach(h=>h.remove());
+  finalHindiHeartPopShown=false;
+}
+function spawnFinalHindiHeartPop(){
+  if(finalHindiHeartPopShown) return;
+  const field=document.querySelector('#heartField');
+  // Anchor the burst to the actual "Oo" word, just like the first-line heart pop
+  // is anchored to its lyric word. The burst itself is triggered when "hindi" enters.
+  const anchor=document.querySelector('.line.active[data-index="23"] .word[data-word-index="0"]');
+  if(!field || !anchor) return;
+  finalHindiHeartPopShown=true;
+  const fr=field.getBoundingClientRect();
+  const ar=anchor.getBoundingClientRect();
+  const ox=ar.left+ar.width/2-fr.left;
+  const oy=ar.top+ar.height/2-fr.top;
+  const count=42;
+  for(let i=0;i<count;i++){
+    const h=document.createElement('span');
+    h.className='puso-heart final-hindi-heart';
+    h.textContent='♥';
+    const angle=(Math.PI*2/count)*i + (Math.random()-.5)*.72;
+    const distance=70 + Math.random()*270;
+    const size=12 + Math.random()*34;
+    h.style.setProperty('--size',size+'px');
+    h.style.setProperty('--dx',(Math.cos(angle)*distance)+'px');
+    h.style.setProperty('--dy',(Math.sin(angle)*distance - 25 - Math.random()*75)+'px');
+    h.style.setProperty('--rot',(-35+Math.random()*70)+'deg');
+    h.style.setProperty('--life',(1.05+Math.random()*.65)+'s');
+    h.style.left=ox+'px';
+    h.style.top=oy+'px';
+    h.style.animationDelay=(Math.random()*.08)+'s';
+    h.style.color=`hsl(${5+Math.random()*35}, ${65+Math.random()*25}%, ${65+Math.random()*20}%)`;
+    field.appendChild(h);
+  }
+  setTimeout(clearFinalHindiHeartPop,1550);
 }
 
 function render(){
@@ -6060,11 +6477,17 @@ function render(){
     clearGreetingEchoes();
   }
 
-  // Background echoes for the "I miss you" cue.
+  // "I miss you" fragments burst first; their sparkles resolve into stars.
+  // The stars are then carried into the following lyric as its background.
   if(t>=115.628 && t<117.091){
     if(missYouEchoCue!=='miss-you') spawnMissYouEchoes();
-  }else if(missYouEchoCue){
-    clearMissYouEchoes();
+    if(!missYouStarsActive) spawnMissYouStars();
+  }else if(t>=117.091 && t<121.30){
+    if(missYouEchoCue) clearMissYouEchoes();
+    if(!missYouStarsActive) spawnMissYouStars();
+  }else{
+    if(missYouEchoCue) clearMissYouEchoes();
+    if(missYouStarsActive) clearMissYouStars();
   }
 
   // Transition-only cleanup. These fields used to be cleared every animation
@@ -6095,17 +6518,21 @@ function render(){
   }
 
   // Time-locked visual effects:
-  // PUSO burst only during the PUSO cue (11.680s–12.430s).
-  if(t>=11.680 && t<15.85){
-    // Keep the soft background hearts alive and moving through the whole line.
+  // PUSO burst only during the original PUSO scene.
+  // The same soft heart background is also carried into the final
+  // "Oo o hindi?" line without changing the existing final heart pop.
+  const finalOoHeartBackground=(i===23 && t>=132.18 && t<135.10);
+  if((t>=11.680 && t<15.85) || finalOoHeartBackground){
+    // Keep the exact same soft background-heart treatment alive through the line.
     spawnPusoBackground();
-    // The "puso" hearts stay visible until the "mo?" cue.
-    if(t<12.430 && !pusoBurstActive) spawnPusoHearts();
-    // The first heart pop follows the original "puso" cue, then "mo?" gets its own pop.
-    if(t>=12.430 && !moBurstActive) spawnMoHearts();
-    // Second wave: a renewed "puso" burst at 00:14, followed by another "mo?" burst.
-    if(t>=14.000 && !pusoSecondBurstActive) spawnPusoSecondHearts();
-    if(t>=14.700 && !moSecondBurstActive) spawnMoSecondHearts();
+
+    // The original first-line heart bursts remain unchanged.
+    if(t>=11.680 && t<15.85){
+      if(t<12.430 && !pusoBurstActive) spawnPusoHearts();
+      if(t>=12.430 && !moBurstActive) spawnMoHearts();
+      if(t>=14.000 && !pusoSecondBurstActive) spawnPusoSecondHearts();
+      if(t>=14.700 && !moSecondBurstActive) spawnMoSecondHearts();
+    }
   }else{
     if(pusoBurstActive) clearPusoHearts();
     if(moBurstActive) clearMoHearts();
@@ -6189,6 +6616,14 @@ function render(){
   }
 
   updateWords(t);
+
+  // Final "Oo o hindi?" — pop the hearts exactly when "hindi" enters (133.00s).
+  if(i===23 && t>=133.00){
+    spawnFinalHindiHeartPop();
+  }else if(i!==23){
+    clearFinalHindiHeartPop();
+  }
+
   updateMotion(t);
   if(current===4){
     const qf=document.getElementById('questionChaos');
@@ -6880,5 +7315,494 @@ render();
   }
 }
 </style>
+
+<script id="final-ko-visibility-fix">
+/* Final "ko" on the 01:57 Bibigay line: exact cue 2:00.956. */
+(function(){
+  const originalUpdateWords = window.updateWords;
+  if(typeof originalUpdateWords !== 'function') return;
+  window.updateWords = function(t){
+    originalUpdateWords(t);
+    const el = document.querySelector('.line.active[data-index="20"]');
+    if(!el) return;
+    const ko = el.querySelector('.word[data-word-index="6"]');
+    if(!ko) return;
+    const show = t >= 120.956;
+    ko.classList.toggle('visible', show);
+    ko.style.visibility = 'visible';
+    if(show) ko.style.opacity = '1';
+  };
+})();
+</script>
 </body>
+
+<style id="last-ko-hard-fix">
+/* Hard guarantee for the final "ko" cue at 2:00.956. Keep it comfortably inside the frame. */
+.line.scene-scattered .word[data-word-index="6"]{
+  left:72% !important;
+  top:72% !important;
+  z-index:20 !important;
+  display:inline-block !important;
+}
+.line.scene-scattered .word[data-word-index="6"]:not(.visible){
+  opacity:0 !important;
+  visibility:hidden !important;
+}
+.line.scene-scattered .word[data-word-index="6"].visible{
+  opacity:1 !important;
+  visibility:visible !important;
+}
+</style>
+<script id="last-ko-hard-fix-script">
+(function(){
+  function forceLastKo(){
+    const audio=document.querySelector('#audio');
+    const line=document.querySelector('.line.active[data-index="20"]');
+    if(!audio || !line) return;
+    const ko=line.querySelector('.word[data-word-index="6"]');
+    if(!ko) return;
+    const show=audio.currentTime >= 120.956 && audio.currentTime < 121.30;
+    ko.classList.toggle('visible',show);
+    ko.style.display='inline-block';
+    ko.style.visibility=show?'visible':'hidden';
+    ko.style.opacity=show?'1':'0';
+  }
+  function tick(){ forceLastKo(); requestAnimationFrame(tick); }
+  requestAnimationFrame(tick);
+})();
+</script>
+
+
+<style id="last-chorus-word-echo">
+/* 02:06 + 02:12 — FINAL CHORUS WORD ECHO.
+   Both final lines use the exact same larger, faded copy behind each word.
+   Keep the echo inside each word's own stacking context so it cannot fall
+   behind the entire lyric line. */
+.line.last-chorus-word-echo .word{
+  position:relative;
+  z-index:1;
+  isolation:isolate;
+  overflow:visible;
+}
+.line.last-chorus-word-echo .word::before,
+.line.last-chorus-word-echo .word::after{
+  content:attr(data-echo);
+  position:absolute;
+  left:50%;
+  top:50%;
+  z-index:-1;
+  display:block;
+  white-space:nowrap;
+  font-family:inherit;
+  font-size:inherit;
+  font-weight:inherit;
+  letter-spacing:inherit;
+  line-height:inherit;
+  color:#f8f0e6;
+  pointer-events:none;
+  transform-origin:center;
+}
+.line.last-chorus-word-echo .word::before{
+  opacity:.20;
+  filter:blur(1.8px);
+  transform:translate(-50%,-50%) scale(1.55);
+}
+.line.last-chorus-word-echo .word::after{
+  opacity:.095;
+  filter:blur(3.8px);
+  transform:translate(-50%,-50%) scale(1.95);
+}
+.line.last-chorus-word-echo .word.current::before{
+  color:var(--accent);
+  opacity:.28;
+}
+.line.last-chorus-word-echo .word.current::after{
+  color:var(--accent);
+  opacity:.13;
+}
+
+/* Preserve the original diagonal strike on "hindi" even when the final
+   word-echo effect uses ::before/::after for its faded copies. */
+.line.scene-question .word.deny .deny-strike{
+  position:absolute;
+  left:-.08em;
+  right:-.08em;
+  top:51%;
+  height:.085em;
+  background:var(--accent);
+  transform:rotate(-7deg) scaleX(0);
+  transform-origin:left center;
+  box-shadow:0 0 10px #ffb38a66;
+  pointer-events:none;
+  z-index:3;
+}
+.line.scene-question .word.deny.crossed .deny-strike{
+  transform:rotate(-7deg) scaleX(1);
+  transition:transform .55s cubic-bezier(.15,1.2,.3,1);
+}
+.line.last-chorus-word-echo .word.deny.crossed::after{
+  content:none;
+}
+
+/* FINAL 02:12 — larger, fuller heart burst anchored to "Oo", triggered when "hindi" enters. */
+.final-hindi-heart{
+  position:absolute;
+  left:0;
+  top:0;
+  color:#ffb38a;
+  font-size:var(--size);
+  line-height:1;
+  opacity:0;
+  pointer-events:none;
+  text-shadow:0 0 14px #ffb38a88;
+  transform:translate(-50%,-50%) scale(.15);
+  animation:finalHindiHeartPop .82s cubic-bezier(.15,1.2,.3,1) forwards;
+}
+@keyframes finalHindiHeartPop{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.08) rotate(var(--rot));}
+  10%{opacity:1;transform:translate(-50%,-50%) scale(1.65) rotate(var(--rot));}
+  24%{opacity:1;transform:translate(calc(-50% + var(--dx)*.22),calc(-50% + var(--dy)*.22)) scale(1.25) rotate(var(--rot));}
+  48%{opacity:.98;transform:translate(calc(-50% + var(--dx)*.52),calc(-50% + var(--dy)*.52)) scale(1.02) rotate(calc(var(--rot) + 5deg));}
+  100%{opacity:0;transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(.35) rotate(calc(var(--rot) + 12deg));}
+}
+</style>
+
 </html>
+
+<style id="bibigay-scattered-final">
+/* 01:57 — BIBIGAY: bold Poppins, large scattered words, repeated echoes,
+   with an energetic bounce-in followed by a gentle continuous bob. */
+.line.scene-scattered{
+  width:100%;
+  height:100%;
+  max-width:none;
+  display:block;
+  overflow:visible;
+}
+
+.line.scene-scattered .word{
+  position:absolute;
+  margin:0;
+  white-space:nowrap;
+  opacity:0;
+  transform-origin:center center;
+  animation:none!important;
+  filter:none;
+  font-family:'Poppins',sans-serif!important;
+  font-weight:700!important;
+  letter-spacing:-.025em;
+  isolation:isolate;
+}
+
+/* Scattered positions — [redacted] is intentionally the largest and centered. */
+.line.scene-scattered .word[data-word-index="0"]{left:10%;top:18%;font-size:1.45em;--tilt:-7deg}
+.line.scene-scattered .word[data-word-index="1"]{left:68%;top:12%;font-size:1.25em;--tilt:5deg}
+.line.scene-scattered .word[data-word-index="2"]{left:23%;top:42%;font-size:1.38em;--tilt:-3deg}
+.line.scene-scattered .word[data-word-index="3"]{left:72%;top:38%;font-size:1.55em;--tilt:7deg}
+.line.scene-scattered .word[data-word-index="4"]{left:12%;top:70%;font-size:1.30em;--tilt:4deg}
+.line.scene-scattered .word[data-word-index="5"]{
+  left:50%;
+  top:50%;
+  font-size:clamp(3.2rem,8.5vw,7.5rem);
+  --tilt:0deg;
+  transform:translate(-50%,-50%);
+  z-index:5;
+}
+.line.scene-scattered .word[data-word-index="6"]{left:80%;top:67%;font-size:1.38em;--tilt:3deg}.line.scene-scattered .word[data-word-index="6"]{
+  left:80%;
+  top:67%;
+  font-size:1.55em;
+  --tilt:3deg;
+  z-index:6;
+  display:inline-block;
+  opacity:0;
+  visibility:visible;
+}
+
+/* Repeated word echoes: behind the real word, offset like a soft trail. */
+.line.scene-scattered .word::before,
+.line.scene-scattered .word::after{
+  content:attr(data-echo);
+  position:absolute;
+  left:0;
+  top:0;
+  z-index:-1;
+  pointer-events:none;
+  white-space:nowrap;
+  font:inherit;
+  color:#ffb38a;
+  opacity:0;
+  -webkit-text-stroke:0;
+  text-shadow:none;
+}
+.line.scene-scattered .word::before{
+  transform:translate(-.16em,.13em) scale(.98);
+  filter:blur(1.5px);
+}
+.line.scene-scattered .word::after{
+  transform:translate(-.30em,.25em) scale(.96);
+  filter:blur(3px);
+}
+.line.scene-scattered .word.visible::before{opacity:.26}
+.line.scene-scattered .word.visible::after{opacity:.13}
+.line.scene-scattered .word.current::before{opacity:.42}
+.line.scene-scattered .word.current::after{opacity:.22}
+
+/* Every word: bounce into place, then keep gently bobbing. */
+.line.scene-scattered .word.visible{
+  opacity:1;
+  animation:
+    scatteredWordIn .58s cubic-bezier(.16,1.28,.24,1) both,
+    scatteredBob 1.65s ease-in-out .58s infinite!important;
+}
+.line.scene-scattered .word.current{
+  color:var(--accent);
+  text-shadow:0 0 20px #ffb38a42;
+}
+
+/* Keep the centered [redacted] centered while it bounces/bobs. */
+.line.scene-scattered .word[data-word-index="5"].visible{
+  animation:
+    scatteredCenterIn .68s cubic-bezier(.15,1.28,.22,1) both,
+    scatteredCenterBob 1.45s ease-in-out .68s infinite!important;
+}
+
+@keyframes scatteredWordIn{
+  0%{opacity:0;transform:translateY(.55em) scale(.45) rotate(calc(var(--tilt,0deg) - 12deg));filter:blur(7px)}
+  48%{opacity:1;transform:translateY(-.13em) scale(1.16) rotate(calc(var(--tilt,0deg) + 5deg));filter:blur(0)}
+  70%{transform:translateY(.06em) scale(.94) rotate(calc(var(--tilt,0deg) - 2deg))}
+  100%{opacity:1;transform:translateY(0) scale(1) rotate(var(--tilt,0deg))}
+}
+@keyframes scatteredBob{
+  0%,100%{transform:translateY(0) rotate(var(--tilt,0deg))}
+  25%{transform:translateY(-.13em) rotate(calc(var(--tilt,0deg) + 1deg))}
+  50%{transform:translateY(.04em) rotate(calc(var(--tilt,0deg) - 1deg))}
+  75%{transform:translateY(-.08em) rotate(calc(var(--tilt,0deg) + .5deg))}
+}
+@keyframes scatteredCenterIn{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.45);filter:blur(8px)}
+  48%{opacity:1;transform:translate(-50%,-50%) scale(1.14);filter:blur(0)}
+  70%{transform:translate(-50%,-50%) scale(.95)}
+  100%{opacity:1;transform:translate(-50%,-50%) scale(1)}
+}
+@keyframes scatteredCenterBob{
+  0%,100%{transform:translate(-50%,-50%) scale(1)}
+  25%{transform:translate(-50%,calc(-50% - .10em)) scale(1.025)}
+  50%{transform:translate(-50%,calc(-50% + .035em)) scale(.99)}
+  75%{transform:translate(-50%,calc(-50% - .065em)) scale(1.015)}
+}
+
+@media(max-width:600px){
+  .line.scene-scattered .word[data-word-index="0"]{left:5%;top:18%}
+  .line.scene-scattered .word[data-word-index="1"]{left:62%;top:12%}
+  .line.scene-scattered .word[data-word-index="2"]{left:17%;top:42%}
+  .line.scene-scattered .word[data-word-index="3"]{left:58%;top:38%}
+  .line.scene-scattered .word[data-word-index="4"]{left:6%;top:70%}
+  .line.scene-scattered .word[data-word-index="5"]{left:50%;top:50%;font-size:clamp(2.8rem,11vw,5rem)}
+  .line.scene-scattered .word[data-word-index="6"]{left:76%;top:67%}
+}
+</style>
+
+<style id="mobile-centering-fix">
+/* MOBILE LAYOUT FIX
+   Keeps the desktop animation language, but makes the actual lyric stage
+   responsive to narrow/tall phone viewports. */
+@media (max-width: 600px) {
+  html, body, #app {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    height: 100%;
+    height: 100dvh;
+    overflow: hidden;
+  }
+
+  #app {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100dvh;
+  }
+
+  #stage {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+  }
+
+  .lyric {
+    position: relative;
+    width: min(92vw, 560px);
+    max-width: 92vw;
+    height: min(48dvh, 430px);
+    max-height: 48dvh;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .line {
+    left: 50%;
+    top: 50%;
+    width: min(92vw, 560px);
+    max-width: 92vw;
+    margin: 0;
+    transform: translate(-50%, -50%) translateY(25px) scale(.965);
+    transform-origin: center center;
+    text-align: center;
+  }
+
+  .line.active {
+    transform: translate(-50%, -50%) translateY(0) scale(1);
+  }
+
+  .line.out {
+    transform: translate(-50%, -50%) translateY(-35px) scale(1.035);
+  }
+
+  /* Prevent long single-line scenes from being pushed outside the phone. */
+  .line.verse { font-size: clamp(25px, 7.2vw, 42px); }
+  .line.soft { font-size: clamp(23px, 6.7vw, 38px); }
+  .line.chorus { font-size: clamp(39px, 12.5vw, 76px); }
+  .line.big { font-size: clamp(46px, 15vw, 92px); }
+
+  .line .word {
+    max-width: 100%;
+  }
+
+  /* Flexible scenes can wrap on phones rather than clipping horizontally. */
+  .line.scene-fly,
+  .line.scene-flip,
+  .line.scene-rubber,
+  .line.motion {
+    width: 92vw !important;
+    max-width: 92vw !important;
+    white-space: normal;
+  }
+
+  .line.scene-fly,
+  .line.scene-flip,
+  .line.scene-rubber {
+    flex-wrap: wrap;
+  }
+
+  .line.scene-crawl {
+    width: 92vw !important;
+    max-width: 92vw !important;
+    height: min(46dvh, 390px) !important;
+  }
+
+  .line.scene-orbit {
+    width: 92vw !important;
+    max-width: 92vw !important;
+  }
+
+  .clock-wrap {
+    width: 92vw;
+    max-width: 92vw;
+    height: min(48dvh, 420px);
+  }
+
+  .clock-face {
+    width: min(62vw, 280px);
+    height: min(62vw, 280px);
+  }
+
+  /* Keep controls inside the safe bottom area. */
+  #controls {
+    left: max(14px, 5vw);
+    right: max(14px, 5vw);
+    bottom: max(14px, env(safe-area-inset-bottom, 0px));
+  }
+
+  #hint {
+    bottom: calc(max(14px, env(safe-area-inset-bottom, 0px)) + 72px);
+    width: 90vw;
+  }
+
+  #top {
+    left: max(14px, 5vw);
+    right: max(14px, 5vw);
+    top: max(14px, env(safe-area-inset-top, 0px));
+  }
+
+  #section {
+    right: max(12px, 5vw);
+  }
+
+  /* Decorative fields may extend beyond the phone, but must not create
+     horizontal page overflow or shift the lyric itself. */
+  #questionChaos,
+  #wordExplosionField,
+  #ooExplosion,
+  #heartField,
+  #greetingEchoField,
+  #missYouEchoField,
+  #missYouStarField,
+  #backgroundBanat,
+  #echoes,
+  #huge57Explosion,
+  #siteSparkField,
+  #sabiEchoField,
+  #oSaKanyaEchoField {
+    max-width: 100vw;
+  }
+
+  /* Explicitly center common two-row lyric stacks. */
+  .pwede-typing-scene,
+  .final-linyahan-two-line,
+  .scene-linyahan-sparkle,
+  .first-linyahan-vertical,
+  .scene-bibigay-stack,
+  .scene-magaling-kinetic {
+    margin-left: auto !important;
+    margin-right: auto !important;
+    left: 50%;
+    transform: translate(-50%, -50%) !important;
+  }
+
+  .pwede-typing-scene .pwede-typing-row,
+  .final-linyahan-row {
+    max-width: 92vw;
+    justify-content: center;
+  }
+
+  /* The two-line scenes should wrap naturally when a phone is too narrow. */
+  .pwede-typing-scene .pwede-typing-row,
+  .final-linyahan-row {
+    white-space: normal;
+    flex-wrap: wrap;
+  }
+
+  /* Keep intentionally oversized decorative typography from determining
+     the width of its parent. */
+  .line [style*="position:absolute"] {
+    max-width: none;
+  }
+}
+
+/* Extra-small phones: reduce typography before it reaches the screen edge. */
+@media (max-width: 380px) {
+  .lyric {
+    width: 94vw;
+    max-width: 94vw;
+  }
+
+  .line {
+    width: 94vw;
+    max-width: 94vw;
+  }
+
+  .line.verse { font-size: clamp(23px, 6.8vw, 35px); }
+  .line.soft { font-size: clamp(21px, 6.2vw, 33px); }
+  .line.chorus { font-size: clamp(34px, 11.5vw, 62px); }
+  .line.big { font-size: clamp(40px, 14vw, 76px); }
+}
+</style>
+
