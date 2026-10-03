@@ -7603,206 +7603,277 @@ render();
 }
 </style>
 
-<style id="mobile-centering-fix">
-/* MOBILE LAYOUT FIX
-   Keeps the desktop animation language, but makes the actual lyric stage
-   responsive to narrow/tall phone viewports. */
-@media (max-width: 600px) {
-  html, body, #app {
-    width: 100%;
-    min-width: 0;
-    max-width: 100%;
-    height: 100%;
-    height: 100dvh;
-    overflow: hidden;
+<style id="mobile-centering-fix-v2">
+/*
+  MOBILE V2
+  Do NOT replace the transform on .line: the animation system uses transform
+  for entrances/bobs. Instead, center absolute lyric boxes horizontally with
+  left/right + auto margins. This leaves every existing animation transform
+  untouched.
+*/
+@media (max-width:600px){
+
+  html,body{
+    width:100%;
+    max-width:100%;
+    min-width:0;
+    height:100%;
+    height:100dvh;
+    overflow:hidden;
   }
 
-  #app {
-    position: fixed;
-    inset: 0;
-    width: 100%;
-    height: 100dvh;
+  #app{
+    position:fixed;
+    inset:0;
+    width:100%;
+    height:100dvh;
+    max-width:100vw;
+    overflow:hidden;
   }
 
-  #stage {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    padding: 0;
-    display: grid;
-    place-items: center;
-    overflow: hidden;
+  #stage{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    padding:0;
+    display:grid;
+    place-items:center;
+    overflow:hidden;
   }
 
-  .lyric {
-    position: relative;
-    width: min(92vw, 560px);
-    max-width: 92vw;
-    height: min(48dvh, 430px);
-    max-height: 48dvh;
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  #stage > .lyric{
+    position:relative;
+    width:100%;
+    max-width:100vw;
+    height:min(48dvh,430px);
+    max-height:48dvh;
+    margin:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:visible;
   }
 
-  .line {
-    left: 50%;
-    top: 50%;
-    width: min(92vw, 560px);
-    max-width: 92vw;
-    margin: 0;
-    transform: translate(-50%, -50%) translateY(25px) scale(.965);
-    transform-origin: center center;
-    text-align: center;
+  /*
+    The original .line elements are absolute. On desktop their static
+    position happens to land correctly inside the flex container, but on
+    mobile some scene-specific widths/positioning make that unreliable.
+    Horizontal centering here is independent of transform animations.
+  */
+  #lyric > .line:not(.scene-clock){
+    left:0 !important;
+    right:0 !important;
+    margin-left:auto !important;
+    margin-right:auto !important;
+    box-sizing:border-box;
   }
 
-  .line.active {
-    transform: translate(-50%, -50%) translateY(0) scale(1);
+  /* Keep the clock's deliberately full-stage geometry untouched. */
+  #lyric > .line.scene-clock{
+    left:0 !important;
+    right:0 !important;
+    width:100% !important;
+    max-width:none !important;
+    margin-left:0 !important;
+    margin-right:0 !important;
   }
 
-  .line.out {
-    transform: translate(-50%, -50%) translateY(-35px) scale(1.035);
+  /* Main generic lyric widths */
+  #lyric > .line.verse{
+    width:min(88vw,560px);
+    max-width:88vw;
+    font-size:clamp(25px,7.2vw,42px);
   }
 
-  /* Prevent long single-line scenes from being pushed outside the phone. */
-  .line.verse { font-size: clamp(25px, 7.2vw, 42px); }
-  .line.soft { font-size: clamp(23px, 6.7vw, 38px); }
-  .line.chorus { font-size: clamp(39px, 12.5vw, 76px); }
-  .line.big { font-size: clamp(46px, 15vw, 92px); }
-
-  .line .word {
-    max-width: 100%;
+  #lyric > .line.soft{
+    width:min(88vw,560px);
+    max-width:88vw;
+    font-size:clamp(23px,6.7vw,38px);
   }
 
-  /* Flexible scenes can wrap on phones rather than clipping horizontally. */
+  #lyric > .line.chorus{
+    width:min(94vw,650px);
+    max-width:94vw;
+    font-size:clamp(39px,12.5vw,76px);
+  }
+
+  #lyric > .line.big{
+    width:min(94vw,680px);
+    max-width:94vw;
+    font-size:clamp(46px,15vw,92px);
+  }
+
+  /*
+    Special scenes that intentionally use absolute/flex children.
+    Their parent remains centered; their children can keep their own
+    animation coordinates.
+  */
+  #lyric > .line.scene-heart-split,
+  #lyric > .line.scene-kailan-flight,
+  #lyric > .line.scene-pupuntahan,
+  #lyric > .line.scene-scattered,
+  #lyric > .line.scene-clock,
+  #lyric > .line.pwede-typing-scene,
+  #lyric > .line.final-linyahan-two-line,
+  #lyric > .line.scene-linyahan-sparkle,
+  #lyric > .line.first-linyahan-vertical,
+  #lyric > .line.scene-bibigay-stack,
+  #lyric > .line.scene-magaling-kinetic{
+    margin-left:auto !important;
+    margin-right:auto !important;
+  }
+
+  #lyric > .line.scene-heart-split{
+    width:min(92vw,650px) !important;
+    max-width:92vw !important;
+  }
+
+  #lyric > .line.scene-kailan-flight{
+    width:min(92vw,620px) !important;
+    max-width:92vw !important;
+  }
+
+  #lyric > .line.scene-scattered{
+    width:min(92vw,620px) !important;
+    max-width:92vw !important;
+  }
+
+  #lyric > .line.pwede-typing-scene{
+    width:min(94vw,680px) !important;
+    max-width:94vw !important;
+  }
+
+  #lyric > .line.final-linyahan-two-line,
+  #lyric > .line.scene-linyahan-sparkle{
+    width:min(94vw,680px) !important;
+    max-width:94vw !important;
+  }
+
+  /*
+    These rows were explicitly nowrap in the desktop design. On a phone,
+    allow the row to wrap rather than pushing the whole lyric off-screen.
+  */
+  .pwede-typing-scene .pwede-typing-row,
+  .final-linyahan-row{
+    max-width:94vw;
+    justify-content:center;
+  }
+
+  .final-linyahan-row{
+    flex-wrap:wrap;
+    white-space:normal;
+  }
+
+  /*
+    Keep the final "Bibigay..." stack centered and scale it before it can
+    exceed the phone width.
+  */
+  .line.scene-bibigay-stack{
+    width:92vw !important;
+    max-width:92vw !important;
+  }
+
+  .line.scene-bibigay-stack .bibigay-stack{
+    max-width:92vw;
+  }
+
+  /*
+    Mobile versions of the very large scene typography.
+  */
+  .line.scene-magaling-kinetic{
+    width:94vw !important;
+    max-width:94vw !important;
+  }
+
+  .line.scene-magaling-kinetic .word{
+    font-size:clamp(26px,7.4vw,44px) !important;
+    margin-left:.07em !important;
+    margin-right:.07em !important;
+  }
+
+  /*
+    Keep common centered flex scenes from acquiring a desktop-width
+    intrinsic size on narrow screens.
+  */
   .line.scene-fly,
   .line.scene-flip,
   .line.scene-rubber,
-  .line.motion {
-    width: 92vw !important;
-    max-width: 92vw !important;
-    white-space: normal;
+  .line.motion{
+    max-width:94vw;
   }
 
-  .line.scene-fly,
-  .line.scene-flip,
-  .line.scene-rubber {
-    flex-wrap: wrap;
-  }
-
-  .line.scene-crawl {
-    width: 92vw !important;
-    max-width: 92vw !important;
-    height: min(46dvh, 390px) !important;
-  }
-
-  .line.scene-orbit {
-    width: 92vw !important;
-    max-width: 92vw !important;
-  }
-
-  .clock-wrap {
-    width: 92vw;
-    max-width: 92vw;
-    height: min(48dvh, 420px);
-  }
-
-  .clock-face {
-    width: min(62vw, 280px);
-    height: min(62vw, 280px);
-  }
-
-  /* Keep controls inside the safe bottom area. */
-  #controls {
-    left: max(14px, 5vw);
-    right: max(14px, 5vw);
-    bottom: max(14px, env(safe-area-inset-bottom, 0px));
-  }
-
-  #hint {
-    bottom: calc(max(14px, env(safe-area-inset-bottom, 0px)) + 72px);
-    width: 90vw;
-  }
-
-  #top {
-    left: max(14px, 5vw);
-    right: max(14px, 5vw);
-    top: max(14px, env(safe-area-inset-top, 0px));
-  }
-
-  #section {
-    right: max(12px, 5vw);
-  }
-
-  /* Decorative fields may extend beyond the phone, but must not create
-     horizontal page overflow or shift the lyric itself. */
-  #questionChaos,
-  #wordExplosionField,
-  #ooExplosion,
-  #heartField,
+  /*
+    Decorative effects are allowed to paint outside their own scene, but
+    the page itself must never become wider than the phone viewport.
+  */
+  #backgroundBanat,
   #greetingEchoField,
   #missYouEchoField,
   #missYouStarField,
-  #backgroundBanat,
-  #echoes,
-  #huge57Explosion,
-  #siteSparkField,
   #sabiEchoField,
-  #oSaKanyaEchoField {
-    max-width: 100vw;
+  #oSaKanyaEchoField,
+  #heartField,
+  #wordExplosionField,
+  #huge57Explosion,
+  #ooExplosion,
+  #siteSparkField,
+  #echoes,
+  #questionChaos{
+    max-width:100vw;
   }
 
-  /* Explicitly center common two-row lyric stacks. */
-  .pwede-typing-scene,
-  .final-linyahan-two-line,
-  .scene-linyahan-sparkle,
-  .first-linyahan-vertical,
-  .scene-bibigay-stack,
-  .scene-magaling-kinetic {
-    margin-left: auto !important;
-    margin-right: auto !important;
-    left: 50%;
-    transform: translate(-50%, -50%) !important;
+  #top{
+    left:max(14px,5vw);
+    right:max(14px,5vw);
+    top:max(12px,env(safe-area-inset-top,0px));
   }
 
-  .pwede-typing-scene .pwede-typing-row,
-  .final-linyahan-row {
-    max-width: 92vw;
-    justify-content: center;
+  #controls{
+    left:max(14px,5vw);
+    right:max(14px,5vw);
+    bottom:max(12px,env(safe-area-inset-bottom,0px));
   }
 
-  /* The two-line scenes should wrap naturally when a phone is too narrow. */
-  .pwede-typing-scene .pwede-typing-row,
-  .final-linyahan-row {
-    white-space: normal;
-    flex-wrap: wrap;
+  #hint{
+    width:90vw;
+    left:50%;
+    bottom:calc(max(12px,env(safe-area-inset-bottom,0px)) + 70px);
   }
 
-  /* Keep intentionally oversized decorative typography from determining
-     the width of its parent. */
-  .line [style*="position:absolute"] {
-    max-width: none;
+  #section{
+    right:max(12px,5vw);
   }
 }
 
-/* Extra-small phones: reduce typography before it reaches the screen edge. */
-@media (max-width: 380px) {
-  .lyric {
-    width: 94vw;
-    max-width: 94vw;
+@media (max-width:380px){
+  #lyric > .line:not(.scene-clock){
+    max-width:94vw;
   }
 
-  .line {
-    width: 94vw;
-    max-width: 94vw;
+  #lyric > .line.verse{
+    width:92vw;
+    max-width:92vw;
+    font-size:clamp(22px,6.6vw,35px);
   }
 
-  .line.verse { font-size: clamp(23px, 6.8vw, 35px); }
-  .line.soft { font-size: clamp(21px, 6.2vw, 33px); }
-  .line.chorus { font-size: clamp(34px, 11.5vw, 62px); }
-  .line.big { font-size: clamp(40px, 14vw, 76px); }
+  #lyric > .line.soft{
+    width:92vw;
+    max-width:92vw;
+    font-size:clamp(20px,6vw,32px);
+  }
+
+  #lyric > .line.chorus{
+    width:94vw;
+    max-width:94vw;
+    font-size:clamp(33px,11vw,60px);
+  }
+
+  #lyric > .line.big{
+    width:94vw;
+    max-width:94vw;
+    font-size:clamp(38px,13.5vw,74px);
+  }
 }
 </style>
 
