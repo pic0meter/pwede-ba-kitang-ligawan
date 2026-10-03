@@ -4264,10 +4264,10 @@ function updateMotion(t){
           piece.classList.remove('gustong-piece-enter');
 
           const phase=(elapsed-.76)*7.2+rowIndex*.85+pieceIndex*.55;
-          const y=Math.sin(phase)*8.5;
-          const x=Math.sin(phase*.82+rowIndex*1.15+pieceIndex*.65)*4.5;
-          const s=1+Math.sin(phase*1.18+rowIndex+pieceIndex)*.035;
-          const r=Math.sin(phase*.92+rowIndex*.7+pieceIndex*.45)*1.15;
+          const y=Math.sin(phase)*3.5;
+          const x=Math.sin(phase*.82+rowIndex*1.15+pieceIndex*.65)*1.8;
+          const s=1+Math.sin(phase*1.18+rowIndex+pieceIndex)*.015;
+          const r=Math.sin(phase*.92+rowIndex*.7+pieceIndex*.45)*.45;
 
           piece.style.transform=
             `translate3d(${x}px,${y}px,0) scale(${s}) rotate(${r}deg)`;
@@ -5904,7 +5904,9 @@ render();
   .line.scene-ulam-kinetic .word{
     margin:0 !important;
     font-family:"Poppins",sans-serif !important;
-    font-size:clamp(27px,7.4vw,44px) !important;
+    font-size:clamp(32px,8.8vw,52px) !important;
+    letter-spacing:-.035em !important;
+    margin:0 .08em !important;
     font-weight:700 !important;
     letter-spacing:-.055em !important;
     line-height:.66 !important;
