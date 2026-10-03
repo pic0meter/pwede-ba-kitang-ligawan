@@ -3115,6 +3115,50 @@ overflow:visible;
   }
 }
 </style>
+
+<style id="ako-tatay-typography-final">
+/* Final typography: match the lighter opening-line treatment. */
+.line.scene-ako-tatay-syllable .word{
+  font-family:"Poppins",sans-serif !important;
+  font-weight:600 !important;
+  letter-spacing:-.045em !important;
+}
+.line.scene-ako-tatay-syllable .syllable-group{
+  gap:.10em !important;
+}
+/* Keep TA + TAY visually close as TATAY. */
+.line.scene-ako-tatay-syllable .syllable-group.group-break:nth-of-type(2){
+  gap:.015em !important;
+}
+.line.scene-ako-tatay-syllable .syllable-group.group-break:nth-of-type(2) .word:nth-child(3){
+  margin-left:-.07em !important;
+}
+/* Keep A + ATRAS visually close as AATRAS. */
+.line.scene-ako-tatay-syllable .syllable-group.group-break:nth-of-type(4){
+  gap:.015em !important;
+}
+.line.scene-ako-tatay-syllable .syllable-group.group-break:nth-of-type(4) .word:nth-child(2){
+  margin-left:-.10em !important;
+}
+@media(max-width:600px){
+  .line.scene-ako-tatay-syllable .word{
+    font-weight:600 !important;
+    letter-spacing:-.045em !important;
+  }
+  .line.scene-ako-tatay-syllable .syllable-group{gap:.09em !important;}
+  .line.scene-ako-tatay-syllable .syllable-group.group-break:nth-of-type(2),
+  .line.scene-ako-tatay-syllable .syllable-group.group-break:nth-of-type(4){
+    gap:0 !important;
+  }
+}
+</style>
+<style id="ulam-mobile-size-final">
+@media(max-width:600px){
+  .line.scene-ulam-kinetic .word{
+    font-size:clamp(30px,8.2vw,48px) !important;
+  }
+}
+</style>
 </head>
 <body>
 <div id="app">
@@ -4497,33 +4541,6 @@ function updateMotion(t){
 
 
   if(scene==='ako-tatay-syllable') {
-    // Happy, playful bob while preserving the four centered phrase groups.
-    // The syllables remain side-by-side inside each group; only their motion changes.
-    words.forEach((w,idx)=>{
-      const cue=item.cues?.[Number(w.dataset.cueIndex ?? idx)] ?? item.start;
-      const hasAppeared=t>=cue;
-      if(!hasAppeared){
-        w.style.opacity='0';
-        w.style.transform='translate3d(0,18px,0) scaleX(.78) scaleY(.96)';
-        w.style.filter='none';
-        return;
-      }
-      const phase=t*(6.2+idx*.18)+idx*1.15;
-      const bob=Math.sin(phase)*7 + Math.sin(phase*1.9+idx)*2.2;
-      const sway=Math.sin(phase*.72+idx)*2.2;
-      const squash=1+.018*Math.sin(phase*1.35);
-      const enter=Math.min(1,(t-cue)/.16);
-      const ease=enter*enter*(3-2*enter);
-      w.style.opacity=String(ease);
-      w.style.transform=`translate3d(${sway}px,${bob}px,0) scaleX(${.78*squash}) scaleY(${1+.018*Math.sin(phase*.9)})`;
-      w.style.filter='none';
-      w.style.color='var(--accent)';
-      w.style.zIndex='5';
-    });
-  }
-
-
-  if(scene==='ako-tatay-syllable') {
     /*
       01:29.830–01:34.912 — AKO / NG TATAY / MO HINDI / AATRAS
       Each syllable gets a stronger, independent bob/bounce. The currently
@@ -4548,29 +4565,17 @@ function updateMotion(t){
         return;
       }
 
-      const phase=t*(8.4+idx*.34)+idx*1.37;
-      // Keep the desktop bounce expressive, but use a much gentler motion on mobile
-      // so the frequent transform updates do not feel jumpy or laggy.
-      const isMobile=window.matchMedia('(max-width:600px)').matches;
-      const bob=isMobile
-        ? Math.sin(phase)*5.5 + Math.sin(phase*2.15+idx)*1.8 + Math.sin(phase*3.05+idx*.7)*.8
-        : Math.sin(phase)*16.5 + Math.sin(phase*2.15+idx)*5.2 + Math.sin(phase*3.05+idx*.7)*2.4;
-      const sway=isMobile
-        ? Math.sin(phase*.78+idx*1.1)*1.8
-        : Math.sin(phase*.78+idx*1.1)*5.0;
-      const squash=isMobile
-        ? 1+.018*Math.sin(phase*1.42)
-        : 1+.052*Math.sin(phase*1.42);
-      const stretch=isMobile
-        ? 1+.008*Math.sin(phase*1.07+idx)
-        : 1+.018*Math.sin(phase*1.07+idx);
-      const enter=Math.min(1,(t-cue)/.14);
+      const elapsed=t-cue;
+      const enter=Math.min(1,elapsed/.22);
       const ease=enter*enter*(3-2*enter);
+      // One clean pop only: no bob, sway, squash, stretch, or rotation.
+      const pop=enter<1
+        ? (elapsed<.11 ? .74 + (.30*(elapsed/.11)) : 1.04 - (.04*((elapsed-.11)/.11)))
+        : 1;
       const isActive=idx===activeIndex;
 
       w.style.opacity=String(ease);
-      w.style.transform=
-        `translate3d(${sway}px,${bob}px,0) scaleX(${.78*squash*stretch}) scaleY(${1+(isMobile?.015:.042)*Math.sin(phase*.91)}) rotate(${Math.sin(phase*.63+idx)*(isMobile?.8:2.1)}deg)`;
+      w.style.transform=`translate3d(0,0,0) scale(${pop})`;
       w.style.filter='none';
       w.style.color=isActive?'var(--accent)':'';
       w.style.textShadow=isActive?'0 0 28px #ffb38a55':'none';
@@ -6037,5 +6042,43 @@ render();
 /* Exact handoff: Kasi begins at 01:34.912 and does not inherit the old motion. */
 </style>
 
+<style id="ako-tatay-actual-final">
+/* FINAL OVERRIDE — this must come after the duplicate scene styles above. */
+.line.scene-ako-tatay-syllable .word{
+  font-family:"Poppins",sans-serif !important;
+  font-weight:600 !important;
+  letter-spacing:-.045em !important;
+}
+.line.scene-ako-tatay-syllable .syllable-group{
+  gap:.10em !important;
+}
+/* TATAY: keep TA + TAY close without crushing the letters. */
+.line.scene-ako-tatay-syllable .syllable-group.group-break:nth-of-type(2){
+  gap:.015em !important;
+}
+.line.scene-ako-tatay-syllable .syllable-group.group-break:nth-of-type(2) .word:nth-child(3){
+  margin-left:-.07em !important;
+}
+/* AATRAS: keep A + ATRAS close without the old excessive overlap. */
+.line.scene-ako-tatay-syllable .syllable-group.group-break:nth-of-type(4){
+  gap:.015em !important;
+}
+.line.scene-ako-tatay-syllable .syllable-group.group-break:nth-of-type(4) .word:nth-child(2){
+  margin-left:-.10em !important;
+}
+@media(max-width:600px){
+  .line.scene-ako-tatay-syllable .word{
+    font-weight:600 !important;
+    letter-spacing:-.045em !important;
+  }
+  .line.scene-ako-tatay-syllable .syllable-group{
+    gap:.09em !important;
+  }
+  .line.scene-ako-tatay-syllable .syllable-group.group-break:nth-of-type(2),
+  .line.scene-ako-tatay-syllable .syllable-group.group-break:nth-of-type(4){
+    gap:0 !important;
+  }
+}
+</style>
 </body>
 </html>
