@@ -3060,6 +3060,32 @@ overflow:visible;
 }
 </style>
 
+<style id="gustong-mobile-white-final">
+@media(max-width:600px){
+  .line.scene-gustong-stack .gustong-stack-row{
+    color:#f8f0e6 !important;
+    text-shadow:0 0 12px #ffb38a55,0 0 28px #ffb38a44,0 0 52px #ffb38a2e !important;
+  }
+}
+</style>
+
+<style id="ako-tatay-spacing-final">
+/* Mobile spacing: give the syllables more breathing room, while keeping TATAY and AATRAS tucked together. */
+@media(max-width:600px){
+  .line.scene-ako-tatay-syllable .syllable-group{
+    gap:.20em;
+  }
+  .line.scene-ako-tatay-syllable .word{
+    letter-spacing:-.035em !important;
+  }
+  .line.scene-ako-tatay-syllable .syllable-group:nth-child(2){
+    gap:.045em;
+  }
+  .line.scene-ako-tatay-syllable .syllable-group:nth-child(4){
+    gap:.045em;
+  }
+}
+</style>
 </head>
 <body>
 <div id="app">
@@ -4492,17 +4518,28 @@ function updateMotion(t){
       }
 
       const phase=t*(8.4+idx*.34)+idx*1.37;
-      const bob=Math.sin(phase)*16.5 + Math.sin(phase*2.15+idx)*5.2 + Math.sin(phase*3.05+idx*.7)*2.4;
-      const sway=Math.sin(phase*.78+idx*1.1)*5.0;
-      const squash=1+.052*Math.sin(phase*1.42);
-      const stretch=1+.018*Math.sin(phase*1.07+idx);
+      // Keep the desktop bounce expressive, but use a much gentler motion on mobile
+      // so the frequent transform updates do not feel jumpy or laggy.
+      const isMobile=window.matchMedia('(max-width:600px)').matches;
+      const bob=isMobile
+        ? Math.sin(phase)*5.5 + Math.sin(phase*2.15+idx)*1.8 + Math.sin(phase*3.05+idx*.7)*.8
+        : Math.sin(phase)*16.5 + Math.sin(phase*2.15+idx)*5.2 + Math.sin(phase*3.05+idx*.7)*2.4;
+      const sway=isMobile
+        ? Math.sin(phase*.78+idx*1.1)*1.8
+        : Math.sin(phase*.78+idx*1.1)*5.0;
+      const squash=isMobile
+        ? 1+.018*Math.sin(phase*1.42)
+        : 1+.052*Math.sin(phase*1.42);
+      const stretch=isMobile
+        ? 1+.008*Math.sin(phase*1.07+idx)
+        : 1+.018*Math.sin(phase*1.07+idx);
       const enter=Math.min(1,(t-cue)/.14);
       const ease=enter*enter*(3-2*enter);
       const isActive=idx===activeIndex;
 
       w.style.opacity=String(ease);
       w.style.transform=
-        `translate3d(${sway}px,${bob}px,0) scaleX(${.78*squash*stretch}) scaleY(${1+.042*Math.sin(phase*.91)}) rotate(${Math.sin(phase*.63+idx)*2.1}deg)`;
+        `translate3d(${sway}px,${bob}px,0) scaleX(${.78*squash*stretch}) scaleY(${1+(isMobile?.015:.042)*Math.sin(phase*.91)}) rotate(${Math.sin(phase*.63+idx)*(isMobile?.8:2.1)}deg)`;
       w.style.filter='none';
       w.style.color=isActive?'var(--accent)':'';
       w.style.textShadow=isActive?'0 0 28px #ffb38a55':'none';
