@@ -17,6 +17,27 @@ html,body{
   margin:0;width:100%;height:100%;background:var(--bg);color:var(--ink);
   overflow:hidden;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
 }
+
+/* Mobile playback: keep the entire lyric canvas in landscape.
+   The JavaScript requests native fullscreen + orientation lock where the
+   browser supports them. The portrait fallback rotates only #app, so the
+   existing landscape composition remains the same size and proportions. */
+html.force-landscape,
+body.force-landscape{
+  width:100%;height:100%;
+  overflow:hidden;
+}
+@media (orientation:portrait){
+  body.force-landscape #app{
+    position:fixed;
+    left:50%;top:50%;
+    width:100vh;
+    height:100vw;
+    transform:translate(-50%,-50%) rotate(90deg);
+    transform-origin:center center;
+  }
+}
+
 button{font:inherit;color:inherit;-webkit-tap-highlight-color:transparent}
 button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 #app{
@@ -6909,8 +6930,46 @@ const d=Math.min(A.duration||135,135);
   raf=requestAnimationFrame(render);
 }
 
-async function play(){
+function isMobilePlayback(){
+  return window.matchMedia('(max-width: 600px)').matches;
+}
+
+async function enterLandscapeFullscreen(){
+  // This is intentionally mobile-only. Desktop keeps the original layout.
+  if(!isMobilePlayback()) return;
+
+  // Activate the CSS fallback immediately. If native orientation locking
+  // succeeds, the portrait media query stops applying as soon as the phone
+  // becomes landscape. If it fails (e.g. iOS Safari), #app still renders
+  // as a landscape canvas inside the portrait viewport.
+  document.documentElement.classList.add('force-landscape');
+  document.body.classList.add('force-landscape');
+
   try{
+    if(!document.fullscreenElement && document.documentElement.requestFullscreen){
+      // This request starts directly from the user's Play tap.
+      await document.documentElement.requestFullscreen({navigationUI:'hide'});
+    }
+  }catch(err){
+    // Fullscreen is unavailable on some mobile browsers. Keep the CSS
+    // landscape fallback active rather than interrupting playback.
+  }
+
+  try{
+    if(screen.orientation?.lock){
+      await screen.orientation.lock('landscape');
+    }
+  }catch(err){
+    // Orientation locking is unavailable on some browsers, especially iOS.
+    // The CSS fallback remains active and does not affect playback.
+  }
+}
+
+async function play(){
+  // Must run from the user's Play/Tap gesture so mobile browsers are allowed
+  // to request fullscreen/orientation.
+  try{
+    await enterLandscapeFullscreen();
     await A.play();
   }catch(err){
     console.error('Audio playback failed:',err);
