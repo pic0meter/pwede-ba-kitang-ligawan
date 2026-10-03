@@ -928,13 +928,6 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   animation:heartFloatMo 1.35s cubic-bezier(.12,.9,.2,1) forwards;
   filter:drop-shadow(0 0 18px #ffb38aaa);
 }
-@keyframes heartFloatMo{
-  0%{opacity:0;transform:translate(-50%,-50%) scale(.2) rotate(var(--hr))}
-  12%{opacity:1;transform:translate(-50%,-50%) scale(1.28) rotate(var(--hr))}
-  34%{opacity:.95;transform:translate(calc(-50% + var(--dx)*.35),calc(-50% + var(--dy)*.25)) scale(1.05) rotate(calc(var(--hr) + 7deg))}
-  68%{opacity:.58;transform:translate(calc(-50% + var(--dx)*.72),calc(-50% + var(--dy)*.72)) scale(.76) rotate(calc(var(--hr) - 5deg))}
-  100%{opacity:0;transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(.38) rotate(calc(var(--hr) + 10deg))}
-}
 @keyframes heartFloat{
   0%{opacity:0;transform:translate(-50%,-35%) scale(.2) rotate(var(--hr))}
   12%{opacity:.95;transform:translate(calc(-50% + var(--hx0)),calc(-50% + 4px)) scale(1.05) rotate(var(--hr))}
