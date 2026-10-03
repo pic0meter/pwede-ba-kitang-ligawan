@@ -2746,7 +2746,7 @@ const SABI_ECHO_NODES=SABI_ECHO_WORDS.map((word,i)=>{
   el.className='sabi-echo-word';
   el.textContent=word;
   el.dataset.index=String(i);
-  SABI_ECHO_FIELD.appendChild(el);
+  if(SABI_ECHO_FIELD) SABI_ECHO_FIELD.appendChild(el);
   return el;
 });
 
@@ -2761,9 +2761,46 @@ const OSA_ECHO_NODES=OSA_ECHO_WORDS.map((word,i)=>{
   el.className='sabi-echo-word';
   el.textContent=word;
   el.dataset.index=String(i);
-  OSA_ECHO_FIELD.appendChild(el);
+  if(OSA_ECHO_FIELD) OSA_ECHO_FIELD.appendChild(el);
   return el;
 });
+
+function updateSabiMamaEcho(t){
+  if(!SABI_ECHO_FIELD) return;
+  const active=t>=SABI_ECHO_START && t<SABI_ECHO_END;
+  SABI_ECHO_FIELD.classList.toggle('active',active);
+
+  SABI_ECHO_NODES.forEach((el,i)=>{
+    const cue=SABI_ECHO_CUES[i];
+    const next=SABI_ECHO_NEXT[i];
+    const fadeIn=.10;
+    const fadeOut=.12;
+
+    if(!active || t<cue || t>=next){
+      el.classList.remove('current');
+      el.style.opacity='0';
+      el.style.filter='blur(7px)';
+      el.style.transform='translate(-50%,-50%) scale(.84)';
+      return;
+    }
+
+    const inP=Math.min(1,(t-cue)/fadeIn);
+    const outP=Math.min(1,(next-t)/fadeOut);
+    const easeIn=inP*inP*(3-2*inP);
+    const easeOut=outP*outP*(3-2*outP);
+    const alpha=Math.min(easeIn,easeOut);
+    const elapsed=t-cue;
+    const phase=elapsed*8.5+i*1.8;
+    const bobY=Math.sin(phase)*4.5;
+    const bobX=Math.cos(phase*.83+i)*2.5;
+    const scale=1+.018*Math.sin(phase*1.25);
+
+    el.classList.add('current');
+    el.style.opacity=String(alpha*.16);
+    el.style.filter=`blur(${(1-alpha)*7}px)`;
+    el.style.transform=`translate(calc(-50% + ${bobX}px),calc(-50% + ${bobY}px)) scale(${scale})`;
+  });
+}
 
 const AKO_TATAY_ECHO_FIELD=document.querySelector('#akoTatayEchoField');
 const AKO_TATAY_ECHO_WORDS=['Ako','ng','ta','tay','mo','hindi','a','atras'];
@@ -2777,11 +2814,12 @@ const AKO_TATAY_ECHO_NODES=AKO_TATAY_ECHO_WORDS.map((word,i)=>{
   el.className='ako-tatay-echo-word';
   el.textContent=word;
   el.dataset.index=String(i);
-  AKO_TATAY_ECHO_FIELD.appendChild(el);
+  if(AKO_TATAY_ECHO_FIELD) AKO_TATAY_ECHO_FIELD.appendChild(el);
   return el;
 });
 
 function updateOSaKanyaEcho(t){
+  if(!OSA_ECHO_FIELD) return;
   const active=t>=OSA_ECHO_START && t<OSA_ECHO_END;
   OSA_ECHO_FIELD.classList.toggle('active',active);
 
@@ -2818,6 +2856,7 @@ function updateOSaKanyaEcho(t){
 }
 
 function updateAkoTatayEcho(t){
+  if(!AKO_TATAY_ECHO_FIELD) return;
   const active=t>=AKO_TATAY_ECHO_START && t<AKO_TATAY_ECHO_END;
   AKO_TATAY_ECHO_FIELD.classList.toggle('active',active);
 
@@ -3603,7 +3642,7 @@ function updateAkoTatayWholeLinePulse(t){
       line.style.transform='';
       line.style.filter='';
     }
-    AKO_TATAY_ECHO_FIELD.style.opacity='';
+    if(AKO_TATAY_ECHO_FIELD) AKO_TATAY_ECHO_FIELD.style.opacity='';
     return;
   }
 
@@ -3611,7 +3650,7 @@ function updateAkoTatayWholeLinePulse(t){
     line.style.opacity='1';
     line.style.transform='';
     line.style.filter='';
-    AKO_TATAY_ECHO_FIELD.style.opacity='';
+    if(AKO_TATAY_ECHO_FIELD) AKO_TATAY_ECHO_FIELD.style.opacity='';
     return;
   }
 
@@ -3626,7 +3665,7 @@ function updateAkoTatayWholeLinePulse(t){
   line.style.filter=`blur(${pulseWave*1.5}px)`;
 
   const echoFade=1-ease;
-  AKO_TATAY_ECHO_FIELD.style.opacity=String(echoFade);
+  if(AKO_TATAY_ECHO_FIELD) AKO_TATAY_ECHO_FIELD.style.opacity=String(echoFade);
 }
 
 function updateMotion(t){
@@ -4507,9 +4546,9 @@ function render(){
   const t=Math.min(A.currentTime||0,135);
   const i=lines.findIndex(x=>t>=x.start&&t<x.end);
   activate(i);
-  updateSabiMamaEcho(t);
-  updateOSaKanyaEcho(t);
-  updateAkoTatayEcho(t);
+  try{ updateSabiMamaEcho(t); }catch(e){ console.warn('Sabi echo disabled:',e); }
+  try{ updateOSaKanyaEcho(t); }catch(e){ console.warn('O sa kanya echo disabled:',e); }
+  try{ updateAkoTatayEcho(t); }catch(e){ console.warn('Ako/Tatay echo disabled:',e); }
 
   // 01:18.75 — Pati ang nanay... starts completely clean. Clear every global/field effect.
   if(i===12){
