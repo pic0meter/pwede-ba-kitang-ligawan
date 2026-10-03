@@ -3087,6 +3087,51 @@ overflow:visible;
 }
 </style>
 
+
+<style id="magaling-kinetic-simple">
+/* 00:58.70–01:03.05 — KASI DO'N ALAM KONG MAGALING AKO
+   Simple kinetic typography only. No constellation, particles, rules, dots, or background effects. */
+.line.scene-magaling-kinetic{
+  width:min(920px,92vw) !important;
+  min-height:48vh !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  text-align:center !important;
+  overflow:visible !important;
+}
+.line.scene-magaling-kinetic .word{
+  display:inline-block !important;
+  position:relative !important;
+  width:auto !important;
+  margin:0 .10em !important;
+  padding:0 !important;
+  font-family:"Poppins",sans-serif !important;
+  font-size:clamp(28px,4.4vw,68px) !important;
+  font-weight:600 !important;
+  letter-spacing:-.045em !important;
+  line-height:1.05 !important;
+  color:#f8f0e6 !important;
+  opacity:0;
+  transform:translate3d(0,22px,0) scale(.88);
+  filter:blur(4px);
+  text-shadow:none !important;
+  will-change:transform,opacity,filter;
+}
+.line.scene-magaling-kinetic .word.current{
+  color:#ffb38a !important;
+  text-shadow:0 0 18px #ffb38a44 !important;
+}
+@media(max-width:600px){
+  .line.scene-magaling-kinetic{width:94vw !important;}
+  .line.scene-magaling-kinetic .word{
+    font-size:clamp(27px,7.5vw,44px) !important;
+    letter-spacing:-.035em !important;
+    margin:0 .07em !important;
+  }
+}
+</style>
+
 <style id="mobile-performance-optimization">
 @media(max-width:600px){
   /* Avoid promoting every lyric node to its own GPU layer. */
@@ -3160,6 +3205,38 @@ overflow:visible;
 }
 </style>
 
+
+
+<style id="magaling-stack-layout-final">
+/* Two-line stack only — preserve the existing font, size, and kinetic motion. */
+.line.scene-magaling-kinetic .magaling-stack{
+  width:min(920px,92vw);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:0;
+  text-align:center;
+}
+.line.scene-magaling-kinetic .magaling-stack-row{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-wrap:nowrap;
+  white-space:nowrap;
+  width:max-content;
+  line-height:1.05;
+}
+.line.scene-magaling-kinetic .magaling-stack-row .word{
+  margin:0 .10em !important;
+}
+@media(max-width:600px){
+  .line.scene-magaling-kinetic .magaling-stack{width:94vw;}
+  .line.scene-magaling-kinetic .magaling-stack-row .word{
+    margin:0 .07em !important;
+  }
+}
+</style>
 
 </head>
 <body>
@@ -3437,6 +3514,27 @@ function buildWords(text){
 
 
 
+function buildMagalingStackLine(text){
+  const temp=document.createElement('div');
+  temp.innerHTML=buildWords(text);
+  const words=[...temp.querySelectorAll('.word')];
+  const stack=document.createElement('div');
+  stack.className='magaling-stack';
+
+  const rows=[[0,1,2,3],[4,5]];
+  rows.forEach((indices,rowIndex)=>{
+    const row=document.createElement('div');
+    row.className=`magaling-stack-row magaling-row-${rowIndex+1}`;
+    indices.forEach(idx=>{
+      if(words[idx]) row.appendChild(words[idx]);
+    });
+    stack.appendChild(row);
+  });
+
+  return stack;
+}
+
+
 function buildKasiStackLine(text){
   const words=['Kasi','gusto','kita'];
   const stack=document.createElement('div');
@@ -3570,7 +3668,7 @@ function buildParangStackLine(text){
 function sceneFor(i){
   // Each lyric becomes a small motion-graphics scene.
   const scenes=[
-    'fly','slit','kailan-flight','wind','zoom','squiggle','clock','clock',
+    'fly','slit','kailan-flight','wind','zoom','squiggle','clock','magaling-kinetic',
     'fly','question','pupuntahan','malayo-echo','pati-kinetic','ulam-kinetic','pahirapan-beat','ako-tatay-syllable','kasi-grand-stack',
     'gustong-stack','fly','clock','crawl','flip','zoom','question'
   ];
@@ -3723,29 +3821,6 @@ function activate(i){
   }
   const old=L.querySelector('.line.active');
 
-  // ONE persistent clock scene for the two consecutive lyrics.
-  // Do not remove/recreate the line, face, ticks, numbers, or hands.
-  // Only replace the lyric layer; the clock timeline keeps running from line 6.
-  if(old && old.classList.contains('scene-clock') && (current===6 || current===7) && i===7){
-    const item=lines[i];
-    const lyric=old.querySelector('.clock-lyric');
-    if(lyric){
-      // ONLY replace the lyric contents. The clock DOM, its animations,
-      // and its hand phase remain untouched.
-      lyric.innerHTML=buildBibigayStack(item.text);
-      lyric.classList.add('clock-whimsy-skill');
-      lyric.classList.remove('clock-whimsy-time');
-    }
-    // Keep the host line permanently anchored to the first clock lyric.
-    // The audio lyric index may advance to 7, but the visual clock never does.
-    old.dataset.index='6';
-    old.dataset.clockOriginIndex='6';
-    old.classList.remove('out','clock-exit');
-    current=i;
-    SEC.textContent=item.section;
-    return;
-  }
-
   if(old){
     const oldIndex=Number(old.dataset.index);
     old.classList.remove('active');
@@ -3777,11 +3852,12 @@ function activate(i){
              scene==='clock'?buildClock(item.text):
              scene==='heart-split'?buildHeartSplitLine(item.text):
              scene==='kasi-grand-stack'?buildKasiStackLine(item.text):
+             scene==='magaling-kinetic'?buildMagalingStackLine(item.text):
              scene==='gustong-stack'?buildGustongStackLine(item.text):
              (scene==='slit' && i===1)?buildParangStackLine(item.text):
              buildWords(item.text);
   let el;
-  if(scene==='heart-split' || scene==='kasi-grand-stack' || scene==='gustong-stack'){
+  if(scene==='heart-split' || scene==='kasi-grand-stack' || scene==='magaling-kinetic' || scene==='gustong-stack'){
     el=document.createElement('div');
     el.className=`line motion scene-${scene} ${item.style}${qClass}`;
     el.dataset.index=i;
@@ -3792,7 +3868,7 @@ function activate(i){
       field.setAttribute('aria-hidden','true');
       el.appendChild(field);
     }
-    if(scene==='gustong-stack'){
+  if(scene==='gustong-stack'){
       const field=document.createElement('div');
       field.className='hilablab-echo-field';
       field.setAttribute('aria-hidden','true');
@@ -4017,7 +4093,6 @@ function activate(i){
     el.querySelectorAll('.word[data-word-index="6"], .word[data-word-index="7"], .word[data-word-index="8"]').forEach(w=>w.classList.add('scratch-word'));
   }
   if(i===3) el.classList.add('gusto-shiver');
-  if(i===7) el.classList.add('playful-clock-lyric','clock-whimsy-skill');
   SEC.textContent=item.section;
   requestAnimationFrame(()=>{el.classList.add('active'); if(scene==='clock') layoutClock();});
 
@@ -4194,6 +4269,34 @@ function updateMotion(t){
   const item=lines[current];
   const scene=sceneFor(current);
   const words=[...el.querySelectorAll('.word')];
+
+  if(scene==='magaling-kinetic'){
+    words.forEach((w,idx)=>{
+      const cue=item.cues?.[idx] ?? item.start;
+      const nextCue=item.cues?.[idx+1] ?? item.end;
+      const progress=Math.max(0,Math.min(1,(t-cue)/.24));
+      const ease=progress*progress*(3-2*progress);
+      const shown=t>=cue;
+      const active=t>=cue && t<nextCue;
+
+      if(!shown){
+        w.style.opacity='0';
+        w.style.transform='translate3d(0,22px,0) scale(.88)';
+        w.style.filter='blur(4px)';
+      }else{
+        const pop=1+Math.max(0,Math.sin((t-cue)*8))*0.018;
+        const lift=Math.sin((t-cue)*3.2+idx*.8)*1.2;
+        w.style.opacity=String(Math.max(.92,ease));
+        w.style.transform=`translate3d(0,${lift}px,0) scale(${pop})`;
+        w.style.filter='blur(0)';
+      }
+
+      w.style.color=active?'#ffb38a':'#f8f0e6';
+      w.style.textShadow=active?'0 0 18px #ffb38a44':'none';
+      w.style.zIndex='5';
+    });
+    return;
+  }
 
   if(scene==='gustong-stack'){
     const field=el.querySelector('.hilablab-echo-field');
@@ -5419,7 +5522,7 @@ function render(){
     }
   }
 
-  updateClock(t);
+  if(sceneFor(current)==='clock') updateClock(t);
   pulse(t);
 const d=Math.min(A.duration||135,135);
   P.style.width=Math.min(100,(t/d)*100)+'%';
