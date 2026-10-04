@@ -683,6 +683,23 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   white-space:nowrap;
   line-height:1;
 }
+/* Keep the two-line lyric mathematically centered as a unit.
+   Each row gets its own intrinsic-width box so row 2 cannot drift based on
+   the width of row 1 or on the individual word transforms. */
+.line.final-linyahan-two-line .final-linyahan-stack{
+  width:100%;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+}
+.line.final-linyahan-two-line .final-linyahan-row{
+  width:max-content;
+  max-width:100%;
+  margin-left:auto;
+  margin-right:auto;
+  flex:0 0 auto;
+}
 .final-linyahan-row .word{
   margin:.03em .10em!important;
 }
