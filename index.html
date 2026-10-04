@@ -3863,11 +3863,47 @@ overflow:visible;
 </style>
 
 
+<style id="mobile-parang-hard-center-fix">
+/* HARD CENTER FIX — 00:16 "Parang masyado na yatang gasgas ang banat na 'to".
+   Anchor the entire lyric scene to the phone viewport itself, not the lyric
+   container's static position. This changes layout only; timing/effects stay intact. */
+@media (max-width:600px){
+  #lyric > .line.scene-slit[data-index="1"]{
+    left:50% !important;
+    right:auto !important;
+    width:100vw !important;
+    max-width:100vw !important;
+    margin-left:-50vw !important;
+    margin-right:0 !important;
+    box-sizing:border-box !important;
+    padding:0 !important;
+    text-align:center !important;
+  }
+  #lyric > .line.scene-slit[data-index="1"] > .parang-stack{
+    width:100% !important;
+    max-width:none !important;
+    margin:0 !important;
+    align-items:center !important;
+    justify-content:center !important;
+    text-align:center !important;
+  }
+  #lyric > .line.scene-slit[data-index="1"] .parang-stack-row{
+    width:100% !important;
+    max-width:none !important;
+    margin:0 !important;
+    padding:0 !important;
+    justify-content:center !important;
+    align-items:center !important;
+    box-sizing:border-box !important;
+  }
+}
+</style>
+
 <style id="mobile-second-and-fourth-line-centering">
 @media (max-width:600px){
   /* SECOND LYRIC / index 1: center the full stacked scene. */
   #lyric > .line.scene-slit[data-index="1"]{
-    position:absolute !important; left:0 !important; right:0 !important; width:100vw !important; max-width:100vw !important; margin-left:0 !important; margin-right:0 !important; box-sizing:border-box !important; display:flex !important; flex-direction:column !important; align-items:center !important; justify-content:center !important; text-align:center !important;
+    position:absolute !important; left:0 !important; right:0 !important; width:100% !important; max-width:100% !important; margin-left:0 !important; margin-right:0 !important; box-sizing:border-box !important; display:flex !important; flex-direction:column !important; align-items:center !important; justify-content:center !important; text-align:center !important;
   }
   #lyric > .line.scene-slit[data-index="1"] > .parang-stack{width:100% !important;max-width:100vw !important;margin-left:auto !important;margin-right:auto !important;align-items:center !important;justify-content:center !important;text-align:center !important;}
   #lyric > .line.scene-slit[data-index="1"] .parang-stack-row{width:100% !important;max-width:100vw !important;margin-left:auto !important;margin-right:auto !important;justify-content:center !important;align-items:center !important;box-sizing:border-box !important;}
@@ -3961,16 +3997,16 @@ overflow:visible;
 
   /* 1 — PARANG stack: each row is independently centered. */
   #lyric > .line.scene-slit[data-index="1"]{
-    left:0 !important;right:0 !important;width:100vw !important;max-width:100vw !important;
+    left:0 !important;right:0 !important;width:100% !important;max-width:100% !important;
     margin:0 !important;display:flex !important;flex-direction:column !important;
     align-items:center !important;justify-content:center !important;text-align:center !important;
   }
   #lyric > .line.scene-slit[data-index="1"] > .parang-stack{
-    width:100vw !important;max-width:100vw !important;margin:0 auto !important;
+    width:100% !important;max-width:100% !important;margin:0 auto !important;
     align-items:center !important;justify-content:center !important;text-align:center !important;
   }
   #lyric > .line.scene-slit[data-index="1"] .parang-stack-row{
-    width:100vw !important;max-width:100vw !important;margin:0 !important;
+    width:100% !important;max-width:100% !important;margin:0 !important;
     justify-content:center !important;align-items:center !important;box-sizing:border-box !important;
     padding:0 2vw !important;
   }
@@ -3978,7 +4014,7 @@ overflow:visible;
 
   /* 2 — KAILAN: absolute words already use left:50%; keep them centered. */
   #lyric > .line.scene-kailan-flight[data-index="2"]{
-    width:100vw !important;max-width:100vw !important;left:0 !important;right:0 !important;
+    width:100% !important;max-width:100% !important;left:0 !important;right:0 !important;
   }
   #lyric > .line.scene-kailan-flight[data-index="2"] .word{
     max-width:94vw !important;font-size:clamp(27px,7.7vw,43px) !important;
@@ -3986,7 +4022,7 @@ overflow:visible;
 
   /* 3 — GUSTO: wind/flow line, centered but safely narrower than viewport. */
   #lyric > .line.scene-wind[data-index="3"]{
-    width:100vw !important;max-width:100vw !important;left:0 !important;right:0 !important;
+    width:100% !important;max-width:100% !important;left:0 !important;right:0 !important;
     padding:0 3vw !important;box-sizing:border-box !important;
     font-size:clamp(25px,7.0vw,42px) !important;
     gap:.015em .045em !important;
@@ -3998,21 +4034,21 @@ overflow:visible;
 
   /* 5 — vertical linyahan treatment. */
   #lyric > .line.first-linyahan-vertical[data-index="5"]{
-    width:100vw !important;max-width:100vw !important;left:0 !important;right:0 !important;
+    width:100% !important;max-width:100% !important;left:0 !important;right:0 !important;
     height:min(58vh,520px) !important;align-items:center !important;justify-content:center !important;
   }
   #lyric > .line.first-linyahan-vertical[data-index="5"] .word{font-size:clamp(31px,8.5vw,48px) !important;}
 
   /* 6 — Bibigay/clock treatment: the actual clock remains centered; lyric rows
      are centered inside it. */
-  #lyric > .line[data-index="6"]{width:100vw !important;max-width:100vw !important;left:0 !important;right:0 !important;}
+  #lyric > .line[data-index="6"]{width:100% !important;max-width:100% !important;left:0 !important;right:0 !important;}
   #lyric > .line.scene-clock[data-index="6"] .clock-wrap{width:100vw !important;max-width:100vw !important;}
   #lyric > .line.scene-clock[data-index="6"] .clock-lyric{width:94vw !important;max-width:94vw !important;}
   #lyric > .line.scene-clock[data-index="6"] .word{max-width:88vw !important;}
 
   /* 7 — MAGALING kinetic stack. */
   #lyric > .line.scene-magaling-kinetic[data-index="7"]{
-    width:100vw !important;max-width:100vw !important;left:0 !important;right:0 !important;
+    width:100% !important;max-width:100% !important;left:0 !important;right:0 !important;
     padding:0 3vw !important;box-sizing:border-box !important;
   }
   #lyric > .line.scene-magaling-kinetic[data-index="7"] .word{font-size:clamp(25px,7.3vw,43px) !important;}
@@ -4022,13 +4058,13 @@ overflow:visible;
 
   /* 10 — PUPUNTAHAN: every word is absolute at 50%, so constrain its size. */
   #lyric > .line.pupuntahan-scene[data-index="10"]{
-    width:100vw !important;max-width:100vw !important;left:0 !important;right:0 !important;
+    width:100% !important;max-width:100% !important;left:0 !important;right:0 !important;
   }
   #lyric > .line.pupuntahan-scene[data-index="10"] .word{font-size:clamp(29px,8.7vw,46px) !important;max-width:92vw !important;}
 
   /* 11 — MALAYO: foreground is its own centered holder. */
   #lyric > .line.malayo-echo-scene[data-index="11"]{
-    width:100vw !important;max-width:100vw !important;left:0 !important;right:0 !important;
+    width:100% !important;max-width:100% !important;left:0 !important;right:0 !important;
   }
   #lyric > .line.malayo-echo-scene[data-index="11"] .malayo-foreground{
     width:94vw !important;max-width:94vw !important;margin:0 auto !important;
@@ -4040,7 +4076,7 @@ overflow:visible;
   #lyric > .line.scene-pati-kinetic[data-index="12"],
   #lyric > .line.scene-ulam-kinetic[data-index="13"],
   #lyric > .line.scene-pahirapan-beat[data-index="14"]{
-    width:100vw !important;max-width:100vw !important;left:0 !important;right:0 !important;
+    width:100% !important;max-width:100% !important;left:0 !important;right:0 !important;
     padding:0 3vw !important;box-sizing:border-box !important;
   }
   #lyric > .line.scene-pati-kinetic[data-index="12"] .word,
@@ -4049,7 +4085,7 @@ overflow:visible;
 
   /* 15 — syllable groups: keep every group centered and prevent side drift. */
   #lyric > .line.scene-ako-tatay-syllable[data-index="15"]{
-    width:100vw !important;max-width:100vw !important;left:0 !important;right:0 !important;
+    width:100% !important;max-width:100% !important;left:0 !important;right:0 !important;
     padding:0 2vw !important;box-sizing:border-box !important;
     align-items:center !important;justify-content:center !important;text-align:center !important;
   }
@@ -4057,7 +4093,7 @@ overflow:visible;
 
   /* 16 — KASI GRAND STACK: each row stays centered. */
   #lyric > .line.scene-kasi-grand-stack[data-index="16"]{
-    width:100vw !important;max-width:100vw !important;left:0 !important;right:0 !important;
+    width:100% !important;max-width:100% !important;left:0 !important;right:0 !important;
     padding:0 2vw !important;box-sizing:border-box !important;
   }
   #lyric > .line.scene-kasi-grand-stack[data-index="16"] .kasi-stack,
@@ -4068,7 +4104,7 @@ overflow:visible;
 
   /* 17 — GUSTONG-GUSTO stack. */
   #lyric > .line.scene-gustong-stack[data-index="17"]{
-    width:100vw !important;max-width:100vw !important;left:0 !important;right:0 !important;
+    width:100% !important;max-width:100% !important;left:0 !important;right:0 !important;
     padding:0 2vw !important;box-sizing:border-box !important;
   }
   #lyric > .line.scene-gustong-stack[data-index="17"] .gustong-stack,
@@ -4079,7 +4115,7 @@ overflow:visible;
 
   /* 18 — PWede typing: two rows, both independently centered. */
   #lyric > .line.scene-pwede-typing[data-index="18"]{
-    width:100vw !important;max-width:100vw !important;left:0 !important;right:0 !important;
+    width:100% !important;max-width:100% !important;left:0 !important;right:0 !important;
     padding:0 2vw !important;box-sizing:border-box !important;
     align-items:center !important;justify-content:center !important;text-align:center !important;
   }
@@ -4092,7 +4128,7 @@ overflow:visible;
 
   /* 19 — final linyahan two-row layout. */
   #lyric > .line[data-index="19"]{
-    width:100vw !important;max-width:100vw !important;left:0 !important;right:0 !important;
+    width:100% !important;max-width:100% !important;left:0 !important;right:0 !important;
     padding:0 2vw !important;box-sizing:border-box !important;
   }
   #lyric > .line[data-index="19"] .final-linyahan-row{width:100% !important;justify-content:center !important;}
@@ -4100,11 +4136,11 @@ overflow:visible;
 
   /* 20 — scattered final Bibigay: keep the scattered copies within the phone,
      but center the main lyric container. */
-  #lyric > .line[data-index="20"]{width:100vw !important;max-width:100vw !important;left:0 !important;right:0 !important;padding:0 2vw !important;}
+  #lyric > .line[data-index="20"]{width:100% !important;max-width:100% !important;left:0 !important;right:0 !important;padding:0 2vw !important;}
 
   /* 21 — final MAGALING kinetic. */
   #lyric > .line.scene-magaling-kinetic[data-index="21"]{
-    width:100vw !important;max-width:100vw !important;left:0 !important;right:0 !important;padding:0 3vw !important;box-sizing:border-box !important;
+    width:100% !important;max-width:100% !important;left:0 !important;right:0 !important;padding:0 3vw !important;box-sizing:border-box !important;
   }
   #lyric > .line.scene-magaling-kinetic[data-index="21"] .word{font-size:clamp(25px,7.3vw,43px) !important;}
 
@@ -4198,6 +4234,129 @@ overflow:visible;
 }
 </style>
 
+
+<style id="final-bibigay-one-by-one-clean">
+/* FINAL OVERRIDE — 01:57 Bibigay line: remove the scattered typography.
+   Restore a clean, centered, word-by-word reveal. */
+.line.scene-scattered[data-index="20"]{
+  position:absolute !important;
+  left:0 !important;
+  right:0 !important;
+  top:50% !important;
+  width:100% !important;
+  max-width:100% !important;
+  height:auto !important;
+  min-height:0 !important;
+  margin:0 !important;
+  padding:0 5vw !important;
+  box-sizing:border-box !important;
+  display:flex !important;
+  flex-wrap:wrap !important;
+  align-items:center !important;
+  justify-content:center !important;
+  align-content:center !important;
+  gap:.12em .20em !important;
+  text-align:center !important;
+  overflow:visible !important;
+  transform:translateY(-50%) !important;
+  animation:none !important;
+}
+.line.scene-scattered[data-index="20"] .word,
+.line.scene-scattered[data-index="20"] .word[data-word-index="5"],
+.line.scene-scattered[data-index="20"] .word[data-word-index="6"]{
+  position:relative !important;
+  left:auto !important;
+  right:auto !important;
+  top:auto !important;
+  width:auto !important;
+  max-width:none !important;
+  margin:0 !important;
+  padding:0 !important;
+  white-space:nowrap !important;
+  transform:none !important;
+  translate:none !important;
+  rotate:none !important;
+  scale:1 !important;
+  filter:none !important;
+  animation:none !important;
+  opacity:0 !important;
+  visibility:visible !important;
+  flex:0 0 auto !important;
+}
+.line.scene-scattered[data-index="20"] .word::before,
+.line.scene-scattered[data-index="20"] .word::after{
+  display:none !important;
+  content:none !important;
+}
+/* Each word enters independently as updateWords reveals it. */
+.line.scene-scattered[data-index="20"] .word.visible{
+  opacity:1 !important;
+  animation:bibigayCleanWordIn .38s cubic-bezier(.16,1.2,.25,1) both !important;
+}
+@keyframes bibigayCleanWordIn{
+  0%{opacity:0;transform:translateY(.28em) scale(.88) !important;filter:blur(3px)}
+  70%{opacity:1;transform:translateY(-.04em) scale(1.03) !important;filter:blur(0)}
+  100%{opacity:1;transform:translateY(0) scale(1) !important;filter:blur(0)}
+}
+.line.scene-scattered[data-index="20"] .word.current{
+  color:var(--accent) !important;
+  text-shadow:0 0 18px #ffb38a35 !important;
+}
+@media(max-width:600px){
+  .line.scene-scattered[data-index="20"]{
+    left:0 !important;
+    right:0 !important;
+    width:100vw !important;
+    max-width:100vw !important;
+    padding:0 5vw !important;
+    gap:.10em .16em !important;
+  }
+  .line.scene-scattered[data-index="20"] .word{
+    font-size:clamp(30px,9vw,58px) !important;
+  }
+}
+</style>
+
+
+
+<style id="redacted-bigger-back-echo">
+/* 01:57 — [redacted]: bigger with a soft echo sitting behind it. */
+.line.scene-scattered[data-index="20"] .word[data-word-index="5"]{
+  position:relative !important;
+  z-index:3 !important;
+  font-size:clamp(46px,14vw,88px) !important;
+  font-weight:800 !important;
+  color:var(--accent) !important;
+  text-shadow:0 0 22px #ffb38a55 !important;
+  overflow:visible !important;
+}
+.line.scene-scattered[data-index="20"] .word[data-word-index="5"]::before{
+  display:block !important;
+  content:attr(data-echo) !important;
+  position:absolute !important;
+  left:50% !important;
+  top:50% !important;
+  z-index:-1 !important;
+  white-space:nowrap !important;
+  pointer-events:none !important;
+  font:inherit !important;
+  color:#ffb38a !important;
+  opacity:.28 !important;
+  filter:blur(4px) !important;
+  transform:translate(calc(-50% + .14em),calc(-50% + .12em)) scale(1.06) !important;
+  text-shadow:0 0 18px #ffb38a88 !important;
+}
+.line.scene-scattered[data-index="20"] .word[data-word-index="5"]::after{
+  display:none !important;
+  content:none !important;
+}
+@media(max-width:600px){
+  .line.scene-scattered[data-index="20"] .word[data-word-index="5"]{
+    font-size:clamp(44px,14vw,82px) !important;
+  }
+}
+</style>
+
 </head>
 <body>
 <div id="app">
@@ -4216,7 +4375,7 @@ overflow:visible;
     <div class="counter" id="counter">00:00 / 02:36</div>
   </div>
 
-  <div id="section">intro</div>
+  <div id="section">for my lablab, ace gapiza</div>
   <div id="stage"><div class="lyric" id="lyric"></div></div>
 
   <div id="hint"><button class="play" id="start" type="button">Tap to begin</button></div>
@@ -4876,7 +5035,7 @@ function activate(i){
   current=i;
   heartCueShown=false;
   if(i<0){
-    SEC.textContent='outro';
+    SEC.textContent='for my lablab, ace gapiza';
     return;
   }
   const item=lines[i];
@@ -5200,7 +5359,7 @@ function activate(i){
     el.querySelectorAll('.word[data-word-index="6"], .word[data-word-index="7"], .word[data-word-index="8"]').forEach(w=>w.classList.add('scratch-word'));
   }
   if(i===3) el.classList.add('gusto-shiver');
-  SEC.textContent=item.section;
+  SEC.textContent='for my lablab, ace gapiza';
   requestAnimationFrame(()=>{el.classList.add('active'); if(scene==='clock') layoutClock();});
 
   if(scene==='zoom'){
@@ -6898,7 +7057,7 @@ function render(){
     ];
     burstCues.forEach(([wordIndex,cue])=>{
       const key = `${i}-${wordIndex}-main`;
-      if(t>=cue && t<cue+0.09 && !clockNumberBackgroundBursts.includes(key)){
+      if(t>=cue && t<cue+0.35 && !clockNumberBackgroundBursts.includes(key)){
         clockNumberBackgroundBursts.push(key);
         spawnClockNumberBackgroundBurst(wordIndex,{elevated:true});
       }
@@ -6908,7 +7067,7 @@ function render(){
     const orasCue = i===6 ? 55.42 : 118.42;
     const orasSecondCue = orasCue + 0.20;
     const secondKey = `${i}-5-second`;
-    if(t>=orasSecondCue && t<orasSecondCue+0.09 && !clockNumberBackgroundBursts.includes(secondKey)){
+    if(t>=orasSecondCue && t<orasSecondCue+0.35 && !clockNumberBackgroundBursts.includes(secondKey)){
       clockNumberBackgroundBursts.push(secondKey);
       spawnClockNumberBackgroundBurst(5,{elevated:true});
     }
@@ -6923,7 +7082,7 @@ function render(){
     ];
     burstCues.forEach(([wordIndex,cue,elevated])=>{
       const key='7-'+wordIndex;
-      if(t>=cue && t<cue+0.07 && !clockNumberBackgroundBursts.includes(key)){
+      if(t>=cue && t<cue+0.35 && !clockNumberBackgroundBursts.includes(key)){
         clockNumberBackgroundBursts.push(key);
         spawnClockNumberBackgroundBurst(wordIndex,{elevated});
       }
@@ -7216,7 +7375,7 @@ render();
   }
 
   audio.addEventListener("timeupdate",()=>{
-    if(audio.currentTime>=57 && audio.currentTime<57.20 && !fired) trigger();
+    if(audio.currentTime>=57 && audio.currentTime<57.65 && !fired) trigger();
     if(audio.currentTime<56.5) fired=false;
   });
 })();
@@ -7754,7 +7913,197 @@ render();
 
 .mobile-three-stack-middle{display:contents;}
 </style>
+
+<style id="absolute-final-mobile-centering">
+/* ABSOLUTE FINAL MOBILE CENTERING: center the lyric stage itself.
+   Keep title, timer, playback controls, and right-side label in their original positions. */
+@media(max-width:600px){
+  #stage{
+    transform:none !important;
+    left:0 !important;
+    right:0 !important;
+    width:100vw !important;
+    max-width:100vw !important;
+    margin-left:0 !important;
+    margin-right:0 !important;
+    box-sizing:border-box !important;
+  }
+  #lyric{
+    left:0 !important;
+    right:0 !important;
+    width:100vw !important;
+    max-width:100vw !important;
+    margin-left:0 !important;
+    margin-right:0 !important;
+    transform:none !important;
+    box-sizing:border-box !important;
+  }
+  #lyric > .line{
+    left:0 !important;
+    right:0 !important;
+    width:100% !important;
+    max-width:100% !important;
+    margin-left:0 !important;
+    margin-right:0 !important;
+    box-sizing:border-box !important;
+  }
+  #section{right:5vw !important;top:50% !important;}
+}
+</style>
+
+
+<style id="mobile-pwede-stack-spacing-final">
+/* 01:06 — "Pwede ba kitang ligawan?"
+   Bring the three mobile stacks closer vertically without changing
+   the word timing, animations, horizontal centering, or typography. */
+@media(max-width:600px){
+  #lyric > .line.scene-zoom[data-index="8"]{
+    row-gap:0 !important;
+    line-height:.72 !important;
+  }
+
+  #lyric > .line.scene-zoom[data-index="8"] > .word[data-word-index="0"],
+  #lyric > .line.scene-zoom[data-index="8"] > .word[data-word-index="3"],
+  #lyric > .line.scene-zoom[data-index="8"] > .mobile-three-stack-middle{
+    line-height:.72 !important;
+  }
+
+  #lyric > .line.scene-zoom[data-index="8"] > .mobile-three-stack-middle{
+    gap:.06em !important;
+  }
+}
+</style>
+
+<style id="pwede-stack-vertical-force-final">
+@media(max-width:600px){
+  #lyric > .line.scene-zoom[data-index="8"]{
+    row-gap:0 !important;
+  }
+  #lyric > .line.scene-zoom[data-index="8"] > .word[data-word-index="0"]{
+    margin-bottom:-0.22em !important;
+  }
+  #lyric > .line.scene-zoom[data-index="8"] > .mobile-three-stack-middle{
+    margin-top:-0.22em !important;
+    margin-bottom:-0.22em !important;
+  }
+  #lyric > .line.scene-zoom[data-index="8"] > .word[data-word-index="3"]{
+    margin-top:-0.22em !important;
+  }
+}
+</style>
+
+<style id="pwede-stack-pull-toward-center-final">
+@media(max-width:600px){
+  /* 01:06 — pull the OUTER two stacks toward the middle stack.
+     Positioning is used instead of line-height/margins because the scene
+     animation controls the line's overall transform. */
+  #lyric > .line.scene-zoom[data-index="8"] > .word[data-word-index="0"]{
+    position:relative !important;
+    top:0.22em !important;
+  }
+  #lyric > .line.scene-zoom[data-index="8"] > .word[data-word-index="3"]{
+    position:relative !important;
+    top:-0.22em !important;
+  }
+}
+</style>
+
+<style id="pwede-stack-pull-center-hard-final">
+/* 01:06 — HARD vertical pull. The earlier top/margin rules were being
+   neutralized by the existing .word transform/animation. Use the independent
+   CSS translate property so it cannot be overwritten by transform animations. */
+@media(max-width:600px){
+  #lyric > .line.scene-zoom[data-index="8"] > .word[data-word-index="0"]{
+    translate:0 .34em !important;
+  }
+  #lyric > .line.scene-zoom[data-index="8"] > .mobile-three-stack-middle{
+    translate:0 0 !important;
+  }
+  #lyric > .line.scene-zoom[data-index="8"] > .word[data-word-index="3"]{
+    translate:0 -.34em !important;
+  }
+}
+</style>
+
+<style id="malayo-background-echoes-bigger">
+/* 01:15 — make the background echoes substantially larger.
+   Keep their positions, colors, timing, and motion unchanged. */
+.line.malayo-echo-scene .malayo-echo{
+  font-size:calc(var(--ms) * 1.55) !important;
+}
+@media(max-width:600px){
+  .line.malayo-echo-scene .malayo-echo{
+    font-size:calc(var(--ms-mobile,var(--ms)) * 1.55) !important;
+  }
+}
+</style>
+
+<style id="bibigay-redacted-2min-big-bounce-bob">
+/* 02:00 — [redacted]: pull it toward the center, make it bigger, and give it
+   a strong playful bounce + continuous bob without changing lyric timing. */
+@media (min-width:601px){
+  #lyric > .line[data-index="20"] .word[data-word-index="4"]{
+    position:relative !important;
+    translate: 0.9em 0 !important;
+    font-size:1.38em !important;
+    animation:bibigayRedactedBounce 1.05s cubic-bezier(.15,1.35,.25,1) infinite alternate !important;
+    transform-origin:center center !important;
+    z-index:8 !important;
+  }
+}
+@media (max-width:600px){
+  #lyric > .line[data-index="20"] .word[data-word-index="4"]{
+    position:relative !important;
+    translate: 5vw 0 !important;
+    font-size:1.48em !important;
+    animation:bibigayRedactedBounceMobile 1.0s cubic-bezier(.15,1.35,.25,1) infinite alternate !important;
+    transform-origin:center center !important;
+    z-index:8 !important;
+  }
+}
+@keyframes bibigayRedactedBounce{
+  0%{transform:translateY(.12em) scale(1) rotate(-2deg);}
+  22%{transform:translateY(-.16em) scale(1.06) rotate(2deg);}
+  48%{transform:translateY(.07em) scale(1.015) rotate(-1.5deg);}
+  72%{transform:translateY(-.11em) scale(1.045) rotate(1.5deg);}
+  100%{transform:translateY(.02em) scale(1.02) rotate(0deg);}
+}
+@keyframes bibigayRedactedBounceMobile{
+  0%{transform:translateY(.14em) scale(1) rotate(-2deg);}
+  20%{transform:translateY(-.18em) scale(1.07) rotate(2deg);}
+  45%{transform:translateY(.08em) scale(1.02) rotate(-1.5deg);}
+  70%{transform:translateY(-.13em) scale(1.055) rotate(1.5deg);}
+  100%{transform:translateY(.02em) scale(1.025) rotate(0deg);}
+}
+</style>
+
+<style id="bibigay-centered-bounded-motion">
+.line.scene-scattered .word[data-word-index="5"]{
+  left:50% !important;
+  top:50% !important;
+  margin:0 !important;
+  transform-origin:center center !important;
+}
+@media(max-width:600px){
+  .line.scene-scattered .word[data-word-index="5"]{
+    left:50% !important;
+    top:50% !important;
+    width:90vw !important;
+    max-width:90vw !important;
+  }
+}
+</style>
 </body>
+
+<style id="manual-bibigy-offset">
+/* Manual position: 6vw right, 10vh down from the centered position. */
+.line.scene-scattered[data-index="20"] .word[data-word-index="5"]{
+  left:50% !important;
+  top:50% !important;
+  margin-left:6vw !important;
+  margin-top:10vh !important;
+}
+</style>
 
 <style id="last-ko-hard-fix">
 /* Hard guarantee for the final "ko" cue at 2:00.956. Keep it comfortably inside the frame. */
@@ -7887,6 +8236,144 @@ render();
 }
 </style>
 
+
+<style id="pwede-stack-actual-row-tighten">
+@media(max-width:600px){
+  #lyric > .line.scene-zoom[data-index="8"]{
+    transform:none !important;
+  }
+  #lyric > .line.scene-zoom[data-index="8"] > .word[data-word-index="0"]{
+    margin-bottom:-0.18em !important;
+  }
+  #lyric > .line.scene-zoom[data-index="8"] > .mobile-three-stack-middle{
+    margin-top:-0.18em !important;
+    margin-bottom:-0.18em !important;
+  }
+  #lyric > .line.scene-zoom[data-index="8"] > .word[data-word-index="3"]{
+    margin-top:-0.18em !important;
+  }
+}
+</style>
+
+<style id="bibigay-redacted-authoritative-fix">
+/* FINAL 02:00 FIX — target the actual centered [redacted] word (word 5).
+   Earlier edit incorrectly targeted word 4, while word 5 is the centered word.
+   These rules are intentionally LAST so the old static-animation locks cannot cancel them. */
+.line.scene-scattered[data-index="20"] .word[data-word-index="5"]{
+  left:50% !important;
+  top:50% !important;
+  position:absolute !important;
+  font-size:clamp(4.4rem,11.5vw,9.5rem) !important;
+  width:max-content !important;
+  max-width:92vw !important;
+  z-index:30 !important;
+  transform-origin:center center !important;
+}
+.line.scene-scattered[data-index="20"] .word[data-word-index="5"].visible{
+  opacity:1 !important;
+  visibility:visible !important;
+  animation:
+    bibigayRedactedFinalIn .48s cubic-bezier(.12,1.45,.22,1) both,
+    bibigayRedactedFinalBob 1.05s ease-in-out .48s infinite !important;
+}
+@keyframes bibigayRedactedFinalIn{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.45) rotate(-5deg);filter:blur(5px)}
+  45%{opacity:1;transform:translate(-50%,-50%) scale(1.20) rotate(3deg);filter:blur(0)}
+  68%{transform:translate(-50%,-50%) scale(.92) rotate(-1.5deg)}
+  100%{opacity:1;transform:translate(-50%,-50%) scale(1) rotate(0)}
+}
+@keyframes bibigayRedactedFinalBob{
+  0%,100%{transform:translate(-50%,-50%) translateY(0) scale(1) rotate(0)}
+  18%{transform:translate(-50%,-50%) translateY(-.18em) scale(1.07) rotate(-2deg)}
+  38%{transform:translate(-50%,-50%) translateY(.08em) scale(.97) rotate(2deg)}
+  58%{transform:translate(-50%,-50%) translateY(-.14em) scale(1.055) rotate(-1.5deg)}
+  78%{transform:translate(-50%,-50%) translateY(.055em) scale(.985) rotate(1deg)}
+}
+@media(max-width:600px){
+  .line.scene-scattered[data-index="20"] .word[data-word-index="5"]{
+    left:50% !important;
+    top:50% !important;
+    font-size:clamp(42px,14vw,82px) !important;
+    width:max-content !important;
+    max-width:90vw !important;
+  }
+}
+</style>
+
+<style id="bibigay-redacted-motion-hard-lock">
+/* HARD MOTION LOCK — JS drives the centered [redacted] using independent
+   CSS translate/scale/rotate properties, so no inherited transform animation
+   can cancel the movement. */
+.line.scene-scattered[data-index="20"] .word[data-word-index="5"]{
+  transform:translate(-50%,-50%) !important;
+  will-change:translate,scale,rotate,opacity;
+}
+</style>
+<script id="bibigay-redacted-motion-hard-lock-js">
+(function(){
+  let rafId=0;
+  let start=0;
+  function tick(ts){
+    const el=document.querySelector('.line.scene-scattered[data-index="20"].active');
+    const w=el && el.querySelector('.word[data-word-index="5"]');
+    if(w && w.classList.contains('visible')){
+      if(!start) start=ts;
+      const t=(ts-start)/1000;
+      /* Strong, obvious bounce + constant playful bob. */
+      const entrance=Math.min(1,t/.52);
+      const ease=1-Math.pow(1-entrance,3);
+      const bounce=1 + (0.22*Math.sin(ease*Math.PI*1.35))*Math.exp(-t*2.2);
+      const bobY=-0.16*Math.sin(t*5.2) - 0.055*Math.sin(t*9.1);
+      const bobX=0.025*Math.sin(t*4.0);
+      const rot=2.8*Math.sin(t*4.4)+1.1*Math.sin(t*8.0);
+      const scale=Math.max(.72, bounce*(1+0.025*Math.sin(t*4.8)));
+      w.style.translate=`calc(-50% + ${bobX}em) calc(-50% + ${bobY}em)`;
+      w.style.scale=String(scale);
+      w.style.rotate=`${rot}deg`;
+      w.style.opacity='1';
+    }else{
+      start=0;
+      if(w){
+        w.style.translate='-50% -50%';
+        w.style.scale='1';
+        w.style.rotate='0deg';
+      }
+    }
+    rafId=requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+})();
+</script>
+<style id="final-bibigay-manual-offset-fix">
+/* FINAL MANUAL OFFSET — 24vw right, 20vh down. Uses left/top so the existing
+   centered transform inside the bounce animation is preserved. */
+.line.scene-scattered[data-index="20"] .word[data-word-index="5"]{
+  left:50% !important;
+  top:72% !important;
+  margin-left:0 !important;
+  margin-top:0 !important;
+}
+@media(max-width:600px){
+  .line.scene-scattered[data-index="20"] .word[data-word-index="5"]{
+    left:50% !important;
+    top:72% !important;
+  }
+}
+</style>
+
+<style id="redacted-middle-below-ang-final">
+/* FINAL POSITION: centered horizontally, below “ang”; motion remains active. */
+.line.scene-scattered[data-index="20"] .word[data-word-index="5"]{
+  left:50% !important;
+  top:72% !important;
+}
+@media(max-width:600px){
+  .line.scene-scattered[data-index="20"] .word[data-word-index="5"]{
+    left:50% !important;
+    top:72% !important;
+  }
+}
+</style>
 </html>
 
 <style id="bibigay-scattered-final">
@@ -8063,13 +8550,13 @@ render();
 @media (max-width:600px){
   /* 01 — Pwede ba akong tumambay dyan sa puso mo? */
   #lyric > .line[data-index="0"]{
-    width:100vw !important; max-width:100vw !important; left:0 !important; right:0 !important;
+    width:100% !important; max-width:100% !important; left:0 !important; right:0 !important;
     padding:0 4vw !important; box-sizing:border-box !important;
   }
 
   /* 02 — Parang masyado na yatang gasgas ang banat na 'to */
   #lyric > .line[data-index="1"]{
-    width:100vw !important; max-width:100vw !important; left:0 !important; right:0 !important;
+    width:100% !important; max-width:100% !important; left:0 !important; right:0 !important;
     padding:0 3vw !important; box-sizing:border-box !important;
   }
   #lyric > .line[data-index="1"] .parang-stack-row{
@@ -8078,104 +8565,104 @@ render();
 
   /* 03 — Kailan kaya ako makakaisip ng linyang para sa'yo? */
   #lyric > .line[data-index="2"]{
-    width:100vw !important; max-width:100vw !important; left:0 !important; right:0 !important;
+    width:100% !important; max-width:100% !important; left:0 !important; right:0 !important;
     padding:0 3vw !important; box-sizing:border-box !important;
   }
 
   /* 04 — Gusto ko lang naman ay makamit ang matamis mong oo */
   #lyric > .line[data-index="3"]{
-    width:100vw !important; max-width:100vw !important; left:0 !important; right:0 !important;
+    width:100% !important; max-width:100% !important; left:0 !important; right:0 !important;
     padding:0 3vw !important; box-sizing:border-box !important;
   }
   #lyric > .line[data-index="3"] .word{ margin-left:.01em !important; margin-right:.01em !important; }
 
   /* 05 — Pwede ba kitang ligawan? */
   #lyric > .line[data-index="4"]{
-    width:100vw !important; max-width:100vw !important; left:0 !important; right:0 !important;
+    width:100% !important; max-width:100% !important; left:0 !important; right:0 !important;
     padding:0 4vw !important; box-sizing:border-box !important;
     column-gap:.05em !important; row-gap:.02em !important;
   }
 
   /* 06 — Kahit 'di maganda ang mga linyahan */
   #lyric > .line[data-index="5"]{
-    width:100vw !important; max-width:100vw !important; left:0 !important; right:0 !important;
+    width:100% !important; max-width:100% !important; left:0 !important; right:0 !important;
     padding:0 4vw !important; box-sizing:border-box !important;
   }
 
   /* 07 — Bibigay ko nang buo ang oras ko */
   #lyric > .line[data-index="6"]{
-    width:100vw !important; max-width:100vw !important; left:0 !important; right:0 !important;
+    width:100% !important; max-width:100% !important; left:0 !important; right:0 !important;
     padding:0 4vw !important; box-sizing:border-box !important;
   }
 
   /* 08 — Kasi do'n alam kong magaling ako */
   #lyric > .line[data-index="7"]{
-    width:100vw !important; max-width:100vw !important; left:0 !important; right:0 !important;
+    width:100% !important; max-width:100% !important; left:0 !important; right:0 !important;
     padding:0 4vw !important; box-sizing:border-box !important;
   }
 
   /* 10 — Oo o hindi? */
   #lyric > .line[data-index="9"]{
-    width:100vw !important; max-width:100vw !important; left:0 !important; right:0 !important;
+    width:100% !important; max-width:100% !important; left:0 !important; right:0 !important;
     padding:0 4vw !important; box-sizing:border-box !important;
     column-gap:.06em !important;
   }
 
   /* 11 — Ikaw ay lagi kong pupuntahan */
   #lyric > .line[data-index="10"]{
-    width:100vw !important; max-width:100vw !important; left:0 !important; right:0 !important;
+    width:100% !important; max-width:100% !important; left:0 !important; right:0 !important;
     padding:0 3vw !important; box-sizing:border-box !important;
   }
 
   /* 12 — Kahit malayo pa 'yan */
   #lyric > .line[data-index="11"]{
-    width:100vw !important; max-width:100vw !important; left:0 !important; right:0 !important;
+    width:100% !important; max-width:100% !important; left:0 !important; right:0 !important;
     padding:0 4vw !important; box-sizing:border-box !important;
   }
 
   /* 13 — Pati ang nanay mo'y aking dadalhan */
   #lyric > .line[data-index="12"]{
-    width:100vw !important; max-width:100vw !important; left:0 !important; right:0 !important;
+    width:100% !important; max-width:100% !important; left:0 !important; right:0 !important;
     padding:0 3vw !important; box-sizing:border-box !important;
     column-gap:.08em !important; row-gap:.04em !important;
   }
 
   /* 14 — Ng paborito niyang ulam */
   #lyric > .line[data-index="13"]{
-    width:100vw !important; max-width:100vw !important; left:0 !important; right:0 !important;
+    width:100% !important; max-width:100% !important; left:0 !important; right:0 !important;
     padding:0 3vw !important; box-sizing:border-box !important;
   }
 
   /* 15 — At kahit pahirapan pa */
   #lyric > .line[data-index="14"]{
-    width:100vw !important; max-width:100vw !important; left:0 !important; right:0 !important;
+    width:100% !important; max-width:100% !important; left:0 !important; right:0 !important;
     padding:0 3vw !important; box-sizing:border-box !important;
   }
 
   /* 16 — Ako ng tatay mo hindi aatras */
   #lyric > .line[data-index="15"]{
-    width:100vw !important; max-width:100vw !important; left:0 !important; right:0 !important;
+    width:100% !important; max-width:100% !important; left:0 !important; right:0 !important;
     padding:0 2vw !important; box-sizing:border-box !important;
   }
   #lyric > .line[data-index="15"] .syllable-group{ margin-left:auto !important; margin-right:auto !important; }
 
   /* 17 — Kasi gusto kita */
   #lyric > .line[data-index="16"]{
-    width:100vw !important; max-width:100vw !important; left:0 !important; right:0 !important;
+    width:100% !important; max-width:100% !important; left:0 !important; right:0 !important;
     padding:0 3vw !important; box-sizing:border-box !important;
   }
   #lyric > .line[data-index="16"] .kasi-row{ margin-left:auto !important; margin-right:auto !important; }
 
   /* 18 — Gustong-gusto, gustong-gusto kita */
   #lyric > .line[data-index="17"]{
-    width:100vw !important; max-width:100vw !important; left:0 !important; right:0 !important;
+    width:100% !important; max-width:100% !important; left:0 !important; right:0 !important;
     padding:0 3vw !important; box-sizing:border-box !important;
   }
   #lyric > .line[data-index="17"] .gustong-row{ margin-left:auto !important; margin-right:auto !important; }
 
   /* 19 — Pwede ba kitang ligawan? */
   #lyric > .line[data-index="18"]{
-    width:100vw !important; max-width:100vw !important; left:0 !important; right:0 !important;
+    width:100% !important; max-width:100% !important; left:0 !important; right:0 !important;
     padding:0 3vw !important; box-sizing:border-box !important;
   }
   #lyric > .line[data-index="18"] .pwede-typing-row{
@@ -8184,38 +8671,53 @@ render();
 
   /* 20 — Kahit 'di maganda ang mga linyahan */
   #lyric > .line[data-index="19"]{
-    width:100vw !important; max-width:100vw !important; left:0 !important; right:0 !important;
+    width:100% !important; max-width:100% !important; left:0 !important; right:0 !important;
     padding:0 3vw !important; box-sizing:border-box !important;
   }
 
   /* 21 — Bibigay ko nang buo ang [redacted] */
   #lyric > .line[data-index="20"]{
-    width:100vw !important; max-width:100vw !important; left:0 !important; right:0 !important;
+    width:100% !important; max-width:100% !important; left:0 !important; right:0 !important;
     padding:0 3vw !important; box-sizing:border-box !important;
   }
 
   /* 22 — Kasi do'n alam kong magaling ako */
   #lyric > .line[data-index="21"]{
-    width:100vw !important; max-width:100vw !important; left:0 !important; right:0 !important;
+    width:100% !important; max-width:100% !important; left:0 !important; right:0 !important;
     padding:0 4vw !important; box-sizing:border-box !important;
   }
 
   /* 23 — Pwede ba kitang ligawan? */
   #lyric > .line[data-index="22"]{
-    width:100vw !important; max-width:100vw !important; left:0 !important; right:0 !important;
+    width:100% !important; max-width:100% !important; left:0 !important; right:0 !important;
     padding:0 4vw !important; box-sizing:border-box !important;
     column-gap:.05em !important; row-gap:.02em !important;
   }
 
   /* 24 — Oo o hindi? */
   #lyric > .line[data-index="23"]{
-    width:100vw !important; max-width:100vw !important; left:0 !important; right:0 !important;
+    width:100% !important; max-width:100% !important; left:0 !important; right:0 !important;
     padding:0 4vw !important; box-sizing:border-box !important;
     column-gap:.06em !important;
   }
 }
 </style>
 
+
+<style id="mobile-global-centering-root-fix">
+/* ROOT MOBILE CENTERING FIX
+   Lyric lines are absolutely positioned inside #lyric. A 100vw child inside
+   the centered #lyric container overflows to the right. Use the containing
+   block width so every line shares the same true center. */
+@media(max-width:600px){
+  #lyric > .line{
+    left:0 !important; right:0 !important;
+    width:100% !important; max-width:100% !important;
+    margin-left:0 !important; margin-right:0 !important;
+    box-sizing:border-box !important;
+  }
+}
+</style>
 
 <style id="mobile-final-three-lines-centering">
 @media (max-width:600px){
@@ -8274,6 +8776,151 @@ render();
   #lyric > .line[data-index="23"] .word{
     max-width:88vw !important;
     box-sizing:border-box !important;
+  }
+}
+</style>
+
+<style id="final-global-left-adjustment">
+/* FINAL GLOBAL ALIGNMENT — shift the main page composition 3vw left.
+   The playback controls are intentionally restored to their original mobile layout. */
+@media (max-width:600px){
+  #top{transform:none !important; left:5vw !important; right:5vw !important;}
+  #stage{transform:translateX(-3vw) !important;}
+  #section{right:7vw !important;}
+  #scrubLabel{right:7vw !important;}
+
+  /* RESTORE ORIGINAL PLAYBACK UI */
+  #hint{transform:translateX(-50%) !important;}
+  #controls{
+    left:5vw !important;
+    right:5vw !important;
+    bottom:3vh !important;
+    gap:10px !important;
+  }
+  #controls .ctrl{width:40px !important;height:40px !important;}
+  #controls .time{min-width:68px !important;}
+}
+</style>
+
+<style id="final-section-fix">
+/* Restore the original right-side position; only replace its content. */
+@media(max-width:600px){#section{right:5vw !important;top:50% !important;}}
+</style>
+
+
+<style id="section-true-vertical-center">
+/* TRUE MOBILE VERTICAL CENTER — center the rotated label on the viewport itself. */
+@media(max-width:600px){
+  #section{
+    position:fixed !important;
+    top:57vh !important;
+    right:5vw !important;
+    transform:translateY(-50%) rotate(90deg) !important;
+    transform-origin:right center !important;
+  }
+}
+</style>
+
+<style id="bibigay-one-by-one-appear-disappear">
+/* 01:57 — each word appears, then disappears before the next word. */
+.line.scene-scattered[data-index="20"] .word{
+  opacity:0 !important;
+  visibility:visible !important;
+  animation:none !important;
+}
+.line.scene-scattered[data-index="20"] .word.visible{
+  opacity:1 !important;
+  animation:bibigayOneByOnePop .32s cubic-bezier(.16,1.2,.25,1) both !important;
+}
+@keyframes bibigayOneByOnePop{
+  0%{opacity:0;transform:translateY(10px) scale(.88)}
+  65%{opacity:1;transform:translateY(-4px) scale(1.04)}
+  100%{opacity:1;transform:translateY(0) scale(1)}
+}
+</style>
+
+<script id="bibigay-one-by-one-appear-disappear-js">
+(function(){
+  const originalUpdateWords=window.updateWords;
+  if(typeof originalUpdateWords!=='function') return;
+  window.updateWords=function(t){
+    originalUpdateWords(t);
+    if(typeof current!=='number' || current!==20) return;
+    const el=document.querySelector('.line.active[data-index="20"]');
+    if(!el) return;
+    const words=[...el.querySelectorAll('.word')];
+    const cues=lines[20]?.cues || [];
+    let active=-1;
+    for(let i=0;i<words.length;i++){
+      const start=cues[i] ?? lines[20].start;
+      const end=cues[i+1] ?? lines[20].end;
+      if(t>=start && t<end){ active=i; break; }
+    }
+    words.forEach((w,i)=>{
+      const show=i===active;
+      w.classList.toggle('visible',show);
+      w.classList.toggle('current',show);
+      w.style.opacity=show?'1':'0';
+    });
+  };
+})();
+</script>
+
+<style id="pwede-ligawan-exact-middle">
+/* 02:09 — place "Pwede ba kitang ligawan?" exactly in the middle of the mobile screen. */
+@media(max-width:600px){
+  #lyric > .line.scene-zoom[data-index="8"]{
+    top:50% !important;
+    transform:translateY(-50%) !important;
+  }
+}
+</style>
+
+<style id="final-0209-pwede-true-middle">
+/* 02:09 FINAL CHORUS — force the actual index-22 line to the exact viewport center.
+   The earlier rule targeted index 8, which is the 01:05 chorus, not this one. */
+@media (max-width:600px){
+  #lyric > .line.scene-fly[data-index="22"]{
+    left:calc(50% + 3vw) !important;
+    right:auto !important;
+    top:50% !important;
+    width:100vw !important;
+    max-width:100vw !important;
+    margin:0 !important;
+    padding:0 5vw !important;
+    box-sizing:border-box !important;
+    transform:translate(-50%,-50%) !important;
+    animation:none !important;
+    display:flex !important;
+    flex-wrap:wrap !important;
+    align-items:center !important;
+    justify-content:center !important;
+    text-align:center !important;
+  }
+}
+</style>
+
+<style id="pwede-0209-absolute-viewport-middle-final">
+/* 02:09 FINAL: bypass the lyric/stage padding entirely. */
+@media (max-width:600px){
+  #lyric > .line.scene-fly[data-index="22"]{
+    position:fixed !important;
+    left:50vw !important;
+    right:auto !important;
+    top:50vh !important;
+    bottom:auto !important;
+    width:100vw !important;
+    max-width:100vw !important;
+    height:auto !important;
+    margin:0 !important;
+    padding:0 5vw !important;
+    box-sizing:border-box !important;
+    transform:translate(-50%,-50%) !important;
+    display:flex !important;
+    flex-wrap:wrap !important;
+    align-items:center !important;
+    justify-content:center !important;
+    text-align:center !important;
   }
 }
 </style>
