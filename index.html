@@ -4215,21 +4215,31 @@ overflow:visible;
 }
 </style>
 
-<style id="gasgas-second-line-centering-final">
-/* FINAL FIX — second row of the GASGAS lyric.
-   Center the actual row box, not just its contents. */
-@media (max-width:600px){
-  #lyric > .line.scene-slit[data-index="1"] .parang-stack-row.row-2{
-    width:max-content !important;
-    max-width:none !important;
-    margin-left:auto !important;
-    margin-right:auto !important;
-    padding-left:0 !important;
-    padding-right:0 !important;
-    position:relative !important;
-    left:50% !important;
-    transform:translateX(-50%) !important;
-  }
+<style id="center-parang-gasgas-line-final">
+/* EXACT CENTER — "Parang masyado na yatang gasgas ang banat na 'to" */
+.line.scene-slit[data-index="1"]{
+  left:0 !important;
+  right:0 !important;
+  width:100% !important;
+  max-width:100% !important;
+  margin-left:0 !important;
+  margin-right:0 !important;
+  text-align:center !important;
+  box-sizing:border-box !important;
+}
+.line.scene-slit[data-index="1"] > .parang-stack{
+  width:100% !important;
+  max-width:100% !important;
+  margin-left:auto !important;
+  margin-right:auto !important;
+  align-items:center !important;
+  justify-content:center !important;
+  text-align:center !important;
+}
+.line.scene-slit[data-index="1"] .parang-stack-row{
+  margin-left:auto !important;
+  margin-right:auto !important;
+  justify-content:center !important;
 }
 </style>
 </head>
