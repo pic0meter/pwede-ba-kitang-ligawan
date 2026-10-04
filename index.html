@@ -1913,7 +1913,7 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   will-change:transform;
 }
 
-.line.scene-zoom.active{animation:cameraFloatZoom 3s ease-in-out infinite alternate}
+.line.scene-zoom.active:not([data-index="8"]){animation:cameraFloatZoom 3s ease-in-out infinite alternate}
 @keyframes cameraFloatZoom{0%{transform:scale(.985) translate3d(-3px,2px,0)}100%{transform:scale(1.015) translate3d(3px,-3px,0)}}
 
 
@@ -4018,7 +4018,6 @@ overflow:visible;
   #lyric > .line.scene-magaling-kinetic[data-index="7"] .word{font-size:clamp(25px,7.3vw,43px) !important;}
 
   /* 8/9 — chorus/question lines. */
-  #lyric > .line[data-index="8"]{font-size:clamp(39px,10.8vw,60px) !important;padding:0 3vw !important;}
   #lyric > .line[data-index="9"]{font-size:clamp(43px,12vw,62px) !important;padding:0 3vw !important;}
 
   /* 10 — PUPUNTAHAN: every word is absolute at 50%, so constrain its size. */
@@ -7698,6 +7697,63 @@ render();
   }
 }
 </style>
+
+<style id="mobile-index-8-clean-layout">
+@media (max-width:600px){
+  /* 1:05 — "Pwede ba kitang ligawan?"
+     Clean mobile composition: three rows, centered immediately.
+     No horizontal camera/bob animation on this line. */
+  #lyric > .line.scene-zoom[data-index="8"]{
+    left:0 !important;
+    right:0 !important;
+    width:100vw !important;
+    max-width:100vw !important;
+    margin:0 !important;
+    padding:0 3vw !important;
+    box-sizing:border-box !important;
+    display:flex !important;
+    flex-wrap:wrap !important;
+    justify-content:center !important;
+    align-items:center !important;
+    align-content:center !important;
+    text-align:center !important;
+    gap:.04em 0 !important;
+    animation:none !important;
+  }
+
+  #lyric > .line.scene-zoom[data-index="8"] > .word[data-word-index="0"],
+  #lyric > .line.scene-zoom[data-index="8"] > .word[data-word-index="3"]{
+    flex:0 0 100% !important;
+    width:100% !important;
+    max-width:100% !important;
+    margin:0 !important;
+    text-align:center !important;
+  }
+
+  #lyric > .line.scene-zoom[data-index="8"] > .mobile-three-stack-middle{
+    flex:0 0 100% !important;
+    width:100% !important;
+    max-width:100% !important;
+    display:flex !important;
+    justify-content:center !important;
+    align-items:center !important;
+    gap:.09em !important;
+    margin:0 !important;
+    padding:0 !important;
+    text-align:center !important;
+  }
+
+  #lyric > .line.scene-zoom[data-index="8"] > .mobile-three-stack-middle .word{
+    flex:0 0 auto !important;
+    width:auto !important;
+    max-width:none !important;
+    margin:0 !important;
+    white-space:nowrap !important;
+  }
+}
+
+.mobile-three-stack-middle{display:contents;}
+</style>
 </body>
 
 <style id="last-ko-hard-fix">
@@ -7999,68 +8055,7 @@ render();
 }
 </style>
 
-<style id="mobile-line-8-pwede-three-stack">
-@media (max-width:600px){
-  /* 9th lyric: stack as
-     Pwede
-     ba kitang
-     ligawan?
-     Keep the existing word animations; only change the mobile layout. */
-  #lyric > .line.scene-zoom[data-index="8"]{
-    row-gap:.16em !important;
-    column-gap:.09em !important;
-    align-content:center !important;
-  }
 
-  #lyric > .line.scene-zoom[data-index="8"] .word[data-word-index="0"]{
-    flex:0 0 100% !important;
-    width:100% !important;
-    max-width:100% !important;
-  }
-
-  #lyric > .line.scene-zoom[data-index="8"] .word[data-word-index="1"],
-  #lyric > .line.scene-zoom[data-index="8"] .word[data-word-index="2"]{
-    flex:0 0 auto !important;
-    width:auto !important;
-  }
-
-  #lyric > .line.scene-zoom[data-index="8"] .word[data-word-index="3"]{
-    flex:0 0 100% !important;
-    width:100% !important;
-    max-width:100% !important;
-  }
-}
-</style>
-
-<style id="mobile-line-8-pwede-fix">
-@media (max-width:600px){
-  /* 9th lyric — "Pwede ba kitang ligawan?" */
-  #lyric > .line.scene-zoom[data-index="8"]{
-    left:0 !important;
-    right:0 !important;
-    width:100vw !important;
-    max-width:100vw !important;
-    margin-left:0 !important;
-    margin-right:0 !important;
-    padding:0 5vw !important;
-    box-sizing:border-box !important;
-    display:flex !important;
-    flex-wrap:wrap !important;
-    justify-content:center !important;
-    align-items:center !important;
-    align-content:center !important;
-    text-align:center !important;
-    gap:.04em .09em !important;
-    transform-origin:50% 50% !important;
-  }
-
-  #lyric > .line.scene-zoom[data-index="8"] .word{
-    flex:0 0 auto !important;
-    max-width:none !important;
-    white-space:nowrap !important;
-  }
-}
-</style>
 
 
 <style id="mobile-each-line-spacing-audit">
@@ -8117,17 +8112,6 @@ render();
   #lyric > .line[data-index="7"]{
     width:100vw !important; max-width:100vw !important; left:0 !important; right:0 !important;
     padding:0 4vw !important; box-sizing:border-box !important;
-  }
-
-  /* 09 — Pwede ba kitang ligawan? */
-  #lyric > .line[data-index="8"]{
-    width:100vw !important; max-width:100vw !important; left:0 !important; right:0 !important;
-    padding:0 4vw !important; box-sizing:border-box !important;
-    column-gap:.06em !important; row-gap:.08em !important;
-  }
-  #lyric > .line[data-index="8"] .word[data-word-index="0"],
-  #lyric > .line[data-index="8"] .word[data-word-index="3"]{
-    margin-left:auto !important; margin-right:auto !important;
   }
 
   /* 10 — Oo o hindi? */
@@ -8232,62 +8216,6 @@ render();
 }
 </style>
 
-<style id="mobile-line-8-three-stack-definitive">
-@media (max-width:600px){
-  /* 9th lyric — force the requested three-line composition:
-     Pwede
-     ba kitang
-     ligawan?
-     This changes layout only; the individual .word animations remain unchanged. */
-  #lyric > .line.scene-zoom[data-index="8"]{
-    display:flex !important;
-    flex-wrap:wrap !important;
-    justify-content:center !important;
-    align-items:center !important;
-    align-content:center !important;
-    column-gap:0 !important;
-    row-gap:.04em !important;
-    padding-left:3vw !important;
-    padding-right:3vw !important;
-    box-sizing:border-box !important;
-  }
-
-  #lyric > .line.scene-zoom[data-index="8"] > .word[data-word-index="0"]{
-    flex:0 0 100% !important;
-    width:100% !important;
-    max-width:100% !important;
-    text-align:center !important;
-  }
-
-  #lyric > .line.scene-zoom[data-index="8"] > .mobile-three-stack-middle{
-    flex:0 0 100% !important;
-    width:100% !important;
-    max-width:100% !important;
-    display:flex !important;
-    justify-content:center !important;
-    align-items:center !important;
-    gap:.09em !important;
-    text-align:center !important;
-  }
-
-  #lyric > .line.scene-zoom[data-index="8"] > .mobile-three-stack-middle .word{
-    flex:0 0 auto !important;
-    width:auto !important;
-    max-width:none !important;
-    white-space:nowrap !important;
-  }
-
-  #lyric > .line.scene-zoom[data-index="8"] > .word[data-word-index="3"]{
-    flex:0 0 100% !important;
-    width:100% !important;
-    max-width:100% !important;
-    text-align:center !important;
-  }
-}
-
-/* Outside mobile, the helper wrapper is transparent to the original layout. */
-.mobile-three-stack-middle{display:contents;}
-</style>
 
 <style id="mobile-final-three-lines-centering">
 @media (max-width:600px){
