@@ -4360,6 +4360,8 @@ overflow:visible;
 </head>
 <body>
 <div id="app">
+  <video id="backgroundVideo" preload="auto" muted playsinline webkit-playsinline loop aria-hidden="true"><source src="video.mp4" type="video/mp4"></video>
+  <div id="videoBackgroundShade"></div>
   <div class="ambient"><div class="orb o1"></div><div class="orb o2"></div></div>
   <div id="grain"></div>
   <div id="backgroundBanat" aria-hidden="true"></div>
@@ -8093,6 +8095,43 @@ render();
   }
 }
 </style>
+
+<script id="video-background-sync">
+(function(){
+  const bgVideo=document.getElementById('backgroundVideo');
+  if(!bgVideo || typeof A==='undefined') return;
+
+  let videoReady=false;
+  bgVideo.addEventListener('loadedmetadata',()=>{
+    videoReady=true;
+    if(A.currentTime && bgVideo.duration){
+      bgVideo.currentTime=A.currentTime % bgVideo.duration;
+    }
+  });
+
+  function syncVideo(){
+    if(!videoReady || !Number.isFinite(bgVideo.duration) || bgVideo.duration<=0) return;
+    const target=A.currentTime % bgVideo.duration;
+    if(Math.abs(bgVideo.currentTime-target)>.12){
+      try{bgVideo.currentTime=target;}catch(e){}
+    }
+  }
+
+  A.addEventListener('play',()=>{
+    syncVideo();
+    const p=bgVideo.play();
+    if(p && p.catch) p.catch(()=>{});
+  });
+
+  A.addEventListener('pause',()=>bgVideo.pause());
+  A.addEventListener('seeking',syncVideo);
+  A.addEventListener('timeupdate',syncVideo);
+  A.addEventListener('ended',()=>{
+    bgVideo.pause();
+    try{bgVideo.currentTime=0;}catch(e){}
+  });
+})();
+</script>
 </body>
 
 <style id="manual-bibigy-offset">
