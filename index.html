@@ -4383,7 +4383,7 @@ overflow:visible;
 <style id="video-readable-overlay">
 /* Soft faded black overlay over the video so lyrics/effects stay readable. */
 #videoBackgroundShade{
-  background:transparent !important;
+  background:rgba(0,0,0,.38) !important;
 }
 </style>
 
@@ -4405,38 +4405,32 @@ overflow:visible;
   -webkit-backdrop-filter:blur(12px);transition:.2s;
 }
 #messageButton:hover{background:rgba(255,179,138,.14);transform:translateY(-1px);}
-#messageButton{animation:messageButtonPulse 1.55s ease-in-out infinite;}
-@keyframes messageButtonPulse{0%,100%{transform:scale(1);box-shadow:0 0 28px #ffb38a18,0 0 0 0 #ffb38a00}50%{transform:scale(1.055);box-shadow:0 0 34px #ffb38a45,0 0 0 10px #ffb38a10}}
 #messageOverlay{
-  position:fixed;inset:0;z-index:100000;display:flex;align-items:center;justify-content:center;
-  padding:0;background:transparent;opacity:0;visibility:hidden;
-  pointer-events:none;touch-action:auto;transition:opacity .25s ease,visibility .25s ease;
+  position:fixed;inset:0;z-index:120;display:flex;align-items:center;justify-content:center;
+  padding:24px;background:transparent;opacity:0;visibility:hidden;
+  pointer-events:none;transition:opacity .25s ease,visibility .25s ease;
 }
 #messageOverlay.open{opacity:1;visibility:visible;pointer-events:auto}
 #messagePanel{
-  position:relative;width:min(92vw,512px);height:min(92dvh,910px);
-  aspect-ratio:512/910;display:flex;align-items:center;justify-content:center;
-  pointer-events:auto;touch-action:auto;
+  position:relative;width:min(92vw,560px);height:min(92dvh,1000px);
+  display:flex;align-items:center;justify-content:center;
 }
 #messageVideo{
-  width:100%;height:100%;object-fit:contain;display:block;background:transparent;
-  border-radius:0;box-shadow:none;pointer-events:auto;touch-action:auto;
+  width:100%;height:100%;object-fit:contain;display:block;background:#000;
+  border-radius:14px;box-shadow:0 18px 70px #000;
 }
-#messageVideo::-webkit-media-controls{pointer-events:auto !important;}
 #messageClose{
-  position:absolute;right:-8px;top:10px;width:48px;height:48px;border-radius:50%;
-  border:1px solid #ffffff55;background:rgba(13,11,10,.78);color:#fff;
-  cursor:pointer;font-size:26px;line-height:1;z-index:100001;
-  pointer-events:auto;touch-action:manipulation;
+  position:absolute;right:10px;top:10px;width:40px;height:40px;border-radius:50%;
+  border:1px solid #ffffff35;background:rgba(13,11,10,.7);color:#fff;
+  cursor:pointer;font-size:20px;line-height:1;z-index:2;
   backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
 }
-#messageClose:hover{background:rgba(255,179,138,.18);}
 @media(max-width:600px){
   #messageButtonWrap{bottom:8vh}
-  #messageButton{padding:19px 32px;font-size:16px;min-width:270px;min-height:64px}
-  #messageOverlay{padding:0}
-  #messagePanel{width:min(94vw,512px);height:min(94dvh,910px)}
-  #messageClose{right:4px;top:4px;width:46px;height:46px}
+  #messageButton{padding:16px 28px;font-size:14px;min-width:220px;min-height:54px}
+  #messageOverlay{padding:12px}
+  #messagePanel{width:94vw;height:94dvh}
+  #messageVideo{border-radius:10px}
 }
 
 /* Initial asset-loading gate: playback is unavailable until every required media/font asset is ready. */
@@ -4725,22 +4719,16 @@ function openLablabMessage(){
   MESSAGE_OVERLAY.classList.add('open');
   MESSAGE_OVERLAY.setAttribute('aria-hidden','false');
   document.body.style.overflow='hidden';
-  MESSAGE_VIDEO.controls=true;
-  MESSAGE_VIDEO.setAttribute('controls','');
   try{ MESSAGE_VIDEO.currentTime=0; }catch(e){}
-  // Start only from the user's button tap. Native iOS/Android controls remain interactive.
   const p=MESSAGE_VIDEO.play();
   if(p&&p.catch)p.catch(()=>{});
 }
 function closeLablabMessage(){
   MESSAGE_VIDEO.pause();
-  MESSAGE_VIDEO.controls=true;
   MESSAGE_OVERLAY.classList.remove('open');
   MESSAGE_OVERLAY.setAttribute('aria-hidden','true');
   document.body.style.overflow='';
 }
-MESSAGE_VIDEO.addEventListener('click',e=>e.stopPropagation());
-MESSAGE_VIDEO.addEventListener('pointerdown',e=>e.stopPropagation(),{passive:true});
 function showLablabMessageButton(){ MESSAGE_WRAP.classList.add('show'); }
 function hideLablabMessageButton(){ MESSAGE_WRAP.classList.remove('show'); }
 MESSAGE_BUTTON.addEventListener('click',openLablabMessage);
@@ -7157,9 +7145,7 @@ function render(){
     showLablabMessageButton();
   }
   const t=Math.min(A.currentTime||0,135.10);
-  let i=lines.findIndex(x=>t>=x.start&&t<x.end);
-  // Never skip the final 02:12 question if a mobile frame jumps over 132.18s.
-  if(t>=132.18 && t<135.10) i=23;
+  const i=lines.findIndex(x=>t>=x.start&&t<x.end);
   activate(i);
   updateSabiMamaEcho(t);
   updateOSaKanyaEcho(t);
