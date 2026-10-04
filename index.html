@@ -4357,6 +4357,29 @@ overflow:visible;
 }
 </style>
 
+
+<style id="video-background-full-no-zoom">
+/* Show the entire 1080x1920 portrait video without cropping/zooming. */
+#backgroundVideo{
+  position:fixed !important;
+  inset:0 !important;
+  width:100vw !important;
+  height:100dvh !important;
+  max-width:none !important;
+  max-height:none !important;
+  object-fit:contain !important;
+  object-position:center center !important;
+  background:#000 !important;
+  z-index:-2 !important;
+  display:block !important;
+}
+#videoBackgroundShade{
+  position:fixed !important;
+  inset:0 !important;
+  z-index:-1 !important;
+  pointer-events:none !important;
+}
+</style>
 </head>
 <body>
 <div id="app">
