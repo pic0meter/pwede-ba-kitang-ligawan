@@ -4383,7 +4383,7 @@ overflow:visible;
 </head>
 <body>
 <div id="app">
-  <video id="backgroundVideo" preload="auto" muted playsinline webkit-playsinline loop aria-hidden="true"><source src="video.mp4" type="video/mp4"></video>
+  <video id="backgroundVideo" preload="metadata" muted playsinline webkit-playsinline loop aria-hidden="true"><source src="video-mobile-optimized.mp4" type="video/mp4"></video>
   <div id="videoBackgroundShade"></div>
   <div class="ambient"><div class="orb o1"></div><div class="orb o2"></div></div>
   <div id="grain"></div>
@@ -8123,36 +8123,27 @@ render();
 (function(){
   const bgVideo=document.getElementById('backgroundVideo');
   if(!bgVideo || typeof A==='undefined') return;
-
-  let videoReady=false;
+  let ready=false;
   bgVideo.addEventListener('loadedmetadata',()=>{
-    videoReady=true;
-    if(A.currentTime && bgVideo.duration){
-      bgVideo.currentTime=A.currentTime % bgVideo.duration;
-    }
+    ready=true;
+    try{ bgVideo.currentTime=Math.min(A.currentTime, Math.max(0,bgVideo.duration-0.05)); }catch(e){}
   });
-
-  function syncVideo(){
-    if(!videoReady || !Number.isFinite(bgVideo.duration) || bgVideo.duration<=0) return;
+  function syncVideo(force=false){
+    if(!ready || !Number.isFinite(bgVideo.duration) || bgVideo.duration<=0) return;
     const target=A.currentTime % bgVideo.duration;
-    if(Math.abs(bgVideo.currentTime-target)>.12){
-      try{bgVideo.currentTime=target;}catch(e){}
+    if(force || Math.abs(bgVideo.currentTime-target)>.45){
+      try{ bgVideo.currentTime=target; }catch(e){}
     }
   }
-
   A.addEventListener('play',()=>{
-    syncVideo();
+    syncVideo(true);
     const p=bgVideo.play();
-    if(p && p.catch) p.catch(()=>{});
+    if(p&&p.catch)p.catch(()=>{});
   });
-
   A.addEventListener('pause',()=>bgVideo.pause());
-  A.addEventListener('seeking',syncVideo);
-  A.addEventListener('timeupdate',syncVideo);
-  A.addEventListener('ended',()=>{
-    bgVideo.pause();
-    try{bgVideo.currentTime=0;}catch(e){}
-  });
+  A.addEventListener('seeking',()=>syncVideo(true));
+  A.addEventListener('ended',()=>{bgVideo.pause();try{bgVideo.currentTime=0}catch(e){}});
+  setInterval(()=>{ if(!A.paused) syncVideo(false); },1500);
 })();
 </script>
 </body>
