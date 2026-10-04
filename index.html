@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#0d0b0a">
-<title>For Lablab</title>
+<title>Pwede Ba Kitang Ligawan — Kinetic Lyrics</title>
 <style>
 @import url("https://fonts.googleapis.com/css2?family=Coiny&family=Lilita+One&family=Poppins:wght@400;500;600;700;800;900&display=swap");
 :root{
@@ -4383,7 +4383,7 @@ overflow:visible;
 <style id="video-readable-overlay">
 /* Soft faded black overlay over the video so lyrics/effects stay readable. */
 #videoBackgroundShade{
-  background:rgba(0,0,0,.38) !important;
+  background:transparent !important;
 }
 </style>
 
@@ -4405,6 +4405,8 @@ overflow:visible;
   -webkit-backdrop-filter:blur(12px);transition:.2s;
 }
 #messageButton:hover{background:rgba(255,179,138,.14);transform:translateY(-1px);}
+#messageButton{animation:messageButtonPulse 1.55s ease-in-out infinite;}
+@keyframes messageButtonPulse{0%,100%{transform:scale(1);box-shadow:0 0 28px #ffb38a18,0 0 0 0 #ffb38a00}50%{transform:scale(1.055);box-shadow:0 0 34px #ffb38a45,0 0 0 10px #ffb38a10}}
 #messageOverlay{
   position:fixed;inset:0;z-index:120;display:flex;align-items:center;justify-content:center;
   padding:24px;background:transparent;opacity:0;visibility:hidden;
@@ -4427,7 +4429,7 @@ overflow:visible;
 }
 @media(max-width:600px){
   #messageButtonWrap{bottom:8vh}
-  #messageButton{padding:16px 28px;font-size:14px;min-width:220px;min-height:54px}
+  #messageButton{padding:19px 32px;font-size:16px;min-width:270px;min-height:64px}
   #messageOverlay{padding:12px}
   #messagePanel{width:94vw;height:94dvh}
   #messageVideo{border-radius:10px}
@@ -7145,7 +7147,9 @@ function render(){
     showLablabMessageButton();
   }
   const t=Math.min(A.currentTime||0,135.10);
-  const i=lines.findIndex(x=>t>=x.start&&t<x.end);
+  let i=lines.findIndex(x=>t>=x.start&&t<x.end);
+  // Never skip the final 02:12 question if a mobile frame jumps over 132.18s.
+  if(t>=132.18 && t<135.10) i=23;
   activate(i);
   updateSabiMamaEcho(t);
   updateOSaKanyaEcho(t);
