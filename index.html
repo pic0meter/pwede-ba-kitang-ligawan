@@ -4398,15 +4398,16 @@ overflow:visible;
 #messageButtonWrap.show{opacity:1;transform:translate(-50%,0);pointer-events:auto}
 #messageButton{
   border:1px solid #ffb38a66;background:rgba(13,11,10,.72);color:#f8f0e6;
-  padding:13px 22px;border-radius:999px;cursor:pointer;
-  font:600 12px Poppins,system-ui,sans-serif;letter-spacing:.02em;
+  padding:18px 34px;border-radius:999px;cursor:pointer;
+  font:700 15px Poppins,system-ui,sans-serif;letter-spacing:.02em;
+  min-width:240px;min-height:58px;
   box-shadow:0 0 28px #ffb38a18;backdrop-filter:blur(12px);
   -webkit-backdrop-filter:blur(12px);transition:.2s;
 }
 #messageButton:hover{background:rgba(255,179,138,.14);transform:translateY(-1px);}
 #messageOverlay{
   position:fixed;inset:0;z-index:120;display:flex;align-items:center;justify-content:center;
-  padding:24px;background:rgba(0,0,0,.86);opacity:0;visibility:hidden;
+  padding:24px;background:transparent;opacity:0;visibility:hidden;
   pointer-events:none;transition:opacity .25s ease,visibility .25s ease;
 }
 #messageOverlay.open{opacity:1;visibility:visible;pointer-events:auto}
@@ -4426,16 +4427,34 @@ overflow:visible;
 }
 @media(max-width:600px){
   #messageButtonWrap{bottom:8vh}
-  #messageButton{padding:12px 19px;font-size:11px}
+  #messageButton{padding:16px 28px;font-size:14px;min-width:220px;min-height:54px}
   #messageOverlay{padding:12px}
   #messagePanel{width:94vw;height:94dvh}
   #messageVideo{border-radius:10px}
 }
+
+/* Initial asset-loading gate: playback is unavailable until every required media/font asset is ready. */
+#assetLoader{
+  position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;
+  flex-direction:column;gap:14px;background:#0d0b0a;color:#f8f0e6;text-align:center;
+  font-family:Poppins,system-ui,sans-serif;transition:opacity .45s ease,visibility .45s ease;
+}
+#assetLoader.ready{opacity:0;visibility:hidden;pointer-events:none}
+#assetLoaderTitle{font-size:clamp(18px,4vw,26px);font-weight:700;letter-spacing:-.03em}
+#assetLoaderStatus{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#b6a99c}
+#assetLoaderBar{width:min(280px,68vw);height:4px;border-radius:99px;background:#ffffff18;overflow:hidden}
+#assetLoaderProgress{height:100%;width:0;background:#ffb38a;box-shadow:0 0 14px #ffb38a77;transition:width .25s ease}
+#start:disabled,#toggle:disabled{opacity:.35;cursor:not-allowed;pointer-events:none}
 </style>
 </head>
 <body>
+<div id="assetLoader" aria-live="polite">
+  <div id="assetLoaderTitle">Loading everything…</div>
+  <div id="assetLoaderStatus">Preparing the experience</div>
+  <div id="assetLoaderBar"><div id="assetLoaderProgress"></div></div>
+</div>
 <div id="app">
-  <video id="backgroundVideo" preload="metadata" muted playsinline webkit-playsinline loop aria-hidden="true"><source src="video-mobile-optimized.mp4" type="video/mp4"></video>
+  <video id="backgroundVideo" preload="auto" muted playsinline webkit-playsinline loop aria-hidden="true"><source src="video-mobile-optimized.mp4" type="video/mp4"></video>
   <div id="videoBackgroundShade"></div>
   <div class="ambient"><div class="orb o1"></div><div class="orb o2"></div></div>
   <div id="grain"></div>
@@ -4474,13 +4493,13 @@ overflow:visible;
   <div id="messageOverlay" aria-hidden="true">
     <div id="messagePanel">
       <button id="messageClose" type="button" aria-label="Close message">×</button>
-      <video id="messageVideo" preload="metadata" playsinline webkit-playsinline controls>
+      <video id="messageVideo" preload="auto" playsinline webkit-playsinline controls>
         <source src="message-for-lablab.mp4" type="video/mp4">
       </video>
     </div>
   </div>
 
-  <audio id="audio" preload="metadata" playsinline webkit-playsinline src="song.mp3"></audio>
+  <audio id="audio" preload="auto" playsinline webkit-playsinline src="song.mp3"></audio>
 </div>
 
 <script>
@@ -4498,6 +4517,56 @@ const TRACK=document.querySelector('#track');
 const SCRUB=document.querySelector('#scrubLabel');
 const O1=document.querySelector('.orb.o1');
 const O2=document.querySelector('.orb.o2');
+
+const ASSET_LOADER=document.querySelector('#assetLoader');
+const ASSET_STATUS=document.querySelector('#assetLoaderStatus');
+const ASSET_PROGRESS=document.querySelector('#assetLoaderProgress');
+const START_BUTTON=document.querySelector('#start');
+let assetsReady=false;
+
+function waitForMedia(media,label){
+  return new Promise((resolve,reject)=>{
+    if(media.readyState>=4){ resolve(); return; }
+    const done=()=>{cleanup();resolve();};
+    const fail=()=>{cleanup();reject(new Error(label+' failed to load'));};
+    const cleanup=()=>{media.removeEventListener('canplaythrough',done);media.removeEventListener('error',fail);};
+    media.addEventListener('canplaythrough',done,{once:true});
+    media.addEventListener('error',fail,{once:true});
+    try{media.load()}catch(e){fail()}
+  });
+}
+
+async function preloadEverything(){
+  const bg=document.querySelector('#backgroundVideo');
+  const message=document.querySelector('#messageVideo');
+  const assets=[
+    [A,'song'],
+    [bg,'background video'],
+    [message,'message video']
+  ];
+  START_BUTTON.disabled=true;
+  TOGGLE.disabled=true;
+  let loaded=0;
+  const update=label=>{
+    loaded++;
+    ASSET_PROGRESS.style.width=(loaded/assets.length*100)+'%';
+    ASSET_STATUS.textContent=loaded===assets.length?'Ready — tap to begin':('Loading '+label+'…');
+  };
+  try{
+    await Promise.all(assets.map(async ([media,label])=>{await waitForMedia(media,label);update(label);}));
+    if(document.fonts&&document.fonts.ready) await document.fonts.ready;
+    assetsReady=true;
+    START_BUTTON.disabled=false;
+    TOGGLE.disabled=false;
+    START_BUTTON.textContent='Tap to begin';
+    ASSET_STATUS.textContent='Ready — tap to begin';
+    ASSET_LOADER.classList.add('ready');
+  }catch(err){
+    console.error(err);
+    ASSET_STATUS.textContent='Some assets could not be loaded. Refresh to try again.';
+    ASSET_PROGRESS.style.width='100%';
+  }
+}
 
 const SABI_ECHO_FIELD=document.querySelector('#sabiEchoField');
 const SABI_ECHO_WORDS=['sabi','ng','mama','mo','tita','nalang','ang','tawag','ko','sayo'];
@@ -7272,6 +7341,7 @@ const d=Math.min(A.duration||135.10,135.10);
 }
 
 async function play(){
+  if(!assetsReady) return;
   try{
     await A.play();
   }catch(err){
@@ -7336,6 +7406,8 @@ APP.addEventListener('pointermove',e=>{
   document.documentElement.style.setProperty('--mx',x+'px');
   document.documentElement.style.setProperty('--my',y+'px');
 });
+preloadEverything();
+
 APP.addEventListener('pointerleave',()=>{
   document.documentElement.style.setProperty('--mx','0px');
   document.documentElement.style.setProperty('--my','0px');
