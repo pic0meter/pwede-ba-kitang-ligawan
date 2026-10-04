@@ -4660,6 +4660,8 @@ function closeLablabMessage(){
   MESSAGE_OVERLAY.setAttribute('aria-hidden','true');
   document.body.style.overflow='';
 }
+function showLablabMessageButton(){ MESSAGE_WRAP.classList.add('show'); }
+function hideLablabMessageButton(){ MESSAGE_WRAP.classList.remove('show'); }
 MESSAGE_BUTTON.addEventListener('click',openLablabMessage);
 MESSAGE_CLOSE.addEventListener('click',closeLablabMessage);
 MESSAGE_OVERLAY.addEventListener('click',e=>{if(e.target===MESSAGE_OVERLAY)closeLablabMessage()});
@@ -7068,8 +7070,12 @@ function spawnFinalHindiHeartPop(){
 }
 
 function render(){
-  if((A.currentTime||0)>=135){A.currentTime=135;A.pause();}
-  const t=Math.min(A.currentTime||0,135);
+  if((A.currentTime||0)>=135.10){
+    A.currentTime=135.10;
+    A.pause();
+    showLablabMessageButton();
+  }
+  const t=Math.min(A.currentTime||0,135.10);
   const i=lines.findIndex(x=>t>=x.start&&t<x.end);
   activate(i);
   updateSabiMamaEcho(t);
@@ -7244,7 +7250,10 @@ function render(){
 
   if(sceneFor(current)==='clock') updateClock(t);
   pulse(t);
-const d=Math.min(A.duration||135,135);
+const d=Math.min(A.duration||135.10,135.10);
+  // The final lyric ends at 02:15.10. The audio is explicitly stopped there,
+  // so the message button does not depend on the MP3's native duration.
+  if(t>=135.10){ showLablabMessageButton(); }
   P.style.width=Math.min(100,(t/d)*100)+'%';
   T.textContent=fmt(t);
   C.textContent=fmt(t)+' / '+fmt(d);
@@ -7275,7 +7284,7 @@ function pause(){A.pause()}
 
 A.addEventListener('play',()=>{
   playing=true;APP.classList.add('playing');TOGGLE.textContent='❚❚';
-  MESSAGE_WRAP.classList.remove('show');
+  hideLablabMessageButton();
 });
 A.addEventListener('pause',()=>{
   playing=false;APP.classList.remove('playing');TOGGLE.textContent='▶';
@@ -7283,10 +7292,10 @@ A.addEventListener('pause',()=>{
 A.addEventListener('ended',()=>{
   playing=false;APP.classList.remove('playing');TOGGLE.textContent='▶';
   lastBeat=-1;current=-1;activate(-1);
-  MESSAGE_WRAP.classList.add('show');
+  showLablabMessageButton();
 });
 A.addEventListener('loadedmetadata',()=>{
-  C.textContent='00:00 / '+fmt(Math.min(A.duration||135,135));
+  C.textContent='00:00 / '+fmt(Math.min(A.duration||135.10,135.10));
 });
 
 function seekFromClientX(x){
