@@ -4387,6 +4387,51 @@ overflow:visible;
 }
 </style>
 
+
+<style id="lablab-message-style">
+/* Final message — appears only after the lyric audio finishes. */
+#messageButtonWrap{
+  position:fixed;left:50%;bottom:10vh;transform:translate(-50%,20px);
+  z-index:80;opacity:0;pointer-events:none;transition:opacity .45s ease,transform .45s ease;
+  text-align:center;
+}
+#messageButtonWrap.show{opacity:1;transform:translate(-50%,0);pointer-events:auto}
+#messageButton{
+  border:1px solid #ffb38a66;background:rgba(13,11,10,.72);color:#f8f0e6;
+  padding:13px 22px;border-radius:999px;cursor:pointer;
+  font:600 12px Poppins,system-ui,sans-serif;letter-spacing:.02em;
+  box-shadow:0 0 28px #ffb38a18;backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);transition:.2s;
+}
+#messageButton:hover{background:rgba(255,179,138,.14);transform:translateY(-1px);}
+#messageOverlay{
+  position:fixed;inset:0;z-index:120;display:flex;align-items:center;justify-content:center;
+  padding:24px;background:rgba(0,0,0,.86);opacity:0;visibility:hidden;
+  pointer-events:none;transition:opacity .25s ease,visibility .25s ease;
+}
+#messageOverlay.open{opacity:1;visibility:visible;pointer-events:auto}
+#messagePanel{
+  position:relative;width:min(92vw,560px);height:min(92dvh,1000px);
+  display:flex;align-items:center;justify-content:center;
+}
+#messageVideo{
+  width:100%;height:100%;object-fit:contain;display:block;background:#000;
+  border-radius:14px;box-shadow:0 18px 70px #000;
+}
+#messageClose{
+  position:absolute;right:10px;top:10px;width:40px;height:40px;border-radius:50%;
+  border:1px solid #ffffff35;background:rgba(13,11,10,.7);color:#fff;
+  cursor:pointer;font-size:20px;line-height:1;z-index:2;
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+}
+@media(max-width:600px){
+  #messageButtonWrap{bottom:8vh}
+  #messageButton{padding:12px 19px;font-size:11px}
+  #messageOverlay{padding:12px}
+  #messagePanel{width:94vw;height:94dvh}
+  #messageVideo{border-radius:10px}
+}
+</style>
 </head>
 <body>
 <div id="app">
@@ -4421,6 +4466,19 @@ overflow:visible;
     <div class="time" id="time">00:00</div>
   </div>
   <div id="scrubLabel">00:00</div>
+
+  <div id="messageButtonWrap">
+    <button id="messageButton" type="button">Message for lablab</button>
+  </div>
+
+  <div id="messageOverlay" aria-hidden="true">
+    <div id="messagePanel">
+      <button id="messageClose" type="button" aria-label="Close message">×</button>
+      <video id="messageVideo" preload="metadata" playsinline webkit-playsinline controls>
+        <source src="message-for-lablab.mp4" type="video/mp4">
+      </video>
+    </div>
+  </div>
 
   <audio id="audio" preload="metadata" playsinline webkit-playsinline src="song.mp3"></audio>
 </div>
@@ -4581,6 +4639,31 @@ const lines=[
 
 let current=-1,playing=false,lastBeat=-1,raf=0,scrubbing=false,heartCueShown=false;
 const MOBILE_PERF=window.matchMedia('(max-width:600px)').matches;
+
+const MESSAGE_WRAP=document.querySelector('#messageButtonWrap');
+const MESSAGE_BUTTON=document.querySelector('#messageButton');
+const MESSAGE_OVERLAY=document.querySelector('#messageOverlay');
+const MESSAGE_VIDEO=document.querySelector('#messageVideo');
+const MESSAGE_CLOSE=document.querySelector('#messageClose');
+
+function openLablabMessage(){
+  MESSAGE_OVERLAY.classList.add('open');
+  MESSAGE_OVERLAY.setAttribute('aria-hidden','false');
+  document.body.style.overflow='hidden';
+  try{ MESSAGE_VIDEO.currentTime=0; }catch(e){}
+  const p=MESSAGE_VIDEO.play();
+  if(p&&p.catch)p.catch(()=>{});
+}
+function closeLablabMessage(){
+  MESSAGE_VIDEO.pause();
+  MESSAGE_OVERLAY.classList.remove('open');
+  MESSAGE_OVERLAY.setAttribute('aria-hidden','true');
+  document.body.style.overflow='';
+}
+MESSAGE_BUTTON.addEventListener('click',openLablabMessage);
+MESSAGE_CLOSE.addEventListener('click',closeLablabMessage);
+MESSAGE_OVERLAY.addEventListener('click',e=>{if(e.target===MESSAGE_OVERLAY)closeLablabMessage()});
+document.addEventListener('keydown',e=>{if(e.code==='Escape')closeLablabMessage()});
 let lastRenderLine=-2;
 
 function fmt(s){
@@ -7192,6 +7275,7 @@ function pause(){A.pause()}
 
 A.addEventListener('play',()=>{
   playing=true;APP.classList.add('playing');TOGGLE.textContent='❚❚';
+  MESSAGE_WRAP.classList.remove('show');
 });
 A.addEventListener('pause',()=>{
   playing=false;APP.classList.remove('playing');TOGGLE.textContent='▶';
@@ -7199,6 +7283,7 @@ A.addEventListener('pause',()=>{
 A.addEventListener('ended',()=>{
   playing=false;APP.classList.remove('playing');TOGGLE.textContent='▶';
   lastBeat=-1;current=-1;activate(-1);
+  MESSAGE_WRAP.classList.add('show');
 });
 A.addEventListener('loadedmetadata',()=>{
   C.textContent='00:00 / '+fmt(Math.min(A.duration||135,135));
